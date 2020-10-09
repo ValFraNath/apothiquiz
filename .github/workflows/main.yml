@@ -46,5 +46,5 @@ jobs:
           cd ~/glowing-octo-guacamole-beta/
           git pull origin main
           cd server
-          npm install
-          pm2 restart glowing-octo-guacamole-beta
+          npm install --production
+# pm2 restart glowing-octo-guacamole-beta
