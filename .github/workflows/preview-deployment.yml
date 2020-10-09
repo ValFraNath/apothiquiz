@@ -42,8 +42,8 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            cd ~/glowing-octo-guacamole-beta/
-            git pull origin main
+            cd $HOME/glowing-octo-guacamole-beta
+            git pull origin install-cd
             cd server
             npm install --production
             pm2 restart glowing-octo-guacamole-beta
