@@ -30,21 +30,21 @@ jobs:
       env:
         CI: true
 
-  deploy:
-    needs: [test]
-    runs-on: ubuntu-latest
+#  deploy:
+ #   needs: [test]
+  #  runs-on: ubuntu-latest
 
-    steps:
-    - name: SSH and deploy node app
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.SSH_HOST }}
-        username: ${{ secrets.SSH_USERNAME }}
-        key: ${{ secrets.SSH_KEY }}
-        port: ${{ secrets.SSH_PORT }}
-        script: |
-          cd ~/glowing-octo-guacamole-beta/
-          git pull origin main
-          cd server
-          npm install --production
+   # steps:
+   # - name: SSH and deploy node app
+   #   uses: appleboy/ssh-action@master
+   #   with:
+   #     host: ${{ secrets.SSH_HOST }}
+   #     username: ${{ secrets.SSH_USERNAME }}
+   #     key: ${{ secrets.SSH_KEY }}
+   #     port: ${{ secrets.SSH_PORT }}
+   #     script: |
+   #       cd ~/glowing-octo-guacamole-beta/
+    #      git pull origin main
+     #     cd server
+      #    npm install --production
 # pm2 restart glowing-octo-guacamole-beta
