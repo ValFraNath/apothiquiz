@@ -1,4 +1,4 @@
-name: Node Github CI
+name: Deploy to preview
 
 on:
   push:
