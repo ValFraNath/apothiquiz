@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "mocha ./test/* --exit"
+    "start" : "node ."
   },
   "author": "",
   "license": "ISC",
