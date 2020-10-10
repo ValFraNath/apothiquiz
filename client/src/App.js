@@ -3,7 +3,6 @@ import {BrowserRouter as Router, Link, Route} from "react-router-dom";
 import './App.css';
 import HelloWorld from "./components/HelloWorld";
 
-
 function App() {
     return (
         <Router>
