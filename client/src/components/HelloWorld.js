@@ -13,7 +13,7 @@ export default class HelloWorld extends Component {
 
     handleButtonClick = () => {
         axios
-            .get(`${process.env.REACT_APP_SERVER_URL}/api/v1/status`)
+            .get(`/api/v1/status`)
             .then(res => {
                 this.setState({receivedMessage: res.data});
             })
