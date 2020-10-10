@@ -19,10 +19,23 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint src",
+    "lint:fix": "eslint --fix src",
+    "format": "prettier --write ."
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "env": {
+      "browser": true
+    },
+    "parserOptions": {
+      "ecmaVersion": 2015,
+      "sourceType": "module"
+    },
+    "extends": [
+      "react-app",
+      "eslint:recommended"
+    ]
   },
   "browserslist": {
     "production": [
@@ -35,5 +48,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "eslint": "^7.11.0",
+    "prettier": "^2.1.2"
   }
 }
