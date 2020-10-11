@@ -18,7 +18,7 @@ Developement (both bug fixes and new features) Pull Request are made against `ma
 
 PRs made against `main` must match several criterias:
 
-- Pass the `Build and test` CI job, for both node v12 and node v14
+- Pass the `Build and test` CI job, for node v14
 - Check that images are compressed with the [`CalibreApp Image Action`](https://github.com/marketplace/actions/image-actions)
 - Do not contain "WIP" in the title, check by the [WIP App](https://github.com/apps/wip)
 - Be reviewed by at least one person
