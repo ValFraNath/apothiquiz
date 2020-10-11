@@ -24,6 +24,7 @@ jobs:
         cd server
         npm ci
         npm run format
+        npm run lint
         npm run build --if-present
         npm test
     - name: Server npm install and test
@@ -31,6 +32,7 @@ jobs:
         cd client
         npm ci
         npm run format
+        npm run lint
         npm run build --if-present
         npm test
       env:
@@ -55,12 +57,10 @@ jobs:
             echo "Building client"
             cd client
             npm install --production
-            npm run format
             npm run build
             cd ..
             echo "Updating server"
             cd server
             npm install --production
-            npm run format
             echo "Restart server"
             pm2 restart glowing-octo-guacamole-beta
