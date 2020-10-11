@@ -23,7 +23,6 @@ jobs:
       run: |
         cd server
         npm ci
-        npm run format
         npm run lint
         npm run build --if-present
         npm test
@@ -31,7 +30,6 @@ jobs:
       run: |
         cd client
         npm ci
-        npm run format
         npm run lint
         npm run build --if-present
         npm test
