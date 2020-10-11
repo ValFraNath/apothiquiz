@@ -23,6 +23,8 @@ PRs made against `main` must match several criterias:
 - Do not contain "WIP" in the title, check by the [WIP App](https://github.com/apps/wip)
 - Be reviewed by at least one person
 
+[API documentation can be found here](https://web.postman.co/collections/12964640-edb9f396-5c5b-4122-b35c-b7c9a0e37df9?version=latest&workspace=dc3ec45b-bac4-4c20-8563-b0c2a0a8d465).
+
 ## Deployment
 
 ### Requirements
