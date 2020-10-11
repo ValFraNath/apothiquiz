@@ -1,12 +1,14 @@
 # glowing-octo-guacamole
+[![Deployed to preview](https://github.com/nathanaelhoun/glowing-octo-guacamole/workflows/Deploy%20to%20preview/badge.svg)](https://beta.glowing-octo-guacamole.nathanaelhoun.fr) 
+[![Deployed to production](https://github.com/nathanaelhoun/glowing-octo-guacamole/workflows/Deploy%20to%20production/badge.svg?branch=production)](https://glowing-octo-guacamole.nathanaelhoun.fr) 
 
-Projet 2020-2021 tutoré de Nathanaël Houn, Valentin Perignon et François Poguet
+A project of Nathanaël Houn, Valentin Perignon and François Poguet, three students of the Université de _Franche-Comté_ (FR). 
 
 ## Deployment
 
 ### Requirements
 
-- Node v14.xx.xx
+- Node > v14
 - `pm2` for a production deployment
 - `nodemon` for a dev environment
 
