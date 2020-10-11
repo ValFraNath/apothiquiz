@@ -6,38 +6,7 @@ on:
       - production
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [12.x, 14.x]
-
-    steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - name: Client npm install and test
-      run: |
-        cd server
-        npm ci
-        npm run format
-        npm run build --if-present
-        npm test
-    - name: Server npm install and test
-      run: |
-        cd client
-        npm ci
-        npm run format
-        npm run build --if-present
-        npm test
-      env:
-        CI: true
-
   deploy:
-    needs: [test]
     runs-on: ubuntu-latest
  
     steps:
@@ -55,12 +24,10 @@ jobs:
             echo "Building client"
             cd client
             npm install --production
-            npm run format
             npm run build
             cd ..
             echo "Updating server"
             cd server
             npm install --production
-            npm run format
-            echo "Restart server"
+            echo "Restarting server"
             pm2 restart glowing-octo-guacamole
