@@ -21,7 +21,6 @@ app.get("/:dir/:file", function (req, res) {
   res.sendFile(dir + "/" + file, { root: "../client/build/" });
 });
 
-
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}.`));
 
 export default app;
