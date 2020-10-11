@@ -1,34 +1,32 @@
-import React, {Component} from 'react';
-import axios from 'axios';
-
+import React, { Component } from "react";
+import axios from "axios";
 
 export default class HelloWorld extends Component {
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
 
-        this.state = {
-            receivedMessage: ""
-        }
-    }
+    this.state = {
+      receivedMessage: "",
+    };
+  }
 
-    handleButtonClick = () => {
-        axios
-            .get(`/api/v1/status`)
-            .then(res => {
-                this.setState({receivedMessage: res.data});
-            })
-            .catch(err => console.log(err));
-    }
+  handleButtonClick = () => {
+    axios
+      .get(`/api/v1/status`)
+      .then((res) => {
+        this.setState({ receivedMessage: res.data });
+      })
+      .catch((err) => console.log(err));
+  };
 
-
-    render() {
-        return (
-            <div>
-                <button onClick={this.handleButtonClick}>Send request</button>
-                {this.state.receivedMessage !== "" &&
-                <p>Received message : "{this.state.receivedMessage}"</p>}
-            </div>
-        )
-    }
+  render() {
+    return (
+      <div>
+        <button onClick={this.handleButtonClick}>Send request</button>
+        {this.state.receivedMessage !== "" && (
+          <p>Received message : "{this.state.receivedMessage}"</p>
+        )}
+      </div>
+    );
+  }
 }
-
