@@ -16,7 +16,7 @@ This repository contains two major branches:
 
 Developement (both bug fixes and new features) Pull Request are made against `main`, and when features have been implemented and validated, we can do a release and merge it into the `production` branch. Only very important and urgent fixes can be directly merged to the `production` branch.
 
-PRs made against `main` must match several criterias:
+PRs made against `main` must match several criteria:
 
 - Pass the `Build and test` CI job, for node v14
 - Check that images are compressed with the [`CalibreApp Image Action`](https://github.com/marketplace/actions/image-actions)
