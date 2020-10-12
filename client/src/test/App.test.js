@@ -14,6 +14,6 @@ describe("Good display", () => {
   // Chai test
   it("Contains the good link", () => {
     const { getByText } = render(<App />);
-    expect(getByText(/Go to Hello World/i)).to.be.not.null;
+    return expect(getByText(/Go to Hello World/i)).to.be.not.null;
   });
 });
