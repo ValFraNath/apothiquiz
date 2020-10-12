@@ -1,11 +1,28 @@
 import express from "express";
 import dotenv from "dotenv";
 import apiRouter from "./routes/api.route.js";
+import mysql from "mysql";
 
 import reactRouter from "./routes/reactRouter.js";
 
 dotenv.config();
 const PORT = process.env.PORT || 5035;
+
+const db = mysql.createConnection({
+  host: process.env.DB_HOST || "localhost",
+  user: process.env.DB_USER || "glowing-octo-guacamole",
+  password: process.env.DB_PASSWORD || "p@ssword",
+  database: process.env.DB_DATABASE || "glowing-octo-guacamole-dev",
+});
+
+db.connect((err) => {
+  if (err) {
+    console.log("Can't connect to the database.");
+    throw err;
+  }
+
+  console.log("Connected to database!");
+});
 
 const app = express();
 app.use(express.static("../client/build/"));
