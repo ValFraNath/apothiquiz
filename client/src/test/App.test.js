@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import { expect } from "chai";
 import { render } from "@testing-library/react";
 import App from "../App";
-
+/* eslint-disable */
 describe("Good display", () => {
   // Jest test
   it("renders without crashing", () => {
@@ -14,6 +14,6 @@ describe("Good display", () => {
   // Chai test
   it("Contains the good link", () => {
     const { getByText } = render(<App />);
-    return expect(getByText(/Go to Hello World/i)).to.be.not.null;
+    expect(getByText(/Go to Hello World/i)).to.be.not.null;
   });
 });
