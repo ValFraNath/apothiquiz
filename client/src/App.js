@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
-import "./App.scss";
+import "./styles/styles.scss";
 import HelloWorld from "./components/HelloWorld";
 
 function App() {
