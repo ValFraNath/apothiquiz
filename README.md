@@ -1,7 +1,8 @@
 # glowing-octo-guacamole
 
-[![Deployed to preview](https://github.com/nathanaelhoun/glowing-octo-guacamole/workflows/Deploy%20to%20preview/badge.svg)](https://beta.glowing-octo-guacamole.nathanaelhoun.fr)
-[![Deployed to production](https://github.com/nathanaelhoun/glowing-octo-guacamole/workflows/Deploy%20to%20production/badge.svg?branch=production)](https://glowing-octo-guacamole.nathanaelhoun.fr)
+[![Deployed to preview](https://img.shields.io/badge/Preview-deployed-brightgreen)](https://beta.glowing-octo-guacamole.nathanaelhoun.fr)
+
+![Build and test](https://github.com/nathanaelhoun/glowing-octo-guacamole/workflows/Build%20and%20test/badge.svg)
 
 A third year undergraduate project by Nathanaël Houn, Valentin Perignon and François Poguet, three students at the Université de _Franche-Comté_ (FR).
 
