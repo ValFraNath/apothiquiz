@@ -1,7 +1,6 @@
 # glowing-octo-guacamole
 
 [![Deployed to preview](https://img.shields.io/badge/Preview-deployed-brightgreen)](https://beta.glowing-octo-guacamole.nathanaelhoun.fr)
-
 ![Build and test](https://github.com/nathanaelhoun/glowing-octo-guacamole/workflows/Build%20and%20test/badge.svg)
 
 A third year undergraduate project by Nathanaël Houn, Valentin Perignon and François Poguet, three students at the Université de _Franche-Comté_ (FR).
@@ -57,3 +56,7 @@ $ pm2 restart glowing-octo-guacamole
 - For a **dev environment**, you can start `nodemon` in the `server` directory
 
 Afterwards, you will be able to access the app through `http://localhost:$PORT`.
+
+## See more
+
+You can learn more about this project in our [wiki](https://github.com/nathanaelhoun/glowing-octo-guacamole/wiki).
