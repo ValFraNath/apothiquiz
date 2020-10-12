@@ -7,4 +7,3 @@ apiRouter.get("/status", function (req, res) {
 });
 
 export default apiRouter;
-

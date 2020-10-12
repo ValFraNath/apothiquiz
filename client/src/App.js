@@ -11,7 +11,7 @@ function App() {
           <Link to="/hello_world">Go to Hello World</Link>
         </Route>
         <Route path="/hello_world" exact component={HelloWorld} />
-        <Route status={404} >Not Found</Route>
+        <Route status={404}>Not Found</Route>
       </Switch>
     </Router>
   );
