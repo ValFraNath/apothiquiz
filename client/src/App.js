@@ -7,7 +7,7 @@ function App() {
   return (
     <Router>
       <Route path="/" exact>
-        <Link to="/hello_world">Go to Hello World</Link>
+        <Link to="/hello_world">Go to Hello World now!</Link>
       </Route>
       <Route path="/hello_world" component={HelloWorld} />
     </Router>
