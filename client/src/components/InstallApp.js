@@ -9,12 +9,14 @@ export default class InstallApp extends Component {
 
   handleClick = () => {
     this.props.installPrompt.prompt();
-  }
+  };
 
   render() {
     return (
       <div>
-        <button id="installButton" onClick={this.handleClick}>Install this app and become a medical expert!</button>
+        <button id="installButton" onClick={this.handleClick}>
+          Install this app and become a medical expert!
+        </button>
       </div>
     );
   }

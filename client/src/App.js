@@ -9,16 +9,16 @@ export default class App extends Component {
     super(props);
 
     // App installation
-    window.addEventListener('beforeinstallprompt', (e) => {
+    window.addEventListener("beforeinstallprompt", (e) => {
       e.preventDefault();
 
       this.setState({
-        installPrompt: e
-      })
+        installPrompt: e,
+      });
     });
 
     this.state = {
-      installPrompt: null
+      installPrompt: null,
     };
   }
 
@@ -28,7 +28,7 @@ export default class App extends Component {
         <Switch>
           <Route path="/" exact>
             <Link to="/hello_world">Go to Hello World</Link>
-            { this.state.installPrompt !== null && (
+            {this.state.installPrompt !== null && (
               <InstallApp installPrompt={this.state.installPrompt} />
             )}
           </Route>
