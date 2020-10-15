@@ -19,6 +19,15 @@
       "sizes": "512x512"
     }
   ],
+  "shortcuts": [
+    {
+      "name": "Example of shortcut",
+      "short_name": "Say hello",
+      "description": "The app is able to say Hello!",
+      "url": "/hello_world",
+      "icons": [{ "src": "logo512.png", "sizes": "512x512" }]
+    }
+  ],
   "start_url": ".",
   "scope":"/",
   "display": "standalone",
