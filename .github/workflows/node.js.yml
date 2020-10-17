@@ -26,12 +26,14 @@ jobs:
       - name: Install and setup MySQL
         uses: mirromutth/mysql-action@v1.1
         with:
-          character set server: 'utf8'
-          collation server: 'utf8_general_ci' 
-          mysql version: '8.0' 
-          mysql database: 'glowingOctoGuacamole' 
-          mysql user: 'glowing-octo-guacamole-false-user'
+          character set server: "utf8"
+          collation server: "utf8_general_ci"
+          mysql version: "8.0"
+          mysql database: "glowingOctoGuacamole"
+          mysql user: "glowing-octo-guacamole-false-user"
           mysql password: ${{ secrets.CI_DATABASE_PASS }}
+      - name: Temporise 15s
+        run: sleep 15
       - name: Server npm install and test
         run: |
           cd server
