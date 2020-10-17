@@ -12,7 +12,7 @@ const db = mysql.createConnection({
   host: process.env.DB_HOST || "localhost",
   user: process.env.DB_USER || "glowing-octo-guacamole",
   password: process.env.DB_PASSWORD || "p@ssword",
-  database: process.env.DB_DATABASE || "glowing-octo-guacamole-dev",
+  database: process.env.DB_DATABASE || "glowingOctoGuacamole",
 });
 
 db.connect((err) => {

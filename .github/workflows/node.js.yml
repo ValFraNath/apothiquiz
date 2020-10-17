@@ -5,11 +5,10 @@ name: Build and test
 
 on:
   pull_request:
-    branches: [ main, production]
+    branches: [main, production]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     strategy:
@@ -17,24 +16,30 @@ jobs:
         node-version: [14.x]
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - name: Client npm install and test
-      run: |
-        cd server
-        npm ci
-        npm run lint
-        npm run build --if-present
-        npm test
-    - name: Server npm install and test
-      run: |
-        cd client
-        npm ci
-        npm run lint
-        npm run build --if-present
-        npm test
-      env:
-        CI: true
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install and setup Mysql
+      - run: |
+          mysql -uroot -proot -e "CREATE USER 'glowing-octo-guacamole'@'localhost' IDENTIFIED BY 'p@ssword';"
+          mysql -uroot -proot -e "CREATE DATABASE glowingOctoGuacamole;"
+          mysql -uroot -proot -e "GRANT ALL PRIVILEGES ON glowingOctoGuacamole.* TO 'glowing-octo-guacamole'@'localhost';"
+          mysql -uroot -proot -e "FLUSH PRIVILEGES;"
+      - name: Client npm install and test
+        run: |
+          cd server
+          npm ci
+          npm run lint
+          npm run build --if-present
+          npm test
+      - name: Server npm install and test
+        run: |
+          cd client
+          npm ci
+          npm run lint
+          npm run build --if-present
+          npm test
+        env:
+          CI: true
