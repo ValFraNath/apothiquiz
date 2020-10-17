@@ -1,15 +1,25 @@
 import express from "express";
 import dotenv from "dotenv";
-import apiRouter from "./routes/api.route.js";
 
+import apiRouter from "./routes/api.route.js";
 import reactRouter from "./routes/reactRouter.js";
+import db from "./db/database.js";
 
 dotenv.config();
+
+db.connect((err) => {
+  if (err) {
+    console.error("Can't connect to the database.");
+    throw err;
+  }
+
+  console.log("Connected to database!");
+});
+
 const PORT = process.env.PORT || 5035;
-
 const app = express();
-app.use(express.static("../client/build/"));
 
+app.use(express.static("../client/build/"));
 app.use("/api/v1/", apiRouter);
 app.use("/", reactRouter);
 
