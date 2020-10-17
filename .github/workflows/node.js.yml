@@ -22,7 +22,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: Install and setup Mysql
-      - run: |
+        run: |
           mysql -uroot -proot -e "CREATE USER 'glowing-octo-guacamole'@'localhost' IDENTIFIED BY 'p@ssword';"
           mysql -uroot -proot -e "CREATE DATABASE glowingOctoGuacamole;"
           mysql -uroot -proot -e "GRANT ALL PRIVILEGES ON glowingOctoGuacamole.* TO 'glowing-octo-guacamole'@'localhost';"
