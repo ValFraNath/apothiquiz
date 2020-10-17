@@ -28,10 +28,10 @@ jobs:
 
       - name: Create and setup database
         run: |
-          mysql -uroot --defaults-extra-file=<(echo $'[client]\npassword='"root") -e "CREATE USER 'glowing-octo-guacamole'@'localhost' IDENTIFIED BY '${{ secrets.CI_DATABASE_PASS }}';"
-          mysql -uroot --defaults-extra-file=<(echo $'[client]\npassword='"root") -e "CREATE DATABASE glowingOctoGuacamole;"
-          mysql -uroot --defaults-extra-file=<(echo $'[client]\npassword='"root") -e "GRANT ALL PRIVILEGES ON glowingOctoGuacamole.* TO 'glowing-octo-guacamole'@'localhost';"
-
+          export MYSQL_PWD=root;
+          mysql -uroot -e "CREATE USER 'glowing-octo-guacamole'@'localhost' IDENTIFIED BY '${{ secrets.CI_DATABASE_PASS }}';"
+          mysql -uroot -e "CREATE DATABASE glowingOctoGuacamole;"
+          mysql -uroot -e "GRANT ALL PRIVILEGES ON glowingOctoGuacamole.* TO 'glowing-octo-guacamole'@'localhost';"
       - name: Server npm install and test
         run: |
           cd server
