@@ -24,7 +24,7 @@ jobs:
       - name: Shutdown default Ubuntu MySQL (SUDO)
         run: sudo service mysql stop # Shutdown the Default MySQL, "sudo" is necessary, please not remove it
       - name: Install and setup Mysql
-      - uses: mirromutth/mysql-action@v1.1
+        uses: mirromutth/mysql-action@v1.1
         with:
           character set server: 'utf8'
           collation server: 'utf8_general_ci' 
