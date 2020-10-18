@@ -27,7 +27,26 @@ const db = mysql.createConnection({
 
 export default db;
 
-export async function create_database(db) {
+export async function db_connection(err){
+    if (err) {
+        console.error("Can't connect to the database.");
+        throw err;
+    }
+    console.log("Connected to database!")
+
+    getDatabaseVersion().then(async db_version => {
+        if(db_version === -1){
+            await create_database(db);
+            await update("2020-10-17");
+        }else{
+            await update(db_version);
+        }
+        console.log("Database is ready to use!")
+    })
+
+}
+
+export async function create_database() {
     const creationScript = fs.readFileSync(path.resolve(__dirname, 'db', 'db.sql')).toString('utf8');
     console.log("Creation of database... ");
     await querySync(creationScript)
@@ -44,7 +63,7 @@ export async function create_database(db) {
 export async function getDatabaseVersion() {
     let sql = "SELECT sy_version FROM system";
 
-    return new Promise(function (resolve, reject) {
+    return new Promise(function (resolve) {
         db.query(sql, function (err, res) {
             if (err) {
                 if (err.code === "ER_NO_SUCH_TABLE") {
@@ -84,12 +103,9 @@ export async function update(version) {
         await querySync(updateQuery)
             .then(() => console.log("\tDatabase updated!"))
             .catch(err => { throw err})
+
+
     }
-
-    await querySync(`UPDATE system SET sy_version = "${currentVersion()}"`)
-        .then(() => console.log("Database is up to date !"))
-        .catch(err => {throw err})
-
 
 }
 

@@ -3,25 +3,9 @@ import dotenv from "dotenv";
 
 import apiRouter from "./routes/api.route.js";
 import reactRouter from "./routes/reactRouter.js";
-import db, {create_database, getDatabaseVersion, update} from "./db/database.js";
+import db, {db_connection} from "./db/database.js";
 
-async function db_connection(err){
-  if (err) {
-    console.error("Can't connect to the database.");
-    throw err;
-  }
-  console.log("Connected to database!")
 
-  getDatabaseVersion().then(async db_version => {
-    if(db_version === -1){
-      await create_database(db);
-      await update("2020-10-17");
-    }else{
-      await update(db_version);
-    }
-  })
-
-}
 
 dotenv.config();
 
