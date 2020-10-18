@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le :  sam. 17 oct. 2020 à 18:35
+-- Généré le :  Dim 18 oct. 2020 à 07:56
 -- Version du serveur :  5.7.24
 -- Version de PHP :  7.2.14
 
@@ -19,7 +19,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de données :  `glowingOctoGuacamole`
+-- Base de données :  `glowingoctoguacamole`
 --
 
 -- --------------------------------------------------------
@@ -33,14 +33,7 @@ CREATE TABLE IF NOT EXISTS `class` (
   `cl_id` int(11) NOT NULL AUTO_INCREMENT,
   `cl_name` varchar(256) COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`cl_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
---
--- Déchargement des données de la table `class`
---
-
-INSERT INTO `class` (`cl_id`, `cl_name`) VALUES
-(1, 'antiMalDeCrane');
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------------------------
 
@@ -56,14 +49,7 @@ CREATE TABLE IF NOT EXISTS `molecule` (
   `mo_difficulty` int(2) NOT NULL,
   `mo_skeletal_formula` varchar(64) COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`mo_ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
---
--- Déchargement des données de la table `molecule`
---
-
-INSERT INTO `molecule` (`mo_ID`, `mo_name`, `mo_dci`, `mo_difficulty`, `mo_skeletal_formula`) VALUES
-(1, 'paracétamol', 'acétaminophène', 1, 'C8H9NO2');
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------------------------
 
@@ -79,13 +65,6 @@ CREATE TABLE IF NOT EXISTS `molecule_class` (
   KEY `cl_id` (`cl_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
---
--- Déchargement des données de la table `molecule_class`
---
-
-INSERT INTO `molecule_class` (`mo_id`, `cl_id`) VALUES
-(1, 1);
-
 -- --------------------------------------------------------
 
 --
@@ -100,13 +79,6 @@ CREATE TABLE IF NOT EXISTS `molecule_property` (
   KEY `pr_id` (`pr_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
---
--- Déchargement des données de la table `molecule_property`
---
-
-INSERT INTO `molecule_property` (`mo_id`, `pr_id`) VALUES
-(1, 1);
-
 -- --------------------------------------------------------
 
 --
@@ -118,14 +90,20 @@ CREATE TABLE IF NOT EXISTS `property` (
   `pr_id` int(11) NOT NULL AUTO_INCREMENT,
   `pr_name` varchar(256) COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`pr_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- --------------------------------------------------------
 
 --
--- Déchargement des données de la table `property`
+-- Structure de la table `system`
 --
 
-INSERT INTO `property` (`pr_id`, `pr_name`) VALUES
-(1, 'faitDormir');
+DROP TABLE IF EXISTS `system`;
+CREATE TABLE IF NOT EXISTS `system` (
+  `sy_version` varchar(16) COLLATE utf8_bin NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+INSERT INTO `system` (`sy_version`) VALUES ('2020-10-18');
 
 --
 -- Contraintes pour les tables déchargées

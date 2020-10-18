@@ -3,7 +3,8 @@ import dotenv from "dotenv";
 
 import apiRouter from "./routes/api.route.js";
 import reactRouter from "./routes/reactRouter.js";
-import db from "./db/database.js";
+import db, {create_database_scheme} from "./db/database.js";
+
 
 dotenv.config();
 
@@ -13,6 +14,7 @@ db.connect((err) => {
     throw err;
   }
 
+  create_database_scheme(db);
   console.log("Connected to database!");
 });
 
