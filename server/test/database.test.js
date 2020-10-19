@@ -74,7 +74,28 @@ describe("Check the database structure", function () {
       name: "molecule_class",
       fields: ["cl_id", "mo_id"],
     },
+    {
+      name: "system",
+      fields: ["sy_version"],
+    },
   ];
+
+  it("Number of table", function (done) {
+    let sql = `SELECT COUNT(table_name) as nbr
+                FROM information_schema.tables 
+                WHERE table_type = 'base table'`;
+
+    db.query(sql, function (err, res) {
+      if (err) throw err;
+      console.log(res[0]["nbr"]);
+      assert.strictEqual(
+        res[0]["nbr"],
+        structure.length,
+        "Incorrect number of tables"
+      );
+      done();
+    });
+  });
 
   for (let table of structure) {
     it(`Table '${table.name}' fields`, function (done) {
