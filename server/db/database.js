@@ -37,6 +37,7 @@ export async function db_connection(err) {
       await update(db_version);
     }
     console.log("Database is ready to use!");
+    db.emit("database_ready");
   });
 }
 
