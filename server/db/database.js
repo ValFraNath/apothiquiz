@@ -8,7 +8,7 @@ const __dirname = path.resolve();
 dotenv.config();
 
 // Be sure to add a new version at the end of this array (it must be sorted)
-const versions = ["2020-10-17", "2020-10-18", "2020-10-19", "2020-10-20"];
+const versions = ["2020-10-18"];
 
 const currentVersion = () => versions[versions.length - 1];
 
@@ -31,7 +31,7 @@ export async function db_connection(err) {
 
   getDatabaseVersion().then(async (db_version) => {
     if (db_version === -1) {
-      await create_database(db);
+      await create_database();
       await update();
     } else {
       await update(db_version);
@@ -118,7 +118,7 @@ export async function update(version = versions[0]) {
 }
 
 /**
- * Execute synchronous query to database
+ * Execute a synchronous query to database
  * @param sql The sql query
  * @return {Promise<unknown>} The result if success, the error otherwise
  */
@@ -128,7 +128,6 @@ async function querySync(sql) {
       if (err) {
         reject(err);
       }
-
       resolve(res);
     });
   });

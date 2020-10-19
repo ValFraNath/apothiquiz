@@ -103,7 +103,7 @@ CREATE TABLE IF NOT EXISTS `system` (
   PRIMARY KEY (`sy_version`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-INSERT INTO `system` (`sy_version`) VALUES ('2020-10-17');
+INSERT INTO `system` (`sy_version`) VALUES ('2020-10-18');
 
 -- --------------------------------------------------------
 
