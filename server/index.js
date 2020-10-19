@@ -16,6 +16,11 @@ app.use(express.static("../client/build/"));
 app.use("/api/v1/", apiRouter);
 app.use("/", reactRouter);
 
-app.listen(PORT, () => console.log(`Server is running on port ${PORT}.`));
+db.on("database_ready", function () {
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}.`);
+    app.emit("app_started");
+  });
+});
 
 export default app;

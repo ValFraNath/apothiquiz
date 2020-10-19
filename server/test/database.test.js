@@ -1,6 +1,10 @@
 import db from "../db/database.js";
 import assert from "assert";
 
+before(function (done) {
+  db.on("database_ready", done);
+});
+
 describe("Create and delete table", function () {
   it("Create table", function (done) {
     let sql = "CREATE TABLE testBasicTable (number INT, string VARCHAR(255))";
