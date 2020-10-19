@@ -3,18 +3,11 @@ import dotenv from "dotenv";
 
 import apiRouter from "./routes/api.route.js";
 import reactRouter from "./routes/reactRouter.js";
-import db from "./db/database.js";
+import db, { db_connection } from "./db/database.js";
 
 dotenv.config();
 
-db.connect((err) => {
-  if (err) {
-    console.error("Can't connect to the database.");
-    throw err;
-  }
-
-  console.log("Connected to database!");
-});
+db.connect(db_connection);
 
 const PORT = process.env.PORT || 5035;
 const app = express();
@@ -23,6 +16,11 @@ app.use(express.static("../client/build/"));
 app.use("/api/v1/", apiRouter);
 app.use("/", reactRouter);
 
-app.listen(PORT, () => console.log(`Server is running on port ${PORT}.`));
+db.on("database_ready", function () {
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}.`);
+    app.emit("app_started");
+  });
+});
 
 export default app;

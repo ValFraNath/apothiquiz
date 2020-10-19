@@ -15,11 +15,12 @@
     "env": {
       "browser": true,
       "node": true,
-      "mocha": true
+      "mocha": true,
+      "es6": true
     },
     "extends": "eslint:recommended",
     "parserOptions": {
-      "ecmaVersion": 2015,
+      "ecmaVersion": 2017,
       "sourceType": "module"
     }
   },
