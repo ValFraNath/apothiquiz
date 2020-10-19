@@ -1,14 +1,15 @@
-import db from "../db/database.js";
 import assert from "assert";
 
-before(function (done) {
-  db.on("database_ready", done);
+import dbConn from "../db/database.js";
+
+before(function waitForDatabaseConnected(done) {
+  dbConn.on("database_ready", done);
 });
 
 describe("Create and delete table", function () {
   it("Create table", function (done) {
     let sql = "CREATE TABLE testBasicTable (number INT, string VARCHAR(255))";
-    db.query(sql, function (err) {
+    dbConn.query(sql, function (err) {
       if (err) throw err;
       done();
     });
@@ -17,7 +18,7 @@ describe("Create and delete table", function () {
   it("Insert into", function (done) {
     let sql =
       "INSERT INTO testBasicTable (number, string) VALUES (2, 'Viva el guacamole'), (-10, 'Y las tortillas')";
-    db.query(sql, function (err) {
+    dbConn.query(sql, function (err) {
       if (err) throw err;
       done();
     });
@@ -25,7 +26,7 @@ describe("Create and delete table", function () {
 
   it("Select from", function (done) {
     let sql = "SELECT * FROM testBasicTable";
-    db.query(sql, function (err, result) {
+    dbConn.query(sql, function (err, result) {
       if (err) throw err;
 
       assert.deepStrictEqual(JSON.parse(JSON.stringify(result)), [
@@ -39,7 +40,7 @@ describe("Create and delete table", function () {
 
   it("Drop table", function (done) {
     let sql = "DROP TABLE testBasicTable";
-    db.query(sql, function (err) {
+    dbConn.query(sql, function (err) {
       if (err) throw err;
       done();
     });
@@ -83,11 +84,11 @@ describe("Check the database structure", function () {
   it("Number of table", function (done) {
     let sql = `SELECT COUNT(table_name) as nbr
                 FROM information_schema.tables 
-                WHERE table_type = 'base table'`;
+                WHERE table_type = 'base table'
+                AND table_schema= '${dbConn.config.database}'`;
 
-    db.query(sql, function (err, res) {
+    dbConn.query(sql, function (err, res) {
       if (err) throw err;
-      console.log(res[0]["nbr"]);
       assert.strictEqual(
         res[0]["nbr"],
         structure.length,
@@ -100,10 +101,11 @@ describe("Check the database structure", function () {
   for (let table of structure) {
     it(`Table '${table.name}' fields`, function (done) {
       let sql = `SELECT *
-                    FROM INFORMATION_SCHEMA.COLUMNS
-                    WHERE TABLE_NAME = '${table.name}'`;
+                  FROM INFORMATION_SCHEMA.COLUMNS
+                  WHERE TABLE_NAME = '${table.name}'
+                  AND table_schema= '${dbConn.config.database}'`;
 
-      db.query(sql, function (err, res) {
+      dbConn.query(sql, function (err, res) {
         if (err) throw err;
         assert(res.length !== 0, `The table '${table.name}' doesn't exist. `);
 

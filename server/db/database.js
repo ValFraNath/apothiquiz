@@ -10,9 +10,9 @@ dotenv.config();
 // Be sure to add a new version at the end of this array (it must be sorted)
 const versions = ["2020-10-18"];
 
-const currentVersion = () => versions[versions.length - 1];
+export const currentVersion = () => versions[versions.length - 1];
 
-const db = mysql.createConnection({
+const dbConn = mysql.createConnection({
   host: process.env.DB_HOST || "localhost",
   user: process.env.DB_USER || "glowing-octo-guacamole",
   password: process.env.DB_PASSWORD || "p@ssword",
@@ -20,7 +20,7 @@ const db = mysql.createConnection({
   multipleStatements: true,
 });
 
-export default db;
+export default dbConn;
 
 export async function db_connection(err) {
   if (err) {
@@ -36,15 +36,16 @@ export async function db_connection(err) {
     } else {
       await update(db_version);
     }
+
+    dbConn.emit("database_ready");
     console.log("Database is ready to use!");
-    db.emit("database_ready");
   });
 }
 
 /**
  * Execute the script of database creation
  */
-export async function create_database() {
+async function create_database() {
   const creationScript = fs
     .readFileSync(path.resolve(__dirname, "db", "create_database.sql"))
     .toString("utf8");
@@ -64,7 +65,7 @@ export async function getDatabaseVersion() {
   let sql = "SELECT sy_version FROM `system`";
 
   return new Promise(function (resolve) {
-    db.query(sql, function (err, res) {
+    dbConn.query(sql, function (err, res) {
       if (err) {
         if (err.code === "ER_NO_SUCH_TABLE") {
           resolve(-1);
@@ -82,7 +83,7 @@ export async function getDatabaseVersion() {
  * Update the database if needed
  * @param {String} version The current database version, if undefined it use the first version
  */
-export async function update(version = versions[0]) {
+async function update(version = versions[0]) {
   if (version === currentVersion()) {
     console.log("Database is up to date!");
     return;
@@ -123,9 +124,9 @@ export async function update(version = versions[0]) {
  * @param sql The sql query
  * @return {Promise<unknown>} The result if success, the error otherwise
  */
-async function querySync(sql) {
+export async function querySync(sql) {
   return new Promise(function (resolve, reject) {
-    db.query(sql, function (err, res) {
+    dbConn.query(sql, function (err, res) {
       if (err) {
         reject(err);
       }

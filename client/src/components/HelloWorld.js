@@ -14,7 +14,10 @@ export default class HelloWorld extends Component {
     axios
       .get(`/api/v1/status`)
       .then((res) => {
-        this.setState({ receivedMessage: res.data });
+        this.setState({
+          serverStatus: res.data.status,
+          currentServerVersion: res.data.db_version,
+        });
       })
       .catch((err) => console.log(err));
   };
@@ -23,8 +26,12 @@ export default class HelloWorld extends Component {
     return (
       <div>
         <button onClick={this.handleButtonClick}>Send request</button>
-        {this.state.receivedMessage !== "" && (
-          <p>Received message : "{this.state.receivedMessage}"</p>
+        {this.state.serverStatus !== "" && (
+          <p>
+            Connection to the server: {this.state.serverStatus}
+            <br />
+            Current server version: {this.state.currentServerVersion}
+          </p>
         )}
       </div>
     );
