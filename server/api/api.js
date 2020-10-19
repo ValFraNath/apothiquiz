@@ -1,5 +1,10 @@
-//import db from "../db/database.js";
+import * as db from "../db/database.js";
 
-export function status(req, res) {
-  res.status(200).json("Hello World!");
+export async function status(req, res) {
+  let response = {
+    status: "online",
+    db_version: await db.getDatabaseVersion(),
+  };
+
+  res.status(200).json(response);
 }
