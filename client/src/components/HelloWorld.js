@@ -15,7 +15,7 @@ export default class HelloWorld extends Component {
       .get(`/api/v1/status`)
       .then((res) => {
         this.setState({
-          receivedMessage: res.data.message,
+          serverStatus: res.data.status,
           currentServerVersion: res.data.db_version,
         });
       })
@@ -26,9 +26,9 @@ export default class HelloWorld extends Component {
     return (
       <div>
         <button onClick={this.handleButtonClick}>Send request</button>
-        {this.state.receivedMessage !== "" && (
+        {this.state.serverStatus !== "" && (
           <p>
-            Received message: "{this.state.receivedMessage}"
+            Connection to the server: {this.state.serverStatus}
             <br />
             Current server version: {this.state.currentServerVersion}
           </p>
