@@ -3,14 +3,11 @@ import dotenv from "dotenv";
 
 import apiRouter from "./routes/api.route.js";
 import reactRouter from "./routes/reactRouter.js";
-import db, {db_connection} from "./db/database.js";
-
-
+import db, { db_connection } from "./db/database.js";
 
 dotenv.config();
 
 db.connect(db_connection);
-
 
 const PORT = process.env.PORT || 5035;
 const app = express();

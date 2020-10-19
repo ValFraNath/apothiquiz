@@ -8,7 +8,6 @@
 -- Version de PHP :  7.2.14
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -100,14 +99,13 @@ CREATE TABLE IF NOT EXISTS `property` (
 
 DROP TABLE IF EXISTS `system`;
 CREATE TABLE IF NOT EXISTS `system` (
-  `sy_version` varchar(16) COLLATE utf8_bin NOT NULL
+  `sy_version` varchar(16) COLLATE utf8_bin NOT NULL,
+  PRIMARY KEY (`sy_version`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 INSERT INTO `system` (`sy_version`) VALUES ('2020-10-17');
 
---
--- Contraintes pour les tables déchargées
---
+-- --------------------------------------------------------
 
 --
 -- Contraintes pour la table `molecule_class`
@@ -115,6 +113,8 @@ INSERT INTO `system` (`sy_version`) VALUES ('2020-10-17');
 ALTER TABLE `molecule_class`
   ADD CONSTRAINT `molecule_class_ibfk_1` FOREIGN KEY (`mo_id`) REFERENCES `molecule` (`mo_ID`),
   ADD CONSTRAINT `molecule_class_ibfk_2` FOREIGN KEY (`cl_id`) REFERENCES `class` (`cl_id`);
+
+-- --------------------------------------------------------
 
 --
 -- Contraintes pour la table `molecule_property`
@@ -127,3 +127,5 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+COMMIT;
