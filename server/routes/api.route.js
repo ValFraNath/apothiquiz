@@ -1,9 +1,9 @@
 import express from "express";
 
+import * as api from "../api/api.js";
+
 const apiRouter = express.Router();
 
-apiRouter.get("/status", function (req, res) {
-  res.status(200).json("Hello World!");
-});
+apiRouter.get("/status", api.status);
 
 export default apiRouter;

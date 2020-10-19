@@ -83,7 +83,8 @@ describe("Check the database structure", function () {
   it("Number of table", function (done) {
     let sql = `SELECT COUNT(table_name) as nbr
                 FROM information_schema.tables 
-                WHERE table_type = 'base table'`;
+                WHERE table_type = 'base table'
+                AND table_schema= '${db.config.database}'`;
 
     db.query(sql, function (err, res) {
       if (err) throw err;
@@ -101,7 +102,8 @@ describe("Check the database structure", function () {
     it(`Table '${table.name}' fields`, function (done) {
       let sql = `SELECT *
                     FROM INFORMATION_SCHEMA.COLUMNS
-                    WHERE TABLE_NAME = '${table.name}'`;
+                    WHERE TABLE_NAME = '${table.name}'
+                    AND table_schema= '${db.config.database}'`;
 
       db.query(sql, function (err, res) {
         if (err) throw err;
