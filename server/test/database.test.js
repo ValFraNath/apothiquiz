@@ -101,9 +101,9 @@ describe("Check the database structure", function () {
   for (let table of structure) {
     it(`Table '${table.name}' fields`, function (done) {
       let sql = `SELECT *
-                    FROM INFORMATION_SCHEMA.COLUMNS
-                    WHERE TABLE_NAME = '${table.name}'
-                    AND table_schema= '${db.config.database}'`;
+                  FROM INFORMATION_SCHEMA.COLUMNS
+                  WHERE TABLE_NAME = '${table.name}'
+                  AND table_schema= '${db.config.database}'`;
 
       db.query(sql, function (err, res) {
         if (err) throw err;
