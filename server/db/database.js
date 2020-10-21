@@ -8,7 +8,7 @@ const __dirname = path.resolve();
 dotenv.config();
 
 // Be sure to add a new version at the end of this array (it must be sorted)
-const versions = ["2020-10-18"];
+const versions = ["2020-10-18", "2020-10-21"];
 
 export const currentVersion = () => versions[versions.length - 1];
 
