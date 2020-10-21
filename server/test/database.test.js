@@ -50,13 +50,7 @@ describe("Check the database structure", function () {
   let structure = [
     {
       name: "molecule",
-      fields: [
-        "mo_ID",
-        "mo_name",
-        "mo_dci",
-        "mo_difficulty",
-        "mo_skeletal_formula",
-      ],
+      fields: ["mo_ID", "mo_dci", "mo_difficulty", "mo_skeletal_formula"],
     },
     {
       name: "class",
@@ -87,7 +81,6 @@ describe("Check the database structure", function () {
 
     db.query(sql, function (err, res) {
       if (err) throw err;
-      console.log(res[0]["nbr"]);
       assert.strictEqual(
         res[0]["nbr"],
         structure.length,
