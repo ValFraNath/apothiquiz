@@ -2,7 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 
 import apiRouter from "./routes/api.route.js";
-import reactRouter from "./routes/reactRouter.js";
+import reactRouter from "./routes/react.route.js";
 import dbConn, { db_connection } from "./db/database.js";
 
 dotenv.config();
