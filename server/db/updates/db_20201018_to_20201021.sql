@@ -1,5 +1,3 @@
-START TRANSACTION;
-
 ALTER TABLE `molecule`
 DROP COLUMN `mo_name`;
 
