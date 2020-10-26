@@ -1,6 +1,6 @@
 import assert from "assert";
 
-import dbConn from "../db/database.js";
+import { default as dbConn, generateQuestion } from "../db/database.js";
 
 before(function waitForDatabaseConnected(done) {
   dbConn.on("database_ready", done);
@@ -121,8 +121,6 @@ describe("Check the database structure", function () {
     });
   }
 });
-
-import { generateQuestion } from "../api/question.js";
 
 describe("Question generation", function () {
   it("Question type 1", function (done) {

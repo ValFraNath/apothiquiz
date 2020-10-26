@@ -3,6 +3,8 @@ import dotenv from "dotenv";
 import fs from "fs";
 import path from "path";
 
+import * as questions from "./question.js";
+
 const __dirname = path.resolve();
 
 dotenv.config();
@@ -40,6 +42,14 @@ export async function db_connection(err) {
     dbConn.emit("database_ready");
     console.log("Database is ready to use!");
   });
+}
+
+export async function generateQuestion(type) {
+  switch (type) {
+    case 1: {
+      return await questions.generateQuestionType1();
+    }
+  }
 }
 
 /**
