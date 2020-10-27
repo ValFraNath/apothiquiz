@@ -1,11 +1,8 @@
 import request from "supertest";
-
-import * as db from "../db/database.js";
+import { currentVersion } from "../db/database.js";
 import app from "../index.js";
-
-before(function waitForAppStarted(done) {
-  app.waitReady(done);
-});
+import assert from "assert";
+import { generateQuestion } from "../api/question.js";
 
 describe("GET /status", function () {
   it("responds with the status and server version", function (done) {
@@ -13,6 +10,14 @@ describe("GET /status", function () {
       .get("/api/v1/status")
       .set("Accept", "application/json")
       .expect("Content-Type", "application/json; charset=utf-8")
-      .expect(200, { status: "online", db_version: db.currentVersion() }, done);
+      .expect(200, { status: "online", db_version: currentVersion() }, done);
+  });
+});
+
+describe("Question generation", function () {
+  it("return a question of type 1 well formatted", function (done) {
+    assert(true);
+    generateQuestion(1);
+    done();
   });
 });

@@ -124,7 +124,7 @@ async function update(version = versions[0]) {
 /**
  * Execute a query to database and return a Promise
  * @param sql The sql query
- * @return {Promise<unknown>} The result if success, the error otherwise
+ * @return {Promise<Array>} The result if success, the error otherwise
  */
 export async function queryPromise(sql) {
   return new Promise(function (resolve, reject) {
@@ -135,4 +135,18 @@ export async function queryPromise(sql) {
       resolve(res);
     });
   });
+}
+
+export async function insertData() {
+  console.log("Insert data in database...");
+  const data = fs
+    .readFileSync(path.resolve(__dirname, "db", "insert_data.sql"))
+    .toString("utf8");
+  await queryPromise(data)
+    .then(() => {
+      console.log("->Data inserted in database!");
+    })
+    .catch((err) => {
+      throw err;
+    });
 }
