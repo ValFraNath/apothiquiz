@@ -1,23 +1,9 @@
-import React, { Component } from "react";
+import React from "react";
 
-export default class InstallApp extends Component {
-  constructor(props) {
-    super(props);
+const InstallApp = ({ installPromptEvent }) => (
+  <button id="installButton" onClick={() => installPromptEvent.prompt()}>
+    Install Guacamole
+  </button>
+);
 
-    this.state = {};
-  }
-
-  handleClick = () => {
-    this.props.installPrompt.prompt();
-  };
-
-  render() {
-    return (
-      <div>
-        <button id="installButton" onClick={this.handleClick}>
-          Install this app and become a medical expert!
-        </button>
-      </div>
-    );
-  }
-}
+export default InstallApp;
