@@ -1,11 +1,5 @@
 import assert from "assert";
-
 import dbConn from "../db/database.js";
-import app from "../index.js";
-
-before(function waitForDatabaseConnected(done) {
-  app.waitReady(done);
-});
 
 describe("Create and delete table", function () {
   it("Create table", function (done) {
