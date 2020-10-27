@@ -4,7 +4,7 @@ import * as db from "../db/database.js";
 import app from "../index.js";
 
 before(function waitForAppStarted(done) {
-  app.on("app_started", done);
+  app.waitReady(done);
 });
 
 describe("GET /status", function () {
