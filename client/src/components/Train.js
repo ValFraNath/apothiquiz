@@ -38,17 +38,17 @@ class Train extends Component {
     const introductionView = (
       <>
         <h1>Mode entraînement</h1>
-        <p>Une série de questions</p>
+        <p id="about">Répondez à une série de questions aléatoire.</p>
         <button onClick={this.getNewQuestion}>Lancer l'entraînement</button>
       </>
     );
 
     return (
-      <div>
+      <main id="quiz">
         { this.state.questionNumber === 0 ?
           introductionView :
           <>
-            <h2>Question n°{questionNumber}</h2>
+            <h2>Question {questionNumber}</h2>
             <h1>{question.subject}</h1>
 
             <p id="question-timer">{time} s</p>
@@ -63,7 +63,7 @@ class Train extends Component {
 
           </>
         }
-      </div>
+      </main>
     );
   }
 }

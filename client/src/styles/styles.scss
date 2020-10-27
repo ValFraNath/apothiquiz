@@ -1,2 +1,10 @@
 @import "base/reset";
+
+@import "components/buttons";
+
 @import "layouts/App";
+@import "layouts/quiz";
+
+body {
+  font-family: sans-serif;
+}
