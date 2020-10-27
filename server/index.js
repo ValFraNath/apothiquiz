@@ -24,8 +24,6 @@ dbConn.on("database_ready", function () {
 
 dbConn.connect(db_connection);
 
-export default app;
-
 /**
  * Check every <interval> ms if the server is ready to use
  * @param callback  The function to call when the server is ready
@@ -39,3 +37,5 @@ app.waitReady = function (callback, interval = 100) {
     }
   }, interval);
 };
+
+export default app;
