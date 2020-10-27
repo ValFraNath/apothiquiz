@@ -8,7 +8,7 @@ const __dirname = path.resolve();
 dotenv.config();
 
 // Be sure to add a new version at the end of this array (it must be sorted)
-const versions = ["2020-10-18", "2020-10-21"];
+const versions = ["2020-10-18", "2020-10-21", "2020-10-27"];
 
 export const currentVersion = () => versions[versions.length - 1];
 
@@ -21,6 +21,7 @@ const dbConn = mysql.createConnection({
 });
 
 export default dbConn;
+dbConn.isReady = false;
 
 export async function db_connection(err) {
   if (err) {
@@ -37,6 +38,7 @@ export async function db_connection(err) {
       await update(db_version);
     }
 
+    dbConn.isReady = true;
     dbConn.emit("database_ready");
     console.log("Database is ready to use!");
   });

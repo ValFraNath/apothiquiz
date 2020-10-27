@@ -1,9 +1,10 @@
 import assert from "assert";
 
 import dbConn from "../db/database.js";
+import app from "../index.js";
 
 before(function waitForDatabaseConnected(done) {
-  dbConn.on("database_ready", done);
+  app.waitReady(done);
 });
 
 describe("Create and delete table", function () {
@@ -51,7 +52,7 @@ describe("Check the database structure", function () {
   let structure = [
     {
       name: "molecule",
-      fields: ["mo_ID", "mo_dci", "mo_difficulty", "mo_skeletal_formula"],
+      fields: ["mo_id", "mo_dci", "mo_difficulty", "mo_skeletal_formula"],
     },
     {
       name: "class",
