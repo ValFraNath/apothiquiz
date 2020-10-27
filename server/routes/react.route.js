@@ -10,4 +10,6 @@ reactRouter.get("/", goToReactIndex);
 
 reactRouter.get("/hello_world", goToReactIndex);
 
+reactRouter.get("/train", goToReactIndex);
+
 export default reactRouter;
