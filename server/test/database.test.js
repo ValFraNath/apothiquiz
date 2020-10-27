@@ -122,13 +122,3 @@ describe("Check the database structure", function () {
     });
   }
 });
-
-import { generateQuestion } from "../api/question.js";
-
-describe("Question generation", function () {
-  it("Question type 1", function (done) {
-    assert(true);
-    generateQuestion(1);
-    done();
-  });
-});

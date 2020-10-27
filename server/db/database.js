@@ -52,7 +52,7 @@ async function create_database() {
     .readFileSync(path.resolve(__dirname, "db", "create_database.sql"))
     .toString("utf8");
   console.log("Creation of database... ");
-  await querySync(creationScript)
+  await queryPromise(creationScript)
     .then(() => console.log("->Database created!\n"))
     .catch((err) => {
       throw err;
@@ -113,7 +113,7 @@ async function update(version = versions[0]) {
       `Update database from ${versions[i - 1]} to ${versions[i]}... `
     );
 
-    await querySync(updateQuery)
+    await queryPromise(updateQuery)
       .then(() => console.log("->Database updated!\n"))
       .catch((err) => {
         throw err;
@@ -122,11 +122,11 @@ async function update(version = versions[0]) {
 }
 
 /**
- * Execute a synchronous query to database
+ * Execute a query to database and return a Promise
  * @param sql The sql query
  * @return {Promise<unknown>} The result if success, the error otherwise
  */
-export async function querySync(sql) {
+export async function queryPromise(sql) {
   return new Promise(function (resolve, reject) {
     dbConn.query(sql, function (err, res) {
       if (err) {

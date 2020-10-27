@@ -1,4 +1,4 @@
-import { querySync } from "../db/database.js";
+import { queryPromise } from "../db/database.js";
 
 export async function generateQuestion(type) {
   switch (type) {
@@ -13,8 +13,7 @@ async function generateQuestionType1() {
                       FROM class
                       ORDER BY RAND() 
                       LIMIT 1);
-                      
-                      SELECT * FROM molecule;
+                    
                           
                     SELECT cl_name, cl_id
                         FROM class
@@ -32,9 +31,11 @@ async function generateQuestionType1() {
                         ORDER BY RAND()
                         LIMIT 1;`;
 
-  await querySync(script)
+  queryPromise(script)
     .then((res) => {
-      console.log(res);
+      console.table(res[1]);
+      console.table(res[2]);
+      console.table(res[3]);
     })
     .catch((error) => {
       throw error;
