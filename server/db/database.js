@@ -21,6 +21,7 @@ const dbConn = mysql.createConnection({
 });
 
 export default dbConn;
+dbConn.isReady = false;
 
 export async function db_connection(err) {
   if (err) {
@@ -37,7 +38,7 @@ export async function db_connection(err) {
       await update(db_version);
     }
 
-    dbConn.emit("database_ready");
+    dbConn.isReady = true;
     console.log("Database is ready to use!");
   });
 }
