@@ -23,6 +23,9 @@ const dbConn = mysql.createConnection({
 export default dbConn;
 dbConn.isReady = false;
 
+/**
+ * Connect the server to the database
+ */
 export async function db_connection(err) {
   if (err) {
     console.error("Can't connect to the database.");

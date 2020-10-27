@@ -15,22 +15,22 @@ import { queryPromise } from "../db/database.js";
  */
 export async function generateQuestion(req, res) {
   let type = Number(req.params.type);
-  let func;
+  let generator;
   switch (type) {
     case 1: {
-      func = generateQuestionType1;
+      generator = generateQuestionType1;
       break;
     }
     default: {
-      func = null;
+      generator = null;
     }
   }
-  if (func === null) {
+  if (generator === null) {
     res.status(404).json({ error: "Incorrect type of question" });
     return;
   }
 
-  func()
+  generator()
     .then((question) => {
       res.status(200).json({ question });
     })
