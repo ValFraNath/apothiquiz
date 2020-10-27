@@ -39,6 +39,7 @@ export async function db_connection(err) {
     }
 
     dbConn.isReady = true;
+    dbConn.emit("database_ready");
     console.log("Database is ready to use!");
   });
 }

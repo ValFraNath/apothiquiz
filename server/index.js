@@ -7,8 +7,6 @@ import dbConn, { db_connection } from "./db/database.js";
 
 dotenv.config();
 
-dbConn.connect(db_connection);
-
 const PORT = process.env.PORT || 5035;
 const app = express();
 app.isReady = false;
@@ -17,10 +15,14 @@ app.use(express.static("../client/build/"));
 app.use("/api/v1/", apiRouter);
 app.use("/", reactRouter);
 
-app.listen(PORT, () => {
-  app.isReady = true;
-  console.log(`Server is running on port ${PORT}.`);
+dbConn.on("database_ready", function () {
+  app.listen(PORT, () => {
+    app.isReady = true;
+    console.log(`Server is running on port ${PORT}.`);
+  });
 });
+
+dbConn.connect(db_connection);
 
 export default app;
 
