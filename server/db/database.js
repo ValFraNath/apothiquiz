@@ -136,17 +136,3 @@ export async function queryPromise(sql) {
     });
   });
 }
-
-export async function insertData() {
-  console.log("Insert data in database...");
-  const data = fs
-    .readFileSync(path.resolve(__dirname, "db", "insert_data.sql"))
-    .toString("utf8");
-  await queryPromise(data)
-    .then(() => {
-      console.log("->Data inserted in database!");
-    })
-    .catch((err) => {
-      throw err;
-    });
-}
