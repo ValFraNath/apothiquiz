@@ -30,13 +30,12 @@ class Train extends Component {
     this.setState({
       question: newQuestion,
       questionNumber: this.state.questionNumber + 1,
-      answers: newAnswers,
-      time: 5
+      answers: newAnswers
     });
   }
 
   render() {
-    const { question, answers, questionNumber, time } = this.state;
+    const { question, answers, questionNumber } = this.state;
     const introductionView = (
       <>
         <h1>Mode entraînement</h1>
