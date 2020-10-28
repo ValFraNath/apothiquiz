@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 
 import Timer from "./Timer";
+import AnswerBtn from "./AnswerBtn";
 
 class Train extends Component {
   constructor(props) {
@@ -8,7 +9,8 @@ class Train extends Component {
     this.state = {
       question: {},
       questionNumber: 0,
-      inProgress: false
+      inProgress: false,
+      timer: 0
     };
   }
 
@@ -27,7 +29,8 @@ class Train extends Component {
     this.setState({
       question: newQuestion,
       questionNumber: this.state.questionNumber + 1,
-      inProgress: true
+      inProgress: true,
+      timer: 10
     });
   };
 
@@ -45,12 +48,17 @@ class Train extends Component {
     return text;
   }
 
-  updateInProgress = () => {
-    this.setState({ inProgress: false });
+  updateTimerValue = (value) => {
+    this.setState({ timer: value });
   };
 
+  handleAnswerClick = () => {
+    console.log('click');
+    this.setState({ inProgress: false });
+  }
+
   render() {
-    const { question, questionNumber, inProgress } = this.state;
+    const { question, questionNumber, timer, inProgress } = this.state;
     const introductionView = (
       <>
         <h1>Mode entraînement</h1>
@@ -67,12 +75,17 @@ class Train extends Component {
             <h2>Question {questionNumber}</h2>
             <h1>{this.generateQuestionText()}</h1>
 
-            <Timer duration={10} stopTimer={this.updateInProgress} />
+            <Timer duration={timer} updateParent={this.updateTimerValue} />
 
-            <div id="question-answers">
-              {
-                [question.goodAnswer, ...question.badAnswers].map((value, index) => (
-                  <button key={index}>{value}</button>
+            <div id="quiz-answers">
+              { [question.goodAnswer, ...question.badAnswers].map((value, index) => (
+                  <AnswerBtn
+                    key={index}
+                    value={value}
+                    isRight={value === question.goodAnswer}
+                    showResult={!inProgress}
+                    onClick={this.handleAnswerClick}
+                  />
                 ))
               }
             </div>

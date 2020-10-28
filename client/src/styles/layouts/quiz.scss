@@ -16,4 +16,16 @@
     text-align: center;
   }
 
+  #quiz-answers {
+    .good-answer {
+      color: green;
+      border: 1px solid green;
+    }
+
+    .bad-answer {
+      color: red;
+      border: 1px solid red;
+    }
+  }
+
 }
