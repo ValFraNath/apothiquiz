@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 
+import Timer from "./Timer";
+
 class Train extends Component {
   constructor(props) {
     super(props);
@@ -51,7 +53,7 @@ class Train extends Component {
             <h2>Question {questionNumber}</h2>
             <h1>{question.subject}</h1>
 
-            <p id="question-timer">{time} s</p>
+            <Timer duration={10} />
 
             <div id="question-answers">
               {
@@ -60,7 +62,6 @@ class Train extends Component {
                 ))
               }
             </div>
-
           </>
         }
       </main>
