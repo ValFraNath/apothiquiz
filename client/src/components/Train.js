@@ -7,9 +7,8 @@ class Train extends Component {
     super(props);
     this.state = {
       question: {},
-      answers: [],
       questionNumber: 0,
-      time: null
+      inProgress: false
     };
   }
 
@@ -25,17 +24,33 @@ class Train extends Component {
       ]
     };
 
-    const newAnswers = [newQuestion.goodAnswer, ...newQuestion.badAnswers];
-
     this.setState({
       question: newQuestion,
       questionNumber: this.state.questionNumber + 1,
-      answers: newAnswers
+      inProgress: true
     });
+  };
+
+  generateQuestionText() {
+    const { type, subject } = this.state.question;
+    let text;
+    switch (type) {
+      case 1:
+        text = "Quelle molécule fait partie de la classe \"" + subject + "\" ?";
+        break;
+      default:
+        text = "Erreur : type de question invalide.";
+    }
+
+    return text;
   }
 
+  updateInProgress = () => {
+    this.setState({ inProgress: false });
+  };
+
   render() {
-    const { question, answers, questionNumber } = this.state;
+    const { question, questionNumber, inProgress } = this.state;
     const introductionView = (
       <>
         <h1>Mode entraînement</h1>
@@ -46,21 +61,25 @@ class Train extends Component {
 
     return (
       <main id="quiz">
-        { this.state.questionNumber === 0 ?
+        { questionNumber === 0 ?
           introductionView :
           <>
             <h2>Question {questionNumber}</h2>
-            <h1>{question.subject}</h1>
+            <h1>{this.generateQuestionText()}</h1>
 
-            <Timer duration={10} />
+            <Timer duration={10} stopTimer={this.updateInProgress} />
 
             <div id="question-answers">
               {
-                answers.map((value, index) => (
+                [question.goodAnswer, ...question.badAnswers].map((value, index) => (
                   <button key={index}>{value}</button>
                 ))
               }
             </div>
+
+            { !inProgress &&
+              <button onClick={this.getNewQuestion}>Question suivante</button>
+            }
           </>
         }
       </main>
