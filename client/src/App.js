@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
 import "./styles/styles.scss";
 import HelloWorld from "./components/HelloWorld";
 import InstallApp from "./components/InstallApp";
+import OfflineBanner from "./components/OfflineBanner";
 
 export default class App extends Component {
   constructor(props) {
@@ -27,6 +28,7 @@ export default class App extends Component {
   render() {
     return (
       <Router>
+        <OfflineBanner />
         <Switch>
           <Route path="/" exact>
             <Link to="/hello_world">Go to Hello World</Link>
