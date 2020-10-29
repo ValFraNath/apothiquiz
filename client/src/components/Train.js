@@ -2,37 +2,39 @@ import React, { Component } from "react";
 import axios from "axios";
 
 import Timer from "./Timer";
-import AnswerBtn from "./AnswerBtn";
+import Answers from "./Answers";
 
 class Train extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      question: {},
       questionNumber: 0,
+      question: {},
       inProgress: false,
       timer: 0,
       result: {
         good: 0,
-        bad: 0
-      }
+        bad: 0,
+      },
     };
   }
 
-  getNewQuestion = () => {
-    const minId = 1, maxId = 1;
-    const questionType = Math.floor(Math.random() * (maxId - minId) ) + minId;
+  getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min)) + min;
+  }
 
+  getNewQuestion = () => {
+    const minQuestionType = 1, maxQuestionType = 1;
     axios
-      .get("/api/v1/question/" + questionType)
-      .then(res => {
+      .get("/api/v1/question/" + this.getRandomInt(minQuestionType, maxQuestionType))
+      .then((res) => {
         this.setState({
           question: res.data.question,
           questionNumber: this.state.questionNumber + 1,
           inProgress: true,
-          timer: 10
+          timer: 10,
         });
-      });
+    });
   };
 
   generateQuestionText() {
@@ -40,7 +42,7 @@ class Train extends Component {
     let text;
     switch (type) {
       case 1:
-        text = "Quelle molécule fait partie de la classe \"" + subject + "\" ?";
+        text = 'Quelle molécule fait partie de la classe "' + subject + '" ?';
         break;
       default:
         text = "Erreur : type de question invalide.";
@@ -57,7 +59,7 @@ class Train extends Component {
     }
     this.setState({
       inProgress: inProgress,
-      timer: timer - 1
+      timer: timer - 1,
     });
   };
 
@@ -75,8 +77,8 @@ class Train extends Component {
       inProgress: false,
       result: {
         good: result.good + goodPoint,
-        bad: result.bad + badPoint
-      }
+        bad: result.bad + badPoint,
+      },
     });
   };
 
@@ -92,36 +94,33 @@ class Train extends Component {
 
     return (
       <main id="quiz">
-        { questionNumber === 0 ?
-          introductionView :
+        {questionNumber === 0 ? (
+          introductionView
+        ) : (
           <>
-            <section id="score">
+            <div id="quiz-score">
               <p id="good-score">{result.good} bonnes réponses</p>
               <p id="bad-score">{result.bad} mauvaises réponses</p>
-            </section>
-            <h2>Question {questionNumber}</h2>
-            <h1>{this.generateQuestionText()}</h1>
-
-            <Timer inProgress={inProgress} duration={timer} updateParent={this.updateTimerValue} />
-
-            <div id="quiz-answers">
-              { [question.goodAnswer, ...question.badAnswers].map((value, index) => (
-                  <AnswerBtn
-                    key={index}
-                    value={value}
-                    isRight={value === question.goodAnswer}
-                    showResult={!inProgress}
-                    onClick={this.handleAnswerClick}
-                  />
-                ))
-              }
             </div>
 
-            { !inProgress &&
+            <div id="quiz-question">
+              <h2>Question {questionNumber}</h2>
+              <h1>{this.generateQuestionText()}</h1>
+
+              <Timer
+                inProgress={inProgress}
+                duration={timer}
+                updateParent={this.updateTimerValue}
+              />
+            </div>
+
+            <Answers inProgress={inProgress} goodAnswer={question.goodAnswer} badAnswers={question.badAnswers} onClick={this.handleAnswerClick} />
+
+            {!inProgress && (
               <button onClick={this.getNewQuestion}>Question suivante</button>
-            }
+            )}
           </>
-        }
+        )}
       </main>
     );
   }

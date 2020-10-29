@@ -18,7 +18,7 @@ const Timer = ({ inProgress, duration, updateParent }) => {
 Timer.propTypes = {
   inProgress: PropTypes.bool.isRequired,
   duration: PropTypes.number.isRequired,
-  updateParent: PropTypes.func.isRequired
+  updateParent: PropTypes.func.isRequired,
 };
 
 export default Timer;
