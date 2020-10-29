@@ -5,7 +5,7 @@ const AnswerBtn = ({value, isRight, showResult, onClick}) => {
   if (showResult) {
     classBtn = isRight ? "good-answer" : "bad-answer";
   }
-  return <button id="quiz-answer" className={classBtn} onClick={onClick}>{value}</button>;
+  return <button id="quiz-answer" className={classBtn} onClick={() => onClick(isRight)}>{value}</button>;
 };
 
 export default AnswerBtn;

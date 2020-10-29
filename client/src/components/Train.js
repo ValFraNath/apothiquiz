@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import axios from "axios";
 
 import Timer from "./Timer";
 import AnswerBtn from "./AnswerBtn";
@@ -10,28 +11,28 @@ class Train extends Component {
       question: {},
       questionNumber: 0,
       inProgress: false,
-      timer: 0
+      timer: 0,
+      result: {
+        good: 0,
+        bad: 0
+      }
     };
   }
 
   getNewQuestion = () => {
-    const newQuestion = {
-      type: 1,
-      subject: "heprès",
-      goodAnswer: "valganciclovir",
-      badAnswers: [
-        "zidovudine",
-        "efavirenz",
-        "lamotrigine"
-      ]
-    };
+    const minId = 1, maxId = 1;
+    const questionType = Math.floor(Math.random() * (maxId - minId) ) + minId;
 
-    this.setState({
-      question: newQuestion,
-      questionNumber: this.state.questionNumber + 1,
-      inProgress: true,
-      timer: 10
-    });
+    axios
+      .get("/api/v1/question/" + questionType)
+      .then(res => {
+        this.setState({
+          question: res.data.question,
+          questionNumber: this.state.questionNumber + 1,
+          inProgress: true,
+          timer: 10
+        });
+      });
   };
 
   generateQuestionText() {
@@ -48,17 +49,39 @@ class Train extends Component {
     return text;
   }
 
-  updateTimerValue = (value) => {
-    this.setState({ timer: value });
+  updateTimerValue = () => {
+    let { inProgress, timer } = this.state;
+
+    if (timer - 1 === 0) {
+      inProgress = false;
+    }
+    this.setState({
+      inProgress: inProgress,
+      timer: timer - 1
+    });
   };
 
-  handleAnswerClick = () => {
-    console.log('click');
-    this.setState({ inProgress: false });
-  }
+  handleAnswerClick = (isRightAnswer) => {
+    if (!this.state.inProgress) {
+      return;
+    }
+
+    const result = this.state.result;
+
+    const goodPoint = isRightAnswer ? 1 : 0;
+    const badPoint = 1 - goodPoint;
+
+    this.setState({
+      inProgress: false,
+      result: {
+        good: result.good + goodPoint,
+        bad: result.bad + badPoint
+      }
+    });
+  };
 
   render() {
-    const { question, questionNumber, timer, inProgress } = this.state;
+    const { question, questionNumber, inProgress, timer, result } = this.state;
     const introductionView = (
       <>
         <h1>Mode entraînement</h1>
@@ -72,10 +95,14 @@ class Train extends Component {
         { questionNumber === 0 ?
           introductionView :
           <>
+            <section id="score">
+              <p id="good-score">{result.good} bonnes réponses</p>
+              <p id="bad-score">{result.bad} mauvaises réponses</p>
+            </section>
             <h2>Question {questionNumber}</h2>
             <h1>{this.generateQuestionText()}</h1>
 
-            <Timer duration={timer} updateParent={this.updateTimerValue} />
+            <Timer inProgress={inProgress} duration={timer} updateParent={this.updateTimerValue} />
 
             <div id="quiz-answers">
               { [question.goodAnswer, ...question.badAnswers].map((value, index) => (

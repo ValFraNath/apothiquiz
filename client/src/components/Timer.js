@@ -1,25 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import PropTypes from "proptypes";
 
-const Timer = ({ duration, updateParent }) => {
-  const [time, setTime] = useState(duration);
-
+const Timer = ({ inProgress, duration, updateParent }) => {
   useEffect(() => {
-    updateParent(time);
-
-    if (time === 0) {
+    if (!inProgress || duration === 0) {
       return;
     }
 
     setTimeout(() => {
-      setTime(time - 1);
+      updateParent();
     }, 1000);
-  }, [time, updateParent]);
+  }, [inProgress, duration, updateParent]);
 
-  return <p>{time} s</p>;
+  return <p>{duration} s</p>;
 };
 
 Timer.propTypes = {
+  inProgress: PropTypes.bool.isRequired,
   duration: PropTypes.number.isRequired,
   updateParent: PropTypes.func.isRequired
 };
