@@ -1,39 +1,29 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 
-class OfflineBanner extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isOnline: true,
+const OfflineBanner = () => {
+  const [isOnline, setOnline] = useState(true);
+
+  useEffect(() => {
+    function updateOnlineStatus() {
+      setOnline(navigator.onLine);
+    }
+
+    window.addEventListener("online", updateOnlineStatus);
+    window.addEventListener("offline", updateOnlineStatus);
+    document.addEventListener("DOMContentLoaded", updateOnlineStatus);
+
+    return () => {
+      window.removeEventListener("online", updateOnlineStatus);
+      window.removeEventListener("offline", updateOnlineStatus);
+      document.removeEventListener("DOMContentLoaded", updateOnlineStatus);
     };
-  }
+  });
 
-  updateOnlineStatus = () => {
-    this.setState({
-      isOnline: navigator.onLine,
-    });
-  };
-
-  componentDidMount() {
-    window.addEventListener("online", this.updateOnlineStatus);
-    window.addEventListener("offline", this.updateOnlineStatus);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener("online", this.updateOnlineStatus);
-    window.removeEventListener("offline", this.updateOnlineStatus);
-  }
-
-  render() {
-    return (
-      <aside
-        id={"offlineBanner"}
-        className={this.state.isOnline ? "online" : "offline"}
-      >
-        {this.state.isOnline ? "ONLINE" : "OFFLINE"}
-      </aside>
-    );
-  }
-}
+  return (
+    <aside id={"offlineBanner"} className={isOnline ? "online" : "offline"}>
+      {isOnline ? "ONLINE" : "OFFLINE"}
+    </aside>
+  );
+};
 
 export default OfflineBanner;
