@@ -38,6 +38,7 @@ class Train extends Component {
           questionNumber: this.state.questionNumber + 1,
           inProgress: true,
           timer: 10,
+          error: null,
         });
       })
       .catch(() =>
