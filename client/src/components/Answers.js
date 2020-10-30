@@ -21,7 +21,7 @@ AnswerBtn.propTypes = {
   value: PropTypes.string.isRequired,
   isRight: PropTypes.bool.isRequired,
   showResult: PropTypes.bool.isRequired,
-  onClick: PropTypes.func.isRequired
+  onClick: PropTypes.func.isRequired,
 };
 
 const Answers = ({ inProgress, goodAnswer, badAnswers, onClick }) => {
@@ -37,11 +37,15 @@ const Answers = ({ inProgress, goodAnswer, badAnswers, onClick }) => {
 
   return (
     <div id="quiz-answers">
-      { arrayOfAnswers.map(
-        (value, index) => (
-          <AnswerBtn key={index} value={value} isRight={value === goodAnswer} showResult={!inProgress} onClick={onClick} />
-        )
-      )}
+      {arrayOfAnswers.map((value, index) => (
+        <AnswerBtn
+          key={index}
+          value={value}
+          isRight={value === goodAnswer}
+          showResult={!inProgress}
+          onClick={onClick}
+        />
+      ))}
     </div>
   );
 };
@@ -50,7 +54,7 @@ Answers.propTypes = {
   inProgress: PropTypes.bool.isRequired,
   goodAnswer: PropTypes.string.isRequired,
   badAnswers: PropTypes.arrayOf(PropTypes.string).isRequired,
-  onClick: PropTypes.func.isRequired
+  onClick: PropTypes.func.isRequired,
 };
 
 export default Answers;

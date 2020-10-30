@@ -23,8 +23,11 @@ class Train extends Component {
    * Get a new question (random type) from the server
    */
   getNewQuestion = () => {
-    const minQuestionType = 1, maxQuestionType = 1;
-    const questionType = Math.floor(Math.random() * (maxQuestionType - minQuestionType)) + minQuestionType;
+    const minQuestionType = 1,
+      maxQuestionType = 1;
+    const questionType =
+      Math.floor(Math.random() * (maxQuestionType - minQuestionType)) +
+      minQuestionType;
     axios
       .get("/api/v1/question/" + questionType)
       .then((res) => {
@@ -35,7 +38,7 @@ class Train extends Component {
           timer: 10,
         });
       })
-      .catch(err => console.error(err));
+      .catch((err) => console.error(err));
   };
 
   /**
@@ -130,7 +133,12 @@ class Train extends Component {
               updateParent={this.updateTimerValue}
             />
 
-            <Answers inProgress={inProgress} goodAnswer={question.goodAnswer} badAnswers={question.badAnswers} onClick={this.handleAnswerClick} />
+            <Answers
+              inProgress={inProgress}
+              goodAnswer={question.goodAnswer}
+              badAnswers={question.badAnswers}
+              onClick={this.handleAnswerClick}
+            />
 
             {!inProgress && (
               <button onClick={this.getNewQuestion}>Question suivante</button>
