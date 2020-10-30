@@ -7,17 +7,15 @@ const OfflineBanner = () => {
     function updateOnlineStatus() {
       setOnline(navigator.onLine);
     }
-
+    updateOnlineStatus();
     window.addEventListener("online", updateOnlineStatus);
     window.addEventListener("offline", updateOnlineStatus);
-    document.addEventListener("DOMContentLoaded", updateOnlineStatus);
 
     return () => {
       window.removeEventListener("online", updateOnlineStatus);
       window.removeEventListener("offline", updateOnlineStatus);
-      document.removeEventListener("DOMContentLoaded", updateOnlineStatus);
     };
-  });
+  }, []);
 
   return (
     <aside id={"offlineBanner"} className={isOnline ? "online" : "offline"}>
