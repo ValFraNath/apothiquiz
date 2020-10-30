@@ -1,0 +1,15 @@
+#offlineBanner {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 10px;
+  background-color: white;
+
+  &.online {
+    color: green;
+  }
+
+  &.offline {
+    color: red;
+  }
+}
