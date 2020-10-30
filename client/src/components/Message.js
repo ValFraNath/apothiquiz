@@ -29,13 +29,8 @@ const Message = ({ type, content }) => {
 };
 
 Message.propTypes = {
-  type: PropTypes.oneOf([
-    "success",
-    "info",
-    "warning",
-    "error"
-  ]).isRequired,
-  content: PropTypes.string.isRequired
+  type: PropTypes.oneOf(["success", "info", "warning", "error"]).isRequired,
+  content: PropTypes.string.isRequired,
 };
 
 export default Message;

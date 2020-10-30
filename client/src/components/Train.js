@@ -17,7 +17,7 @@ class Train extends Component {
         good: 0,
         bad: 0,
       },
-      error: null
+      error: null,
     };
   }
 
@@ -40,8 +40,10 @@ class Train extends Component {
           timer: 10,
         });
       })
-      .catch(
-        () => this.setState({ error: "Impossible de récupérer les données depuis le serveur." })
+      .catch(() =>
+        this.setState({
+          error: "Impossible de récupérer les données depuis le serveur.",
+        })
       );
   };
 
@@ -92,7 +94,9 @@ class Train extends Component {
     }
 
     const result = this.state.result;
-    const {goodPoint, badPoint} = isRightAnswer ? {goodPoint: 1, badPoint: 0} : {goodPoint: 0, badPoint: 1};
+    const { goodPoint, badPoint } = isRightAnswer
+      ? { goodPoint: 1, badPoint: 0 }
+      : { goodPoint: 0, badPoint: 1 };
     this.setState({
       inProgress: false,
       result: {
@@ -103,7 +107,14 @@ class Train extends Component {
   };
 
   render() {
-    const { question, questionNumber, inProgress, timer, result, error } = this.state;
+    const {
+      question,
+      questionNumber,
+      inProgress,
+      timer,
+      result,
+      error,
+    } = this.state;
     const introductionView = (
       <>
         <h1>Mode entraînement</h1>
@@ -114,9 +125,7 @@ class Train extends Component {
 
     return (
       <main id="quiz">
-        { error !== null &&
-          <Message type="error" content={error} />
-        }
+        {error !== null && <Message type="error" content={error} />}
         {questionNumber === 0 ? (
           introductionView
         ) : (
