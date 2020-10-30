@@ -3,6 +3,7 @@ import axios from "axios";
 
 import Timer from "./Timer";
 import Answers from "./Answers";
+import Message from "./Message";
 
 class Train extends Component {
   constructor(props) {
@@ -16,6 +17,7 @@ class Train extends Component {
         good: 0,
         bad: 0,
       },
+      error: null
     };
   }
 
@@ -38,7 +40,9 @@ class Train extends Component {
           timer: 10,
         });
       })
-      .catch((err) => console.error(err));
+      .catch(
+        () => this.setState({ error: "Impossible de récupérer les données depuis le serveur." })
+      );
   };
 
   /**
@@ -80,7 +84,7 @@ class Train extends Component {
 
   /**
    * Handle a click on an answer button
-   * @param isRightAnswer True if the click is done the correct answer
+   * @param isRightAnswer True if the click is performed on the right answer
    */
   handleAnswerClick = (isRightAnswer) => {
     if (!this.state.inProgress) {
@@ -88,10 +92,7 @@ class Train extends Component {
     }
 
     const result = this.state.result;
-
-    const goodPoint = isRightAnswer ? 1 : 0;
-    const badPoint = 1 - goodPoint;
-
+    const {goodPoint, badPoint} = isRightAnswer ? {goodPoint: 1, badPoint: 0} : {goodPoint: 0, badPoint: 1};
     this.setState({
       inProgress: false,
       result: {
@@ -102,7 +103,7 @@ class Train extends Component {
   };
 
   render() {
-    const { question, questionNumber, inProgress, timer, result } = this.state;
+    const { question, questionNumber, inProgress, timer, result, error } = this.state;
     const introductionView = (
       <>
         <h1>Mode entraînement</h1>
@@ -113,6 +114,9 @@ class Train extends Component {
 
     return (
       <main id="quiz">
+        { error !== null &&
+          <Message type="error" content={error} />
+        }
         {questionNumber === 0 ? (
           introductionView
         ) : (

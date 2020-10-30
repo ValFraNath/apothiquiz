@@ -36,11 +36,8 @@ export default class App extends Component {
               <InstallApp installPromptEvent={this.state.installPromptEvent} />
             )}
           </Route>
-
           <Route path="/hello_world" exact component={HelloWorld} />
-
           <Route path="/train" exact component={Train} />
-
           <Route status={404}>Not Found</Route>
         </Switch>
       </Router>

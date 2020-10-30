@@ -1,0 +1,16 @@
+.message {
+  padding: 0.7rem;
+  margin: 0.5rem 0;
+  border-radius: 7px;
+
+  h1 {
+    font-size: 1.1rem !important;
+    text-align: left !important;
+    font-weight: bold;
+  }
+}
+
+.message-error {
+  background: darkred;
+  color: #ffffff;
+}

@@ -1,14 +1,9 @@
 @import "base/reset";
+@import "base/main";
 
 @import "components/buttons";
+@import "components/messages";
 
 @import "layouts/App";
 @import "layouts/quiz";
 
-body {
-  font-family: sans-serif;
-}
-
-main {
-  padding: 1rem;
-}
