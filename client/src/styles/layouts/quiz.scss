@@ -15,7 +15,31 @@
     text-align: center;
   }
 
+  /* ---------- Score ---------- */
+
+  #quiz-score {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin-bottom: 1rem;
+
+    #good-score {
+      text-align: left;
+    }
+
+    #bad-score {
+      text-align: right;
+    }
+  }
+
+  /* ---------- Answers ---------- */
+
   #quiz-answers {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+
+    margin: 1rem 0;
+
     .good-answer {
       color: green;
       border: 1px solid green;

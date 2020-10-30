@@ -19,14 +19,14 @@ class Train extends Component {
     };
   }
 
-  getRandomInt(min, max) {
-    return Math.floor(Math.random() * (max - min)) + min;
-  }
-
+  /**
+   * Get a new question (random type) from the server
+   */
   getNewQuestion = () => {
     const minQuestionType = 1, maxQuestionType = 1;
+    const questionType = Math.floor(Math.random() * (maxQuestionType - minQuestionType)) + minQuestionType;
     axios
-      .get("/api/v1/question/" + this.getRandomInt(minQuestionType, maxQuestionType))
+      .get("/api/v1/question/" + questionType)
       .then((res) => {
         this.setState({
           question: res.data.question,
@@ -34,9 +34,14 @@ class Train extends Component {
           inProgress: true,
           timer: 10,
         });
-    });
+      })
+      .catch(err => console.error(err));
   };
 
+  /**
+   * Generate the text of the question according to its type
+   * @returns {string} Text of the question
+   */
   generateQuestionText() {
     const { type, subject } = this.state.question;
     let text;
@@ -51,8 +56,15 @@ class Train extends Component {
     return text;
   }
 
+  /**
+   * Update the timer
+   */
   updateTimerValue = () => {
     let { inProgress, timer } = this.state;
+
+    if (!inProgress) {
+      return;
+    }
 
     if (timer - 1 === 0) {
       inProgress = false;
@@ -63,6 +75,10 @@ class Train extends Component {
     });
   };
 
+  /**
+   * Handle a click on an answer button
+   * @param isRightAnswer True if the click is done the correct answer
+   */
   handleAnswerClick = (isRightAnswer) => {
     if (!this.state.inProgress) {
       return;
@@ -106,13 +122,13 @@ class Train extends Component {
             <div id="quiz-question">
               <h2>Question {questionNumber}</h2>
               <h1>{this.generateQuestionText()}</h1>
-
-              <Timer
-                inProgress={inProgress}
-                duration={timer}
-                updateParent={this.updateTimerValue}
-              />
             </div>
+
+            <Timer
+              inProgress={inProgress}
+              duration={timer}
+              updateParent={this.updateTimerValue}
+            />
 
             <Answers inProgress={inProgress} goodAnswer={question.goodAnswer} badAnswers={question.badAnswers} onClick={this.handleAnswerClick} />
 
