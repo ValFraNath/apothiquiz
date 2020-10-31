@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+import bodyParser from "body-parser";
 
 import apiRouter from "./routes/api.route.js";
 import reactRouter from "./routes/react.route.js";
@@ -10,6 +11,8 @@ dotenv.config();
 const PORT = process.env.PORT || 5035;
 const app = express();
 app.isReady = false;
+
+app.use(bodyParser.json());
 
 app.use(express.static("../client/build/"));
 app.use("/api/v1/", apiRouter);
