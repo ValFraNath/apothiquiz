@@ -68,6 +68,10 @@ describe("Check the database structure", function () {
       name: "system",
       fields: ["sy_version"],
     },
+    {
+      name: "user",
+      fields: ["us_login"],
+    },
   ];
 
   it("Number of table", function (done) {
