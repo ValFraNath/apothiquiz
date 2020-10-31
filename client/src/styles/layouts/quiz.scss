@@ -1,0 +1,53 @@
+#quiz {
+  h1 {
+    font-size: 2rem;
+    text-align: center;
+    margin-bottom: 0.5rem;
+  }
+
+  h2 {
+    font-size: 1.2rem;
+    text-align: center;
+  }
+
+  #about {
+    font-size: 1rem;
+    text-align: center;
+  }
+
+  /* ---------- Score ---------- */
+
+  #quiz-score {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin-bottom: 1rem;
+
+    #good-score {
+      text-align: left;
+    }
+
+    #bad-score {
+      text-align: right;
+    }
+  }
+
+  /* ---------- Answers ---------- */
+
+  #quiz-answers {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+
+    margin: 1rem 0;
+
+    .good-answer {
+      color: green;
+      border: 1px solid green;
+    }
+
+    .bad-answer {
+      color: red;
+      border: 1px solid red;
+    }
+  }
+}
