@@ -2,7 +2,8 @@ import jwt from "jsonwebtoken";
 import { queryPromise } from "../db/database.js";
 
 export async function login(req, res) {
-  const { userLogin: userPseudo, userPassword } = req.body;
+  const { userPseudo, userPassword } = req.body;
+  console.log(userPseudo, userPassword);
 
   if (!userPseudo || !userPassword) {
     res.status(401).json({ error: "Bad request format." });
@@ -19,8 +20,8 @@ export async function login(req, res) {
       if (found) {
         if (queryCAS(userPseudo, userPassword)) {
           res.status(200).json({
-            login: userPseudo,
-            token: jwt.sign({ pseudo: userPseudo }, "TOKdEN_KEY"),
+            pseudo: userPseudo,
+            token: jwt.sign({ pseudo: userPseudo }, "TOKEN_KEY"),
           });
         } else {
           res.status(401).json({

@@ -5,6 +5,7 @@ import HelloWorld from "./components/HelloWorld";
 import InstallApp from "./components/InstallApp";
 import Train from "./components/Train";
 import OfflineBanner from "./components/OfflineBanner";
+import Login from "./components/Login";
 
 export default class App extends Component {
   constructor(props) {
@@ -37,10 +38,11 @@ export default class App extends Component {
             {this.state.installPromptEvent !== null && (
               <InstallApp installPromptEvent={this.state.installPromptEvent} />
             )}
+            <Link to="/login">Login</Link>
           </Route>
           <Route path="/hello_world" exact component={HelloWorld} />
           <Route path="/train" exact component={Train} />
-          <Route status={404}>Not Found</Route>
+          <Route path="/login" exact component={Login} />
         </Switch>
       </Router>
     );
