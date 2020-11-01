@@ -9,6 +9,7 @@ import Login from "./components/Login";
 import AuthService from "./services/auth.service";
 import UserBadge from "./components/UserBadge";
 import axios from "axios";
+import WhoAmI from "./components/PrivateTemp";
 
 /**
  * Set up the authorization header in all request is the user is logged in
@@ -60,10 +61,12 @@ export default class App extends Component {
               <InstallApp installPromptEvent={this.state.installPromptEvent} />
             )}
             {this.state.user === null && <Link to="/login">Login</Link>}
+            <Link to="/private">Who an I ? (private)</Link>
           </Route>
           <Route path="/hello_world" exact component={HelloWorld} />
           <Route path="/train" exact component={Train} />
           <Route path="/login" exact component={Login} />
+          <Route path="/private" exact component={WhoAmI} />
         </Switch>
       </Router>
     );

@@ -1,7 +1,9 @@
 import jwt from "jsonwebtoken";
 import { queryPromise } from "../db/database.js";
 
-export async function login(req, res) {
+const User = {};
+
+User.login = function (req, res) {
   const { userPseudo, userPassword } = req.body;
   console.log(userPseudo, userPassword);
 
@@ -38,8 +40,18 @@ export async function login(req, res) {
       console.log("error");
       res.status(401).json({ error: error });
     });
-}
+};
 
 function queryCAS(login, pass) {
   return pass === "1234";
 }
+
+User.getInfos = function (req, res) {
+  const user = req.body.auth_user;
+  console.log(req.body);
+  res.status(200).json({
+    pseudo: user,
+  });
+};
+
+export default User;
