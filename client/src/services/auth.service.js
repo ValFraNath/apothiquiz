@@ -11,12 +11,38 @@ AuthService.login = async function (pseudo, password) {
       })
       .then((res) => {
         const { token } = res.data;
-        resolve(token);
+        if (token) {
+          localStorage.setItem(
+            "user",
+            JSON.stringify({
+              pseudo,
+              token,
+            })
+          );
+        }
+        resolve(pseudo);
       })
       .catch((error) => {
-        reject(error);
+        reject(
+          error &&
+            error.response &&
+            error.response.data &&
+            error.response.data.error
+        );
       });
   });
+};
+
+AuthService.logout = function () {
+  localStorage.removeItem("user");
+};
+
+AuthService.getCurrentUser = function () {
+  let userData = localStorage.getItem("user");
+  if (userData) {
+    return JSON.parse(userData).pseudo;
+  }
+  return null;
 };
 
 export default AuthService;
