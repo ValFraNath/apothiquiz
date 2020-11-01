@@ -1,4 +1,4 @@
-import { currentVersion } from "../db/database.js";
+import db from "../db/database.js";
 import app from "../index.js";
 
 import chai from "chai";
@@ -15,7 +15,7 @@ describe("GET /status", function () {
         expect(res.status).to.be.equal(200);
         expect(res.body).to.be.deep.equal({
           status: "online",
-          db_version: currentVersion(),
+          db_version: db.currentVersion(),
         });
         done();
       });

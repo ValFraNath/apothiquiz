@@ -7,12 +7,14 @@ const __dirname = path.resolve();
 
 dotenv.config();
 
+const Database = {};
+
 // Be sure to add a new version at the end of this array (it must be sorted)
 const versions = ["2020-10-18", "2020-10-21", "2020-10-27", "2020-10-31"];
 
-export const currentVersion = () => versions[versions.length - 1];
+Database.currentVersion = () => versions[versions.length - 1];
 
-const dbConn = mysql.createConnection({
+Database.connection = mysql.createConnection({
   host: process.env.DB_HOST || "localhost",
   user: process.env.DB_USER || "glowing-octo-guacamole",
   password: process.env.DB_PASSWORD || "p@ssword",
@@ -20,37 +22,37 @@ const dbConn = mysql.createConnection({
   multipleStatements: true,
 });
 
-export default dbConn;
-dbConn.isReady = false;
+export default Database;
+Database.isReady = false;
 
 /**
  * Connect the server to the database
  */
-export async function db_connection(err) {
+Database.connect = async function (err) {
   if (err) {
     console.error("Can't connect to the database.");
     throw err;
   }
   console.log("Connected to database!");
 
-  getDatabaseVersion().then(async (db_version) => {
+  Database.getVersion().then(async (db_version) => {
     if (db_version === -1) {
-      await create_database();
-      await update();
+      await Database.create();
+      await Database.update();
     } else {
-      await update(db_version);
+      await Database.update(db_version);
     }
 
-    dbConn.isReady = true;
-    dbConn.emit("database_ready");
+    Database.isReady = true;
+    Database.connection.emit("database_ready");
     console.log("Database is ready to use!");
   });
-}
+};
 
 /**
  * Execute the script of database creation
  */
-async function create_database() {
+Database.create = async function () {
   const creationScript = fs
     .readFileSync(path.resolve(__dirname, "db", "create_database.sql"))
     .toString("utf8");
@@ -60,17 +62,17 @@ async function create_database() {
     .catch((err) => {
       throw err;
     });
-}
+};
 
 /**
  * Get the database version
  * @return {Number|String} The database version, or -1 if no version found
  */
-export async function getDatabaseVersion() {
+Database.getVersion = function () {
   let sql = "SELECT sy_version FROM `system`";
 
   return new Promise(function (resolve) {
-    dbConn.query(sql, function (err, res) {
+    Database.connection.query(sql, function (err, res) {
       if (err) {
         if (err.code === "ER_NO_SUCH_TABLE") {
           resolve(-1);
@@ -82,14 +84,14 @@ export async function getDatabaseVersion() {
       }
     });
   });
-}
+};
 
 /**
  * Update the database if needed
  * @param {String} version The current database version, if undefined it use the first version
  */
-async function update(version = versions[0]) {
-  if (version === currentVersion()) {
+Database.update = async function (version = versions[0]) {
+  if (version === Database.currentVersion()) {
     console.log("Database is up to date!");
     return;
   }
@@ -122,7 +124,7 @@ async function update(version = versions[0]) {
         throw err;
       });
   }
-}
+};
 
 /**
  * Execute a query to database and return a Promise
@@ -131,7 +133,7 @@ async function update(version = versions[0]) {
  */
 export async function queryPromise(sql) {
   return new Promise(function (resolve, reject) {
-    dbConn.query(sql, function (err, res) {
+    Database.connection.query(sql, function (err, res) {
       if (err) {
         reject(err);
       }

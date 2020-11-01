@@ -4,7 +4,7 @@ import bodyParser from "body-parser";
 
 import apiRouter from "./routes/api.route.js";
 import reactRouter from "./routes/react.route.js";
-import dbConn, { db_connection } from "./db/database.js";
+import db from "./db/database.js";
 
 dotenv.config();
 
@@ -18,14 +18,14 @@ app.use(express.static("../client/build/"));
 app.use("/api/v1/", apiRouter);
 app.use("/", reactRouter);
 
-dbConn.on("database_ready", function () {
+db.connection.on("database_ready", function () {
   app.listen(PORT, () => {
     app.isReady = true;
     console.log(`Server is running on port ${PORT}.`);
   });
 });
 
-dbConn.connect(db_connection);
+db.connection.connect(db.connect);
 
 /**
  * Check every <interval> ms if the server is ready to use
@@ -34,7 +34,7 @@ dbConn.connect(db_connection);
  */
 app.waitReady = function (callback, interval = 100) {
   let int = setInterval(() => {
-    if (app.isReady && dbConn.isReady) {
+    if (app.isReady && db.isReady) {
       callback();
       clearInterval(int);
     }
