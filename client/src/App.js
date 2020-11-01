@@ -8,14 +8,31 @@ import OfflineBanner from "./components/OfflineBanner";
 import Login from "./components/Login";
 import AuthService from "./services/auth.service";
 import UserBadge from "./components/UserBadge";
+import axios from "axios";
+
+/**
+ * Set up the authorization header in all request is the user is logged in
+ */
+axios.interceptors.request.use(function (config) {
+  const user = AuthService.getCurrentUser();
+  if (user && user.token && user.pseudo) {
+    config.headers.Authorization = `Barear ${user.token}`;
+  }
+  return config;
+});
 
 export default class App extends Component {
   constructor(props) {
     super(props);
 
+    let user = AuthService.getCurrentUser();
+    if (user) {
+      user = user.pseudo;
+    }
+
     this.state = {
       installPromptEvent: null,
-      user: AuthService.getCurrentUser(),
+      user: user,
     };
   }
 

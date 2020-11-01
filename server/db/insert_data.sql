@@ -43,5 +43,5 @@ VALUES
 INSERT IGNORE INTO `user` (`us_login`)
 VALUES
 ('fpoguet'),
-('vperignon'),
+('vperigno'),
 ('nhoun');

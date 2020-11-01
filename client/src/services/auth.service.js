@@ -38,11 +38,7 @@ AuthService.logout = function () {
 };
 
 AuthService.getCurrentUser = function () {
-  let userData = localStorage.getItem("user");
-  if (userData) {
-    return JSON.parse(userData).pseudo;
-  }
-  return null;
+  return JSON.parse(localStorage.getItem("user"));
 };
 
 export default AuthService;
