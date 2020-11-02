@@ -17,7 +17,7 @@ export default class App extends Component {
       waitingServiceWorker: null,
       isUpdateAvailable: false,
       installPromptEvent: null,
-      updateRequired: false
+      updateRequired: false,
     };
   }
 
@@ -27,15 +27,15 @@ export default class App extends Component {
       onUpdate: (registration) => {
         this.setState({
           waitingServiceWorker: registration.waiting,
-          isUpdateAvailable: true
+          isUpdateAvailable: true,
         });
       },
       onWaiting: (waiting) => {
         this.setState({
           waitingServiceWorker: waiting,
-          isUpdateAvailable: true
+          isUpdateAvailable: true,
         });
-      }
+      },
     });
 
     // Display installation button
@@ -53,23 +53,28 @@ export default class App extends Component {
 
     //this.state.waitingServiceWorker.postMessage({ type: 'SKIP_WAITING' });
     //window.location.reload();
-  }
+  };
 
   render() {
-    const {isUpdateAvailable, installPromptEvent, updateRequired} = this.state;
+    const {
+      isUpdateAvailable,
+      installPromptEvent,
+      updateRequired,
+    } = this.state;
 
     return (
       <Router>
         <OfflineBanner />
-        {isUpdateAvailable &&
-          <button id="update-app" className={updateRequired ? "update-animation" : ""} onClick={this.updateServiceWorker}>
+        {isUpdateAvailable && (
+          <button
+            id="update-app"
+            className={updateRequired ? "update-animation" : ""}
+            onClick={this.updateServiceWorker}
+          >
             <ReloadIcon />
-            { !updateRequired
-              ? "Mettre à jour l'app"
-              : "Mise à jour..."
-            }
+            {!updateRequired ? "Mettre à jour l'app" : "Mise à jour..."}
           </button>
-        }
+        )}
         <Switch>
           <Route path="/" exact>
             <Link to="/hello_world">Go to Hello World</Link>
