@@ -28,6 +28,12 @@ export default class App extends Component {
           waitingServiceWorker: registration.waiting,
           isUpdateAvailable: true
         });
+      },
+      onWaiting: (waiting) => {
+        this.setState({
+          waitingServiceWorker: waiting,
+          isUpdateAvailable: true
+        });
       }
     });
 
@@ -57,7 +63,7 @@ export default class App extends Component {
         }
         <Switch>
           <Route path="/" exact>
-            <Link to="/hello_world">Go to Hello World</Link>
+            <Link to="/hello_world">Go to Hello World!</Link>
             <Link to="/train">Train</Link>
             {installPromptEvent !== null && (
               <InstallApp installPromptEvent={installPromptEvent} />
