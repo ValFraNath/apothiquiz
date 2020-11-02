@@ -1,0 +1,34 @@
+/* ---------- General buttons ---------- */
+
+button {
+  display: block;
+  border: 1px solid #000000;
+  background: none;
+  text-transform: uppercase;
+  padding: 0.7rem 0.9rem;
+
+  svg {
+    vertical-align: top;
+  }
+}
+
+/* ---------- Update app button ---------- */
+
+#update-app {
+  position: absolute;
+  bottom: 3rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: $mascot-blue-light;
+  color: white;
+  border: none;
+  border-radius: .5rem;
+  box-shadow: 0 0 10px 1px $mascot-blue-dark;
+  font-size: .8rem;
+  padding: .8rem 1.3rem;
+  text-transform: initial;
+
+  svg {
+    margin-right: .4rem;
+  }
+}

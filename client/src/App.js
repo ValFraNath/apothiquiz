@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
 import * as serviceWorker from "./serviceWorker";
+import { ReloadIcon } from "@modulz/radix-icons";
 
 import "./styles/styles.scss";
-
 import HelloWorld from "./components/HelloWorld";
 import InstallApp from "./components/InstallApp";
 import Train from "./components/Train";
@@ -59,11 +59,14 @@ export default class App extends Component {
       <Router>
         <OfflineBanner />
         {isUpdateAvailable &&
-          <button onClick={this.updateServiceWorker}>Mettre à jour l'app</button>
+          <button id="update-app" onClick={this.updateServiceWorker}>
+            <ReloadIcon />
+            Mettre à jour l'app
+          </button>
         }
         <Switch>
           <Route path="/" exact>
-            <Link to="/hello_world">Go to Hello World!</Link>
+            <Link to="/hello_world">Go to Hello World</Link>
             <Link to="/train">Train</Link>
             {installPromptEvent !== null && (
               <InstallApp installPromptEvent={installPromptEvent} />
