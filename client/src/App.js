@@ -9,14 +9,20 @@ import InstallApp from "./components/InstallApp";
 import Train from "./components/Train";
 import OfflineBanner from "./components/OfflineBanner";
 
+/*
+  DEBUG
+  -> isUpdateAvailable: false
+ */
+
 export default class App extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       waitingServiceWorker: null,
-      isUpdateAvailable: false,
-      installPromptEvent: null
+      isUpdateAvailable: true,
+      installPromptEvent: null,
+      updateRequired: false
     };
   }
 
@@ -48,20 +54,25 @@ export default class App extends Component {
   }
 
   updateServiceWorker = () => {
-    this.state.waitingServiceWorker.postMessage({ type: 'SKIP_WAITING' });
-    window.location.reload();
+    this.setState({ updateRequired: true });
+
+    //this.state.waitingServiceWorker.postMessage({ type: 'SKIP_WAITING' });
+    //window.location.reload();
   }
 
   render() {
-    const {isUpdateAvailable, installPromptEvent} = this.state;
+    const {isUpdateAvailable, installPromptEvent, updateRequired} = this.state;
 
     return (
       <Router>
         <OfflineBanner />
         {isUpdateAvailable &&
-          <button id="update-app" onClick={this.updateServiceWorker}>
+          <button id="update-app" className={updateRequired ? "update-animation" : ""} onClick={this.updateServiceWorker}>
             <ReloadIcon />
-            Mettre à jour l'app
+            { !updateRequired
+              ? "Mettre à jour l'app"
+              : "Mise à jour..."
+            }
           </button>
         }
         <Switch>

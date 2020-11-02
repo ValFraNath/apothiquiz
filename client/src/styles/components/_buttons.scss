@@ -6,19 +6,24 @@ button {
   background: none;
   text-transform: uppercase;
   padding: 0.7rem 0.9rem;
+  cursor: pointer;
 
   svg {
     vertical-align: top;
   }
 }
 
+button:focus {
+  outline: none;
+}
+
 /* ---------- Update app button ---------- */
 
 #update-app {
-  position: absolute;
-  bottom: 3rem;
+  position: fixed;
+  bottom: -5rem;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%) scale(1.0);
   background-color: $mascot-blue-light;
   color: white;
   border: none;
@@ -28,7 +33,30 @@ button {
   padding: .8rem 1.3rem;
   text-transform: initial;
 
+  transition: transform 0.2s ease-in-out;
+  animation: appear-update 0.5s ease-in-out forwards;
+
   svg {
     margin-right: .4rem;
   }
+}
+
+#update-app:active {
+  transform: translateX(-50%) scale(1.1);
+}
+
+@keyframes appear-update {
+  0% { bottom: -5rem; }
+  100% { bottom: 3rem; }
+}
+
+.update-animation {
+  svg {
+    animation: loading-update 1.2s linear infinite;
+  }
+}
+
+@keyframes loading-update {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
