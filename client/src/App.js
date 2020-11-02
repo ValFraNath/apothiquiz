@@ -51,8 +51,8 @@ export default class App extends Component {
   updateServiceWorker = () => {
     this.setState({ updateRequired: true });
 
-    //this.state.waitingServiceWorker.postMessage({ type: 'SKIP_WAITING' });
-    //window.location.reload();
+    this.state.waitingServiceWorker.postMessage({ type: 'SKIP_WAITING' });
+    window.location.reload();
   };
 
   render() {
