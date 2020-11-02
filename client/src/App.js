@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
+import * as serviceWorker from "./serviceWorker";
+
 import "./styles/styles.scss";
+
 import HelloWorld from "./components/HelloWorld";
 import InstallApp from "./components/InstallApp";
 import Train from "./components/Train";
@@ -11,11 +14,23 @@ export default class App extends Component {
     super(props);
 
     this.state = {
-      installPromptEvent: null,
+      waitingServiceWorker: null,
+      isUpdateAvailable: false,
+      installPromptEvent: null
     };
   }
 
   componentDidMount() {
+    // Install serviceWorker
+    serviceWorker.register({
+      onUpdate: (registration) => {
+        this.setState({
+          waitingServiceWorker: registration.waiting,
+          isUpdateAvailable: true
+        });
+      }
+    });
+
     // Display installation button
     window.addEventListener("beforeinstallprompt", (event) => {
       event.preventDefault();
@@ -26,16 +41,26 @@ export default class App extends Component {
     });
   }
 
+  updateServiceWorker = () => {
+    this.state.waitingServiceWorker.postMessage({ type: 'SKIP_WAITING' });
+    window.location.reload();
+  }
+
   render() {
+    const {isUpdateAvailable, installPromptEvent} = this.state;
+
     return (
       <Router>
         <OfflineBanner />
+        {isUpdateAvailable &&
+          <button onClick={this.updateServiceWorker}>Mettre à jour l'app</button>
+        }
         <Switch>
           <Route path="/" exact>
             <Link to="/hello_world">Go to Hello World</Link>
             <Link to="/train">Train</Link>
-            {this.state.installPromptEvent !== null && (
-              <InstallApp installPromptEvent={this.state.installPromptEvent} />
+            {installPromptEvent !== null && (
+              <InstallApp installPromptEvent={installPromptEvent} />
             )}
           </Route>
           <Route path="/hello_world" exact component={HelloWorld} />
