@@ -1,11 +1,50 @@
 nav {
-  width: calc(100% - 20px);
-  top: 0;
-  margin: 0;
-  padding: 10px;
-  background-color: #c7ecee;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 50px;
+  background-color: $top-bar-bg;
 }
 
 nav * {
   display: inline-block;
+  margin: 10px;
+  color: $top-bar-fg;
+}
+
+nav a {
+  text-decoration: none;
+  &:visited {
+    color: $top-bar-fg;
+  }
+}
+
+nav #return {
+  position: absolute;
+  left: 10px;
+  height: 20px;
+}
+
+nav h1 a {
+  text-align: center;
+  text-transform: uppercase;
+  height: 16px;
+  margin: auto;
+  font-weight: bolder;
+}
+
+nav #offlineBanner {
+  position: absolute;
+  right: 10px;
+  margin: 10px;
+  background-color: white;
+
+  &.online {
+    color: green;
+  }
+
+  &.offline {
+    color: red;
+  }
 }

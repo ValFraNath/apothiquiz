@@ -66,6 +66,7 @@ export default class App extends Component {
     return (
       <Router>
         <TopBar />
+
         {isUpdateAvailable && (
           <button
             id="update-app"
