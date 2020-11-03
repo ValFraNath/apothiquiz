@@ -13,7 +13,7 @@ const WhoAmI = function () {
       })
       .catch((error) => {
         console.log(error);
-        setMessage("You must be logged in !");
+        setMessage("Vous devez être connecté !");
       });
   }
 
