@@ -3,7 +3,9 @@
 button {
   display: block;
   border: 1px solid #000000;
-  background: none;
+  background: $button-bg;
+  color: $button-fg;
+  border-radius: $button-border-radius;
   text-transform: uppercase;
   padding: 0.7rem 0.9rem;
   cursor: pointer;
@@ -32,6 +34,7 @@ button:focus {
   font-size: 0.8rem;
   padding: 0.8rem 1.3rem;
   text-transform: initial;
+  z-index: 1000;
 
   transition: transform 0.2s ease-in-out;
   animation: appear-update 0.5s ease-in-out forwards;
