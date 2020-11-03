@@ -25,7 +25,6 @@ axios.interceptors.request.use(function (config) {
   return config;
 });
 
-
 export default class App extends Component {
   constructor(props) {
     super(props);

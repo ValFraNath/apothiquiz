@@ -28,6 +28,9 @@ describe("Question generation", function () {
       .request(app)
       .get("/api/v1/question/1")
       .end((err, res) => {
+        if (err) {
+          throw err;
+        }
         expect(res.status, "Status value").to.be.equal(200);
         expect(
           Object.getOwnPropertyNames(res.body),
@@ -42,6 +45,9 @@ describe("Question generation", function () {
       .request(app)
       .get("/api/v1/question/-3")
       .end((err, res) => {
+        if (err) {
+          throw err;
+        }
         expect(res.status, "Status value").to.be.equal(404);
         done();
       });

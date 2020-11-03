@@ -1,11 +1,12 @@
 import jwt from "jsonwebtoken";
 import { queryPromise } from "../db/database.js";
+import dotenv from "dotenv";
+dotenv.config();
 
 const User = {};
 
 User.login = function (req, res) {
   const { userPseudo, userPassword } = req.body;
-  console.log(userPseudo, userPassword);
 
   if (!userPseudo || !userPassword) {
     res.status(401).json({ error: "Bad request format." });
@@ -23,7 +24,10 @@ User.login = function (req, res) {
         if (queryCAS(userPseudo, userPassword)) {
           res.status(200).json({
             pseudo: userPseudo,
-            token: jwt.sign({ pseudo: userPseudo }, "TOKEN_KEY"),
+            token: jwt.sign(
+              { pseudo: userPseudo },
+              process.env.TOKEN_PRIVATE_KEY
+            ),
           });
         } else {
           res.status(401).json({

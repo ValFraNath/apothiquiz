@@ -1,4 +1,6 @@
 import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+dotenv.config();
 
 /**
  * Test if the request is correctly authenticated
@@ -6,7 +8,7 @@ import jwt from "jsonwebtoken";
 function auth(req, res, next) {
   try {
     const token = req.headers.authorization.split(" ")[1];
-    const decodedToken = jwt.verify(token, "TOKEN_KEY");
+    const decodedToken = jwt.verify(token, process.env.TOKEN_PRIVATE_KEY);
     req.body.auth_user = decodedToken.pseudo;
     next();
   } catch (e) {
