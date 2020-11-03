@@ -22,12 +22,8 @@ Database.connection = mysql.createConnection({
   multipleStatements: true,
 });
 
-export default Database;
 Database.isReady = false;
 
-/**
- * Connect the server to the database
- */
 Database.connect = async function (err) {
   if (err) {
     console.error("Can't connect to the database.");
@@ -49,9 +45,6 @@ Database.connect = async function (err) {
   });
 };
 
-/**
- * Execute the script of database creation
- */
 Database.create = async function () {
   const creationScript = fs
     .readFileSync(path.resolve(__dirname, "db", "create_database.sql"))
@@ -141,3 +134,5 @@ export async function queryPromise(sql) {
     });
   });
 }
+
+export default Database;
