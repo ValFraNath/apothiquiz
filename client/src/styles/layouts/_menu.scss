@@ -1,0 +1,25 @@
+div#menu {
+  background-image: url("../../images/bg_menu.png");
+  background-size: cover;
+  height: 100%;
+  overflow: auto;
+}
+
+div#menu #list {
+  margin-top: 60vh;
+}
+
+div#menu a {
+  color: red;
+  &:visited {
+    color: green;
+  }
+
+  display: block;
+  width: 50%;
+  text-align: center;
+  margin: 1rem auto;
+  padding: 30px;
+  border: 5px yellow solid;
+  background-color: grey;
+}

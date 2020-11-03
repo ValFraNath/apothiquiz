@@ -18,9 +18,9 @@ const OfflineBanner = () => {
   }, []);
 
   return (
-    <aside id={"offlineBanner"} className={isOnline ? "online" : "offline"}>
+    <div id={"offlineBanner"} className={isOnline ? "online" : "offline"}>
       {isOnline ? "ONLINE" : "OFFLINE"}
-    </aside>
+    </div>
   );
 };
 

@@ -4,4 +4,7 @@
 
 @import "components/offlineBanner", "components/buttons", "components/messages";
 
-@import "layouts/App", "layouts/quiz";
+@import "layouts/menu";
+@import "layouts/TopBar";
+@import "layouts/App";
+@import "layouts/quiz";

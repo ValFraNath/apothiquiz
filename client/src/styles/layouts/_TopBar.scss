@@ -1,0 +1,11 @@
+nav {
+  width: calc(100% - 20px);
+  top: 0;
+  margin: 0;
+  padding: 10px;
+  background-color: #c7ecee;
+}
+
+nav * {
+  display: inline-block;
+}
