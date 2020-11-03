@@ -2,10 +2,9 @@
  * Main contain the content of each page
  */
 main {
-  background-color: blue;
   padding: 0;
   margin: 0;
-  height: calc(100vh - 56px);
+  height: calc(100% - 56px);
 }
 
 #installButton {

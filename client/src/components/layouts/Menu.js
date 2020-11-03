@@ -6,7 +6,7 @@ const Root = () => {
     <div id="menu">
       <div id="list">
         <Link to="/train">Entraînement libre</Link>
-        <Link to="/hello_world">Informations</Link>
+        <Link to="/informations">Informations</Link>
       </div>
     </div>
   );

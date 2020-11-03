@@ -7,7 +7,7 @@ import "./styles/styles.scss";
 import InstallApp from "./components/system/InstallApp";
 import TopBar from "./components/layouts/TopBar";
 import Root from "./components/layouts/Menu";
-import HelloWorld from "./components/layouts/HelloWorld";
+import Informations from "./components/layouts/Informations";
 import Train from "./components/layouts/Train";
 
 export default class App extends Component {
@@ -80,7 +80,7 @@ export default class App extends Component {
         <main>
           <Switch>
             <Route path="/" exact component={Root} />
-            <Route path="/hello_world" exact component={HelloWorld} />
+            <Route path="/informations" exact component={Informations} />
             <Route path="/train" exact component={Train} />
             <Route status={404}>Not Found</Route>
           </Switch>
