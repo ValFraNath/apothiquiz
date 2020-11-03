@@ -8,14 +8,13 @@ import TopBar from "./components/system/TopBar";
 import Menu from "./components/pages/Menu";
 import Informations from "./components/pages/Informations";
 import Train from "./components/layouts/Train";
-
 import Login from "./components/Login";
 import AuthService from "./services/auth.service";
 import axios from "axios";
 import WhoAmI from "./components/PrivateTemp";
 
 /**
- * Set up the authorization header in all request is the user is logged in
+ * Set up the authorization header in all request if the user is logged in
  */
 axios.interceptors.request.use(function (config) {
   const user = AuthService.getCurrentUser();
