@@ -1,13 +1,13 @@
 import React, { Component } from "react";
-import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import * as serviceWorker from "./serviceWorker";
 import { ReloadIcon } from "@modulz/radix-icons";
 
 import "./styles/styles.scss";
-import HelloWorld from "./components/system/HelloWorld";
-import InstallApp from "./components/system/InstallApp";
+import TopBar from "./components/system/TopBar";
+import Menu from "./components/pages/Menu";
+import Informations from "./components/pages/Informations";
 import Train from "./components/layouts/Train";
-import OfflineBanner from "./components/system/OfflineBanner";
 
 export default class App extends Component {
   constructor(props) {
@@ -64,7 +64,8 @@ export default class App extends Component {
 
     return (
       <Router>
-        <OfflineBanner />
+        <TopBar />
+
         {isUpdateAvailable && (
           <button
             id="update-app"
@@ -75,18 +76,17 @@ export default class App extends Component {
             {!updateRequired ? "Mettre à jour l'app" : "Mise à jour..."}
           </button>
         )}
-        <Switch>
-          <Route path="/" exact>
-            <Link to="/hello_world">Go to Hello World</Link>
-            <Link to="/train">Train</Link>
-            {installPromptEvent !== null && (
-              <InstallApp installPromptEvent={installPromptEvent} />
-            )}
-          </Route>
-          <Route path="/hello_world" exact component={HelloWorld} />
-          <Route path="/train" exact component={Train} />
-          <Route status={404}>Not Found</Route>
-        </Switch>
+
+        <main>
+          <Switch>
+            <Route path="/" exact Menu>
+              <Menu installPromptEvent={installPromptEvent} />
+            </Route>
+            <Route path="/informations" exact component={Informations} />
+            <Route path="/train" exact component={Train} />
+            <Route status={404}>Not Found</Route>
+          </Switch>
+        </main>
       </Router>
     );
   }

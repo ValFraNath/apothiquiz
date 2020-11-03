@@ -33,11 +33,15 @@
 
   /* ---------- Answers ---------- */
 
+  #quiz-answers button {
+    background-color: white;
+    color: black;
+  }
+
   #quiz-answers {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr;
-
     margin: 1rem 0;
 
     .good-answer {
@@ -46,6 +50,7 @@
     }
 
     .bad-answer {
+      background-color: white;
       color: red;
       border: 1px solid red;
     }
