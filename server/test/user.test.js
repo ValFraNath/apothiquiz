@@ -23,7 +23,6 @@ describe("User login", function () {
         if (err) {
           throw err;
         }
-        console.table(res.body);
         expect(res.status).to.be.equal(200);
 
         const expectedToken = jwt.sign(
