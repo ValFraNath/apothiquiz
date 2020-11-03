@@ -21,6 +21,7 @@ describe("User login", function () {
       })
       .end((err, res) => {
         if (err) {
+          console.log(err);
           throw err;
         }
         expect(res.status).to.be.equal(200);
