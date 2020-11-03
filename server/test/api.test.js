@@ -1,4 +1,4 @@
-import { currentVersion } from "../db/database.js";
+import db from "../db/database.js";
 import app from "../index.js";
 
 import chai from "chai";
@@ -15,7 +15,7 @@ describe("GET /status", function () {
         expect(res.status).to.be.equal(200);
         expect(res.body).to.be.deep.equal({
           status: "online",
-          db_version: currentVersion(),
+          db_version: db.currentVersion(),
         });
         done();
       });
@@ -28,6 +28,9 @@ describe("Question generation", function () {
       .request(app)
       .get("/api/v1/question/1")
       .end((err, res) => {
+        if (err) {
+          throw err;
+        }
         expect(res.status, "Status value").to.be.equal(200);
         expect(
           Object.getOwnPropertyNames(res.body),
@@ -42,6 +45,9 @@ describe("Question generation", function () {
       .request(app)
       .get("/api/v1/question/-3")
       .end((err, res) => {
+        if (err) {
+          throw err;
+        }
         expect(res.status, "Status value").to.be.equal(404);
         done();
       });

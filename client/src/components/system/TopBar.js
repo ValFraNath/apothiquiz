@@ -2,6 +2,22 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 // import { CaretLeftIcon } from "@modulz/radix-icons";
 
+import AuthService from "../../services/auth.service";
+
+function handleLogoutClick() {
+  AuthService.logout();
+  document.location.replace("/");
+}
+
+const UserBadge = ({ pseudo }) => {
+  return (
+    <div id={"userBadge"}>
+      {pseudo}
+      <button onClick={handleLogoutClick}>Déconnexion</button>
+    </div>
+  );
+};
+
 const OfflineBanner = () => {
   const [isOnline, setOnline] = useState(true);
 
@@ -26,10 +42,11 @@ const OfflineBanner = () => {
   );
 };
 
-const TopBar = () => {
+const TopBar = ({ user }) => {
   return (
     <nav>
       {/* <CaretLeftIcon id="return" /> */}
+      {user && <UserBadge pseudo={user} />}
 
       <h1>
         <Link to="/">Guacamole</Link>
