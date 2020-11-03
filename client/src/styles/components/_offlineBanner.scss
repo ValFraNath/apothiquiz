@@ -2,6 +2,7 @@
   position: absolute;
   top: 0;
   right: 0;
+  width: 70px;
   margin: 10px;
   background-color: white;
 
@@ -9,7 +10,7 @@
     color: green;
 
     div {
-      animation: moveX 3s steps(37) reverse forwards;
+      animation: moveX 3s steps(36) reverse forwards running;
     }
   }
 
@@ -17,7 +18,15 @@
     color: red;
 
     div {
-      animation: moveX 3s steps(37) forwards;
+      animation: moveX 3s steps(36) forwards running;
+    }
+  }
+
+  &.offline-tmp {
+    color: red;
+
+    div {
+      background-position-x: -1800px;
     }
   }
 
@@ -31,10 +40,10 @@
 
   @keyframes moveX {
     from {
-      background-position-x: 0px;
+      background-position-x: 0;
     }
     to {
-      background-position-x: -1850px;
+      background-position-x: -1800px;
     }
   }
 }

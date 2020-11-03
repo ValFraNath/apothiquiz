@@ -1,11 +1,21 @@
 import React, { useState, useEffect } from "react";
 
 const OfflineBanner = () => {
-  const [isOnline, setOnline] = useState(true);
+  const [onlineStatus, setOnlineStatus] = useState("online");
 
   useEffect(() => {
     function updateOnlineStatus() {
-      setOnline(navigator.onLine);
+      if (navigator.onLine) {
+        setOnlineStatus("offline-tmp");
+        setTimeout(function () {
+          setOnlineStatus("online");
+        }, 10);
+      } else {
+        setOnlineStatus("");
+        setTimeout(function () {
+          setOnlineStatus("offline");
+        }, 10);
+      }
     }
     updateOnlineStatus();
     window.addEventListener("online", updateOnlineStatus);
@@ -18,9 +28,9 @@ const OfflineBanner = () => {
   }, []);
 
   return (
-    <aside id={"offlineBanner"} className={isOnline ? "online" : "offline"}>
+    <aside id={"offlineBanner"} className={onlineStatus}>
       <div id="connection_anim"> </div>
-      {isOnline ? "ONLINE" : "OFFLINE"}
+      {onlineStatus === "online" ? "ONLINE" : "OFFLINE"}
     </aside>
   );
 };
