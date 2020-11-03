@@ -34,8 +34,9 @@ jobs:
           mysql -uroot -e "GRANT ALL PRIVILEGES ON glowingOctoGuacamole.* TO 'glowing-octo-guacamole'@'localhost';"
       - name: Server npm install and test
         run: |
-          echo "TOKEN_PRIVATE_KEY=TMP_TOKEN_KEY" >> .env
           cd server
+          echo "TOKEN_PRIVATE_KEY=TMP_TOKEN_KEY" >> .env
+          cat .env
           npm ci
           npm run lint
           npm run build --if-present
