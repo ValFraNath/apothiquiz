@@ -4,7 +4,7 @@ import * as serviceWorker from "./serviceWorker";
 import { ReloadIcon } from "@modulz/radix-icons";
 
 import "./styles/styles.scss";
-import TopBar from "./components/layouts/TopBar";
+import TopBar from "./components/system/TopBar";
 import Menu from "./components/layouts/Menu";
 import Informations from "./components/layouts/Informations";
 import Train from "./components/layouts/Train";
