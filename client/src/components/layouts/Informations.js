@@ -31,25 +31,33 @@ export default class Informations extends Component {
     return (
       <div id="informations">
         <p>
-          Glowing Octo Guacamole est une application de test à destination des étudiants en
-          pharmacie de l'Université de Franche-Comté.
+          Glowing Octo Guacamole est une application de test à destination des
+          étudiants en pharmacie de l'Université de Franche-Comté.
         </p>
-        <p>Elle est réalisée dans le cadre d'un projet tutoré de Licence 3 Informatique.</p>
+        <p>
+          Elle est réalisée dans le cadre d'un projet tutoré de Licence 3
+          Informatique.
+        </p>
         <p>
           <b>Application en développement actif</b>
           <br />
           En cas de remarque sur cette application, vous pouvez nous écrire à{" "}
           <a href="mailto:nathanael.houn@edu.univ-fcomte.fr">
             nathanael.houn@edu.univ-fcomte.fr
-          </a>,{" "}
-          <a href="mailto:francois.poguet@edu.univ-fcomte.fr">francois.poguet@edu.univ-fcomte.fr</a>{" "}
+          </a>
+          ,{" "}
+          <a href="mailto:francois.poguet@edu.univ-fcomte.fr">
+            francois.poguet@edu.univ-fcomte.fr
+          </a>{" "}
           ou{" "}
           <a href="mailto:valentin.perignon@edu.univ-fcomte.fr">
             valentin.perignon@edu.univ-fcomte.fr
           </a>
         </p>
 
-        <button onClick={this.handleButtonClick}>Récupérer les informations</button>
+        <button onClick={this.handleButtonClick}>
+          Récupérer les informations
+        </button>
 
         {this.state.serverStatus && (
           <p>
