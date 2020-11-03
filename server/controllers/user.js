@@ -41,8 +41,7 @@ User.login = function (req, res) {
       }
     })
     .catch((error) => {
-      console.log("mysql error");
-      res.status(500).json({ error: `MySql query error : ${error}` });
+      res.status(500).json({ error: `login process error : ${error}` });
     });
 };
 
