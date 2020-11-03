@@ -8,6 +8,7 @@ class Login extends Component {
       isLogged: true,
     };
   }
+
   handleFormSubmit(e) {
     e.preventDefault();
     const { pseudoInput, passwordInput } = e.target.elements;
