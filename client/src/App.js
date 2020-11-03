@@ -5,8 +5,8 @@ import { ReloadIcon } from "@modulz/radix-icons";
 
 import "./styles/styles.scss";
 import TopBar from "./components/system/TopBar";
-import Menu from "./components/layouts/Menu";
-import Informations from "./components/layouts/Informations";
+import Menu from "./components/pages/Menu";
+import Informations from "./components/pages/Informations";
 import Train from "./components/layouts/Train";
 
 export default class App extends Component {

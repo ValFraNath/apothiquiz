@@ -1,6 +1,7 @@
 @import "base/variables", "base/reset", "base/main";
 
-@import "components/TopBar", "components/offlineBanner", "components/buttons",
-  "components/messages";
+@import "components/TopBar", "components/offlineBanner", "components/buttons", "components/messages";
 
-@import "layouts/Menu", "layouts/Informations", "layouts/App", "layouts/quiz";
+@import "layouts/App", "layouts/quiz";
+
+@import "pages/Menu", "pages/Informations";
