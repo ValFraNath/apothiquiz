@@ -19,6 +19,7 @@ const OfflineBanner = () => {
 
   return (
     <aside id={"offlineBanner"} className={isOnline ? "online" : "offline"}>
+      <div id="connection_anim"> </div>
       {isOnline ? "ONLINE" : "OFFLINE"}
     </aside>
   );

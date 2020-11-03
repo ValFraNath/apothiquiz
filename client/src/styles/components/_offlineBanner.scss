@@ -7,9 +7,34 @@
 
   &.online {
     color: green;
+
+    div {
+      animation: moveX 3s steps(37) reverse forwards;
+    }
   }
 
   &.offline {
     color: red;
+
+    div {
+      animation: moveX 3s steps(37) forwards;
+    }
+  }
+
+  div {
+    width: 50px;
+    height: 50px;
+    background-image: url("../../images/connection_status.png");
+    background-size: 1850px 50px;
+    background-repeat: no-repeat;
+  }
+
+  @keyframes moveX {
+    from {
+      background-position-x: 0px;
+    }
+    to {
+      background-position-x: -1850px;
+    }
   }
 }
