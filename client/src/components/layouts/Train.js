@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import axios from "axios";
 
-import Timer from "./Timer";
-import Answers from "./Answers";
-import Message from "./Message";
+import Timer from "../quizz/Timer";
+import Answers from "../quizz/Answers";
+import Message from "../quizz/Message";
 
 class Train extends Component {
   constructor(props) {
