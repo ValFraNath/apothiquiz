@@ -11,7 +11,6 @@ import Train from "./components/layouts/Train";
 
 import Login from "./components/Login";
 import AuthService from "./services/auth.service";
-import UserBadge from "./components/UserBadge";
 import axios from "axios";
 import WhoAmI from "./components/PrivateTemp";
 
@@ -25,7 +24,6 @@ axios.interceptors.request.use(function (config) {
   }
   return config;
 });
-
 
 export default class App extends Component {
   constructor(props) {
@@ -87,7 +85,7 @@ export default class App extends Component {
 
     return (
       <Router>
-        <TopBar />
+        <TopBar user={this.state.user} />
         {isUpdateAvailable && (
           <button
             id="update-app"
@@ -102,9 +100,10 @@ export default class App extends Component {
         <main>
           <Switch>
             <Route path="/" exact Menu>
-              <Menu installPromptEvent={installPromptEvent} />
-                {this.state.user === null && <Link to="/login">Login</Link>}
-                <Link to="/private">Who an I ? (private)</Link>
+              <Menu
+                user={this.state.user}
+                installPromptEvent={installPromptEvent}
+              />
             </Route>
             <Route path="/informations" exact component={Informations} />
             <Route path="/train" exact component={Train} />
