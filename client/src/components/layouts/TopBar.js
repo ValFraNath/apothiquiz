@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { CaretLeftIcon } from "@modulz/radix-icons";
+// import { CaretLeftIcon } from "@modulz/radix-icons";
 
 const OfflineBanner = () => {
   const [isOnline, setOnline] = useState(true);
@@ -29,7 +29,7 @@ const OfflineBanner = () => {
 const TopBar = () => {
   return (
     <nav>
-      <CaretLeftIcon id="return" />
+      {/* <CaretLeftIcon id="return" /> */}
 
       <h1>
         <Link to="/">Guacamole</Link>

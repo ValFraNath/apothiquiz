@@ -4,9 +4,8 @@ import * as serviceWorker from "./serviceWorker";
 import { ReloadIcon } from "@modulz/radix-icons";
 
 import "./styles/styles.scss";
-import InstallApp from "./components/system/InstallApp";
 import TopBar from "./components/layouts/TopBar";
-import Root from "./components/layouts/Menu";
+import Menu from "./components/layouts/Menu";
 import Informations from "./components/layouts/Informations";
 import Train from "./components/layouts/Train";
 
@@ -80,16 +79,14 @@ export default class App extends Component {
 
         <main>
           <Switch>
-            <Route path="/" exact component={Root} />
+            <Route path="/" exact Menu>
+              <Menu installPromptEvent={installPromptEvent} />
+            </Route>
             <Route path="/informations" exact component={Informations} />
             <Route path="/train" exact component={Train} />
             <Route status={404}>Not Found</Route>
           </Switch>
         </main>
-
-        {installPromptEvent !== null && (
-          <InstallApp installPromptEvent={installPromptEvent} />
-        )}
       </Router>
     );
   }

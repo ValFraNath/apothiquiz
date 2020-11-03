@@ -3,7 +3,7 @@ import PropTypes from "proptypes";
 
 const InstallApp = ({ installPromptEvent }) => (
   <button id="installButton" onClick={() => installPromptEvent.prompt()}>
-    Install Guacamole
+    Installer l'application
   </button>
 );
 
