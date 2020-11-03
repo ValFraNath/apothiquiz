@@ -4,10 +4,10 @@ import * as serviceWorker from "./serviceWorker";
 import { ReloadIcon } from "@modulz/radix-icons";
 
 import "./styles/styles.scss";
-import HelloWorld from "./components/HelloWorld";
-import InstallApp from "./components/InstallApp";
-import Train from "./components/Train";
-import OfflineBanner from "./components/OfflineBanner";
+import HelloWorld from "./components/system/HelloWorld";
+import InstallApp from "./components/system/InstallApp";
+import Train from "./components/layouts/Train";
+import OfflineBanner from "./components/system/OfflineBanner";
 import Login from "./components/Login";
 import AuthService from "./services/auth.service";
 import UserBadge from "./components/UserBadge";
@@ -24,6 +24,7 @@ axios.interceptors.request.use(function (config) {
   }
   return config;
 });
+
 
 export default class App extends Component {
   constructor(props) {
