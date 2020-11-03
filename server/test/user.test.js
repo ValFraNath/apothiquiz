@@ -25,14 +25,16 @@ describe("User login", function () {
         }
         expect(res.status).to.be.equal(200);
 
-        const expectedToken = jwt.sign(
-          { pseudo: "fpoguet" },
+        expect(Object.keys(res.body)).to.contains("pseudo");
+        expect(Object.keys(res.body)).to.contains("token");
+
+        let decodedToken = jwt.verify(
+          res.body.token,
           process.env.TOKEN_PRIVATE_KEY
         );
-        expect(res.body).to.be.deep.equal({
-          pseudo: "fpoguet",
-          token: expectedToken,
-        });
+
+        expect(Object.keys(decodedToken)).to.contains("pseudo");
+        expect(decodedToken.pseudo).to.be.equal("fpoguet");
 
         done();
       });
