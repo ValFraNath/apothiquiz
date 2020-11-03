@@ -13,7 +13,7 @@ const UserBadge = ({ pseudo }) => {
   return (
     <div id={"userBadge"}>
       {pseudo}
-      <button onClick={handleLogoutClick}>Logout</button>
+      <button onClick={handleLogoutClick}>Deconnexion</button>
     </div>
   );
 };
