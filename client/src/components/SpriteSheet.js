@@ -59,7 +59,6 @@ class SpriteSheet extends Component {
   };
 
   componentDidMount() {
-    console.log("mount");
     this.props.get(this);
   }
 

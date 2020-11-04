@@ -36,12 +36,10 @@ const OfflineBanner = () => {
       setOnline(navigator.onLine);
 
       if (navigator.onLine) {
-        console.log("on");
         spriteSheet.setCurrentFrame(-1);
         spriteSheet.setDirection("reverse");
         spriteSheet.play();
       } else {
-        console.log("off");
         spriteSheet.setCurrentFrame(0);
         spriteSheet.setDirection("normal");
         spriteSheet.play();
