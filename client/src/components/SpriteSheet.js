@@ -19,12 +19,14 @@ class SpriteSheet extends Component {
       this.setState({ direction: 1, currentFrame: 0 });
     } else if (direction === "reverse") {
       this.setState({ direction: -1, currentFrame: 36 });
+    } else {
+      throw new Error("Invalid direction");
     }
   };
 
   /**
    * Set the spritesheet current frame
-   * @param frame The frame number, if frame is -1, the last frame is set as current
+   * @param newCurrentFrame The new current frame
    */
   setCurrentFrame = (newCurrentFrame) => {
     if (newCurrentFrame < -1 || newCurrentFrame >= this.props.steps) {
