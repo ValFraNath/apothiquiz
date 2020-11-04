@@ -5,6 +5,7 @@ class SpriteSheet extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      interval: null,
       currentFrame: 0,
       direction: 1,
     };
@@ -34,7 +35,7 @@ class SpriteSheet extends Component {
     }
     this.setState({
       currentFrame:
-        newCurrentFrame === -1 ? this.state.steps - 1 : newCurrentFrame,
+        newCurrentFrame === -1 ? this.props.steps - 1 : newCurrentFrame,
     });
   };
 
@@ -62,7 +63,9 @@ class SpriteSheet extends Component {
   };
 
   componentDidMount() {
-    this.props.get(this);
+    if (this.props.get) {
+      this.props.get(this);
+    }
   }
 
   render() {
