@@ -7,7 +7,7 @@ nav {
   background-color: $top-bar-bg;
 }
 
-nav * {
+nav > * {
   display: inline-block;
   margin: 10px;
   color: $top-bar-fg;
@@ -38,7 +38,6 @@ nav #offlineBanner {
   position: absolute;
   right: 10px;
   margin: 10px;
-  background-color: white;
 
   &.online {
     color: green;

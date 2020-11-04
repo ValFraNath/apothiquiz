@@ -3,46 +3,16 @@
   right: 0;
   width: 70px;
   margin: 10px;
-  background-color: white;
 
   &.online {
     color: green;
-
-    div {
-      animation: moveX 3s steps(36) reverse forwards running;
-    }
   }
 
   &.offline {
     color: red;
-
-    div {
-      animation: moveX 3s steps(36) forwards running;
-    }
   }
 
   &.offline-tmp {
     color: red;
-
-    div {
-      background-position-x: -1800px;
-    }
-  }
-
-  div {
-    width: 50px;
-    height: 50px;
-    background-image: url("../../images/connection_status.png");
-    background-size: 1850px 50px;
-    background-repeat: no-repeat;
-  }
-
-  @keyframes moveX {
-    from {
-      background-position-x: 0;
-    }
-    to {
-      background-position-x: -1800px;
-    }
   }
 }
