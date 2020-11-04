@@ -84,11 +84,9 @@ const TopBar = ({ user }) => {
     <nav>
       {/* <CaretLeftIcon id="return" /> */}
       {user && <UserBadge pseudo={user} />}
-
       <h1>
         <Link to="/">Guacamole</Link>
       </h1>
-
       <OfflineBanner />
     </nav>
   );

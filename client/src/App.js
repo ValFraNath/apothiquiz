@@ -8,10 +8,10 @@ import TopBar from "./components/system/TopBar";
 import Menu from "./components/pages/Menu";
 import Informations from "./components/pages/Informations";
 import Train from "./components/layouts/Train";
-import Login from "./components/Login";
+import Login from "./components/pages/Login";
 import AuthService from "./services/auth.service";
 import axios from "axios";
-import WhoAmI from "./components/PrivateTemp";
+import WhoAmI from "./components/pages/PrivateTemp";
 
 /**
  * Set up the authorization header in all request if the user is logged in

@@ -2,7 +2,7 @@ import React from "react";
 import { shallow } from "enzyme";
 import { expect } from "chai";
 
-import Login from "../components/Login";
+import Login from "../components/pages/Login";
 
 describe("Well displayed Login component", function () {
   it("Should contains 2 text inputs and 1 button", function (done) {

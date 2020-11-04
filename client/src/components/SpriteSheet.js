@@ -51,6 +51,7 @@ class SpriteSheet extends Component {
         });
         return;
       }
+
       this.setState({
         currentFrame: this.state.currentFrame + this.state.direction,
       });
