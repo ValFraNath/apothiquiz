@@ -1,6 +1,7 @@
 -- constraints table `molecule_class`
 ALTER TABLE `molecule_class`
-    DROP CONSTRAINT `molecule_class_ibfk_1`,
+    DROP CONSTRAINT `molecule_class_ibfk_1`;
+ALTER TABLE `molecule_class`
     DROP CONSTRAINT `molecule_class_ibfk_2`;
 
 ALTER TABLE `molecule_class`
