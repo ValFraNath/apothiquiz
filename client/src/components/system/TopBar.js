@@ -38,12 +38,11 @@ const OfflineBanner = () => {
       if (navigator.onLine) {
         spriteSheet.setCurrentFrame(-1);
         spriteSheet.setDirection("reverse");
-        spriteSheet.play();
       } else {
         spriteSheet.setCurrentFrame(0);
         spriteSheet.setDirection("normal");
-        spriteSheet.play();
       }
+      spriteSheet.play();
     }
 
     if (navigator.onLine) {
