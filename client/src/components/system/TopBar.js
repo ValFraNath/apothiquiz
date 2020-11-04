@@ -67,8 +67,8 @@ const OfflineBanner = () => {
     <div id={"offlineBanner"} className={isOnline ? "online" : "offline"}>
       <SpriteSheet
         image={connection_anim}
-        frameHeight={50}
-        frameWidth={50}
+        frameHeight={60}
+        frameWidth={65}
         steps={37}
         timing={1.5}
         get={(sp) => {
