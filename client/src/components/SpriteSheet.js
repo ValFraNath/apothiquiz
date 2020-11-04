@@ -89,6 +89,7 @@ SpriteSheet.propTypes = {
   frameWidth: PropTypes.number.isRequired,
   steps: PropTypes.number.isRequired,
   timing: PropTypes.number.isRequired,
+  get: PropTypes.func,
 };
 
 export default SpriteSheet;
