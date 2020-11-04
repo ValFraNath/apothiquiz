@@ -26,12 +26,13 @@ class SpriteSheet extends Component {
    * Set the spritesheet current frame
    * @param frame The frame number, if frame is -1, the last frame is set as current
    */
-  setCurrentFrame = (newCurrentFrame => {
+  setCurrentFrame = (newCurrentFrame) => {
     if (newCurrentFrame < -1 || newCurrentFrame >= this.props.steps) {
       throw new Error("Invalid frame number");
     }
     this.setState({
-      currentFrame: newCurrentFrame === -1 ? this.state.steps - 1 : newCurrentFrame,
+      currentFrame:
+        newCurrentFrame === -1 ? this.state.steps - 1 : newCurrentFrame,
     });
   };
 
