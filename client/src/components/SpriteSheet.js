@@ -67,8 +67,8 @@ class SpriteSheet extends Component {
       <div
         className="spritesheet"
         style={{
-          height: this.props.frameHeight + "px",
-          width: this.props.frameWidth + "px",
+          height: `${this.props.frameHeight}px`,
+          width: `${this.props.frameWidth}px`,
           backgroundImage: `url(${this.props.image})`,
           backgroundSize: `${this.props.frameWidth * this.props.steps}px ${
             this.props.frameHeight
