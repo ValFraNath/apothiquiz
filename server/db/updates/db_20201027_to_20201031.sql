@@ -1,4 +1,3 @@
--- table `molecule_property`
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE IF NOT EXISTS `user` (
     `us_login` varchar(32) NOT NULL,
