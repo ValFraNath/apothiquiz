@@ -22,33 +22,41 @@ const UserBadge = ({ pseudo }) => {
 };
 
 const OfflineBanner = () => {
-  const [isOnline, setOnline] = useState(true);
+  const [isOnline, setOnline] = useState(navigator.onLine);
   const [spriteSheet, setSpriteSheet] = useState(null);
 
+  /**
+   * This function is executed when the online state is changed
+   */
   useEffect(() => {
     if (spriteSheet === null) {
       return;
     }
-    function updateOnlineStatus() {
-      if (isOnline === navigator.onLine) {
-        return;
-      }
-      setOnline(navigator.onLine);
-
-      if (navigator.onLine) {
-        spriteSheet.setCurrentFrame(-1);
-        spriteSheet.setDirection("reverse");
-      } else {
-        spriteSheet.setCurrentFrame(0);
-        spriteSheet.setDirection("normal");
-      }
-      spriteSheet.play();
+    if (isOnline) {
+      spriteSheet.setCurrentFrame(-1);
+      spriteSheet.setDirection("reverse");
+    } else {
+      spriteSheet.setCurrentFrame(0);
+      spriteSheet.setDirection("normal");
     }
+    spriteSheet.play();
+  }, [isOnline, spriteSheet]);
 
+  /**
+   * This function is executed when the spritesheet is changed ( normally only once )
+   */
+  useEffect(() => {
+    if (spriteSheet === null) {
+      return;
+    }
     if (navigator.onLine) {
       spriteSheet.setCurrentFrame(0);
     } else {
       spriteSheet.setCurrentFrame(36);
+    }
+
+    function updateOnlineStatus() {
+      setOnline(navigator.onLine);
     }
 
     window.addEventListener("online", updateOnlineStatus);
@@ -58,7 +66,7 @@ const OfflineBanner = () => {
       window.removeEventListener("online", updateOnlineStatus);
       window.removeEventListener("offline", updateOnlineStatus);
     };
-  }, [spriteSheet, isOnline]);
+  }, [spriteSheet]);
 
   return (
     <div id={"offlineBanner"} className={isOnline ? "online" : "offline"}>

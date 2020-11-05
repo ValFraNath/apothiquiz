@@ -5,7 +5,6 @@ class SpriteSheet extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      interval: null,
       currentFrame: 0,
       direction: 1,
     };
