@@ -31,7 +31,7 @@ export default class Informations extends Component {
     return (
       <div id="informations">
         <p>
-          Glowing Octo Guacamole est une application de test à destination des
+          Guacamole est une application d'apprentissage réflexe à destination des
           étudiants en pharmacie de l'Université de Franche-Comté.
         </p>
         <p>
