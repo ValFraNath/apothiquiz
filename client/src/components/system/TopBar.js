@@ -32,7 +32,6 @@ const OfflineBanner = () => {
     if (spriteSheet === null) {
       return;
     }
-    console.log("play", isOnline);
     if (isOnline) {
       spriteSheet.setCurrentFrame(-1);
       spriteSheet.setDirection("reverse");
