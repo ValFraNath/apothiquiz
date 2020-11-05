@@ -17,9 +17,9 @@ class SpriteSheet extends Component {
    */
   setDirection = (direction) => {
     if (direction === "normal") {
-      this.setState({ direction: 1, currentFrame: 0 });
+      this.setState({ direction: 1 });
     } else if (direction === "reverse") {
-      this.setState({ direction: -1, currentFrame: 36 });
+      this.setState({ direction: -1 });
     } else {
       throw new Error("Invalid direction");
     }
@@ -30,7 +30,12 @@ class SpriteSheet extends Component {
    * @param newCurrentFrame The new current frame
    */
   setCurrentFrame = (newCurrentFrame) => {
-    if (newCurrentFrame < -1 || newCurrentFrame >= this.props.steps) {
+    if (
+      newCurrentFrame === null ||
+      newCurrentFrame === undefined ||
+      newCurrentFrame < -1 ||
+      newCurrentFrame >= this.props.steps
+    ) {
       throw new Error("Invalid frame number");
     }
     this.setState({
@@ -42,7 +47,7 @@ class SpriteSheet extends Component {
   /**
    * Run the animation
    */
-  play = () => {
+  play = (onEachStep = null, onAnimationEnd = null) => {
     let int = setInterval(() => {
       const { currentFrame: frame, direction } = this.state;
       if (
@@ -53,12 +58,18 @@ class SpriteSheet extends Component {
         this.setState({
           interval: null,
         });
+        if (onAnimationEnd) {
+          onAnimationEnd(this.state.currentFrame, this.state.direction);
+        }
         return;
       }
 
       this.setState({
         currentFrame: this.state.currentFrame + this.state.direction,
       });
+      if (onEachStep) {
+        onEachStep(this.state.currentFrame, this.state.direction);
+      }
     }, (1000 * this.props.timing) / this.props.steps);
   };
 
