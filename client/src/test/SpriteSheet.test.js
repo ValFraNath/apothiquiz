@@ -66,6 +66,7 @@ describe("sprite sheet component have a good behavior", function () {
     assert.throws(() => sp.setCurrentFrame(-5), Error);
     expect(sp.state.currentFrame).to.be.equal(0);
     sp.setCurrentFrame(15);
+    assert.throws(() => sp.setCurrentFrame("17"), Error);
     assert.throws(() => sp.setCurrentFrame(null), Error);
     assert.throws(() => sp.setCurrentFrame(), Error);
     expect(sp.state.currentFrame).to.be.equal(15);

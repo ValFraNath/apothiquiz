@@ -27,12 +27,12 @@ class SpriteSheet extends Component {
 
   /**
    * Set the spritesheet current frame
-   * @param newCurrentFrame The new current frame
+   * @param {number} newCurrentFrame The new current frame
    */
   setCurrentFrame = (newCurrentFrame) => {
     if (
-      newCurrentFrame === null ||
-      newCurrentFrame === undefined ||
+      newCurrentFrame == null ||
+      !Number.isInteger(newCurrentFrame) ||
       newCurrentFrame < -1 ||
       newCurrentFrame >= this.props.steps
     ) {
@@ -46,8 +46,10 @@ class SpriteSheet extends Component {
 
   /**
    * Run the animation
+   * @param {function|null} onEachStep Function to call every time a new frame is displayed
+   * @param {function|null} onAnimationEnd Function to call when the animation is finished
    */
-  play = (onEachStep = null, onAnimationEnd = null) => {
+  play = (onEachStep = null, onAnimationEnd) => {
     let int = setInterval(() => {
       const { currentFrame: frame, direction } = this.state;
       if (
