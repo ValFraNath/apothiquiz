@@ -27,6 +27,7 @@ class Train extends Component {
       questionNumber: 0,
       question: {},
       inProgress: false,
+      timer: 10,
       result: {
         good: 0,
         bad: 0,
@@ -84,12 +85,18 @@ class Train extends Component {
   /**
    * Update the timer
    */
-  updateTimerOver = () => {
-    const { result } = this.state;
-    result.bad += 1;
+  updateTimer = (value) => {
+    let { inProgress, result } = this.state;
+
+    if (!inProgress) return false;
+    if (value === 0) {
+      result.bad += 1;
+      inProgress = false;
+    }
 
     this.setState({
-      inProgress: false,
+      inProgress: inProgress,
+      timer: value,
       result: result,
     });
   };
@@ -143,11 +150,15 @@ class Train extends Component {
               <h1>{this.generateQuestionText()}</h1>
             </div>
 
-            <Timer
-              inProgress={inProgress}
-              duration={timer}
-              updateParent={this.updateTimerOver}
-            />
+            {inProgress ? (
+              <Timer
+                inProgress={inProgress}
+                duration={timer}
+                updateParent={this.updateTimer}
+              />
+            ) : (
+              <button onClick={this.getNewQuestion}>Question suivante</button>
+            )}
 
             <Answers
               inProgress={inProgress}
@@ -155,10 +166,6 @@ class Train extends Component {
               badAnswers={question.badAnswers}
               onClick={this.handleAnswerClick}
             />
-
-            {!inProgress && (
-              <button onClick={this.getNewQuestion}>Question suivante</button>
-            )}
           </>
         )}
       </main>
