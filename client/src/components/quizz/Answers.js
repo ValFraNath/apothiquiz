@@ -29,7 +29,7 @@ const Answers = ({ inProgress, goodAnswer, badAnswers, onClick }) => {
   const arrayOfAnswers = [...badAnswers];
 
   useEffect(() => {
-    const index = Math.floor(Math.random() * 3);
+    const index = Math.floor(Math.random() * 4);
     setGoodIndex(index);
   }, [goodAnswer]);
 

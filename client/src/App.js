@@ -1,23 +1,43 @@
 import React, { Component } from "react";
-import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import * as serviceWorker from "./serviceWorker";
 import { ReloadIcon } from "@modulz/radix-icons";
 
 import "./styles/styles.scss";
-import HelloWorld from "./components/system/HelloWorld";
-import InstallApp from "./components/system/InstallApp";
+import TopBar from "./components/system/TopBar";
+import Menu from "./components/pages/Menu";
+import Informations from "./components/pages/Informations";
 import Train from "./components/layouts/Train";
-import OfflineBanner from "./components/system/OfflineBanner";
+import Login from "./components/pages/Login";
+import AuthService from "./services/auth.service";
+import axios from "axios";
+import WhoAmI from "./components/pages/PrivateTemp";
+
+/**
+ * Set up the authorization header in all request if the user is logged in
+ */
+axios.interceptors.request.use(function (config) {
+  const user = AuthService.getCurrentUser();
+  if (user && user.token && user.pseudo) {
+    config.headers.Authorization = `Barear ${user.token}`;
+  }
+  return config;
+});
 
 export default class App extends Component {
   constructor(props) {
     super(props);
 
+    let user = AuthService.getCurrentUser();
+    if (user) {
+      user = user.pseudo;
+    }
+
     this.state = {
       waitingServiceWorker: null,
       isUpdateAvailable: false,
       installPromptEvent: null,
-      updateRequired: false,
+      user: user,
     };
   }
 
@@ -64,7 +84,7 @@ export default class App extends Component {
 
     return (
       <Router>
-        <OfflineBanner />
+        <TopBar user={this.state.user} />
         {isUpdateAvailable && (
           <button
             id="update-app"
@@ -75,18 +95,21 @@ export default class App extends Component {
             {!updateRequired ? "Mettre à jour l'app" : "Mise à jour..."}
           </button>
         )}
-        <Switch>
-          <Route path="/" exact>
-            <Link to="/hello_world">Go to Hello World</Link>
-            <Link to="/train">Train</Link>
-            {installPromptEvent !== null && (
-              <InstallApp installPromptEvent={installPromptEvent} />
-            )}
-          </Route>
-          <Route path="/hello_world" exact component={HelloWorld} />
-          <Route path="/train" exact component={Train} />
-          <Route status={404}>Not Found</Route>
-        </Switch>
+
+        <main>
+          <Switch>
+            <Route path="/" exact Menu>
+              <Menu
+                user={this.state.user}
+                installPromptEvent={installPromptEvent}
+              />
+            </Route>
+            <Route path="/informations" exact component={Informations} />
+            <Route path="/train" exact component={Train} />
+            <Route path="/login" exact component={Login} />
+            <Route path="/private" exact component={WhoAmI} />
+          </Switch>
+        </main>
       </Router>
     );
   }

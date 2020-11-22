@@ -1,12 +1,18 @@
 import express from "express";
 
-import * as api from "../api/api.js";
-import { generateQuestion } from "../api/question.js";
+import { status } from "../controllers/api.js";
+import { generateQuestion } from "../controllers/question.js";
+import UserController from "../controllers/user.js";
+import auth from "../middlewares/auth.middleware.js";
 
 const apiRouter = express.Router();
 
-apiRouter.get("/status", api.status);
+apiRouter.get("/status", status);
 
 apiRouter.get("/question/:type", generateQuestion);
+
+apiRouter.get("/user", auth, UserController.getInfos);
+
+apiRouter.post("/user/login", UserController.login);
 
 export default apiRouter;
