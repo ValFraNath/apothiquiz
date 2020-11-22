@@ -41,6 +41,7 @@ $timer-size: 100px;
   #quiz-question {
     position: relative;
     padding: 2.7em 0.8em;
+    margin-bottom: 1em;
     box-shadow: 0 0 12px 4px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
     overflow: hidden;
@@ -58,33 +59,6 @@ $timer-size: 100px;
       background-color: $mascot-blue-light;
       color: white;
       border-bottom-right-radius: 10px;
-    }
-  }
-
-  /* ---------- Answers ---------- */
-
-  #quiz-answers {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
-    grid-gap: 0.5em;
-    margin: 1rem 0;
-
-    button {
-      padding: 3em 0.8em;
-      text-transform: capitalize;
-      font-size: 1em;
-    }
-
-    .good-answer {
-      color: green;
-      border: 1px solid green;
-    }
-
-    .bad-answer {
-      background-color: white;
-      color: red;
-      border: 1px solid red;
     }
   }
 
@@ -113,6 +87,52 @@ $timer-size: 100px;
 
     #timer-stroke {
       background-image: url("../../images/timer_stroke.png");
+    }
+  }
+
+  /* ---------- "Next question" button ---------- */
+
+  #next-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: $timer-size;
+
+    button {
+      text-transform: none;
+      font-size: 1em;
+
+      svg {
+        vertical-align: middle;
+        margin-left: 5px;
+      }
+    }
+  }
+
+  /* ---------- Answers ---------- */
+
+  #quiz-answers {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    grid-gap: 0.5em;
+    margin-top: 1rem;
+
+    button {
+      padding: 3em 0.8em;
+      text-transform: capitalize;
+      font-size: 1em;
+    }
+
+    .good-answer {
+      color: green;
+      border: 1px solid green;
+    }
+
+    .bad-answer {
+      background-color: white;
+      color: red;
+      border: 1px solid red;
     }
   }
 }

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import PropTypes from "proptypes";
+import { ArrowRightIcon } from "@modulz/radix-icons";
 
 import Timer from "../quizz/Timer";
 import Answers from "../quizz/Answers";
@@ -157,7 +158,12 @@ class Train extends Component {
                 updateParent={this.updateTimer}
               />
             ) : (
-              <button onClick={this.getNewQuestion}>Question suivante</button>
+              <div id="next-btn">
+                <button onClick={this.getNewQuestion}>
+                  Question suivante
+                  <ArrowRightIcon />
+                </button>
+              </div>
             )}
 
             <Answers
