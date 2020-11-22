@@ -2,20 +2,28 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "proptypes";
 
 const Timer = ({ inProgress, duration, updateParent }) => {
-  const [initialDuration] = useState(duration);
+  const [seconds, setSeconds] = useState(duration);
+  const [animationState, setAnimationState] = useState(true);
 
   useEffect(() => {
-    if (!inProgress || duration === 0) {
+    if (!inProgress) {
+      setAnimationState(false);
       return;
     }
 
-    setTimeout(() => {
+    if (seconds === 0) {
       updateParent();
+    }
+    let interval = setTimeout(() => {
+      setSeconds(seconds - 1);
     }, 1000);
-  }, [inProgress, duration, updateParent]);
+
+    return () => clearInterval(interval);
+  }, [inProgress, seconds, updateParent]);
 
   const timerStyle = {
-    animationDuration: `${initialDuration}s`,
+    animationDuration: `${duration}s`,
+    animationPlayState: animationState ? "running" : "paused",
   };
 
   return (

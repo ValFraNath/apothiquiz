@@ -1,9 +1,24 @@
 import React, { Component } from "react";
 import axios from "axios";
+import PropTypes from "proptypes";
 
 import Timer from "../quizz/Timer";
 import Answers from "../quizz/Answers";
 import Message from "../quizz/Message";
+
+const IntroductionView = ({ onClick }) => {
+  return (
+    <>
+      <h1>Mode entraînement</h1>
+      <p id="about">Répondez à une série de questions aléatoire.</p>
+      <button onClick={onClick}>Lancer l'entraînement</button>
+    </>
+  );
+};
+
+IntroductionView.propTypes = {
+  onClick: PropTypes.func.isRequired,
+};
 
 class Train extends Component {
   constructor(props) {
@@ -12,7 +27,6 @@ class Train extends Component {
       questionNumber: 0,
       question: {},
       inProgress: false,
-      timer: 0,
       result: {
         good: 0,
         bad: 0,
@@ -30,8 +44,9 @@ class Train extends Component {
     const questionType =
       Math.floor(Math.random() * (maxQuestionType - minQuestionType)) +
       minQuestionType;
+
     axios
-      .get("/api/v1/question/" + questionType)
+      .get(`/api/v1/question/${questionType}`)
       .then((res) => {
         this.setState({
           question: res.data.question,
@@ -69,19 +84,13 @@ class Train extends Component {
   /**
    * Update the timer
    */
-  updateTimerValue = () => {
-    let { inProgress, timer } = this.state;
+  updateTimerOver = () => {
+    const { result } = this.state;
+    result.bad += 1;
 
-    if (!inProgress) {
-      return;
-    }
-
-    if (timer - 1 === 0) {
-      inProgress = false;
-    }
     this.setState({
-      inProgress: inProgress,
-      timer: timer - 1,
+      inProgress: false,
+      result: result,
     });
   };
 
@@ -116,19 +125,12 @@ class Train extends Component {
       result,
       error,
     } = this.state;
-    const introductionView = (
-      <>
-        <h1>Mode entraînement</h1>
-        <p id="about">Répondez à une série de questions aléatoire.</p>
-        <button onClick={this.getNewQuestion}>Lancer l'entraînement</button>
-      </>
-    );
 
     return (
       <main id="quiz">
         {error !== null && <Message type="error" content={error} />}
         {questionNumber === 0 ? (
-          introductionView
+          <IntroductionView onClick={this.getNewQuestion} />
         ) : (
           <>
             <div id="quiz-score">
@@ -144,7 +146,7 @@ class Train extends Component {
             <Timer
               inProgress={inProgress}
               duration={timer}
-              updateParent={this.updateTimerValue}
+              updateParent={this.updateTimerOver}
             />
 
             <Answers
