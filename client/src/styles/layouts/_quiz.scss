@@ -1,3 +1,6 @@
+// Local variables
+$timer-size: 100px;
+
 #quiz {
   h1 {
     font-size: 2rem;
@@ -54,5 +57,42 @@
       color: red;
       border: 1px solid red;
     }
+  }
+
+  /* ---------- Timer ---------- */
+
+  #timer {
+    position: relative;
+    width: $timer-size;
+    height: $timer-size;
+    margin: auto;
+
+    div {
+      position: absolute;
+      bottom: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+      background-size: $timer-size;
+      background-position: bottom;
+    }
+
+    #timer-color {
+      background-image: url("../../images/timer_colors.png");
+      animation: load-effect linear;
+    }
+
+    #timer-stroke {
+      background-image: url("../../images/timer_stroke.png");
+    }
+  }
+}
+
+@keyframes load-effect {
+  0% {
+    height: 0%;
+  }
+  100% {
+    height: 100%;
   }
 }
