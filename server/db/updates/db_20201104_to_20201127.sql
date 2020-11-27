@@ -1,6 +1,6 @@
 ALTER TABLE `user` 
-ADD `us_won` INT NOT NULL DEFAULT '0' AFTER `us_login`, 
-ADD `us_lost` INT NOT NULL DEFAULT '0' AFTER `us_won`; 
+ADD `us_wins` INT NOT NULL DEFAULT '0' AFTER `us_login`, 
+ADD `us_losts` INT NOT NULL DEFAULT '0' AFTER `us_wins`; 
 
 DROP TABLE IF EXISTS `duel`;
 CREATE TABLE IF NOT EXISTS `duel` ( 
