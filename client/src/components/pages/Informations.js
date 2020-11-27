@@ -31,8 +31,8 @@ export default class Informations extends Component {
     return (
       <div id="informations">
         <p>
-          Guacamole est une application d'apprentissage réflexe à destination des
-          étudiants en pharmacie de l'Université de Franche-Comté.
+          Guacamole est une application d'apprentissage réflexe à destination
+          des étudiants en pharmacie de l'Université de Franche-Comté.
         </p>
         <p>
           Elle est réalisée dans le cadre d'un projet tutoré de Licence 3
