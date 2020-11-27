@@ -70,7 +70,7 @@ describe("Check the database structure", function () {
     },
     {
       name: "user",
-      fields: ["us_login", "us_won", "us_lost"],
+      fields: ["us_login", "us_wins", "us_losts"],
     },
     {
       name: "duel",
