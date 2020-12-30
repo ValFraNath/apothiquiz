@@ -17,6 +17,7 @@ const versions = [
   "2020-10-31",
   "2020-11-04",
   "2020-11-27",
+  "2020-12-29",
 ];
 
 Database.currentVersion = () => versions[versions.length - 1];

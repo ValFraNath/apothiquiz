@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS `results` (
     PRIMARY KEY (`us_login`, `du_id`),
     CONSTRAINT `result_fkey_user` FOREIGN KEY (`us_login`) REFERENCES `user` (`us_login`) ON UPDATE CASCADE ON DELETE RESTRICT ,
     CONSTRAINT `result_fkey_duel` FOREIGN KEY (`du_id`) REFERENCES `duel` (`du_id`) ON UPDATE CASCADE ON DELETE RESTRICT 
-) ENGINE = InnoDB CHARSET=utf8 COLLATE utf8_bin; 
+) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin; 
     
 
 UPDATE `system` SET `sy_version` = "2020-11-27";
