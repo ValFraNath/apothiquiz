@@ -9,6 +9,7 @@ CREATE TABLE `category` (
 
 ALTER TABLE `property` 
     ADD COLUMN pr_category int(11) NOT NULL,
+    ADD UNIQUE( `pr_name`, `pr_category`),
     ADD FOREIGN KEY (pr_category) REFERENCES `category`(ca_id);
 
 UPDATE `system` SET `sy_version` = "2020-12-29";
