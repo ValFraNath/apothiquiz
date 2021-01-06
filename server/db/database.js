@@ -119,7 +119,7 @@ Database.update = async function (version = versions[0]) {
     );
 
     await queryPromise(updateQuery)
-      .then(() => console.log("->Database updated!\n"))
+      .then(() => console.log("-> Database updated!\n"))
       .catch((err) => {
         throw err;
       });
