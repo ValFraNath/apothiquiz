@@ -22,7 +22,7 @@ describe("GET /status", function () {
   });
 });
 
-describe("Question generation", function () {
+describe.skip("Question generation", function () {
   it("return a question of type 1 well formatted", function (done) {
     chai
       .request(app)
