@@ -17,7 +17,7 @@ before(function insertData(done) {
 
     await queryPromise(insertionScript)
       .then(() => {
-        console.log("->Data inserted in database!");
+        console.log("-> Data inserted in database!");
         done();
       })
       .catch((err) => {

@@ -65,8 +65,8 @@ describe("Check the database structure", function () {
       fields: ["pr_id", "mo_id"],
     },
     {
-      name: "api_system",
-      fields: ["api_version"],
+      name: "server_informations",
+      fields: ["key", "value"],
     },
     {
       name: "user",

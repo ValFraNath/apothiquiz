@@ -16,13 +16,14 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Structure de la table `api_system`
+-- Structure de la table `server_informations`
 --
 
-DROP TABLE IF EXISTS `api_system`;
-CREATE TABLE IF NOT EXISTS `api_system` (
-  `api_version` varchar(16) COLLATE utf8_bin NOT NULL,
-  PRIMARY KEY (`api_version`)
+DROP TABLE IF EXISTS `server_informations`;
+CREATE TABLE IF NOT EXISTS `server_informations` (
+  `key` varchar(16) COLLATE utf8_bin NOT NULL,
+  `value` varchar(16) COLLATE utf8_bin NOT NULL,
+  PRIMARY KEY (`key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------------------------
@@ -213,5 +214,5 @@ COMMIT;
 
 SET AUTOCOMMIT = 1;
 
-INSERT INTO `api_system` (`api_version`)
-VALUES ('2021-01-08');
+INSERT INTO `server_informations` (`key`, `value`)
+VALUES ('api_version', '2021-01-08');

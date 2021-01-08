@@ -12,7 +12,7 @@ const Database = {};
 // Be sure to add a new version at the end of this array (it must be sorted)
 const versions = ["2021-01-08"];
 
-Database.currentVersion = () => versions[versions.length - 1];
+Database.currentAPIVersion = () => versions[versions.length - 1];
 
 Database.connection = mysql.createConnection({
   host: process.env.DB_HOST || "localhost",
@@ -31,7 +31,7 @@ Database.connect = async function (err) {
   }
   console.log("Connected to database!");
 
-  Database.getVersion().then(async (db_version) => {
+  Database.getSystemInformation("api_version").then(async (db_version) => {
     if (db_version === -1) {
       await Database.create();
       await Database.update();
@@ -51,21 +51,23 @@ Database.create = async function () {
     .toString("utf8");
   console.log("Creation of database... ");
   await queryPromise(creationScript)
-    .then(() => console.log("->Database created!\n"))
+    .then(() => console.log("-> Database created!\n"))
     .catch((err) => {
       throw err;
     });
 };
 
 /**
- * Get the database version
- * @return {Promise<Number|String>} The database version, or -1 if no version found
+ * Get a system information from the database
+ *
+ * @param {String} key the name of the information
+ * @return {Promise<Number|String>} The value of the information, or -1 if the information is not found
  */
-Database.getVersion = function () {
+Database.getSystemInformation = function (key) {
   return new Promise(function (resolve) {
-    let sql = "SELECT api_version FROM `api_system`";
+    let sql = `SELECT value FROM \`server_informations\` WHERE \`key\`='${key}'`;
     queryPromise(sql)
-      .then((res) => resolve(JSON.parse(JSON.stringify(res))[0].api_version))
+      .then((res) => resolve(JSON.parse(JSON.stringify(res))[0].value))
       .catch((err) => {
         if (err.code === "ER_NO_SUCH_TABLE") {
           resolve(-1);
@@ -81,7 +83,7 @@ Database.getVersion = function () {
  * @param {String} version The current database version, if undefined it use the first version
  */
 Database.update = async function (version = versions[0]) {
-  if (version === Database.currentVersion()) {
+  if (version === Database.currentAPIVersion()) {
     console.log("Database is up to date!");
     return;
   }

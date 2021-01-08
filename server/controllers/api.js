@@ -2,8 +2,8 @@ import db from "../db/database.js";
 
 async function status(req, res) {
   let response = {
-    status: "online",
-    db_version: await db.getVersion(),
+    status: "connected",
+    api_version: await db.getSystemInformation("api_version"),
   };
 
   res.status(200).json(response);
