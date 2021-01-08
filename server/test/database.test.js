@@ -46,7 +46,15 @@ describe("Check the database structure", function () {
   let structure = [
     {
       name: "molecule",
-      fields: ["mo_id", "mo_dci", "mo_difficulty", "mo_skeletal_formula"],
+      fields: [
+        "mo_id",
+        "mo_dci",
+        "mo_difficulty",
+        "mo_skeletal_formula",
+        "mo_ntr",
+        "mo_class",
+        "mo_system",
+      ],
     },
     {
       name: "property",
@@ -57,8 +65,8 @@ describe("Check the database structure", function () {
       fields: ["pr_id", "mo_id"],
     },
     {
-      name: "system",
-      fields: ["sy_version"],
+      name: "api_system",
+      fields: ["api_version"],
     },
     {
       name: "user",
@@ -75,6 +83,14 @@ describe("Check the database structure", function () {
     {
       name: "category",
       fields: ["ca_id", "ca_name"],
+    },
+    {
+      name: "system",
+      fields: ["sy_id", "sy_name", "sy_higher", "sy_level"],
+    },
+    {
+      name: "class",
+      fields: ["cl_id", "cl_name", "cl_higher", "cl_level"],
     },
   ];
 

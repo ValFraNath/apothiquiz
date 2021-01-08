@@ -10,15 +10,7 @@ dotenv.config();
 const Database = {};
 
 // Be sure to add a new version at the end of this array (it must be sorted)
-const versions = [
-  "2020-10-18",
-  "2020-10-21",
-  "2020-10-27",
-  "2020-10-31",
-  "2020-11-04",
-  "2020-11-27",
-  "2020-12-29",
-];
+const versions = ["2021-01-08"];
 
 Database.currentVersion = () => versions[versions.length - 1];
 
@@ -67,23 +59,20 @@ Database.create = async function () {
 
 /**
  * Get the database version
- * @return {Number|String} The database version, or -1 if no version found
+ * @return {Promise<Number|String>} The database version, or -1 if no version found
  */
 Database.getVersion = function () {
-  let sql = "SELECT sy_version FROM `system`";
-
   return new Promise(function (resolve) {
-    Database.connection.query(sql, function (err, res) {
-      if (err) {
+    let sql = "SELECT api_version FROM `api_system`";
+    queryPromise(sql)
+      .then((res) => resolve(JSON.parse(JSON.stringify(res))[0].api_version))
+      .catch((err) => {
         if (err.code === "ER_NO_SUCH_TABLE") {
           resolve(-1);
         } else {
           throw err;
         }
-      } else {
-        resolve(JSON.parse(JSON.stringify(res))[0].sy_version);
-      }
-    });
+      });
   });
 };
 
