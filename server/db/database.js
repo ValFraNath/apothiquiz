@@ -16,6 +16,8 @@ const versions = [
   "2020-10-27",
   "2020-10-31",
   "2020-11-04",
+  "2020-11-27",
+  "2020-12-29",
 ];
 
 Database.currentVersion = () => versions[versions.length - 1];
@@ -118,7 +120,7 @@ Database.update = async function (version = versions[0]) {
     );
 
     await queryPromise(updateQuery)
-      .then(() => console.log("->Database updated!\n"))
+      .then(() => console.log("-> Database updated!\n"))
       .catch((err) => {
         throw err;
       });

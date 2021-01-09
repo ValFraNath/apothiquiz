@@ -23,7 +23,7 @@ describe("User login", function () {
         if (err) {
           throw err;
         }
-        expect(res.status).to.be.equal(200);
+        expect(res.status, res.error).to.be.equal(200);
 
         expect(Object.keys(res.body)).to.contains("pseudo");
         expect(Object.keys(res.body)).to.contains("token");

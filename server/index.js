@@ -12,6 +12,13 @@ const PORT = process.env.PORT || 5035;
 const app = express();
 app.isReady = false;
 
+if (!process.env.TOKEN_PRIVATE_KEY) {
+  console.error(
+    "TOKEN_PRIVATE_KEY is not defined in .env. Please generate a random private key"
+  );
+  process.exit(1);
+}
+
 app.use(bodyParser.json());
 
 app.use(express.static("../client/build/"));

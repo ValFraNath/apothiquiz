@@ -49,20 +49,12 @@ describe("Check the database structure", function () {
       fields: ["mo_id", "mo_dci", "mo_difficulty", "mo_skeletal_formula"],
     },
     {
-      name: "class",
-      fields: ["cl_id", "cl_name"],
-    },
-    {
       name: "property",
-      fields: ["pr_id", "pr_name"],
+      fields: ["pr_id", "pr_name", "pr_category"],
     },
     {
       name: "molecule_property",
       fields: ["pr_id", "mo_id"],
-    },
-    {
-      name: "molecule_class",
-      fields: ["cl_id", "mo_id"],
     },
     {
       name: "system",
@@ -70,7 +62,19 @@ describe("Check the database structure", function () {
     },
     {
       name: "user",
-      fields: ["us_login"],
+      fields: ["us_login", "us_wins", "us_losts"],
+    },
+    {
+      name: "duel",
+      fields: ["du_id", "du_content", "du_currentRound"],
+    },
+    {
+      name: "results",
+      fields: ["us_login", "du_id", "re_answers"],
+    },
+    {
+      name: "category",
+      fields: ["ca_id", "ca_name"],
     },
   ];
 
