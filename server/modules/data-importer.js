@@ -12,94 +12,110 @@ export class ImportationError extends Error {
   }
 }
 
+class Property {
+  constructor(name, hierachical = false, unique = false) {
+    this.name = name;
+    this.hierachical = hierachical;
+    this.unique = unique;
+  }
+  isUnique() {
+    return this.unique;
+  }
+  isHierarchical() {
+    return this.hierachical;
+  }
+}
+
 /**
- * This object is a map "column name" -> propery (with some details about properties)
- * The column name is a regex because some columns are ordered.
+ * Array of properties, with some details about them.
+ * The column field is a regex because some columns are ordered.
  */
-const columnToProperty = {
-  "SYSTEME_(\\d+)": { name: "systems", hierachical: true, unique: false },
-  "CLASSE_PHARMA_(\\d+)": {
-    name: "classes",
-    hierachical: true,
-    unique: false,
+const columns = [
+  { title: "SYSTEME_(\\d+)", property: new Property("systems", true, false) },
+  {
+    title: "CLASSE_PHARMA_(\\d+)",
+    property: new Property("classes", true, false),
   },
-  INTERACTION: { name: "interactions", hierachical: false, unique: false },
-  INDICATION: { name: "indications", hierachical: false, unique: false },
-  EFFET_INDESIRABLE: {
-    name: "sideEffect",
-    hierachical: false,
-    unique: false,
+  { title: "INTERACTION", property: new Property("interactions", false, false) },
+  { title: "INDICATION", property: new Property("indications", false, false) },
+  {
+    title: "EFFET_INDESIRABLE",
+    property: new Property("sideEffect", false, false),
   },
-  DCI: { name: "molecule", hierachical: false, unique: true },
-  MTE: { name: "ntr", hierachical: false, unique: true },
-  FORMULE_CHIMIQUE: {
-    name: "skeletal_formule",
-    hierachical: false,
-    unique: true,
+  { title: "DCI", property: new Property("molecule", false, true) },
+  { title: "MTE", property: new Property("ntr", false, true) },
+  {
+    title: "FORMULE_CHIMIQUE",
+    property: new Property("skeletal_formule", false, true),
   },
-  NIVEAU_DEBUTANT: { name: "level_easy", hierachical: false, unique: true },
-  NIVEAU_EXPERT: { name: "level_hard", hierachical: false, unique: true },
-};
+  { title: "NIVEAU_DEBUTANT", property: new Property("level_easy", false, true) },
+  { title: "NIVEAU_EXPERT", property: new Property("level_hard", false, true) },
+];
+
+function getNonUniqueProperties() {
+  return columns.filter((column) => !column.property.isUnique()).map((column) => column.property);
+}
 
 /**
  * Import CSV file to parse data into an object
- * @param {*} filepath
+ * @param {string} filepath
  */
 export function importData(filepath) {
-  const data = Object.create(null);
-
   const excelData = readCsvFile(filepath);
 
-  const colsIndexes = extractColumnsStructure(excelData.shift());
+  const structure = new FileStructure(excelData.shift(), columns);
 
-  for (let property of getNonUniqueProperty()) {
-    const create = property.hierachical ? createClassification : createProperties;
+  const data = Object.create(null);
 
-    data[property.name] = create(
+  for (let property of getNonUniqueProperties()) {
+    const type = property.isHierarchical() ? Classification : PropertyCategory;
+
+    data[property.name] = new type(
       extractColumns(
         excelData,
-        colsIndexes[property.name].begin,
-        colsIndexes[property.name].end + 1
+        structure.getIndexesFor(property.name).begin,
+        structure.getIndexesFor(property.name).end + 1
       )
     );
   }
+
+  console.dir(data, { depth: null });
 
   return data;
 }
 
 // ***** INTERNAL FUNCTIONS *****
 
-/**
- * Filter the property object to keep only non unique ones
- */
-function getNonUniqueProperty() {
-  return Object.getOwnPropertyNames(columnToProperty)
-    .filter((property) => !columnToProperty[property].unique)
-    .map((property) => columnToProperty[property]);
-}
+class FileStructure {
+  /**
+   * This function reads the first row and stores which index is associated with which property
+   * @param {string[]} header
+   * @param {{title : string, property : Property}} columns
+   * @throws {ImportationError} if the spreadsheet is incorrectly formatted
+   */
+  constructor(header, columns) {
+    this.header = header;
+    this.properties = Object.create(null);
+    this.columns = columns;
 
-/**
- * This function reads the first row and stores which index is associated with which property
- * @param {array} header
- * @throws {ImportationError} if the spreadsheet is incorrectly formatted
- */
-function extractColumnsStructure(header) {
-  const columnsStructure = Object.create(null);
+    this.forEachMatchingColumns((property, index, match) => {
+      if (property.isHierarchical()) {
+        let level = Number(match[1]);
+        this.addHierachicalProperty(property.name, index, level);
+      } else if (property.isUnique()) {
+        this.addUniqueProperty(property.name, index);
+      } else {
+        this.addBasicProperty(property.name, index);
+      }
+    });
+  }
 
-  forEachMatchingColumns((property, index, match) => {
-    if (property.hierachical) {
-      let level = Number(match[1]);
-      addHierachicalProperty(property.name, index, level);
-    } else if (property.unique) {
-      addUniqueProperty(property.name, index);
-    } else {
-      addBasicProperty(property.name, index);
-    }
-  });
-
-  return columnsStructure;
-
-  // Functions
+  /**
+   * @param {string} property
+   */
+  getIndexesFor(property) {
+    return this.properties[property];
+  }
 
   /**
    * Add a hierarchical property to the structure
@@ -108,8 +124,8 @@ function extractColumnsStructure(header) {
    * @param {number} level
    * @throws {ImportationError} if the columns of the same property do not follow each other, or if the hierarchical levels are not consistent
    */
-  function addHierachicalProperty(property, index, level) {
-    let currentValue = columnsStructure[property];
+  addHierachicalProperty(property, index, level) {
+    let currentValue = this.properties[property];
     if (currentValue) {
       if (currentValue.level !== level - 1) {
         throw new ImportationError("INVALID_LEVEL_VALUE");
@@ -123,7 +139,7 @@ function extractColumnsStructure(header) {
       if (level !== 1) {
         throw Error("INVALID_LEVEL_VALUE");
       }
-      columnsStructure[property] = {
+      this.properties[property] = {
         begin: index,
         end: index,
         level: level,
@@ -137,8 +153,8 @@ function extractColumnsStructure(header) {
    * @param {number} index
    * @throws {ImportationError} if the  columns of the same property do not follow each other
    */
-  function addBasicProperty(property, index) {
-    let currentValue = columnsStructure[property];
+  addBasicProperty(property, index) {
+    let currentValue = this.properties[property];
     if (currentValue) {
       // If the property already exists -> update the end index and the level
       if (currentValue.end < index - 1) {
@@ -146,7 +162,7 @@ function extractColumnsStructure(header) {
       }
       currentValue.end = index;
     } else {
-      columnsStructure[property] = {
+      this.properties[property] = {
         begin: index,
         end: index,
       };
@@ -159,11 +175,11 @@ function extractColumnsStructure(header) {
    * @param {number} index
    * @throws {ImportationError} if a property appears more than once
    */
-  function addUniqueProperty(property, index) {
-    if (columnsStructure[property]) {
+  addUniqueProperty(property, index) {
+    if (this.properties[property]) {
       throw Error("SEVERAL_UNIQUE_PROPERTY");
     } else {
-      columnsStructure[property] = {
+      this.properties[property] = {
         begin: index,
         end: index,
       };
@@ -174,20 +190,20 @@ function extractColumnsStructure(header) {
    * Execute a callback for each columns matching the regex objects
    * @param {function} callback
    */
-  function forEachMatchingColumns(callback) {
-    header.forEach((column, index) => {
-      column = removeSuccessiveWhiteSpaces(column);
-      if (!column) {
+  forEachMatchingColumns(callback) {
+    this.header.forEach((headerColumn, index) => {
+      headerColumn = removeSuccessiveWhiteSpaces(headerColumn);
+      if (!headerColumn) {
         return;
       }
 
-      Object.getOwnPropertyNames(columnToProperty).forEach((regex) => {
-        let match = column.match(new RegExp(regex));
+      this.columns.forEach((column) => {
+        let match = headerColumn.match(new RegExp(column.title));
         if (!match) {
           return;
         }
-        let property = columnToProperty[regex];
-        callback(property, index, match);
+
+        callback(column.property, index, match);
       });
     });
   }
@@ -226,78 +242,136 @@ function extractColumns(matrix, begin = 0, end = matrix.length) {
 }
 
 /**
- * Create a classification tree (not really a tree because we don't have a common root) -> each node has an id, a name, and array of childen
- * @param {arrray} array
+ * Class representing a classification node,
+ * characterized by an identifier, a name and
+ * consisting of a node that has child nodes
  */
-function createClassification(array) {
-  function createNode(value) {
-    const node = Object.create(null);
-    node.id = id++;
-    node.name = value;
-    node.children = [];
-    node.findChild = (name) => node.children.find((node) => node.name === name);
-    node.deepFindChild = (name) => {
-      let res = null;
-      for (let child of node.children) {
-        if (child.name === name) {
-          return child;
-        }
-        res = child.deepFindChild(name);
-        if (res) {
-          return res;
-        }
-      }
-      return null;
-    };
-    return node;
+class ClassificationNode {
+  /**
+   * Create a new node
+   * @param {number} id
+   * @param {string} name
+   */
+  constructor(id, name) {
+    this.id = id;
+    this.name = name;
+
+    /**@type {ClassificationNode[]} */
+    this.children = [];
   }
 
-  let id = 0;
-  const root = createNode("ROOT");
+  /**
+   * Add a node child
+   * @param {ClassificationNode} node
+   */
+  addChild(node) {
+    this.children.push(node);
+  }
 
-  array.forEach((row) => {
-    let parent = root;
+  /**
+   * Find a node by name among direct children
+   * @param {string} name
+   * @returns {ClassificationNode|undefined}
+   */
+  findChild(name) {
+    return this.children.find((node) => node.name === name);
+  }
 
-    row.forEach((value) => {
-      value = removeSuccessiveWhiteSpaces(value);
-      if (!value || !parent) {
-        parent = null;
-        return;
+  /**
+   * Find a node by name, among all descendants
+   * @param {string} name
+   * @return {ClassificationNode | undefined}
+   */
+  deepFindChild(name) {
+    let res = null;
+    for (let child of this.children) {
+      if (child.name === name) {
+        return child;
       }
-
-      const same = parent.findChild(value);
-      if (same) {
-        parent = same;
-      } else {
-        const node = createNode(value);
-        parent.children.push(node);
-        parent = node;
+      res = child.deepFindChild(name);
+      if (res) {
+        return res;
       }
+    }
+    return null;
+  }
+}
+
+class Classification {
+  /**
+   * Create a classification tree (not really a tree because we don't have a common root)
+   * @param {string[][]} matrix
+   */
+  constructor(matrix) {
+    let id = 0;
+    const root = new ClassificationNode(id, "ROOT");
+
+    matrix.forEach((row) => {
+      let parent = root;
+
+      row.forEach((value) => {
+        value = removeSuccessiveWhiteSpaces(value);
+        if (!value || !parent) {
+          parent = null;
+          return;
+        }
+
+        const same = parent.findChild(value);
+        if (same) {
+          parent = same;
+        } else {
+          const node = new ClassificationNode(id, value);
+          parent.addChild(node);
+          parent = node;
+        }
+      });
     });
-  });
 
-  const res = root.children;
-  res.getNode = (name) => root.deepFindChild(name);
-  return res;
+    this.root = root;
+  }
+
+  /**
+   * Get the classification as an array of top nodes
+   * (only the root children, whithout the root node)
+   */
+  getAsArray() {
+    return this.root.children;
+  }
+
+  /**
+   * Find node by its name
+   * @param {string} name
+   */
+  findNode(name) {
+    return this.root.deepFindChild(name);
+  }
+}
+
+class PropertyCategory {
+  /**
+   * Create a property
+   * @param {*} matrix
+   */
+  constructor(matrix) {
+    this.properties = Object.create(null);
+    let id = 1;
+
+    matrix.forEach((row) => {
+      row.forEach((value) => {
+        if (!this.properties[value]) {
+          this.properties[value] = id++;
+        }
+      });
+    });
+  }
 }
 
 /**
- * Create a list of value name -> id
- * @param {array[]} matrix
+ * Trim and remove successive white space in a string
+ * @param {string} string
  */
-function createProperties(matrix) {
-  const property = Object.create(null);
-  let id = 1;
-
-  matrix.forEach((row) => {
-    row.forEach((value) => {
-      if (!property[value]) {
-        property[value] = id++;
-      }
-    });
-  });
-
-  return property;
+function removeSuccessiveWhiteSpaces(string = "") {
+  return string.trim().replace(/\s+/g, " ");
 }
 
 // function flatten(obj, arr) {
@@ -314,11 +388,3 @@ function createProperties(matrix) {
 //   }
 //   return res;
 // }
-
-/**
- * Trim and remove successive white space in a string
- * @param {string} string
- */
-function removeSuccessiveWhiteSpaces(string = "") {
-  return string.trim().replace(/\s+/g, " ");
-}

@@ -39,7 +39,9 @@ export default class Informations extends Component {
           <b>Application en développement actif</b>
           <br />
           En cas de remarque sur cette application, vous pouvez nous écrire à{" "}
-          <a href="mailto:nathanael.houn@edu.univ-fcomte.fr">nathanael.houn@edu.univ-fcomte.fr</a>,{" "}
+          <a href="mailto:nathanael.houn@edu.univ-fcomte.fr">
+            nathanael.houn@edu.univ-fcomte.fr
+          </a>,{" "}
           <a href="mailto:francois.poguet@edu.univ-fcomte.fr">francois.poguet@edu.univ-fcomte.fr</a>{" "}
           ou{" "}
           <a href="mailto:valentin.perignon@edu.univ-fcomte.fr">
