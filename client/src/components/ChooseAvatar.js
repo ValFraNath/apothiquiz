@@ -6,7 +6,7 @@ const NUMBER_OF_HANDS = 5;
 const NUMBER_OF_HATS = 5;
 const NUMBER_OF_MOUTHES = 5;
 
-const Label = function (props) {
+const Select = function (props) {
   const options = [];
   for (let i = 0; i < props.maxValue; ++i) {
     options.push(
@@ -17,43 +17,55 @@ const Label = function (props) {
   }
 
   return (
-    <label>
-      {props.name}
-      <select
-        value={props.value}
-        onChange={(event) => {
-          props.onValueChange(event.target.value);
-        }}
-      >
-        {options}
-      </select>
-    </label>
+    <select
+      name={props.name}
+      value={props.value}
+      onChange={(event) => {
+        props.onValueChange(event.target.value);
+      }}
+    >
+      {options}
+    </select>
   );
 };
 
-Label.propTypes = {
+Select.propTypes = {
   name: PropTypes.string.isRequired,
+  value: PropTypes.number.isRequired,
   maxValue: PropTypes.number.isRequired,
   onValueChange: PropTypes.func.isRequired,
 };
 
 const InputColor = function (props) {
   return (
-    <label>
-      {props.name}
-      <input
-        type="color"
-        value={props.value}
-        onChange={(event) => {
-          props.onValueChange(event.target.value);
-        }}
-      />
-    </label>
+    <input
+      name={props.name}
+      type="color"
+      value={props.value}
+      onChange={(event) => {
+        props.onValueChange(event.target.value);
+      }}
+    />
   );
 };
 
+InputColor.propTypes = {
+  name: PropTypes.string.isRequired,
+  value: PropTypes.string.isRequired,
+  onValueChange: PropTypes.func.isRequired,
+};
+
 export default class ChooseAvatar extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      modified: "saved",
+    };
+  }
+
   randomAvatar = () => {
+    this.setState({ modified: "modified" });
     this.props.handleInputEyes(Math.round(Math.random() * NUMBER_OF_EYES));
     this.props.handleInputHands(Math.round(Math.random() * NUMBER_OF_HANDS));
     this.props.handleInputHat(Math.round(Math.random() * NUMBER_OF_HATS));
@@ -66,47 +78,100 @@ export default class ChooseAvatar extends Component {
     );
   };
 
+  saveAvatar = () => {
+    this.setState({ modified: "saving" });
+
+    // TODO Send to backend
+    console.error(" Impossible d'enregistrer pour le moment");
+  };
+
   render() {
     return (
       <div id="change-avatar">
-        <Label
-          name="Yeux"
+        <label htmlFor="eyes">Yeux</label>
+        <Select
+          name="eyes"
           value={this.props.choiceEyes}
           maxValue={NUMBER_OF_EYES}
-          onValueChange={this.props.handleInputEyes}
+          onValueChange={(ev) => {
+            this.setState({ modified: "modified" });
+            this.props.handleInputEyes(ev);
+          }}
         />
-        <Label
-          name="Mains"
+        <label htmlFor="hands">Mains</label>
+        <Select
+          name="hands"
           value={this.props.choiceHands}
           maxValue={NUMBER_OF_HANDS}
-          onValueChange={this.props.handleInputHands}
+          onValueChange={(ev) => {
+            this.setState({ modified: "modified" });
+            this.props.handleInputHands(ev);
+          }}
         />
-        <Label
-          name="Chapeau"
+        <label htmlFor="hat">Chapeau</label>
+        <Select
+          name="hat"
           value={this.props.choiceHat}
           maxValue={NUMBER_OF_HATS}
-          onValueChange={this.props.handleInputHat}
+          onValueChange={(ev) => {
+            this.setState({ modified: "modified" });
+            this.props.handleInputHat(ev);
+          }}
         />
-        <Label
-          name="Bouche"
+        <label htmlFor="mouth">Bouche</label>
+        <Select
+          name="mouth"
           value={this.props.choiceMouth}
           maxValue={NUMBER_OF_MOUTHES}
-          onValueChange={this.props.handleInputMouth}
+          onValueChange={(ev) => {
+            this.setState({ modified: "modified" });
+            this.props.handleInputMouth(ev);
+          }}
         />
 
+        <label htmlFor="body">Couleur du corps</label>
         <InputColor
-          name="Couleur du corps"
+          name="body"
           value={this.props.choiceColorBody}
-          onValueChange={this.props.handleInputColorBody}
+          onValueChange={(ev) => {
+            this.setState({ modified: "modified" });
+            this.props.handleInputColorBody(ev);
+          }}
         />
 
+        <label htmlFor="background">Couleur de fond</label>
         <InputColor
-          name="Couleur de fond"
+          name="background"
           value={this.props.choiceColorBG}
-          onValueChange={this.props.handleInputColorBG}
+          onValueChange={(ev) => {
+            this.setState({ modified: "modified" });
+            this.props.handleInputColorBG(ev);
+          }}
         />
 
-        <button onClick={this.randomAvatar}>Avatar aléatoire</button>
+        <button
+          onClick={this.randomAvatar}
+          disabled={this.state.modified === "saving"}
+        >
+          Avatar aléatoire
+        </button>
+
+        <button
+          onClick={this.saveAvatar}
+          style={{
+            backgroundColor:
+              this.state.modified === "saved"
+                ? "green"
+                : this.state.modified === "saving"
+                ? "blue"
+                : "red",
+          }}
+          disabled={this.state.modified === "saved"}
+        >
+          {this.state.modified === "saved" && "Avatar sauvegardé"}
+          {this.state.modified === "saving" && "Sauvegarde en cours..."}
+          {this.state.modified === "modified" && "Valider l'avatar"}
+        </button>
       </div>
     );
   }

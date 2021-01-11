@@ -1,35 +1,40 @@
 .avatar {
-  width: 256px;
-  height: 256px;
-  margin: 20px auto auto auto;
-  border: 2px solid black;
-
-  border-radius: 50%;
   contain: paint;
 
-  img {
-    --x: 0;
-    width: 256px;
-    position: fixed;
+  .avatar-inside {
+    width: 90%;
+    height: 90%;
+    top: calc(5% - 2px);
+    left: calc(5% - 2px);
+    position: absolute;
+    margin: 0;
+    border: 2px solid black;
+    border-radius: 50%;
 
-    &:not(.avatar-background) {
-      margin-top: calc(-256px * var(--x));
+    img {
+      --x: 0;
+      width: 90%;
+      position: fixed;
+
+      &:not(.avatar-background) {
+        margin-top: calc(-90% * var(--x));
+      }
     }
-  }
 
-  img[data-choice="1"] {
-    --x: 1;
-  }
+    img[data-choice="1"] {
+      --x: 1;
+    }
 
-  img[data-choice="2"] {
-    --x: 2;
-  }
+    img[data-choice="2"] {
+      --x: 2;
+    }
 
-  img[data-choice="3"] {
-    --x: 3;
-  }
+    img[data-choice="3"] {
+      --x: 3;
+    }
 
-  img[data-choice="4"] {
-    --x: 4;
+    img[data-choice="4"] {
+      --x: 4;
+    }
   }
 }

@@ -47,13 +47,56 @@ export default class Profile extends Component {
         <span>{this.state.message !== null && this.state.message}</span>
 
         <Avatar
-          eyes={parseInt(this.state.choiceEyes)}
-          hands={parseInt(this.state.choiceHands)}
-          hat={parseInt(this.state.choiceHat)}
-          mouth={parseInt(this.state.choiceMouth)}
+          size="256px"
+          eyes={this.state.choiceEyes}
+          hands={this.state.choiceHands}
+          hat={this.state.choiceHat}
+          mouth={this.state.choiceMouth}
           colorBody={this.state.choiceColorBody}
           colorBG={this.state.choiceColorBG}
         />
+
+        <div id="avatar-previews">
+          <Avatar
+            size="50px"
+            eyes={this.state.choiceEyes}
+            hands={this.state.choiceHands}
+            hat={this.state.choiceHat}
+            mouth={this.state.choiceMouth}
+            colorBody={this.state.choiceColorBody}
+            colorBG={this.state.choiceColorBG}
+          />
+
+          <Avatar
+            size="70px"
+            eyes={this.state.choiceEyes}
+            hands={this.state.choiceHands}
+            hat={this.state.choiceHat}
+            mouth={this.state.choiceMouth}
+            colorBody={this.state.choiceColorBody}
+            colorBG={this.state.choiceColorBG}
+          />
+
+          <Avatar
+            size="90px"
+            eyes={this.state.choiceEyes}
+            hands={this.state.choiceHands}
+            hat={this.state.choiceHat}
+            mouth={this.state.choiceMouth}
+            colorBody={this.state.choiceColorBody}
+            colorBG={this.state.choiceColorBG}
+          />
+
+          <Avatar
+            size="110px"
+            eyes={this.state.choiceEyes}
+            hands={this.state.choiceHands}
+            hat={this.state.choiceHat}
+            mouth={this.state.choiceMouth}
+            colorBody={this.state.choiceColorBody}
+            colorBG={this.state.choiceColorBG}
+          />
+        </div>
 
         <ChooseAvatar
           choiceEyes={this.state.choiceEyes}
@@ -62,10 +105,16 @@ export default class Profile extends Component {
           choiceMouth={this.state.choiceMouth}
           choiceColorBody={this.state.choiceColorBody}
           choiceColorBG={this.state.choiceColorBG}
-          handleInputEyes={(val) => this.setState({ choiceEyes: val })}
-          handleInputHands={(val) => this.setState({ choiceHands: val })}
-          handleInputHat={(val) => this.setState({ choiceHat: val })}
-          handleInputMouth={(val) => this.setState({ choiceMouth: val })}
+          handleInputEyes={(val) =>
+            this.setState({ choiceEyes: parseInt(val) })
+          }
+          handleInputHands={(val) =>
+            this.setState({ choiceHands: parseInt(val) })
+          }
+          handleInputHat={(val) => this.setState({ choiceHat: parseInt(val) })}
+          handleInputMouth={(val) =>
+            this.setState({ choiceMouth: parseInt(val) })
+          }
           handleInputColorBody={(val) =>
             this.setState({ choiceColorBody: val })
           }
