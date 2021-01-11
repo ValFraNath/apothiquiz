@@ -11,10 +11,10 @@ export default class Profile extends Component {
 
     this.state = {
       message: "",
-      choiceEyes: 1,
-      choiceHands: 1,
-      choiceHat: 1,
-      choiceMouth: 1,
+      choiceEyes: 0,
+      choiceHands: 0,
+      choiceHat: 0,
+      choiceMouth: 0,
       choiceColorBody: "#0c04fc",
       choiceColorBG: "lightgrey",
     };
@@ -56,24 +56,20 @@ export default class Profile extends Component {
         />
 
         <ChooseAvatar
-          handleInputEyes={(newValue) => {
-            this.setState({ choiceEyes: newValue });
-          }}
-          handleInputHands={(newValue) => {
-            this.setState({ choiceHands: newValue });
-          }}
-          handleInputHat={(newValue) => {
-            this.setState({ choiceHat: newValue });
-          }}
-          handleInputMouth={(newValue) => {
-            this.setState({ choiceMouth: newValue });
-          }}
-          handleInputColorBody={(newValue) => {
-            this.setState({ choiceColorBody: newValue });
-          }}
-          handleInputColorBG={(newValue) => {
-            this.setState({ choiceColorBG: newValue });
-          }}
+          choiceEyes={this.state.choiceEyes}
+          choiceHands={this.state.choiceHands}
+          choiceHat={this.state.choiceHat}
+          choiceMouth={this.state.choiceMouth}
+          choiceColorBody={this.state.choiceColorBody}
+          choiceColorBG={this.state.choiceColorBG}
+          handleInputEyes={(val) => this.setState({ choiceEyes: val })}
+          handleInputHands={(val) => this.setState({ choiceHands: val })}
+          handleInputHat={(val) => this.setState({ choiceHat: val })}
+          handleInputMouth={(val) => this.setState({ choiceMouth: val })}
+          handleInputColorBody={(val) =>
+            this.setState({ choiceColorBody: val })
+          }
+          handleInputColorBG={(val) => this.setState({ choiceColorBG: val })}
         />
       </main>
     );
