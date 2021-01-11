@@ -4,8 +4,7 @@ export function importData(filepath) {
   const data = Object.create(null);
 
   const excelData = readCsvFile(filepath);
-
-  excelData.shift();
+  classificationsColumnIndexes(excelData.shift());
 
   data.systems = createClassification(extractColumns(excelData, 3, 5));
   data.classes = createClassification(extractColumns(excelData, 5, 8));
@@ -13,52 +12,25 @@ export function importData(filepath) {
   return data;
 }
 
-// eslint-disable-next-line no-unused-vars
-function defineColumnsStructure(header) {
-  function findByValue(object, value) {
-    let res = Object.keys(object).filter((key) => object[key] === value);
-    if (res.length) {
-      return res[0];
-    }
-    return null;
-  }
-
-  const uniqueColumns = {
-    formule: "FORMULE_CHIMIQUE",
-    ntr: "MTE",
-    inn: "DCI",
-    levelEasy: "NIVEAU_DEBUTANT",
-    levelHard: "NIVEAU_EXPERT",
+function classificationsColumnIndexes(header) {
+  const regexToProperties = {
+    "SYSTEME_\\d+": "systems",
+    "CLASSE_PHARMA_\\d+": "classes",
   };
 
-  // const classificationColumns = {
-  //   systems: "SYSTEME_<n>",
-  //   classes: "CLASSE_PHARMA_<n>",
-  // };
+  const propertiesToIndexes = Object.create(null);
 
-  const propertyColumns = {
-    indications: "INDICATION",
-    sideEffects: "EFFET_INDESIRABLE",
-    intercations: "INTERACTION",
-  };
-
-  const columnsIndexes = Object.create(null);
-  columnsIndexes.add = (key, index) => {
-    if (columnsIndexes[key]) {
-      columnsIndexes[key].push(index);
-    } else {
-      columnsIndexes[key] = [index];
-    }
-  };
-
-  header.forEach((value, index) => {
-    let key = findByValue(propertyColumns, value);
-    if (key) {
-      columnsIndexes.update(key, index);
+  header.forEach((column, index) => {
+    column = removeSuccessiveWhiteSpaces(column);
+    if (!column) {
       return;
     }
-
-    key = findByValue(uniqueColumns);
+    let value = Object.keys(regexToProperties).find((regex) =>
+      new RegExp(regex).test(column)
+    );
+    if (value) {
+      propertiesToIndexes[regexToProperties] = { begin: index, end: index };
+    }
   });
 }
 

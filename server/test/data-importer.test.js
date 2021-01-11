@@ -6,7 +6,7 @@ import { importData } from "../modules/data-importer.js";
 
 describe("Good data importation from excel file", () => {
   it("Good number of entry", (done) => {
-    console.dir(importData("./test/csv-files/molecules.xlsx"), { depth: null });
+    importData("./test/csv-files/molecules.xlsx"), { depth: null };
     done();
   }).timeout(5000);
 });
