@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 
+import AuthService from "../../services/auth.service";
+
 const Profile = function () {
   const [message, setMessage] = useState(null);
 
@@ -17,8 +19,15 @@ const Profile = function () {
       });
   }
 
+  function handleLogoutClick() {
+    AuthService.logout();
+    document.location.replace("/");
+  }
+
   return (
     <main>
+      <button onClick={handleLogoutClick}>Me déconnecter</button>
+
       <button onClick={handleButtonClick}>Who am I ? </button>
       <span>{message !== null && message}</span>
     </main>
