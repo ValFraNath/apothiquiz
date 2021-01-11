@@ -1,0 +1,36 @@
+.avatar {
+  width: 256px;
+  height: 256px;
+  margin: 20px auto auto auto;
+  border: 2px solid black;
+
+  background-color: lightgrey;
+  border-radius: 50%;
+  contain: paint;
+
+  img {
+    --x: 0;
+    width: 256px;
+    position: fixed;
+
+    &:not(.avatar-background) {
+      margin-top: calc(-256px * var(--x));
+    }
+  }
+
+  img[data-choice="1"] {
+    --x: 1;
+  }
+
+  img[data-choice="2"] {
+    --x: 2;
+  }
+
+  img[data-choice="3"] {
+    --x: 3;
+  }
+
+  img[data-choice="4"] {
+    --x: 4;
+  }
+}
