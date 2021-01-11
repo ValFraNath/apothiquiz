@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-const WhoAmI = function () {
+const Profile = function () {
   const [message, setMessage] = useState(null);
 
   function handleButtonClick() {
@@ -25,4 +25,4 @@ const WhoAmI = function () {
   );
 };
 
-export default WhoAmI;
+export default Profile;
