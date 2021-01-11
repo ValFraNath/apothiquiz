@@ -38,8 +38,7 @@ class SpriteSheet extends Component {
       throw new Error("Invalid frame number");
     }
     this.setState({
-      currentFrame:
-        newCurrentFrame === -1 ? this.props.steps - 1 : newCurrentFrame,
+      currentFrame: newCurrentFrame === -1 ? this.props.steps - 1 : newCurrentFrame,
     });
   };
 
@@ -91,9 +90,7 @@ class SpriteSheet extends Component {
           backgroundSize: `${this.props.frameWidth * this.props.steps}px ${
             this.props.frameHeight
           }px`,
-          backgroundPositionX: `${
-            -this.state.currentFrame * this.props.frameWidth
-          }px`,
+          backgroundPositionX: `${-this.state.currentFrame * this.props.frameWidth}px`,
         }}
       />
     );

@@ -28,8 +28,7 @@ class Train extends Component {
     const minQuestionType = 1,
       maxQuestionType = 1;
     const questionType =
-      Math.floor(Math.random() * (maxQuestionType - minQuestionType)) +
-      minQuestionType;
+      Math.floor(Math.random() * (maxQuestionType - minQuestionType)) + minQuestionType;
     axios
       .get("/api/v1/question/" + questionType)
       .then((res) => {
@@ -108,14 +107,7 @@ class Train extends Component {
   };
 
   render() {
-    const {
-      question,
-      questionNumber,
-      inProgress,
-      timer,
-      result,
-      error,
-    } = this.state;
+    const { question, questionNumber, inProgress, timer, result, error } = this.state;
     const introductionView = (
       <>
         <h1>Mode entraînement</h1>
@@ -141,11 +133,7 @@ class Train extends Component {
               <h1>{this.generateQuestionText()}</h1>
             </div>
 
-            <Timer
-              inProgress={inProgress}
-              duration={timer}
-              updateParent={this.updateTimerValue}
-            />
+            <Timer inProgress={inProgress} duration={timer} updateParent={this.updateTimerValue} />
 
             <Answers
               inProgress={inProgress}
@@ -154,9 +142,7 @@ class Train extends Component {
               onClick={this.handleAnswerClick}
             />
 
-            {!inProgress && (
-              <button onClick={this.getNewQuestion}>Question suivante</button>
-            )}
+            {!inProgress && <button onClick={this.getNewQuestion}>Question suivante</button>}
           </>
         )}
       </main>
