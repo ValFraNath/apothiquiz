@@ -28,7 +28,7 @@ class Property {
 
 /**
  * Array of properties, with some details about them.
- * The column field is a regex because some columns are ordered.
+ * The column field is a regex because some columns are ordered and we need to match different digits
  */
 const columns = [
   { title: "SYSTEME_(\\d+)", property: new Property("systems", true, false) },
@@ -68,15 +68,11 @@ export function importData(filepath) {
   const data = Object.create(null);
 
   for (let property of getNonUniqueProperties()) {
-    const type = property.isHierarchical() ? Classification : PropertyCategory;
+    const typeOfProperty = property.isHierarchical() ? Classification : PropertyCategory;
 
-    data[property.name] = new type(
-      extractColumns(
-        excelData,
-        structure.getIndexesFor(property.name).begin,
-        structure.getIndexesFor(property.name).end + 1
-      )
-    );
+    data[property.name] = new typeOfProperty(
+      extractColumns(excelData, ...structure.getIndexesFor(property.name))
+    ).extract();
   }
 
   console.dir(data, { depth: null });
@@ -89,121 +85,67 @@ export function importData(filepath) {
 class FileStructure {
   /**
    * This function reads the first row and stores which index is associated with which property
-   * @param {string[]} header
-   * @param {{title : string, property : Property}} columns
+   * @param {string[]} header The CSV file first row
+   * @param {{title : string, property : Property}[]} requiredColumns The columns we want to extract
    * @throws {ImportationError} if the spreadsheet is incorrectly formatted
    */
-  constructor(header, columns) {
+  constructor(header, requiredColumns) {
     this.header = header;
-    this.properties = Object.create(null);
-    this.columns = columns;
+    this.propertiesIndexes = Object.create(null);
+    this.requiredColumns = requiredColumns;
 
-    this.forEachMatchingColumns((property, index, match) => {
-      if (property.isHierarchical()) {
-        let level = Number(match[1]);
-        this.addHierachicalProperty(property.name, index, level);
-      } else if (property.isUnique()) {
-        this.addUniqueProperty(property.name, index);
-      } else {
-        this.addBasicProperty(property.name, index);
-      }
+    this._forEachCorrespondingColumns((property, index) => {
+      this._addProperty(property.name, index);
     });
   }
 
   /**
    * @param {string} property
+   * @return {number[]} Indexes
    */
   getIndexesFor(property) {
-    return this.properties[property];
+    return this.propertiesIndexes[property];
   }
 
   /**
-   * Add a hierarchical property to the structure
    * @param {string} property
+   * @param  {...number} indexes
+   */
+  _setIndexesFor(property, ...indexes) {
+    this.propertiesIndexes[property] = indexes;
+  }
+
+  /**
+   * Add a property to the structure
+   * @param {Property} property
    * @param {number} index
    * @param {number} level
-   * @throws {ImportationError} if the columns of the same property do not follow each other, or if the hierarchical levels are not consistent
+   * @throws {ImportationError} if en error has occured during the importation
    */
-  addHierachicalProperty(property, index, level) {
-    let currentValue = this.properties[property];
-    if (currentValue) {
-      if (currentValue.level !== level - 1) {
-        throw new ImportationError("INVALID_LEVEL_VALUE");
-      }
-      if (currentValue.end < index - 1) {
-        throw new ImportationError("Les colonnes d'une même propriété ne se suivent pas.");
-      }
-      currentValue.end = index;
-      currentValue.level = level;
+  _addProperty(property, index) {
+    let currentIndexes = this.getIndexesFor(property);
+    if (currentIndexes) {
+      currentIndexes.push(index);
     } else {
-      if (level !== 1) {
-        throw Error("INVALID_LEVEL_VALUE");
-      }
-      this.properties[property] = {
-        begin: index,
-        end: index,
-        level: level,
-      };
+      this._setIndexesFor(property, index);
     }
   }
 
   /**
-   * Add a basic property to the structure
-   * @param {string} property
-   * @param {number} index
-   * @throws {ImportationError} if the  columns of the same property do not follow each other
+   * Iterate through all the header columns and run a callback for each one corresponding to a required column
+   * @param {function(Property,number,number|undefined)} callback - Function to execute for each column corresponding to a property
    */
-  addBasicProperty(property, index) {
-    let currentValue = this.properties[property];
-    if (currentValue) {
-      // If the property already exists -> update the end index and the level
-      if (currentValue.end < index - 1) {
-        throw Error("TOO_MUCH_GROUP");
-      }
-      currentValue.end = index;
-    } else {
-      this.properties[property] = {
-        begin: index,
-        end: index,
-      };
-    }
-  }
-
-  /**
-   * Add a unique property to the structure
-   * @param {string} property
-   * @param {number} index
-   * @throws {ImportationError} if a property appears more than once
-   */
-  addUniqueProperty(property, index) {
-    if (this.properties[property]) {
-      throw Error("SEVERAL_UNIQUE_PROPERTY");
-    } else {
-      this.properties[property] = {
-        begin: index,
-        end: index,
-      };
-    }
-  }
-
-  /**
-   * Execute a callback for each columns matching the regex objects
-   * @param {function} callback
-   */
-  forEachMatchingColumns(callback) {
+  _forEachCorrespondingColumns(callback) {
     this.header.forEach((headerColumn, index) => {
       headerColumn = removeSuccessiveWhiteSpaces(headerColumn);
       if (!headerColumn) {
         return;
       }
 
-      this.columns.forEach((column) => {
-        let match = headerColumn.match(new RegExp(column.title));
-        if (!match) {
-          return;
+      this.requiredColumns.forEach((requiredColumn) => {
+        if (new RegExp(requiredColumn.title).test(headerColumn)) {
+          callback(requiredColumn.property, index);
         }
-
-        callback(column.property, index, match);
       });
     });
   }
@@ -223,13 +165,13 @@ function readCsvFile(filepath) {
  * @param {number} begin The first index
  * @param {number} end The last index (not include)
  */
-function extractColumns(matrix, begin = 0, end = matrix.length) {
+function extractColumns(matrix, ...indexes) {
   const res = [];
   matrix.forEach((row) => {
     const newRow = [];
 
     row.forEach((value, index) => {
-      if (value && index >= begin && index < end) {
+      if (value && indexes.includes(index)) {
         newRow.push(value);
       }
     });
@@ -334,7 +276,7 @@ class Classification {
    * Get the classification as an array of top nodes
    * (only the root children, whithout the root node)
    */
-  getAsArray() {
+  extract() {
     return this.root.children;
   }
 
@@ -353,16 +295,24 @@ class PropertyCategory {
    * @param {*} matrix
    */
   constructor(matrix) {
-    this.properties = Object.create(null);
+    this.values = Object.create(null);
     let id = 1;
 
     matrix.forEach((row) => {
       row.forEach((value) => {
-        if (!this.properties[value]) {
-          this.properties[value] = id++;
+        if (!this.values[value]) {
+          this.values[value] = id++;
         }
       });
     });
+  }
+
+  /**
+   * Return the list of values as map value -> id
+   * @return {object}
+   */
+  extract() {
+    return this.values;
   }
 }
 
