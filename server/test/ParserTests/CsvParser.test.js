@@ -8,7 +8,7 @@ import fs from "fs";
 chai.use(chaiHttp);
 const { expect } = chai;
 
-import { importData } from "../../modules/CSVParser/Parser.js";
+import { parseCSV } from "../../modules/CSVParser/Parser.js";
 
 const filesPath = path.resolve("test", "ParserTests", "CSVFiles");
 const snapshotsPath = path.resolve("test", "ParserTests", "snapshots");
@@ -73,7 +73,7 @@ for (let file of files) {
     let data;
 
     before("Import data", (done) => {
-      data = JSON.parse(importData(path.resolve(filesPath, file.name)));
+      data = JSON.parse(parseCSV(path.resolve(filesPath, file.name)));
 
       done();
     });
