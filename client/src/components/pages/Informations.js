@@ -16,7 +16,7 @@ export default class Informations extends Component {
       .then((res) => {
         this.setState({
           serverStatus: res.data.status,
-          currentServerVersion: res.data.db_version,
+          currentServerAPIVersion: res.data.api_version,
         });
       })
       .catch((err) => {
@@ -61,9 +61,9 @@ export default class Informations extends Component {
 
         {this.state.serverStatus && (
           <p>
-            Connection to the server: {this.state.serverStatus}
+            Server status: {this.state.serverStatus}
             <br />
-            Current server version: {this.state.currentServerVersion}
+            Current server API version: {this.state.currentServerAPIVersion}
           </p>
         )}
 
