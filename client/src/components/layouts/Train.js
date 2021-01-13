@@ -3,6 +3,7 @@ import axios from "axios";
 import PropTypes from "proptypes";
 import { ArrowRightIcon } from "@modulz/radix-icons";
 
+import Plural from "../Plural";
 import Timer from "../quizz/Timer";
 import Answers from "../quizz/Answers";
 import Message from "../quizz/Message";
@@ -28,6 +29,7 @@ class Train extends Component {
       questionNumber: 0,
       question: {},
       inProgress: false,
+      lastClicked: "",
       timer: 10,
       result: {
         good: 0,
@@ -106,7 +108,7 @@ class Train extends Component {
    * Handle a click on an answer button
    * @param isRightAnswer True if the click is performed on the right answer
    */
-  handleAnswerClick = (isRightAnswer) => {
+  handleAnswerClick = (isRightAnswer, value) => {
     if (!this.state.inProgress) {
       return;
     }
@@ -117,6 +119,7 @@ class Train extends Component {
       : { goodPoint: 0, badPoint: 1 };
     this.setState({
       inProgress: false,
+      lastClicked: value,
       result: {
         good: result.good + goodPoint,
         bad: result.bad + badPoint,
@@ -129,6 +132,7 @@ class Train extends Component {
       question,
       questionNumber,
       inProgress,
+      lastClicked,
       timer,
       result,
       error,
@@ -142,8 +146,14 @@ class Train extends Component {
         ) : (
           <>
             <div id="quiz-score">
-              <p id="good-score">{result.good} bonnes réponses</p>
-              <p id="bad-score">{result.bad} mauvaises réponses</p>
+              <p id="good-score">
+                {result.good} <Plural word="bonne" count={result.good} />{" "}
+                <Plural word="réponse" count={result.good} />
+              </p>
+              <p id="bad-score">
+                {result.bad} <Plural word="mauvaise" count={result.bad} />{" "}
+                <Plural word="réponse" count={result.bad} />
+              </p>
             </div>
 
             <div id="quiz-question">
@@ -170,6 +180,7 @@ class Train extends Component {
               inProgress={inProgress}
               goodAnswer={question.goodAnswer}
               badAnswers={question.badAnswers}
+              lastClicked={lastClicked}
               onClick={this.handleAnswerClick}
             />
           </>
