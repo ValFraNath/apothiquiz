@@ -28,7 +28,10 @@ describe("User login", function () {
         expect(Object.keys(res.body)).to.contains("pseudo");
         expect(Object.keys(res.body)).to.contains("token");
 
-        let decodedToken = jwt.verify(res.body.token, process.env.TOKEN_PRIVATE_KEY);
+        let decodedToken = jwt.verify(
+          res.body.token,
+          process.env.TOKEN_PRIVATE_KEY
+        );
 
         expect(Object.keys(decodedToken)).to.contains("pseudo");
         expect(decodedToken.pseudo).to.be.equal("fpoguet");

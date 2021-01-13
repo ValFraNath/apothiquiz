@@ -76,7 +76,11 @@ export default class App extends Component {
   };
 
   render() {
-    const { isUpdateAvailable, installPromptEvent, updateRequired } = this.state;
+    const {
+      isUpdateAvailable,
+      installPromptEvent,
+      updateRequired,
+    } = this.state;
 
     return (
       <Router>
@@ -95,7 +99,10 @@ export default class App extends Component {
         <main>
           <Switch>
             <Route path="/" exact Menu>
-              <Menu user={this.state.user} installPromptEvent={installPromptEvent} />
+              <Menu
+                user={this.state.user}
+                installPromptEvent={installPromptEvent}
+              />
             </Route>
             <Route path="/informations" exact component={Informations} />
             <Route path="/train" exact component={Train} />

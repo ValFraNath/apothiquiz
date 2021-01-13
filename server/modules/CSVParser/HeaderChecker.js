@@ -58,18 +58,22 @@ ImportationError.INVALID_COLUMN = 4;
 /// ***** INTERNAL FUNCTIONS *****
 
 /**
- * Checks if all columns of the same property are grouped together
+ * Checks columns are well grouped
+ * @param {string[]} header
+ * @param {ColumnSpecifications[]} columnsSpecifications
  */
 function checkColumnsGroups(header, columnsSpecifications) {
   const errors = [];
-  const nonUniqueColumnsTitles = columnsSpecifications
-    .filter((column) => !column.isUnique())
-    .map((column) => column.title);
+  const nonUniqueColumns = columnsSpecifications.filter(
+    (column) => !column.isUnique()
+  );
 
   const visitedGroups = [];
   let currentGroup;
   header.forEach((headerColumn) => {
-    let group = nonUniqueColumnsTitles.find((title) => new RegExp(title).test(headerColumn));
+    let group = nonUniqueColumns.find((column) =>
+      column.matchTitle(headerColumn)
+    );
     if (!group) {
       return;
     }
@@ -77,7 +81,9 @@ function checkColumnsGroups(header, columnsSpecifications) {
       visitedGroups.push(currentGroup);
       currentGroup = group;
       if (visitedGroups.includes(group)) {
-        errors.push(new ImportationError("Colonnes " + headerColumn + " non regroupés"));
+        errors.push(
+          new ImportationError("Colonnes " + headerColumn + " non regroupés")
+        );
       }
     }
   });
@@ -85,14 +91,19 @@ function checkColumnsGroups(header, columnsSpecifications) {
 }
 
 /**
- * Checks columns are missing
+ * Checks no columns are missing
+ * @param {string[]} header
+ * @param {ColumnSpecifications[]} columnsSpecifications
  */
 function checkMissingColumns(header, columnsSpecifications) {
   const errors = [];
   columnsSpecifications.forEach((column) => {
-    if (!header.some((headerColumn) => new RegExp(column.title).test(headerColumn))) {
+    if (!header.some((headerColumn) => column.matchTitle(headerColumn))) {
       errors.push(
-        new ImportationError("Colonne manquante : " + column.title, ImportationError.MISSING_COLUMN)
+        new ImportationError(
+          "Colonne manquante : " + column.title,
+          ImportationError.MISSING_COLUMN
+        )
       );
     }
   });
@@ -100,14 +111,21 @@ function checkMissingColumns(header, columnsSpecifications) {
 }
 
 /**
- * Checks if there are invalid columns
+ * Checks no columns are invalid
+ * @param {string[]} header
+ * @param {ColumnSpecifications[]} columnsSpecifications
  */
 function checkInvalidColumns(header, columnsSpecifications) {
   const errors = [];
   header.forEach((headerColumn) => {
-    if (!columnsSpecifications.some((column) => new RegExp(column.title).test(headerColumn))) {
+    if (
+      !columnsSpecifications.some((column) => column.matchTitle(headerColumn))
+    ) {
       errors.push(
-        new ImportationError("Invalide colonne : " + headerColumn, ImportationError.INVALID_COLUMN)
+        new ImportationError(
+          "Invalide colonne : " + headerColumn,
+          ImportationError.INVALID_COLUMN
+        )
       );
     }
   });
@@ -116,6 +134,8 @@ function checkInvalidColumns(header, columnsSpecifications) {
 
 /**
  * Checks if multiple columns have the same unique property
+ * @param {string[]} header
+ * @param {ColumnSpecifications[]} columnsSpecifications
  */
 function checkDuplicateUniqueColumns(header, columnsSpecifications) {
   const errors = [];
@@ -143,21 +163,27 @@ function checkDuplicateUniqueColumns(header, columnsSpecifications) {
 }
 
 /**
- * Checks whether columns of the same hierarchical property appear in hierarchy level order
+ * Checks whether columns of the same hierarchical
+ * property appear in hierarchy level order.
+ * @param {string[]} header
+ * @param {ColumnSpecifications[]} columnsSpecifications
  */
 function checkHierarchicalColumnsOrder(header, columnsSpecifications) {
   const errors = [];
-  let hierarchicalColumnTitles = columnsSpecifications
-    .filter((column) => column.isHierarchical())
-    .map((column) => column.title);
+  let hierarchicalColumns = columnsSpecifications.filter((column) =>
+    column.isHierarchical()
+  );
 
   let currentGroup;
   let level;
   header.forEach((headerColumn) => {
-    let group = hierarchicalColumnTitles.find((title) => new RegExp(title).test(headerColumn));
+    let group = hierarchicalColumns.find((column) =>
+      column.matchTitle(headerColumn)
+    );
     if (!group) {
       return;
     }
+    group = group.title;
     if (currentGroup !== group) {
       currentGroup = group;
       level = 1;
@@ -165,7 +191,11 @@ function checkHierarchicalColumnsOrder(header, columnsSpecifications) {
 
     let match = headerColumn.match(new RegExp(group));
     if (Number(match[1]) !== level) {
-      errors.push(new ImportationError("Niveau de hiérachisation non respecté : " + headerColumn));
+      errors.push(
+        new ImportationError(
+          "Niveau de hiérachisation non respecté : " + headerColumn
+        )
+      );
       level = null;
       return;
     }

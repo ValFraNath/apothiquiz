@@ -86,7 +86,11 @@ describe("Check the database structure", function () {
 
     db.connection.query(sql, function (err, res) {
       if (err) throw err;
-      assert.strictEqual(res[0]["nbr"], structure.length, "Incorrect number of tables");
+      assert.strictEqual(
+        res[0]["nbr"],
+        structure.length,
+        "Incorrect number of tables"
+      );
       done();
     });
   });
@@ -103,10 +107,17 @@ describe("Check the database structure", function () {
         assert(res.length !== 0, `The table '${table.name}' doesn't exist. `);
 
         let fieldsToTest = res.map((e) => e["COLUMN_NAME"]);
-        assert.strictEqual(fieldsToTest.length, table.fields.length, "Incorrect number of fields.");
+        assert.strictEqual(
+          fieldsToTest.length,
+          table.fields.length,
+          "Incorrect number of fields."
+        );
 
         table.fields.forEach((field) => {
-          assert(fieldsToTest.includes(field), `Incorrect field :  "${field}". `);
+          assert(
+            fieldsToTest.includes(field),
+            `Incorrect field :  "${field}". `
+          );
         });
         done();
       });

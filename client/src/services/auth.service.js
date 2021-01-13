@@ -24,7 +24,11 @@ AuthService.login = async function (pseudo, password) {
       })
       .catch((error) => {
         reject(
-          (error && error.response && error.response.data && error.response.data.error) || error
+          (error &&
+            error.response &&
+            error.response.data &&
+            error.response.data.error) ||
+            error
         );
       });
   });

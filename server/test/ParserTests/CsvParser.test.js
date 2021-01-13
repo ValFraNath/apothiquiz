@@ -43,7 +43,9 @@ function getMolecule(data, dci) {
 }
 
 function getClasse(data, name) {
-  return flattenClassification(data.classes).find((classe) => classe.name === name);
+  return flattenClassification(data.classes).find(
+    (classe) => classe.name === name
+  );
 }
 
 function getAllClasses(data, filter = identity) {
@@ -80,7 +82,9 @@ for (let file of files) {
       if (!file.snapshot) {
         this.skip();
       }
-      let expectedData = fs.readFileSync(path.resolve(snapshotsPath, file.snapshot));
+      let expectedData = fs.readFileSync(
+        path.resolve(snapshotsPath, file.snapshot)
+      );
       expect(data).to.be.deep.equals(JSON.parse(expectedData));
       done();
     });
@@ -113,7 +117,9 @@ for (let file of files) {
       const EXPECTED_NUMBER = 3;
 
       expect(Object.keys(data.interactions)).to.have.length(EXPECTED_NUMBER);
-      expect(removeDuplications(Object.values(data.interactions))).to.have.length(EXPECTED_NUMBER);
+      expect(
+        removeDuplications(Object.values(data.interactions))
+      ).to.have.length(EXPECTED_NUMBER);
 
       done();
     });
@@ -122,7 +128,9 @@ for (let file of files) {
       const EXPECTED_NUMBER = 17;
 
       expect(Object.keys(data.indications)).to.have.length(EXPECTED_NUMBER);
-      expect(removeDuplications(Object.values(data.indications))).to.have.length(EXPECTED_NUMBER);
+      expect(
+        removeDuplications(Object.values(data.indications))
+      ).to.have.length(EXPECTED_NUMBER);
 
       done();
     });
@@ -131,7 +139,9 @@ for (let file of files) {
       const EXPECTED_NUMBER = 10;
 
       expect(Object.keys(data.side_effects)).to.have.length(EXPECTED_NUMBER);
-      expect(removeDuplications(Object.values(data.side_effects))).to.have.length(EXPECTED_NUMBER);
+      expect(
+        removeDuplications(Object.values(data.side_effects))
+      ).to.have.length(EXPECTED_NUMBER);
 
       done();
     });
@@ -147,8 +157,16 @@ for (let file of files) {
     });
 
     it("Molecules : Correct classes", (done) => {
-      expectMoleculeHaveClasse(data, "PIVMECILLINAM", "PENICILLINES A LARGE SPECTRE");
-      expectMoleculeHaveClasse(data, "CEFEPIME", "CEPHALOSPORINE DE 3EME GENERATION");
+      expectMoleculeHaveClasse(
+        data,
+        "PIVMECILLINAM",
+        "PENICILLINES A LARGE SPECTRE"
+      );
+      expectMoleculeHaveClasse(
+        data,
+        "CEFEPIME",
+        "CEPHALOSPORINE DE 3EME GENERATION"
+      );
       expectMoleculeHaveClasse(data, "METHYLENECYCLINE", "TETRACYCLINES");
 
       done();

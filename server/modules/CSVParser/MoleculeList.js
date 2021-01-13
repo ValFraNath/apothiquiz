@@ -1,8 +1,10 @@
 // eslint-disable-next-line no-unused-vars
 import FileStructure from "./FileStructure.js";
 import MoleculesProperty from "./MoleculesProperty.js";
-// eslint-disable-next-line no-unused-vars
-import MoleculesClassification, { ClassificationNode } from "./MoleculesClassification.js";
+import MoleculesClassification, {
+  // eslint-disable-next-line no-unused-vars
+  ClassificationNode,
+} from "./MoleculesClassification.js";
 
 /**
  *
@@ -14,7 +16,9 @@ function create(matrix, structure, data) {
   const list = [];
   let id = 1;
 
-  matrix.forEach((row) => list.push(createMolecule(id++, row, structure, data)));
+  matrix.forEach((row) =>
+    list.push(createMolecule(id++, row, structure, data))
+  );
   return list;
 }
 
@@ -36,11 +40,19 @@ function createMolecule(id, row, structure, data) {
     }
     if (column.isMultiValued()) {
       const indexes = structure.getIndexesFor(property);
-      molecule[property] = getMultiValuedPropertyValues(row, indexes, data[property]);
+      molecule[property] = getMultiValuedPropertyValues(
+        row,
+        indexes,
+        data[property]
+      );
     }
     if (column.isHierarchical()) {
       const indexes = structure.getIndexesFor(property);
-      molecule[property] = getHierarchicalPropertyValue(row, indexes, data[property]);
+      molecule[property] = getHierarchicalPropertyValue(
+        row,
+        indexes,
+        data[property]
+      );
     }
   });
   return molecule;

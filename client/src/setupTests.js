@@ -11,5 +11,9 @@ import createChaiJestDiff from "chai-jest-diff";
 import createChaiEnzyme from "chai-enzyme";
 import sinonChai from "sinon-chai";
 
-chai.use(dirtyChai).use(createChaiJestDiff()).use(createChaiEnzyme()).use(sinonChai);
+chai
+  .use(dirtyChai)
+  .use(createChaiJestDiff())
+  .use(createChaiEnzyme())
+  .use(sinonChai);
 configureEnzyme({ adapter: new Adapter() });

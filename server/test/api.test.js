@@ -32,9 +32,10 @@ describe.skip("Question generation", function () {
           throw err;
         }
         expect(res.status, "Status value").to.be.equal(200);
-        expect(Object.getOwnPropertyNames(res.body), "Have property 'question' ").to.contains(
-          "question"
-        );
+        expect(
+          Object.getOwnPropertyNames(res.body),
+          "Have property 'question' "
+        ).to.contains("question");
         done();
       });
   });
