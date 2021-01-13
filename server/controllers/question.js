@@ -13,7 +13,7 @@ import { queryPromise } from "../db/database.js";
  *     badAnswer : Array<string>
  * }
  */
-export async function generateQuestion(req, res) {
+async function generateQuestion(req, res) {
   let type = Number(req.params.type);
   let generator;
   switch (type) {
@@ -40,6 +40,10 @@ export async function generateQuestion(req, res) {
       });
     });
 }
+
+export default { generateQuestion };
+
+// ***** Internal functions *****
 
 /**
  * Generate a question of type 1

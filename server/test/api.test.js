@@ -14,8 +14,8 @@ describe("GET /status", function () {
       .end((err, res) => {
         expect(res.status).to.be.equal(200);
         expect(res.body).to.be.deep.equal({
-          status: "online",
-          db_version: db.currentVersion(),
+          status: "connected",
+          api_version: db.currentAPIVersion(),
         });
         done();
       });
