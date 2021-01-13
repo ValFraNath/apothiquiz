@@ -1,0 +1,968 @@
+{
+  "systems": [
+    {
+      "id": 1,
+      "name": "ANTIINFECTIEUX",
+      "children": [
+        { "id": 2, "name": "ANTIVIRAL", "children": [] },
+        { "id": 3, "name": "ANTIBIOTIQUE", "children": [] },
+        { "id": 4, "name": "ANTIPARASITAIRE", "children": [] }
+      ]
+    }
+  ],
+  "classes": [
+    { "id": 1, "name": "INHIBITEUR DE FUSION", "children": [] },
+    { "id": 2, "name": "INHIBITEURS DE NEURAMINISASE", "children": [] },
+    {
+      "id": 3,
+      "name": "ANALOGUES NUCLEOSIDIQUES",
+      "children": [
+        {
+          "id": 4,
+          "name": "INTI (INHIBITEURS NUCLEOSIDIQUES TRANSCRIPTASE INVERSE)",
+          "children": []
+        }
+      ]
+    },
+    { "id": 5, "name": "INHIBITEUR DE TERMINASE", "children": [] },
+    { "id": 6, "name": "INHIBITEUR POLYMERASE NS5B", "children": [] },
+    { "id": 7, "name": "INHIBITEUR NS5A", "children": [] },
+    { "id": 8, "name": "INHIBITEUR PROTEINE 3A/4", "children": [] },
+    {
+      "id": 9,
+      "name": "INHIBITEUR DIRECT ADN polymérase virale et transcriptase inverse",
+      "children": []
+    },
+    { "id": 10, "name": "INHIBITEURS NON NUCLEOSIDIQUES DE LA TI", "children": [] },
+    {
+      "id": 11,
+      "name": "INHIBITEUR ENTREE VHB ET HVD",
+      "children": [{ "id": 12, "name": "Inhibiteur récepteur NTCP", "children": [] }]
+    },
+    { "id": 13, "name": "INHIBITEUR CYP 3A4", "children": [] },
+    { "id": 14, "name": "INHIBITEUR CCR5", "children": [] },
+    { "id": 15, "name": "INHIBITEUR DE PROTEASE", "children": [] },
+    { "id": 16, "name": "INHIBITEUR DE L'INTEGRASE", "children": [] },
+    {
+      "id": 17,
+      "name": "PENICILLINES",
+      "children": [
+        { "id": 18, "name": "PENICILLINES A", "children": [] },
+        { "id": 19, "name": "PENICILLINE G", "children": [] },
+        { "id": 20, "name": "PENICILLINE M", "children": [] },
+        { "id": 21, "name": "PENICILLINE V", "children": [] },
+        { "id": 22, "name": "UREIDO-PENICILLINES", "children": [] },
+        { "id": 23, "name": "PENICILLINES A LARGE SPECTRE", "children": [] },
+        { "id": 24, "name": "CARBOXYPÉNICILLINES", "children": [] }
+      ]
+    },
+    { "id": 25, "name": "INHIBITEURS DE Β-LACTAMASES", "children": [] },
+    { "id": 26, "name": "MONOBACTAM", "children": [] },
+    { "id": 27, "name": "CARBAPENEMES", "children": [] },
+    { "id": 28, "name": "INHIBITEUR DE LA DESHYDROPEPTIDASE", "children": [] },
+    {
+      "id": 29,
+      "name": "CEPHALOSPORINES",
+      "children": [
+        { "id": 30, "name": "CEPHALOSPORINE DE 1ERE GENERATION", "children": [] },
+        { "id": 31, "name": "CEPHALOSPORINE DE 2NDE GENERATION", "children": [] },
+        { "id": 32, "name": "CEPHALOSPORINE DE 3EME GENERATION", "children": [] },
+        { "id": 33, "name": "CEPHALOSPORINE DE 5EME GENERATION", "children": [] }
+      ]
+    },
+    { "id": 34, "name": "TETRACYCLINES", "children": [] },
+    { "id": 35, "name": "AMINOSIDE", "children": [] },
+    { "id": 36, "name": "MACROLIDES", "children": [] },
+    { "id": 37, "name": "GLYCOPEPTIDES", "children": [] },
+    { "id": 38, "name": "POLYPEPTIDES", "children": [] },
+    { "id": 39, "name": "SULFAMIDES", "children": [] },
+    { "id": 40, "name": "FLUOROQUINOLONE", "children": [] },
+    { "id": 41, "name": "LINCOSAMIDES", "children": [] },
+    { "id": 42, "name": "OXAZOLIDINONES", "children": [] },
+    { "id": 43, "name": "PHENICOLES", "children": [] },
+    { "id": 44, "name": "Antituberculeux", "children": [] },
+    { "id": 45, "name": "NITROFURANES", "children": [] },
+    { "id": 46, "name": "CESTOCIDES", "children": [] },
+    { "id": 47, "name": "BENZIMIDAZOLES", "children": [] },
+    { "id": 48, "name": "5-NITRO-IMIDAZOLES", "children": [] }
+  ],
+  "interactions": { "CYP3A4": 1, "Allongement QT": 2, "Syndrome serotoninergique": 3 },
+  "indications": {
+    "Grippe": 1,
+    "Parkinson": 2,
+    "VHB": 3,
+    "VIH": 4,
+    "CMV": 5,
+    "VHC": 6,
+    "HSV": 7,
+    "VZV": 8,
+    "EBV": 9,
+    "VHD": 10,
+    "Infection bacterienne": 11,
+    "Paludisme": 12,
+    "Protozoocide": 13,
+    "Tuberculose": 14,
+    "Helminthes": 15,
+    "Protozoaires": 16,
+    "Bactéries anaérobies": 17
+  },
+  "side_effects": {
+    "hypotension orthostatique": 1,
+    "Nephrotoxicité": 2,
+    "Décoloration dents": 3,
+    "Hypoplasie email dentaire": 4,
+    "oesophagite": 5,
+    "Ototoxicité": 6,
+    "Torsade de pointe": 7,
+    "Diminution seuil epileptogene": 8,
+    "Syndrome serotoninergique": 9,
+    "Toxicite hematologique": 10
+  },
+  "molecules": [
+    {
+      "id": 1,
+      "uniqueProperties": { "dci": "AMANTADINE", "level_easy": 0, "level_hard": 1 },
+      "classifications": { "systems": 2, "classes": 1 },
+      "properties": { "indications": [1, 2], "side_effects": [1] }
+    },
+    {
+      "id": 2,
+      "uniqueProperties": { "dci": "OSELTAMIVIR", "ntr": 1, "level_easy": 1, "level_hard": 1 },
+      "classifications": { "systems": 2, "classes": 2 },
+      "properties": { "indications": [1] }
+    },
+    {
+      "id": 3,
+      "uniqueProperties": { "dci": "ZANAMIVIR", "level_easy": 0, "level_hard": 1 },
+      "classifications": { "systems": 2, "classes": 2 },
+      "properties": { "indications": [1] }
+    },
+    {
+      "id": 4,
+      "uniqueProperties": {
+        "dci": "LAMIVUDINE",
+        "ntr": 0,
+        "skeletal_formule": "H2O",
+        "level_hard": 1
+      },
+      "classifications": { "systems": 2, "classes": 4 },
+      "properties": { "indications": [3, 4] }
+    },
+    {
+      "id": 5,
+      "uniqueProperties": { "dci": "ENTECAVIR", "level_hard": 1 },
+      "classifications": { "systems": 2, "classes": 3 },
+      "properties": { "indications": [3] }
+    },
+    {
+      "id": 6,
+      "uniqueProperties": { "dci": "TELBIVUDINE", "level_hard": 1 },
+      "classifications": { "systems": 2, "classes": 3 },
+      "properties": { "indications": [3] }
+    },
+    {
+      "id": 7,
+      "uniqueProperties": { "dci": "RIBAVIRINE" },
+      "classifications": { "systems": 2, "classes": 3 },
+      "properties": { "indications": [3] }
+    },
+    {
+      "id": 8,
+      "uniqueProperties": { "dci": "ADEFOVIR" },
+      "classifications": { "systems": 2, "classes": 3 },
+      "properties": { "indications": [3] }
+    },
+    {
+      "id": 9,
+      "uniqueProperties": { "dci": "TENOFOVIR DISOPROXIL" },
+      "classifications": { "systems": 2, "classes": 4 },
+      "properties": { "indications": [3, 4] }
+    },
+    {
+      "id": 10,
+      "uniqueProperties": { "dci": "TENOFOVIR ALAFENAMIDE" },
+      "classifications": { "systems": 2, "classes": 4 },
+      "properties": { "indications": [4] }
+    },
+    {
+      "id": 11,
+      "uniqueProperties": { "dci": "LETERMOVIR" },
+      "classifications": { "systems": 2, "classes": 5 },
+      "properties": { "indications": [5] }
+    },
+    {
+      "id": 12,
+      "uniqueProperties": { "dci": "SOFOSBUVIR" },
+      "classifications": { "systems": 2, "classes": 6 },
+      "properties": { "indications": [6] }
+    },
+    {
+      "id": 13,
+      "uniqueProperties": { "dci": "VELPASTASVIR" },
+      "classifications": { "systems": 2, "classes": 7 },
+      "properties": { "indications": [6] }
+    },
+    {
+      "id": 14,
+      "uniqueProperties": { "dci": "GLECAPREVIR" },
+      "classifications": { "systems": 2, "classes": 8 },
+      "properties": { "indications": [6] }
+    },
+    {
+      "id": 15,
+      "uniqueProperties": { "dci": "PIBRENTASVIR" },
+      "classifications": { "systems": 2, "classes": 7 },
+      "properties": { "indications": [6] }
+    },
+    {
+      "id": 16,
+      "uniqueProperties": { "dci": "DACLATASVIR" },
+      "classifications": { "systems": 2, "classes": 7 },
+      "properties": { "indications": [6] }
+    },
+    {
+      "id": 17,
+      "uniqueProperties": { "dci": "LEDIPASVIR" },
+      "classifications": { "systems": 2, "classes": 7 },
+      "properties": { "indications": [6] }
+    },
+    {
+      "id": 18,
+      "uniqueProperties": { "dci": "ACICLOVIR" },
+      "classifications": { "systems": 2, "classes": 3 },
+      "properties": { "indications": [7, 8], "side_effects": [2] }
+    },
+    {
+      "id": 19,
+      "uniqueProperties": { "dci": "VALACICLOVIR" },
+      "classifications": { "systems": 2, "classes": 3 },
+      "properties": { "indications": [7, 8], "side_effects": [2] }
+    },
+    {
+      "id": 20,
+      "uniqueProperties": { "dci": "GANCICLOVIR" },
+      "classifications": { "systems": 2, "classes": 3 },
+      "properties": { "indications": [5], "side_effects": [2] }
+    },
+    {
+      "id": 21,
+      "uniqueProperties": { "dci": "VALGANCICLOVIR" },
+      "classifications": { "systems": 2, "classes": 3 },
+      "properties": { "indications": [5], "side_effects": [2] }
+    },
+    {
+      "id": 22,
+      "uniqueProperties": { "dci": "FOSCARNET" },
+      "classifications": { "systems": 2, "classes": 9 },
+      "properties": { "indications": [7, 8, 9, 5], "side_effects": [2] }
+    },
+    {
+      "id": 23,
+      "uniqueProperties": { "dci": "DORAVIRINE" },
+      "classifications": { "systems": 2, "classes": 10 },
+      "properties": { "indications": [4] }
+    },
+    {
+      "id": 24,
+      "uniqueProperties": { "dci": "EFAVIRENZ" },
+      "classifications": { "systems": 2, "classes": 10 },
+      "properties": { "indications": [4] }
+    },
+    {
+      "id": 25,
+      "uniqueProperties": { "dci": "ETRAVIRINE" },
+      "classifications": { "systems": 2, "classes": 10 },
+      "properties": { "indications": [4] }
+    },
+    {
+      "id": 26,
+      "uniqueProperties": { "dci": "NEVIRAPINE" },
+      "classifications": { "systems": 2, "classes": 10 },
+      "properties": { "indications": [4] }
+    },
+    {
+      "id": 27,
+      "uniqueProperties": { "dci": "RILPIVIRINE" },
+      "classifications": { "systems": 2, "classes": 10 },
+      "properties": { "indications": [4] }
+    },
+    {
+      "id": 28,
+      "uniqueProperties": { "dci": "ABACAVIR" },
+      "classifications": { "systems": 2, "classes": 4 },
+      "properties": { "indications": [4] }
+    },
+    {
+      "id": 29,
+      "uniqueProperties": { "dci": "EMTRICITABINE" },
+      "classifications": { "systems": 2, "classes": 4 },
+      "properties": { "indications": [4] }
+    },
+    {
+      "id": 30,
+      "uniqueProperties": { "dci": "ZIDOVUDINE" },
+      "classifications": { "systems": 2, "classes": 4 },
+      "properties": { "indications": [4] }
+    },
+    {
+      "id": 31,
+      "uniqueProperties": { "dci": "BULEVIRTIDE" },
+      "classifications": { "systems": 2, "classes": 12 },
+      "properties": { "indications": [10] }
+    },
+    {
+      "id": 32,
+      "uniqueProperties": { "dci": "COBICISTAT" },
+      "classifications": { "systems": 2, "classes": 13 },
+      "properties": { "indications": [4] }
+    },
+    {
+      "id": 33,
+      "uniqueProperties": { "dci": "MARAVIROC" },
+      "classifications": { "systems": 2, "classes": 14 },
+      "properties": { "indications": [4] }
+    },
+    {
+      "id": 34,
+      "uniqueProperties": { "dci": "ENFUVIRTIDE" },
+      "classifications": { "systems": 2, "classes": 1 },
+      "properties": { "indications": [4] }
+    },
+    {
+      "id": 35,
+      "uniqueProperties": { "dci": "ATAZANAVIR" },
+      "classifications": { "systems": 2, "classes": 15 },
+      "properties": { "indications": [4] }
+    },
+    {
+      "id": 36,
+      "uniqueProperties": { "dci": "DARUNAVIR" },
+      "classifications": { "systems": 2, "classes": 15 },
+      "properties": { "indications": [4] }
+    },
+    {
+      "id": 37,
+      "uniqueProperties": { "dci": "FOSAMPRENAVIR" },
+      "classifications": { "systems": 2, "classes": 15 },
+      "properties": { "indications": [4] }
+    },
+    {
+      "id": 38,
+      "uniqueProperties": { "dci": "LOPINAVIR" },
+      "classifications": { "systems": 2, "classes": 15 },
+      "properties": { "indications": [4] }
+    },
+    {
+      "id": 39,
+      "uniqueProperties": { "dci": "RITONAVIR" },
+      "classifications": { "systems": 2, "classes": 15 },
+      "properties": { "indications": [4] }
+    },
+    {
+      "id": 40,
+      "uniqueProperties": { "dci": "TIPRANAVIR" },
+      "classifications": { "systems": 2, "classes": 15 },
+      "properties": { "indications": [4] }
+    },
+    {
+      "id": 41,
+      "uniqueProperties": { "dci": "DOLUTEGRAVIR" },
+      "classifications": { "systems": 2, "classes": 16 },
+      "properties": { "indications": [4] }
+    },
+    {
+      "id": 42,
+      "uniqueProperties": { "dci": "RALTEGRAVIR" },
+      "classifications": { "systems": 2, "classes": 16 },
+      "properties": { "indications": [4] }
+    },
+    {
+      "id": 43,
+      "uniqueProperties": { "dci": "ELVITEGRAVIR" },
+      "classifications": { "systems": 2, "classes": 16 },
+      "properties": { "indications": [4] }
+    },
+    {
+      "id": 44,
+      "uniqueProperties": { "dci": "BICTEGRAVIR" },
+      "classifications": { "systems": 2, "classes": 16 },
+      "properties": { "indications": [4] }
+    },
+    {
+      "id": 45,
+      "uniqueProperties": { "dci": "AMOXICILLINE" },
+      "classifications": { "systems": 3, "classes": 18 },
+      "properties": { "indications": [11] }
+    },
+    {
+      "id": 46,
+      "uniqueProperties": { "dci": "AMPICILLINE" },
+      "classifications": { "systems": 3, "classes": 18 },
+      "properties": { "indications": [11] }
+    },
+    {
+      "id": 47,
+      "uniqueProperties": { "dci": "BENZYLPENICILLINE" },
+      "classifications": { "systems": 3, "classes": 19 },
+      "properties": { "indications": [11] }
+    },
+    {
+      "id": 48,
+      "uniqueProperties": { "dci": "CLOXACILLINE" },
+      "classifications": { "systems": 3, "classes": 20 },
+      "properties": { "indications": [11] }
+    },
+    {
+      "id": 49,
+      "uniqueProperties": { "dci": "OXACILLINE" },
+      "classifications": { "systems": 3, "classes": 20 },
+      "properties": { "indications": [11] }
+    },
+    {
+      "id": 50,
+      "uniqueProperties": { "dci": "PHENOXYMETHYLPENICILLINE" },
+      "classifications": { "systems": 3, "classes": 21 },
+      "properties": { "indications": [11] }
+    },
+    {
+      "id": 51,
+      "uniqueProperties": { "dci": "PIPERACILLINE" },
+      "classifications": { "systems": 3, "classes": 22 },
+      "properties": { "indications": [11] }
+    },
+    {
+      "id": 52,
+      "uniqueProperties": { "dci": "PIVMECILLINAM" },
+      "classifications": { "systems": 3, "classes": 23 },
+      "properties": { "indications": [11] }
+    },
+    {
+      "id": 53,
+      "uniqueProperties": { "dci": "TEMOCILLINE" },
+      "classifications": { "systems": 3, "classes": 23 },
+      "properties": { "indications": [11] }
+    },
+    {
+      "id": 54,
+      "uniqueProperties": { "dci": "TICARCILLINE" },
+      "classifications": { "systems": 3, "classes": 24 },
+      "properties": { "indications": [11] }
+    },
+    {
+      "id": 55,
+      "uniqueProperties": { "dci": "ACIDE CLAVULANIQUE" },
+      "classifications": { "systems": 3, "classes": 25 },
+      "properties": { "indications": [11] }
+    },
+    {
+      "id": 56,
+      "uniqueProperties": { "dci": "SULBACTAM" },
+      "classifications": { "systems": 3, "classes": 25 },
+      "properties": { "indications": [11] }
+    },
+    {
+      "id": 57,
+      "uniqueProperties": { "dci": "TAZOBACTAM" },
+      "classifications": { "systems": 3, "classes": 25 },
+      "properties": { "indications": [11] }
+    },
+    {
+      "id": 58,
+      "uniqueProperties": { "dci": "AVIBACTAM" },
+      "classifications": { "systems": 3, "classes": 25 },
+      "properties": { "indications": [11] }
+    },
+    {
+      "id": 59,
+      "uniqueProperties": { "dci": "AZTREONAM" },
+      "classifications": { "systems": 3, "classes": 26 },
+      "properties": { "indications": [11] }
+    },
+    {
+      "id": 60,
+      "uniqueProperties": { "dci": "ERTAPENEME" },
+      "classifications": { "systems": 3, "classes": 27 },
+      "properties": { "indications": [11] }
+    },
+    {
+      "id": 61,
+      "uniqueProperties": { "dci": "MEROPENEME" },
+      "classifications": { "systems": 3, "classes": 27 },
+      "properties": { "indications": [11] }
+    },
+    {
+      "id": 62,
+      "uniqueProperties": { "dci": "IMIPENEME" },
+      "classifications": { "systems": 3, "classes": 27 },
+      "properties": { "indications": [11] }
+    },
+    {
+      "id": 63,
+      "uniqueProperties": { "dci": "CILASTATINE" },
+      "classifications": { "systems": 3, "classes": 28 },
+      "properties": { "indications": [11] }
+    },
+    {
+      "id": 64,
+      "uniqueProperties": { "dci": "CEFACLOR" },
+      "classifications": { "systems": 3, "classes": 30 },
+      "properties": { "indications": [11] }
+    },
+    {
+      "id": 65,
+      "uniqueProperties": { "dci": "CEFAZOLINE" },
+      "classifications": { "systems": 3, "classes": 30 },
+      "properties": { "indications": [11] }
+    },
+    {
+      "id": 66,
+      "uniqueProperties": { "dci": "CEFAMANDOLE" },
+      "classifications": { "systems": 3, "classes": 31 },
+      "properties": { "indications": [11] }
+    },
+    {
+      "id": 67,
+      "uniqueProperties": { "dci": "CEFOXITINE" },
+      "classifications": { "systems": 3, "classes": 31 },
+      "properties": { "indications": [11] }
+    },
+    {
+      "id": 68,
+      "uniqueProperties": { "dci": "CEFUROXIME" },
+      "classifications": { "systems": 3, "classes": 31 },
+      "properties": { "indications": [11] }
+    },
+    {
+      "id": 69,
+      "uniqueProperties": { "dci": "CEFIXIME" },
+      "classifications": { "systems": 3, "classes": 32 },
+      "properties": { "indications": [11] }
+    },
+    {
+      "id": 70,
+      "uniqueProperties": { "dci": "CEFIDEROCOL" },
+      "classifications": { "systems": 3, "classes": 32 },
+      "properties": { "indications": [11] }
+    },
+    {
+      "id": 71,
+      "uniqueProperties": { "dci": "CEFOTAXIME," },
+      "classifications": { "systems": 3, "classes": 32 },
+      "properties": { "indications": [11] }
+    },
+    {
+      "id": 72,
+      "uniqueProperties": { "dci": "CEFPODOXIME" },
+      "classifications": { "systems": 3, "classes": 32 },
+      "properties": { "indications": [11] }
+    },
+    {
+      "id": 73,
+      "uniqueProperties": { "dci": "CEFTAZIDIME" },
+      "classifications": { "systems": 3, "classes": 32 },
+      "properties": { "indications": [11] }
+    },
+    {
+      "id": 74,
+      "uniqueProperties": { "dci": "CEFTRIAXONE," },
+      "classifications": { "systems": 3, "classes": 32 },
+      "properties": { "indications": [11] }
+    },
+    {
+      "id": 75,
+      "uniqueProperties": { "dci": "CEFEPIME" },
+      "classifications": { "systems": 3, "classes": 32 },
+      "properties": { "indications": [11] }
+    },
+    {
+      "id": 76,
+      "uniqueProperties": { "dci": "CEFTOLOZANE" },
+      "classifications": { "systems": 3, "classes": 33 },
+      "properties": { "indications": [11] }
+    },
+    {
+      "id": 77,
+      "uniqueProperties": { "dci": "CEFTAROLINE" },
+      "classifications": { "systems": 3, "classes": 33 },
+      "properties": { "indications": [11] }
+    },
+    {
+      "id": 78,
+      "uniqueProperties": { "dci": "CEFTOBIPROL" },
+      "classifications": { "systems": 3, "classes": 33 },
+      "properties": { "indications": [11] }
+    },
+    {
+      "id": 79,
+      "uniqueProperties": { "dci": "DOXYCYCLINE" },
+      "classifications": { "systems": 3, "classes": 34 },
+      "properties": { "indications": [11, 12], "side_effects": [3, 4, 5] }
+    },
+    {
+      "id": 80,
+      "uniqueProperties": { "dci": "LYMECYCLINE" },
+      "classifications": { "systems": 3, "classes": 34 },
+      "properties": { "indications": [11], "side_effects": [3, 4, 5] }
+    },
+    {
+      "id": 81,
+      "uniqueProperties": { "dci": "METHYLENECYCLINE" },
+      "classifications": { "systems": 3, "classes": 34 },
+      "properties": { "indications": [11], "side_effects": [3, 4, 5] }
+    },
+    {
+      "id": 82,
+      "uniqueProperties": { "dci": "MINOCYCLINE" },
+      "classifications": { "systems": 3, "classes": 34 },
+      "properties": { "indications": [11], "side_effects": [3, 4, 5] }
+    },
+    {
+      "id": 83,
+      "uniqueProperties": { "dci": "OXYTETRACYCLINE" },
+      "classifications": { "systems": 3, "classes": 34 },
+      "properties": { "indications": [11], "side_effects": [3, 4, 5] }
+    },
+    {
+      "id": 84,
+      "uniqueProperties": { "dci": "TIGECYCLINE" },
+      "classifications": { "systems": 3, "classes": 34 },
+      "properties": { "indications": [11], "side_effects": [3, 4, 5] }
+    },
+    {
+      "id": 85,
+      "uniqueProperties": { "dci": "AMIKACINE" },
+      "classifications": { "systems": 3, "classes": 35 },
+      "properties": { "indications": [11], "side_effects": [2, 6] }
+    },
+    {
+      "id": 86,
+      "uniqueProperties": { "dci": "GENTAMICINE," },
+      "classifications": { "systems": 3, "classes": 35 },
+      "properties": { "indications": [11], "side_effects": [2, 6] }
+    },
+    {
+      "id": 87,
+      "uniqueProperties": { "dci": "STREPTOMYCINE," },
+      "classifications": { "systems": 3, "classes": 35 },
+      "properties": { "indications": [11], "side_effects": [2, 6] }
+    },
+    {
+      "id": 88,
+      "uniqueProperties": { "dci": "TOBRAMYCINE," },
+      "classifications": { "systems": 3, "classes": 35 },
+      "properties": { "indications": [11], "side_effects": [2, 6] }
+    },
+    {
+      "id": 89,
+      "uniqueProperties": { "dci": "FRAMYCETINE" },
+      "classifications": { "systems": 3, "classes": 35 },
+      "properties": { "indications": [11], "side_effects": [2, 6] }
+    },
+    {
+      "id": 90,
+      "uniqueProperties": { "dci": "AZITHROMYCINE" },
+      "classifications": { "systems": 3, "classes": 36 },
+      "properties": { "indications": [11], "side_effects": [7] }
+    },
+    {
+      "id": 91,
+      "uniqueProperties": { "dci": "CLARITHROMYCINE" },
+      "classifications": { "systems": 3, "classes": 36 },
+      "properties": { "interactions": [1], "indications": [11], "side_effects": [7] }
+    },
+    {
+      "id": 92,
+      "uniqueProperties": { "dci": "ERYTHROMYCINE" },
+      "classifications": { "systems": 3, "classes": 36 },
+      "properties": { "interactions": [1], "indications": [11], "side_effects": [7] }
+    },
+    {
+      "id": 93,
+      "uniqueProperties": { "dci": "JOSAMYCINE" },
+      "classifications": { "systems": 3, "classes": 36 },
+      "properties": { "indications": [11], "side_effects": [7] }
+    },
+    {
+      "id": 94,
+      "uniqueProperties": { "dci": "ROXITHROMYCINE" },
+      "classifications": { "systems": 3, "classes": 36 },
+      "properties": { "indications": [11], "side_effects": [7] }
+    },
+    {
+      "id": 95,
+      "uniqueProperties": { "dci": "SPIRAMYCINE" },
+      "classifications": { "systems": 3, "classes": 36 },
+      "properties": { "indications": [11], "side_effects": [7] }
+    },
+    {
+      "id": 96,
+      "uniqueProperties": { "dci": "FIDAXOMICINE" },
+      "classifications": { "systems": 3, "classes": 36 },
+      "properties": { "indications": [11], "side_effects": [7] }
+    },
+    {
+      "id": 97,
+      "uniqueProperties": { "dci": "PRISTINAMYCINE" },
+      "classifications": { "systems": 3, "classes": 36 },
+      "properties": { "indications": [11], "side_effects": [7] }
+    },
+    {
+      "id": 98,
+      "uniqueProperties": { "dci": "DALBAVANCINE" },
+      "classifications": { "systems": 3, "classes": 37 },
+      "properties": { "indications": [11], "side_effects": [2, 6] }
+    },
+    {
+      "id": 99,
+      "uniqueProperties": { "dci": "TEICOPLANINE" },
+      "classifications": { "systems": 3, "classes": 37 },
+      "properties": { "indications": [11], "side_effects": [2, 6] }
+    },
+    {
+      "id": 100,
+      "uniqueProperties": { "dci": "VANCOMYCINE" },
+      "classifications": { "systems": 3, "classes": 37 },
+      "properties": { "indications": [11], "side_effects": [2, 6] }
+    },
+    {
+      "id": 101,
+      "uniqueProperties": { "dci": "DAPTOMYCINE" },
+      "classifications": { "systems": 3, "classes": 38 },
+      "properties": { "indications": [11] }
+    },
+    {
+      "id": 102,
+      "uniqueProperties": { "dci": "COLISTINE" },
+      "classifications": { "systems": 3, "classes": 38 },
+      "properties": { "indications": [11] }
+    },
+    {
+      "id": 103,
+      "uniqueProperties": { "dci": "SULFADIAZINE" },
+      "classifications": { "systems": 3, "classes": 39 },
+      "properties": { "indications": [11, 13] }
+    },
+    {
+      "id": 104,
+      "uniqueProperties": { "dci": "SULFADOXINE" },
+      "classifications": { "systems": 3, "classes": 39 },
+      "properties": { "indications": [11] }
+    },
+    {
+      "id": 105,
+      "uniqueProperties": { "dci": "SULFAMETHIZOL" },
+      "classifications": { "systems": 3, "classes": 39 },
+      "properties": { "indications": [11] }
+    },
+    {
+      "id": 106,
+      "uniqueProperties": { "dci": "SULFAMETHOXAZOLE" },
+      "classifications": { "systems": 3, "classes": 39 },
+      "properties": { "indications": [11] }
+    },
+    {
+      "id": 107,
+      "uniqueProperties": { "dci": "CIPROFLOXACINE" },
+      "classifications": { "systems": 3, "classes": 40 },
+      "properties": { "interactions": [2], "indications": [11], "side_effects": [8, 7] }
+    },
+    {
+      "id": 108,
+      "uniqueProperties": { "dci": "ENOXACINE" },
+      "classifications": { "systems": 3, "classes": 40 },
+      "properties": { "interactions": [2], "indications": [11], "side_effects": [8, 7] }
+    },
+    {
+      "id": 109,
+      "uniqueProperties": { "dci": "LEVOFLOXACINE" },
+      "classifications": { "systems": 3, "classes": 40 },
+      "properties": { "interactions": [2], "indications": [11], "side_effects": [8, 7] }
+    },
+    {
+      "id": 110,
+      "uniqueProperties": { "dci": "LOMEFLOXACINE" },
+      "classifications": { "systems": 3, "classes": 40 },
+      "properties": { "interactions": [2], "indications": [11], "side_effects": [8, 7] }
+    },
+    {
+      "id": 111,
+      "uniqueProperties": { "dci": "MOXIFLOXACINE" },
+      "classifications": { "systems": 3, "classes": 40 },
+      "properties": { "interactions": [2], "indications": [11], "side_effects": [8, 7] }
+    },
+    {
+      "id": 112,
+      "uniqueProperties": { "dci": "NORFLOXACINE" },
+      "classifications": { "systems": 3, "classes": 40 },
+      "properties": { "interactions": [2], "indications": [11], "side_effects": [8, 7] }
+    },
+    {
+      "id": 113,
+      "uniqueProperties": { "dci": "OFLOXACINE" },
+      "classifications": { "systems": 3, "classes": 40 },
+      "properties": { "interactions": [2], "indications": [11], "side_effects": [8, 7] }
+    },
+    {
+      "id": 114,
+      "uniqueProperties": { "dci": "PEFLOXACINE" },
+      "classifications": { "systems": 3, "classes": 40 },
+      "properties": { "interactions": [2], "indications": [11], "side_effects": [8, 7] }
+    },
+    {
+      "id": 115,
+      "uniqueProperties": { "dci": "CLINDAMYCINE" },
+      "classifications": { "systems": 3, "classes": 41 },
+      "properties": { "indications": [11] }
+    },
+    {
+      "id": 116,
+      "uniqueProperties": { "dci": "LINCOMYCINE" },
+      "classifications": { "systems": 3, "classes": 41 },
+      "properties": { "indications": [11] }
+    },
+    {
+      "id": 117,
+      "uniqueProperties": { "dci": "TEDIZOLIDE" },
+      "classifications": { "systems": 3, "classes": 42 },
+      "properties": { "indications": [11] }
+    },
+    {
+      "id": 118,
+      "uniqueProperties": { "dci": "LINEZOLIDE" },
+      "classifications": { "systems": 3, "classes": 42 },
+      "properties": { "interactions": [3], "indications": [11], "side_effects": [9, 10] }
+    },
+    {
+      "id": 119,
+      "uniqueProperties": { "dci": "THIAMPHENICOL" },
+      "classifications": { "systems": 3, "classes": 43 },
+      "properties": { "indications": [11] }
+    },
+    {
+      "id": 120,
+      "uniqueProperties": { "dci": "FOSFOMYCINE" },
+      "classifications": { "systems": 3 },
+      "properties": { "indications": [11] }
+    },
+    {
+      "id": 121,
+      "uniqueProperties": { "dci": "ACIDE FUSIDIQUE" },
+      "classifications": { "systems": 3 },
+      "properties": { "indications": [11] }
+    },
+    {
+      "id": 122,
+      "uniqueProperties": { "dci": "ETHAMBUTOL" },
+      "classifications": { "systems": 3, "classes": 44 },
+      "properties": { "indications": [14] }
+    },
+    {
+      "id": 123,
+      "uniqueProperties": { "dci": "ISONIAZIDE," },
+      "classifications": { "systems": 3, "classes": 44 },
+      "properties": { "indications": [14] }
+    },
+    {
+      "id": 124,
+      "uniqueProperties": { "dci": "RIFABUTINE" },
+      "classifications": { "systems": 3, "classes": 44 },
+      "properties": { "indications": [14] }
+    },
+    {
+      "id": 125,
+      "uniqueProperties": { "dci": "RIFAMPICINE" },
+      "classifications": { "systems": 3, "classes": 44 },
+      "properties": { "indications": [14] }
+    },
+    {
+      "id": 126,
+      "uniqueProperties": { "dci": "PYRAZINAMIDE" },
+      "classifications": { "systems": 3, "classes": 44 },
+      "properties": { "indications": [14] }
+    },
+    {
+      "id": 127,
+      "uniqueProperties": { "dci": "NIFUROXAZIDE" },
+      "classifications": { "systems": 3, "classes": 45 },
+      "properties": { "indications": [11] }
+    },
+    {
+      "id": 128,
+      "uniqueProperties": { "dci": "NITROFURANTOÏNE" },
+      "classifications": { "systems": 3, "classes": 45 },
+      "properties": { "indications": [11] }
+    },
+    {
+      "id": 129,
+      "uniqueProperties": { "dci": "NICLOSAMIDE" },
+      "classifications": { "systems": 4, "classes": 46 },
+      "properties": { "indications": [15] }
+    },
+    {
+      "id": 130,
+      "uniqueProperties": { "dci": "PRAZIQUANTEL" },
+      "classifications": { "systems": 4, "classes": 46 },
+      "properties": { "indications": [15] }
+    },
+    {
+      "id": 131,
+      "uniqueProperties": { "dci": "ALBENDAZOLE" },
+      "classifications": { "systems": 4, "classes": 47 },
+      "properties": { "indications": [15] }
+    },
+    {
+      "id": 132,
+      "uniqueProperties": { "dci": "FLUBENDAZOLE" },
+      "classifications": { "systems": 4, "classes": 47 },
+      "properties": { "indications": [15] }
+    },
+    {
+      "id": 133,
+      "uniqueProperties": { "dci": "TRICLABENDAZOLE" },
+      "classifications": { "systems": 4, "classes": 47 },
+      "properties": { "indications": [15] }
+    },
+    {
+      "id": 134,
+      "uniqueProperties": { "dci": "DIETHYLCARBAMAZINE" },
+      "classifications": { "systems": 4 },
+      "properties": { "indications": [15] }
+    },
+    {
+      "id": 135,
+      "uniqueProperties": { "dci": "IVERMECTINE" },
+      "classifications": { "systems": 4 },
+      "properties": { "indications": [15] }
+    },
+    {
+      "id": 136,
+      "uniqueProperties": { "dci": "PYRANTEL" },
+      "classifications": { "systems": 4 },
+      "properties": { "indications": [15] }
+    },
+    {
+      "id": 137,
+      "uniqueProperties": { "dci": "METRONIDAZOLE," },
+      "classifications": { "systems": 4, "classes": 48 },
+      "properties": { "indications": [16, 17] }
+    },
+    {
+      "id": 138,
+      "uniqueProperties": { "dci": "ORNIDAZOLE," },
+      "classifications": { "systems": 4, "classes": 48 },
+      "properties": { "indications": [16, 17] }
+    },
+    {
+      "id": 139,
+      "uniqueProperties": { "dci": "SECNIDAZOLE," },
+      "classifications": { "systems": 4, "classes": 48 },
+      "properties": { "indications": [16, 17] }
+    },
+    {
+      "id": 140,
+      "uniqueProperties": { "dci": "TINIDAZOLE" },
+      "classifications": { "systems": 4, "classes": 48 },
+      "properties": { "indications": [16, 17] }
+    }
+  ]
+}

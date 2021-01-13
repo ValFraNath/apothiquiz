@@ -81,8 +81,6 @@ export function importData(filepath) {
 
   const structure = new FileStructure(excelData.shift(), columns);
 
-  // TODO reorder indexes for classifications
-
   const data = Object.create(null);
 
   const nonUniqueFilter = (propertyCategory) => !propertyCategory.isUnique();
@@ -119,7 +117,7 @@ function getFilteredPropertyCategories(predicate) {
  * @param {string} filepath
  */
 function readCsvFile(filepath) {
-  return xlsx.parse(filepath)[0].data.filter((row) => row[0]);
+  return xlsx.parse(filepath)[0].data.filter((row) => row[0] !== undefined);
 }
 
 /**
@@ -300,6 +298,7 @@ class Classification {
    * @param {string[][]} matrix
    */
   constructor(matrix) {
+    ///console.log(matrix);
     let id = 0;
     const root = new ClassificationNode(id++, "ROOT");
 
