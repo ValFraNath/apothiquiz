@@ -14,8 +14,8 @@ const filesPath = "./test/CSVParserData/CSVFiles";
 const snapshotsPath = "./test/CSVParserData/snapshots";
 
 const files = [
-  { name: "molecules.xlsx", snapshot: "molecules.json" },
-  // { name: "molecules_movedColumns.xlsx", snapshot: "molecules.json" },
+  //{ name: "molecules.xlsx", snapshot: "molecules.json" },
+  { name: "molecules_movedColumns.xlsx", snapshot: "molecules.json" },
 ];
 
 function removeDuplications(array) {
@@ -39,7 +39,7 @@ function flattenClassification(classification) {
 }
 
 function getMolecule(data, dci) {
-  return data.molecules.find((m) => m.uniqueProperties.dci === dci);
+  return data.molecules.find((m) => m.dci === dci);
 }
 
 function getClasse(data, name) {
@@ -58,12 +58,12 @@ function expectMoleculeHaveClasse(data, molecule, classe) {
   molecule = getMolecule(data, molecule);
   classe = getClasse(data, classe);
 
-  expect(molecule.classifications.classes).to.be.equals(classe.id);
+  expect(molecule.classes).to.be.equals(classe.id);
 }
 
 const toId = (object) => object.id;
 const toName = (object) => object.name;
-const toDci = (molecule) => molecule.uniqueProperties.dci;
+const toDci = (molecule) => molecule.dci;
 const identity = (e) => e;
 
 for (let file of files) {
@@ -136,8 +136,8 @@ for (let file of files) {
       let zanamivir = getMolecule(data, "ZANAMIVIR");
 
       expect(removeDuplications(data.molecules.map(toDci))).to.have.length(140);
-      expect(zanamivir.uniqueProperties.level_easy).to.be.equals(0);
-      expect(zanamivir.uniqueProperties.level_hard).to.be.equals(1);
+      expect(zanamivir.level_easy).to.be.equals(0);
+      expect(zanamivir.level_hard).to.be.equals(1);
 
       done();
     });

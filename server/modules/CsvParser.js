@@ -1,21 +1,10 @@
 import xlsx from "node-xlsx";
-
-export class ImportationError extends Error {
-  constructor(message, code) {
-    super();
-    this.message = message;
-    this.code = code;
-    this.name = "FileFormatError";
-  }
-  static isInstance(error) {
-    return error instanceof ImportationError;
-  }
-}
+import HeaderChecker from "./CSVParser/HeaderChecker.js";
 
 /**
- * Class representing the details of a category of property of a column in the CSV file.
+ * Class representing the details about a property.
  */
-class PropertyCategorySpecifications {
+class PropertySpecifications {
   constructor(name, hierachical = false, unique = false) {
     this.name = name;
     this.hierachical = hierachical;
@@ -37,37 +26,37 @@ class PropertyCategorySpecifications {
 const columns = [
   {
     title: "SYSTEME_(\\d+)",
-    propertyCategory: new PropertyCategorySpecifications("systems", true, false),
+    property: new PropertySpecifications("systems", true, false),
   },
   {
     title: "CLASSE_PHARMA_(\\d+)",
-    propertyCategory: new PropertyCategorySpecifications("classes", true, false),
+    property: new PropertySpecifications("classes", true, false),
   },
   {
     title: "INTERACTION",
-    propertyCategory: new PropertyCategorySpecifications("interactions", false, false),
+    property: new PropertySpecifications("interactions", false, false),
   },
   {
     title: "INDICATION",
-    propertyCategory: new PropertyCategorySpecifications("indications", false, false),
+    property: new PropertySpecifications("indications", false, false),
   },
   {
     title: "EFFET_INDESIRABLE",
-    propertyCategory: new PropertyCategorySpecifications("side_effects", false, false),
+    property: new PropertySpecifications("side_effects", false, false),
   },
-  { title: "DCI", propertyCategory: new PropertyCategorySpecifications("dci", false, true) },
-  { title: "MTE", propertyCategory: new PropertyCategorySpecifications("ntr", false, true) },
+  { title: "DCI", property: new PropertySpecifications("dci", false, true) },
+  { title: "MTE", property: new PropertySpecifications("ntr", false, true) },
   {
     title: "FORMULE_CHIMIQUE",
-    propertyCategory: new PropertyCategorySpecifications("skeletal_formule", false, true),
+    property: new PropertySpecifications("skeletal_formule", false, true),
   },
   {
     title: "NIVEAU_DEBUTANT",
-    propertyCategory: new PropertyCategorySpecifications("level_easy", false, true),
+    property: new PropertySpecifications("level_easy", false, true),
   },
   {
     title: "NIVEAU_EXPERT",
-    propertyCategory: new PropertyCategorySpecifications("level_hard", false, true),
+    property: new PropertySpecifications("level_hard", false, true),
   },
 ];
 
@@ -77,25 +66,33 @@ const columns = [
  * @return {JSON}
  */
 export function importData(filepath) {
-  const excelData = cleanUpStringsInMatrix(readCsvFile(filepath));
+  const moleculesMatrix = cleanUpStringsInMatrix(readCsvFile(filepath));
 
-  const structure = new FileStructure(excelData.shift(), columns);
+  const columnsHeader = moleculesMatrix.shift();
+
+  HeaderChecker.init(columnsHeader, columns);
+  if (!HeaderChecker.check()) {
+    console.table(HeaderChecker.getErrors());
+    process.exit(1);
+  }
+
+  const structure = new FileStructure(columnsHeader, columns);
 
   const data = Object.create(null);
 
-  const nonUniqueFilter = (propertyCategory) => !propertyCategory.isUnique();
+  const nonUniqueFilter = (property) => !property.isUnique();
 
-  for (let propertyCategory of getFilteredPropertyCategories(nonUniqueFilter)) {
-    const typeOfCategory = propertyCategory.isHierarchical() ? Classification : PropertyCategory;
+  for (let property of getFilteredPropertiesSpecifications(nonUniqueFilter)) {
+    const typeOfCategory = property.isHierarchical() ? Classification : Property;
 
-    data[propertyCategory.name] = new typeOfCategory(
-      extractColumns(excelData, ...structure.getIndexesFor(propertyCategory.name))
+    data[property.name] = new typeOfCategory(
+      extractColumns(moleculesMatrix, ...structure.getIndexesFor(property.name))
     ).extract();
   }
 
-  data.molecules = new MoleculeList(excelData, structure, data).extract();
+  data.molecules = new MoleculeList(moleculesMatrix, structure, data).extract();
 
-  console.error(JSON.stringify(data));
+  //console.error(JSON.stringify(data));
 
   return JSON.stringify(data);
 }
@@ -103,13 +100,11 @@ export function importData(filepath) {
 // ***** INTERNAL FUNCTIONS *****
 
 /**
- * Filter columns to extract only non unique categories of property
- * @param {function(PropertyCategorySpecifications)} predicate
+ * Filter properties specifications
+ * @param {function(PropertySpecifications)} predicate
  */
-function getFilteredPropertyCategories(predicate) {
-  return columns
-    .filter((column) => predicate(column.propertyCategory))
-    .map((column) => column.propertyCategory);
+function getFilteredPropertiesSpecifications(predicate) {
+  return columns.filter((column) => predicate(column.property)).map((column) => column.property);
 }
 
 /**
@@ -117,7 +112,7 @@ function getFilteredPropertyCategories(predicate) {
  * @param {string} filepath
  */
 function readCsvFile(filepath) {
-  return xlsx.parse(filepath)[0].data.filter((row) => row[0] !== undefined);
+  return xlsx.parse(filepath)[0].data.filter((row) => row[0]);
 }
 
 /**
@@ -175,7 +170,7 @@ class FileStructure {
   /**
    * This function reads the first row and stores which index is associated with which property
    * @param {string[]} header The CSV file first row
-   * @param {{title : string, property : PropertyCategorySpecifications}[]} requiredColumns The columns we want to extract
+   * @param {{title : string, property : PropertySpecifications}[]} requiredColumns The columns we want to extract
    * @throws {ImportationError} if the spreadsheet is incorrectly formatted
    */
   constructor(header, requiredColumns) {
@@ -198,7 +193,7 @@ class FileStructure {
 
   /**
    * Add a property to the structure
-   * @param {PropertyCategorySpecifications} property
+   * @param {PropertySpecifications} property
    * @param {number} index
    * @param {number} level
    * @throws {ImportationError} if en error has occured during the importation
@@ -214,7 +209,7 @@ class FileStructure {
 
   /**
    * Iterate through all the header columns and run a callback for each one corresponding to a required column
-   * @param {function(PropertyCategorySpecifications,number,number|undefined)} callback - Function to execute for each column corresponding to a property
+   * @param {function(PropertySpecifications,number,number|undefined)} callback - Function to execute for each column corresponding to a property
    */
   _forEachCorrespondingColumns(callback) {
     this.header.forEach((headerColumn, index) => {
@@ -224,7 +219,7 @@ class FileStructure {
 
       this.requiredColumns.forEach((requiredColumn) => {
         if (new RegExp(requiredColumn.title).test(headerColumn)) {
-          callback(requiredColumn.propertyCategory, index);
+          callback(requiredColumn.property, index);
         }
       });
     });
@@ -298,7 +293,6 @@ class Classification {
    * @param {string[][]} matrix
    */
   constructor(matrix) {
-    ///console.log(matrix);
     let id = 0;
     const root = new ClassificationNode(id++, "ROOT");
 
@@ -354,10 +348,10 @@ class Classification {
 }
 
 /**
- * Class representing a category of properties,
+ * Class representing a property,
  * composed of a list of values and their identifiers.
  */
-class PropertyCategory {
+class Property {
   /**
    * Create a property
    * @param {*} matrix
@@ -393,6 +387,12 @@ class PropertyCategory {
 }
 
 class MoleculeList {
+  /**
+   *
+   * @param {*} matrix
+   * @param {FileStructure} structure
+   * @param {*} data
+   */
   constructor(matrix, structure, data) {
     this.list = [];
     this.id = 1;
@@ -400,6 +400,11 @@ class MoleculeList {
     this.data = data;
 
     matrix.forEach((row) => {
+      // Avoid empty string DCI
+      if (!row[structure.getIndexesFor("dci")]) {
+        return;
+      }
+
       let molecule = new Molecule(this.id++);
 
       this.setUniqueProperties(molecule, row);
@@ -419,10 +424,10 @@ class MoleculeList {
    * @param {string[]} row
    */
   setUniqueProperties(molecule, row) {
-    getFilteredPropertyCategories((cat) => cat.isUnique()).forEach((propertyCategory) =>
-      molecule.setUniqueProperty({
-        property: propertyCategory.name,
-        value: row[this.structure.getIndexesFor(propertyCategory.name)],
+    getFilteredPropertiesSpecifications((cat) => cat.isUnique()).forEach((property) =>
+      molecule.setSingleValueProperty({
+        property: property.name,
+        value: row[this.structure.getIndexesFor(property.name)],
       })
     );
   }
@@ -432,8 +437,8 @@ class MoleculeList {
    * @param {string[]} row
    */
   setClassifications(molecule, row) {
-    getFilteredPropertyCategories((cat) => cat.isHierarchical()).forEach((propertyCategory) => {
-      const indexes = this.structure.getIndexesFor(propertyCategory.name);
+    getFilteredPropertiesSpecifications((cat) => cat.isHierarchical()).forEach((property) => {
+      const indexes = this.structure.getIndexesFor(property.name);
 
       let value = row[indexes.pop()];
       while (!value && indexes.length) {
@@ -444,10 +449,10 @@ class MoleculeList {
         return;
       }
 
-      const id = Classification.findId(this.data[propertyCategory.name], value);
+      const id = Classification.findId(this.data[property.name], value);
 
-      molecule.setMemberOf({
-        classification: propertyCategory.name,
+      molecule.setAsMemberOf({
+        classification: property.name,
         value: id,
       });
     });
@@ -458,16 +463,16 @@ class MoleculeList {
    * @param {string[]} row
    */
   setProperties(molecule, row) {
-    getFilteredPropertyCategories((cat) => !cat.isHierarchical() && !cat.isUnique()).forEach(
-      (propertyCategory) => {
-        const indexes = this.structure.getIndexesFor(propertyCategory.name);
+    getFilteredPropertiesSpecifications((cat) => !cat.isHierarchical() && !cat.isUnique()).forEach(
+      (property) => {
+        const indexes = this.structure.getIndexesFor(property.name);
 
         let values = row.filter((_, i) => indexes.includes(i));
-        values = values.map((value) =>
-          PropertyCategory.findId(this.data[propertyCategory.name], value)
-        );
+        values = values.map((value) => Property.findId(this.data[property.name], value));
 
-        values.forEach((value) => molecule.addProperty({ property: propertyCategory.name, value }));
+        values.forEach((value) =>
+          molecule.addMultiValuedProperty({ property: property.name, value })
+        );
       }
     );
   }
@@ -480,45 +485,47 @@ class Molecule {
    */
   constructor(id) {
     this.id = id;
-    this.uniqueProperties = Object.create(null);
-    this.classifications = Object.create(null);
-    this.properties = Object.create(null);
   }
 
   /**
-   * Add a unique property to a molecule
-   * @param {*} param0
+   * Set a single value property to a molecule
+   * @param {{property : string, value : string|number|boolean}} param0
    */
-  setUniqueProperty({ property, value }) {
+  setSingleValueProperty({ property, value }) {
     if (
-      getFilteredPropertyCategories((cat) => cat.isUnique())
+      getFilteredPropertiesSpecifications((cat) => cat.isUnique())
         .map((cat) => cat.name)
         .includes(property)
     ) {
-      this.uniqueProperties[property] = value;
+      this[property] = value;
     }
   }
 
-  setMemberOf({ classification, value }) {
+  /**
+   * Set molecule as member of a classification.
+   * 'classification' is 'system' or 'class' and 'value' is the id of the classification node referenced
+   * @param {{classification : string, value : number}} param0
+   */
+  setAsMemberOf({ classification, value }) {
     if (
-      getFilteredPropertyCategories((cat) => cat.isHierarchical())
+      getFilteredPropertiesSpecifications((cat) => cat.isHierarchical())
         .map((cat) => cat.name)
         .includes(classification)
     ) {
-      this.classifications[classification] = value;
+      this[classification] = value;
     }
   }
 
-  addProperty({ property, value }) {
+  addMultiValuedProperty({ property, value }) {
     if (
-      getFilteredPropertyCategories((cat) => !cat.isHierarchical() && !cat.isUnique())
+      getFilteredPropertiesSpecifications((cat) => !cat.isHierarchical() && !cat.isUnique())
         .map((cat) => cat.name)
         .includes(property)
     ) {
-      if (!this.properties[property]) {
-        this.properties[property] = [value];
+      if (!this[property]) {
+        this[property] = [value];
       } else {
-        this.properties[property].push(value);
+        this[property].push(value);
       }
     }
   }
