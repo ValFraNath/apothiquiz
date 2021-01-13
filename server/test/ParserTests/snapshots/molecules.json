@@ -1,0 +1,1399 @@
+{
+  "systems": [
+    {
+      "id": 1,
+      "name": "ANTIINFECTIEUX",
+      "children": [
+        { "id": 2, "name": "ANTIVIRAL", "children": [] },
+        { "id": 3, "name": "ANTIBIOTIQUE", "children": [] },
+        { "id": 4, "name": "ANTIPARASITAIRE", "children": [] }
+      ]
+    }
+  ],
+  "classes": [
+    { "id": 1, "name": "INHIBITEUR DE FUSION", "children": [] },
+    { "id": 2, "name": "INHIBITEURS DE NEURAMINISASE", "children": [] },
+    {
+      "id": 3,
+      "name": "ANALOGUES NUCLEOSIDIQUES",
+      "children": [
+        {
+          "id": 4,
+          "name": "INTI (INHIBITEURS NUCLEOSIDIQUES TRANSCRIPTASE INVERSE)",
+          "children": []
+        }
+      ]
+    },
+    { "id": 5, "name": "INHIBITEUR DE TERMINASE", "children": [] },
+    { "id": 6, "name": "INHIBITEUR POLYMERASE NS5B", "children": [] },
+    { "id": 7, "name": "INHIBITEUR NS5A", "children": [] },
+    { "id": 8, "name": "INHIBITEUR PROTEINE 3A/4", "children": [] },
+    {
+      "id": 9,
+      "name": "INHIBITEUR DIRECT ADN polymérase virale et transcriptase inverse",
+      "children": []
+    },
+    { "id": 10, "name": "INHIBITEURS NON NUCLEOSIDIQUES DE LA TI", "children": [] },
+    {
+      "id": 11,
+      "name": "INHIBITEUR ENTREE VHB ET HVD",
+      "children": [{ "id": 12, "name": "Inhibiteur récepteur NTCP", "children": [] }]
+    },
+    { "id": 13, "name": "INHIBITEUR CYP 3A4", "children": [] },
+    { "id": 14, "name": "INHIBITEUR CCR5", "children": [] },
+    { "id": 15, "name": "INHIBITEUR DE PROTEASE", "children": [] },
+    { "id": 16, "name": "INHIBITEUR DE L'INTEGRASE", "children": [] },
+    {
+      "id": 17,
+      "name": "PENICILLINES",
+      "children": [
+        { "id": 18, "name": "PENICILLINES A", "children": [] },
+        { "id": 19, "name": "PENICILLINE G", "children": [] },
+        { "id": 20, "name": "PENICILLINE M", "children": [] },
+        { "id": 21, "name": "PENICILLINE V", "children": [] },
+        { "id": 22, "name": "UREIDO-PENICILLINES", "children": [] },
+        { "id": 23, "name": "PENICILLINES A LARGE SPECTRE", "children": [] },
+        { "id": 24, "name": "CARBOXYPÉNICILLINES", "children": [] }
+      ]
+    },
+    { "id": 25, "name": "INHIBITEURS DE Β-LACTAMASES", "children": [] },
+    { "id": 26, "name": "MONOBACTAM", "children": [] },
+    { "id": 27, "name": "CARBAPENEMES", "children": [] },
+    { "id": 28, "name": "INHIBITEUR DE LA DESHYDROPEPTIDASE", "children": [] },
+    {
+      "id": 29,
+      "name": "CEPHALOSPORINES",
+      "children": [
+        { "id": 30, "name": "CEPHALOSPORINE DE 1ERE GENERATION", "children": [] },
+        { "id": 31, "name": "CEPHALOSPORINE DE 2NDE GENERATION", "children": [] },
+        { "id": 32, "name": "CEPHALOSPORINE DE 3EME GENERATION", "children": [] },
+        { "id": 33, "name": "CEPHALOSPORINE DE 5EME GENERATION", "children": [] }
+      ]
+    },
+    { "id": 34, "name": "TETRACYCLINES", "children": [] },
+    { "id": 35, "name": "AMINOSIDE", "children": [] },
+    { "id": 36, "name": "MACROLIDES", "children": [] },
+    { "id": 37, "name": "GLYCOPEPTIDES", "children": [] },
+    { "id": 38, "name": "POLYPEPTIDES", "children": [] },
+    { "id": 39, "name": "SULFAMIDES", "children": [] },
+    { "id": 40, "name": "FLUOROQUINOLONE", "children": [] },
+    { "id": 41, "name": "LINCOSAMIDES", "children": [] },
+    { "id": 42, "name": "OXAZOLIDINONES", "children": [] },
+    { "id": 43, "name": "PHENICOLES", "children": [] },
+    { "id": 44, "name": "Antituberculeux", "children": [] },
+    { "id": 45, "name": "NITROFURANES", "children": [] },
+    { "id": 46, "name": "CESTOCIDES", "children": [] },
+    { "id": 47, "name": "BENZIMIDAZOLES", "children": [] },
+    { "id": 48, "name": "5-NITRO-IMIDAZOLES", "children": [] }
+  ],
+  "interactions": [
+    { "id": 1, "name": "CYP3A4" },
+    { "id": 2, "name": "Allongement QT" },
+    { "id": 3, "name": "Syndrome serotoninergique" }
+  ],
+  "indications": [
+    { "id": 1, "name": "Grippe" },
+    { "id": 2, "name": "Parkinson" },
+    { "id": 3, "name": "VHB" },
+    { "id": 4, "name": "VIH" },
+    { "id": 5, "name": "CMV" },
+    { "id": 6, "name": "VHC" },
+    { "id": 7, "name": "HSV" },
+    { "id": 8, "name": "VZV" },
+    { "id": 9, "name": "EBV" },
+    { "id": 10, "name": "VHD" },
+    { "id": 11, "name": "Infection bacterienne" },
+    { "id": 12, "name": "Paludisme" },
+    { "id": 13, "name": "Protozoocide" },
+    { "id": 14, "name": "Tuberculose" },
+    { "id": 15, "name": "Helminthes" },
+    { "id": 16, "name": "Protozoaires" },
+    { "id": 17, "name": "Bactéries anaérobies" }
+  ],
+  "side_effects": [
+    { "id": 1, "name": "hypotension orthostatique" },
+    { "id": 2, "name": "Nephrotoxicité" },
+    { "id": 3, "name": "Décoloration dents" },
+    { "id": 4, "name": "Hypoplasie email dentaire" },
+    { "id": 5, "name": "oesophagite" },
+    { "id": 6, "name": "Ototoxicité" },
+    { "id": 7, "name": "Torsade de pointe" },
+    { "id": 8, "name": "Diminution seuil epileptogene" },
+    { "id": 9, "name": "Syndrome serotoninergique" },
+    { "id": 10, "name": "Toxicite hematologique" }
+  ],
+  "molecules": [
+    {
+      "id": 1,
+      "systems": 2,
+      "classes": 1,
+      "interactions": [],
+      "indications": [1, 2],
+      "side_effects": [1],
+      "dci": "AMANTADINE",
+      "level_easy": 0,
+      "level_hard": 1
+    },
+    {
+      "id": 2,
+      "systems": 2,
+      "classes": 2,
+      "interactions": [],
+      "indications": [1],
+      "side_effects": [],
+      "dci": "OSELTAMIVIR",
+      "ntr": 1,
+      "level_easy": 1,
+      "level_hard": 1
+    },
+    {
+      "id": 3,
+      "systems": 2,
+      "classes": 2,
+      "interactions": [],
+      "indications": [1],
+      "side_effects": [],
+      "dci": "ZANAMIVIR",
+      "level_easy": 0,
+      "level_hard": 1
+    },
+    {
+      "id": 4,
+      "systems": 2,
+      "classes": 4,
+      "interactions": [],
+      "indications": [3, 4],
+      "side_effects": [],
+      "dci": "LAMIVUDINE",
+      "ntr": 0,
+      "skeletal_formule": "H2O",
+      "level_hard": 1
+    },
+    {
+      "id": 5,
+      "systems": 2,
+      "classes": 3,
+      "interactions": [],
+      "indications": [3],
+      "side_effects": [],
+      "dci": "ENTECAVIR",
+      "level_hard": 1
+    },
+    {
+      "id": 6,
+      "systems": 2,
+      "classes": 3,
+      "interactions": [],
+      "indications": [3],
+      "side_effects": [],
+      "dci": "TELBIVUDINE",
+      "level_hard": 1
+    },
+    {
+      "id": 7,
+      "systems": 2,
+      "classes": 3,
+      "interactions": [],
+      "indications": [3],
+      "side_effects": [],
+      "dci": "RIBAVIRINE"
+    },
+    {
+      "id": 8,
+      "systems": 2,
+      "classes": 3,
+      "interactions": [],
+      "indications": [3],
+      "side_effects": [],
+      "dci": "ADEFOVIR"
+    },
+    {
+      "id": 9,
+      "systems": 2,
+      "classes": 4,
+      "interactions": [],
+      "indications": [3, 4],
+      "side_effects": [],
+      "dci": "TENOFOVIR DISOPROXIL"
+    },
+    {
+      "id": 10,
+      "systems": 2,
+      "classes": 4,
+      "interactions": [],
+      "indications": [4],
+      "side_effects": [],
+      "dci": "TENOFOVIR ALAFENAMIDE"
+    },
+    {
+      "id": 11,
+      "systems": 2,
+      "classes": 5,
+      "interactions": [],
+      "indications": [5],
+      "side_effects": [],
+      "dci": "LETERMOVIR"
+    },
+    {
+      "id": 12,
+      "systems": 2,
+      "classes": 6,
+      "interactions": [],
+      "indications": [6],
+      "side_effects": [],
+      "dci": "SOFOSBUVIR"
+    },
+    {
+      "id": 13,
+      "systems": 2,
+      "classes": 7,
+      "interactions": [],
+      "indications": [6],
+      "side_effects": [],
+      "dci": "VELPASTASVIR"
+    },
+    {
+      "id": 14,
+      "systems": 2,
+      "classes": 8,
+      "interactions": [],
+      "indications": [6],
+      "side_effects": [],
+      "dci": "GLECAPREVIR"
+    },
+    {
+      "id": 15,
+      "systems": 2,
+      "classes": 7,
+      "interactions": [],
+      "indications": [6],
+      "side_effects": [],
+      "dci": "PIBRENTASVIR"
+    },
+    {
+      "id": 16,
+      "systems": 2,
+      "classes": 7,
+      "interactions": [],
+      "indications": [6],
+      "side_effects": [],
+      "dci": "DACLATASVIR"
+    },
+    {
+      "id": 17,
+      "systems": 2,
+      "classes": 7,
+      "interactions": [],
+      "indications": [6],
+      "side_effects": [],
+      "dci": "LEDIPASVIR"
+    },
+    {
+      "id": 18,
+      "systems": 2,
+      "classes": 3,
+      "interactions": [],
+      "indications": [7, 8],
+      "side_effects": [2],
+      "dci": "ACICLOVIR"
+    },
+    {
+      "id": 19,
+      "systems": 2,
+      "classes": 3,
+      "interactions": [],
+      "indications": [7, 8],
+      "side_effects": [2],
+      "dci": "VALACICLOVIR"
+    },
+    {
+      "id": 20,
+      "systems": 2,
+      "classes": 3,
+      "interactions": [],
+      "indications": [5],
+      "side_effects": [2],
+      "dci": "GANCICLOVIR"
+    },
+    {
+      "id": 21,
+      "systems": 2,
+      "classes": 3,
+      "interactions": [],
+      "indications": [5],
+      "side_effects": [2],
+      "dci": "VALGANCICLOVIR"
+    },
+    {
+      "id": 22,
+      "systems": 2,
+      "classes": 9,
+      "interactions": [],
+      "indications": [7, 8, 9, 5],
+      "side_effects": [2],
+      "dci": "FOSCARNET"
+    },
+    {
+      "id": 23,
+      "systems": 2,
+      "classes": 10,
+      "interactions": [],
+      "indications": [4],
+      "side_effects": [],
+      "dci": "DORAVIRINE"
+    },
+    {
+      "id": 24,
+      "systems": 2,
+      "classes": 10,
+      "interactions": [],
+      "indications": [4],
+      "side_effects": [],
+      "dci": "EFAVIRENZ"
+    },
+    {
+      "id": 25,
+      "systems": 2,
+      "classes": 10,
+      "interactions": [],
+      "indications": [4],
+      "side_effects": [],
+      "dci": "ETRAVIRINE"
+    },
+    {
+      "id": 26,
+      "systems": 2,
+      "classes": 10,
+      "interactions": [],
+      "indications": [4],
+      "side_effects": [],
+      "dci": "NEVIRAPINE"
+    },
+    {
+      "id": 27,
+      "systems": 2,
+      "classes": 10,
+      "interactions": [],
+      "indications": [4],
+      "side_effects": [],
+      "dci": "RILPIVIRINE"
+    },
+    {
+      "id": 28,
+      "systems": 2,
+      "classes": 4,
+      "interactions": [],
+      "indications": [4],
+      "side_effects": [],
+      "dci": "ABACAVIR"
+    },
+    {
+      "id": 29,
+      "systems": 2,
+      "classes": 4,
+      "interactions": [],
+      "indications": [4],
+      "side_effects": [],
+      "dci": "EMTRICITABINE"
+    },
+    {
+      "id": 30,
+      "systems": 2,
+      "classes": 4,
+      "interactions": [],
+      "indications": [4],
+      "side_effects": [],
+      "dci": "ZIDOVUDINE"
+    },
+    {
+      "id": 31,
+      "systems": 2,
+      "classes": 12,
+      "interactions": [],
+      "indications": [10],
+      "side_effects": [],
+      "dci": "BULEVIRTIDE"
+    },
+    {
+      "id": 32,
+      "systems": 2,
+      "classes": 13,
+      "interactions": [],
+      "indications": [4],
+      "side_effects": [],
+      "dci": "COBICISTAT"
+    },
+    {
+      "id": 33,
+      "systems": 2,
+      "classes": 14,
+      "interactions": [],
+      "indications": [4],
+      "side_effects": [],
+      "dci": "MARAVIROC"
+    },
+    {
+      "id": 34,
+      "systems": 2,
+      "classes": 1,
+      "interactions": [],
+      "indications": [4],
+      "side_effects": [],
+      "dci": "ENFUVIRTIDE"
+    },
+    {
+      "id": 35,
+      "systems": 2,
+      "classes": 15,
+      "interactions": [],
+      "indications": [4],
+      "side_effects": [],
+      "dci": "ATAZANAVIR"
+    },
+    {
+      "id": 36,
+      "systems": 2,
+      "classes": 15,
+      "interactions": [],
+      "indications": [4],
+      "side_effects": [],
+      "dci": "DARUNAVIR"
+    },
+    {
+      "id": 37,
+      "systems": 2,
+      "classes": 15,
+      "interactions": [],
+      "indications": [4],
+      "side_effects": [],
+      "dci": "FOSAMPRENAVIR"
+    },
+    {
+      "id": 38,
+      "systems": 2,
+      "classes": 15,
+      "interactions": [],
+      "indications": [4],
+      "side_effects": [],
+      "dci": "LOPINAVIR"
+    },
+    {
+      "id": 39,
+      "systems": 2,
+      "classes": 15,
+      "interactions": [],
+      "indications": [4],
+      "side_effects": [],
+      "dci": "RITONAVIR"
+    },
+    {
+      "id": 40,
+      "systems": 2,
+      "classes": 15,
+      "interactions": [],
+      "indications": [4],
+      "side_effects": [],
+      "dci": "TIPRANAVIR"
+    },
+    {
+      "id": 41,
+      "systems": 2,
+      "classes": 16,
+      "interactions": [],
+      "indications": [4],
+      "side_effects": [],
+      "dci": "DOLUTEGRAVIR"
+    },
+    {
+      "id": 42,
+      "systems": 2,
+      "classes": 16,
+      "interactions": [],
+      "indications": [4],
+      "side_effects": [],
+      "dci": "RALTEGRAVIR"
+    },
+    {
+      "id": 43,
+      "systems": 2,
+      "classes": 16,
+      "interactions": [],
+      "indications": [4],
+      "side_effects": [],
+      "dci": "ELVITEGRAVIR"
+    },
+    {
+      "id": 44,
+      "systems": 2,
+      "classes": 16,
+      "interactions": [],
+      "indications": [4],
+      "side_effects": [],
+      "dci": "BICTEGRAVIR"
+    },
+    {
+      "id": 45,
+      "systems": 3,
+      "classes": 18,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [],
+      "dci": "AMOXICILLINE"
+    },
+    {
+      "id": 46,
+      "systems": 3,
+      "classes": 18,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [],
+      "dci": "AMPICILLINE"
+    },
+    {
+      "id": 47,
+      "systems": 3,
+      "classes": 19,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [],
+      "dci": "BENZYLPENICILLINE"
+    },
+    {
+      "id": 48,
+      "systems": 3,
+      "classes": 20,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [],
+      "dci": "CLOXACILLINE"
+    },
+    {
+      "id": 49,
+      "systems": 3,
+      "classes": 20,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [],
+      "dci": "OXACILLINE"
+    },
+    {
+      "id": 50,
+      "systems": 3,
+      "classes": 21,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [],
+      "dci": "PHENOXYMETHYLPENICILLINE"
+    },
+    {
+      "id": 51,
+      "systems": 3,
+      "classes": 22,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [],
+      "dci": "PIPERACILLINE"
+    },
+    {
+      "id": 52,
+      "systems": 3,
+      "classes": 23,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [],
+      "dci": "PIVMECILLINAM"
+    },
+    {
+      "id": 53,
+      "systems": 3,
+      "classes": 23,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [],
+      "dci": "TEMOCILLINE"
+    },
+    {
+      "id": 54,
+      "systems": 3,
+      "classes": 24,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [],
+      "dci": "TICARCILLINE"
+    },
+    {
+      "id": 55,
+      "systems": 3,
+      "classes": 25,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [],
+      "dci": "ACIDE CLAVULANIQUE"
+    },
+    {
+      "id": 56,
+      "systems": 3,
+      "classes": 25,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [],
+      "dci": "SULBACTAM"
+    },
+    {
+      "id": 57,
+      "systems": 3,
+      "classes": 25,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [],
+      "dci": "TAZOBACTAM"
+    },
+    {
+      "id": 58,
+      "systems": 3,
+      "classes": 25,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [],
+      "dci": "AVIBACTAM"
+    },
+    {
+      "id": 59,
+      "systems": 3,
+      "classes": 26,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [],
+      "dci": "AZTREONAM"
+    },
+    {
+      "id": 60,
+      "systems": 3,
+      "classes": 27,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [],
+      "dci": "ERTAPENEME"
+    },
+    {
+      "id": 61,
+      "systems": 3,
+      "classes": 27,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [],
+      "dci": "MEROPENEME"
+    },
+    {
+      "id": 62,
+      "systems": 3,
+      "classes": 27,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [],
+      "dci": "IMIPENEME"
+    },
+    {
+      "id": 63,
+      "systems": 3,
+      "classes": 28,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [],
+      "dci": "CILASTATINE"
+    },
+    {
+      "id": 64,
+      "systems": 3,
+      "classes": 30,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [],
+      "dci": "CEFACLOR"
+    },
+    {
+      "id": 65,
+      "systems": 3,
+      "classes": 30,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [],
+      "dci": "CEFAZOLINE"
+    },
+    {
+      "id": 66,
+      "systems": 3,
+      "classes": 31,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [],
+      "dci": "CEFAMANDOLE"
+    },
+    {
+      "id": 67,
+      "systems": 3,
+      "classes": 31,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [],
+      "dci": "CEFOXITINE"
+    },
+    {
+      "id": 68,
+      "systems": 3,
+      "classes": 31,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [],
+      "dci": "CEFUROXIME"
+    },
+    {
+      "id": 69,
+      "systems": 3,
+      "classes": 32,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [],
+      "dci": "CEFIXIME"
+    },
+    {
+      "id": 70,
+      "systems": 3,
+      "classes": 32,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [],
+      "dci": "CEFIDEROCOL"
+    },
+    {
+      "id": 71,
+      "systems": 3,
+      "classes": 32,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [],
+      "dci": "CEFOTAXIME,"
+    },
+    {
+      "id": 72,
+      "systems": 3,
+      "classes": 32,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [],
+      "dci": "CEFPODOXIME"
+    },
+    {
+      "id": 73,
+      "systems": 3,
+      "classes": 32,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [],
+      "dci": "CEFTAZIDIME"
+    },
+    {
+      "id": 74,
+      "systems": 3,
+      "classes": 32,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [],
+      "dci": "CEFTRIAXONE,"
+    },
+    {
+      "id": 75,
+      "systems": 3,
+      "classes": 32,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [],
+      "dci": "CEFEPIME"
+    },
+    {
+      "id": 76,
+      "systems": 3,
+      "classes": 33,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [],
+      "dci": "CEFTOLOZANE"
+    },
+    {
+      "id": 77,
+      "systems": 3,
+      "classes": 33,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [],
+      "dci": "CEFTAROLINE"
+    },
+    {
+      "id": 78,
+      "systems": 3,
+      "classes": 33,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [],
+      "dci": "CEFTOBIPROL"
+    },
+    {
+      "id": 79,
+      "systems": 3,
+      "classes": 34,
+      "interactions": [],
+      "indications": [11, 12],
+      "side_effects": [3, 4, 5],
+      "dci": "DOXYCYCLINE"
+    },
+    {
+      "id": 80,
+      "systems": 3,
+      "classes": 34,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [3, 4, 5],
+      "dci": "LYMECYCLINE"
+    },
+    {
+      "id": 81,
+      "systems": 3,
+      "classes": 34,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [3, 4, 5],
+      "dci": "METHYLENECYCLINE"
+    },
+    {
+      "id": 82,
+      "systems": 3,
+      "classes": 34,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [3, 4, 5],
+      "dci": "MINOCYCLINE"
+    },
+    {
+      "id": 83,
+      "systems": 3,
+      "classes": 34,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [3, 4, 5],
+      "dci": "OXYTETRACYCLINE"
+    },
+    {
+      "id": 84,
+      "systems": 3,
+      "classes": 34,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [3, 4, 5],
+      "dci": "TIGECYCLINE"
+    },
+    {
+      "id": 85,
+      "systems": 3,
+      "classes": 35,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [2, 6],
+      "dci": "AMIKACINE"
+    },
+    {
+      "id": 86,
+      "systems": 3,
+      "classes": 35,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [2, 6],
+      "dci": "GENTAMICINE,"
+    },
+    {
+      "id": 87,
+      "systems": 3,
+      "classes": 35,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [2, 6],
+      "dci": "STREPTOMYCINE,"
+    },
+    {
+      "id": 88,
+      "systems": 3,
+      "classes": 35,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [2, 6],
+      "dci": "TOBRAMYCINE,"
+    },
+    {
+      "id": 89,
+      "systems": 3,
+      "classes": 35,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [2, 6],
+      "dci": "FRAMYCETINE"
+    },
+    {
+      "id": 90,
+      "systems": 3,
+      "classes": 36,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [7],
+      "dci": "AZITHROMYCINE"
+    },
+    {
+      "id": 91,
+      "systems": 3,
+      "classes": 36,
+      "interactions": [1],
+      "indications": [11],
+      "side_effects": [7],
+      "dci": "CLARITHROMYCINE"
+    },
+    {
+      "id": 92,
+      "systems": 3,
+      "classes": 36,
+      "interactions": [1],
+      "indications": [11],
+      "side_effects": [7],
+      "dci": "ERYTHROMYCINE"
+    },
+    {
+      "id": 93,
+      "systems": 3,
+      "classes": 36,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [7],
+      "dci": "JOSAMYCINE"
+    },
+    {
+      "id": 94,
+      "systems": 3,
+      "classes": 36,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [7],
+      "dci": "ROXITHROMYCINE"
+    },
+    {
+      "id": 95,
+      "systems": 3,
+      "classes": 36,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [7],
+      "dci": "SPIRAMYCINE"
+    },
+    {
+      "id": 96,
+      "systems": 3,
+      "classes": 36,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [7],
+      "dci": "FIDAXOMICINE"
+    },
+    {
+      "id": 97,
+      "systems": 3,
+      "classes": 36,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [7],
+      "dci": "PRISTINAMYCINE"
+    },
+    {
+      "id": 98,
+      "systems": 3,
+      "classes": 37,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [2, 6],
+      "dci": "DALBAVANCINE"
+    },
+    {
+      "id": 99,
+      "systems": 3,
+      "classes": 37,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [2, 6],
+      "dci": "TEICOPLANINE"
+    },
+    {
+      "id": 100,
+      "systems": 3,
+      "classes": 37,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [2, 6],
+      "dci": "VANCOMYCINE"
+    },
+    {
+      "id": 101,
+      "systems": 3,
+      "classes": 38,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [],
+      "dci": "DAPTOMYCINE"
+    },
+    {
+      "id": 102,
+      "systems": 3,
+      "classes": 38,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [],
+      "dci": "COLISTINE"
+    },
+    {
+      "id": 103,
+      "systems": 3,
+      "classes": 39,
+      "interactions": [],
+      "indications": [11, 13],
+      "side_effects": [],
+      "dci": "SULFADIAZINE"
+    },
+    {
+      "id": 104,
+      "systems": 3,
+      "classes": 39,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [],
+      "dci": "SULFADOXINE"
+    },
+    {
+      "id": 105,
+      "systems": 3,
+      "classes": 39,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [],
+      "dci": "SULFAMETHIZOL"
+    },
+    {
+      "id": 106,
+      "systems": 3,
+      "classes": 39,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [],
+      "dci": "SULFAMETHOXAZOLE"
+    },
+    {
+      "id": 107,
+      "systems": 3,
+      "classes": 40,
+      "interactions": [2],
+      "indications": [11],
+      "side_effects": [8, 7],
+      "dci": "CIPROFLOXACINE"
+    },
+    {
+      "id": 108,
+      "systems": 3,
+      "classes": 40,
+      "interactions": [2],
+      "indications": [11],
+      "side_effects": [8, 7],
+      "dci": "ENOXACINE"
+    },
+    {
+      "id": 109,
+      "systems": 3,
+      "classes": 40,
+      "interactions": [2],
+      "indications": [11],
+      "side_effects": [8, 7],
+      "dci": "LEVOFLOXACINE"
+    },
+    {
+      "id": 110,
+      "systems": 3,
+      "classes": 40,
+      "interactions": [2],
+      "indications": [11],
+      "side_effects": [8, 7],
+      "dci": "LOMEFLOXACINE"
+    },
+    {
+      "id": 111,
+      "systems": 3,
+      "classes": 40,
+      "interactions": [2],
+      "indications": [11],
+      "side_effects": [8, 7],
+      "dci": "MOXIFLOXACINE"
+    },
+    {
+      "id": 112,
+      "systems": 3,
+      "classes": 40,
+      "interactions": [2],
+      "indications": [11],
+      "side_effects": [8, 7],
+      "dci": "NORFLOXACINE"
+    },
+    {
+      "id": 113,
+      "systems": 3,
+      "classes": 40,
+      "interactions": [2],
+      "indications": [11],
+      "side_effects": [8, 7],
+      "dci": "OFLOXACINE"
+    },
+    {
+      "id": 114,
+      "systems": 3,
+      "classes": 40,
+      "interactions": [2],
+      "indications": [11],
+      "side_effects": [8, 7],
+      "dci": "PEFLOXACINE"
+    },
+    {
+      "id": 115,
+      "systems": 3,
+      "classes": 41,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [],
+      "dci": "CLINDAMYCINE"
+    },
+    {
+      "id": 116,
+      "systems": 3,
+      "classes": 41,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [],
+      "dci": "LINCOMYCINE"
+    },
+    {
+      "id": 117,
+      "systems": 3,
+      "classes": 42,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [],
+      "dci": "TEDIZOLIDE"
+    },
+    {
+      "id": 118,
+      "systems": 3,
+      "classes": 42,
+      "interactions": [3],
+      "indications": [11],
+      "side_effects": [9, 10],
+      "dci": "LINEZOLIDE"
+    },
+    {
+      "id": 119,
+      "systems": 3,
+      "classes": 43,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [],
+      "dci": "THIAMPHENICOL"
+    },
+    {
+      "id": 120,
+      "systems": 3,
+      "classes": null,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [],
+      "dci": "FOSFOMYCINE"
+    },
+    {
+      "id": 121,
+      "systems": 3,
+      "classes": null,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [],
+      "dci": "ACIDE FUSIDIQUE"
+    },
+    {
+      "id": 122,
+      "systems": 3,
+      "classes": 44,
+      "interactions": [],
+      "indications": [14],
+      "side_effects": [],
+      "dci": "ETHAMBUTOL"
+    },
+    {
+      "id": 123,
+      "systems": 3,
+      "classes": 44,
+      "interactions": [],
+      "indications": [14],
+      "side_effects": [],
+      "dci": "ISONIAZIDE,"
+    },
+    {
+      "id": 124,
+      "systems": 3,
+      "classes": 44,
+      "interactions": [],
+      "indications": [14],
+      "side_effects": [],
+      "dci": "RIFABUTINE"
+    },
+    {
+      "id": 125,
+      "systems": 3,
+      "classes": 44,
+      "interactions": [],
+      "indications": [14],
+      "side_effects": [],
+      "dci": "RIFAMPICINE"
+    },
+    {
+      "id": 126,
+      "systems": 3,
+      "classes": 44,
+      "interactions": [],
+      "indications": [14],
+      "side_effects": [],
+      "dci": "PYRAZINAMIDE"
+    },
+    {
+      "id": 127,
+      "systems": 3,
+      "classes": 45,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [],
+      "dci": "NIFUROXAZIDE"
+    },
+    {
+      "id": 128,
+      "systems": 3,
+      "classes": 45,
+      "interactions": [],
+      "indications": [11],
+      "side_effects": [],
+      "dci": "NITROFURANTOÏNE"
+    },
+    {
+      "id": 129,
+      "systems": 4,
+      "classes": 46,
+      "interactions": [],
+      "indications": [15],
+      "side_effects": [],
+      "dci": "NICLOSAMIDE"
+    },
+    {
+      "id": 130,
+      "systems": 4,
+      "classes": 46,
+      "interactions": [],
+      "indications": [15],
+      "side_effects": [],
+      "dci": "PRAZIQUANTEL"
+    },
+    {
+      "id": 131,
+      "systems": 4,
+      "classes": 47,
+      "interactions": [],
+      "indications": [15],
+      "side_effects": [],
+      "dci": "ALBENDAZOLE"
+    },
+    {
+      "id": 132,
+      "systems": 4,
+      "classes": 47,
+      "interactions": [],
+      "indications": [15],
+      "side_effects": [],
+      "dci": "FLUBENDAZOLE"
+    },
+    {
+      "id": 133,
+      "systems": 4,
+      "classes": 47,
+      "interactions": [],
+      "indications": [15],
+      "side_effects": [],
+      "dci": "TRICLABENDAZOLE"
+    },
+    {
+      "id": 134,
+      "systems": 4,
+      "classes": null,
+      "interactions": [],
+      "indications": [15],
+      "side_effects": [],
+      "dci": "DIETHYLCARBAMAZINE"
+    },
+    {
+      "id": 135,
+      "systems": 4,
+      "classes": null,
+      "interactions": [],
+      "indications": [15],
+      "side_effects": [],
+      "dci": "IVERMECTINE"
+    },
+    {
+      "id": 136,
+      "systems": 4,
+      "classes": null,
+      "interactions": [],
+      "indications": [15],
+      "side_effects": [],
+      "dci": "PYRANTEL"
+    },
+    {
+      "id": 137,
+      "systems": 4,
+      "classes": 48,
+      "interactions": [],
+      "indications": [16, 17],
+      "side_effects": [],
+      "dci": "METRONIDAZOLE,"
+    },
+    {
+      "id": 138,
+      "systems": 4,
+      "classes": 48,
+      "interactions": [],
+      "indications": [16, 17],
+      "side_effects": [],
+      "dci": "ORNIDAZOLE,"
+    },
+    {
+      "id": 139,
+      "systems": 4,
+      "classes": 48,
+      "interactions": [],
+      "indications": [16, 17],
+      "side_effects": [],
+      "dci": "SECNIDAZOLE,"
+    },
+    {
+      "id": 140,
+      "systems": 4,
+      "classes": 48,
+      "interactions": [],
+      "indications": [16, 17],
+      "side_effects": [],
+      "dci": "TINIDAZOLE"
+    }
+  ]
+}

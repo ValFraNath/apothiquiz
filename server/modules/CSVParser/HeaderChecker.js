@@ -1,46 +1,44 @@
-let header;
-let requiredColumns;
-let errors;
-let initialized = false;
+// eslint-disable-next-line no-unused-vars
+import { ColumnSpecifications } from "./ParserSpecifications.js";
 
-/// ***** EXPORTED FUNCTIONS *****
+export default class HeaderChecker {
+  /**
+   * Initialize the checker with the header, and the columns specifications
+   * @param {string[]} header
+   * @param {ColumnSpecifications[]} columnsSpecifications
+   */
+  constructor(header, columnsSpecifications) {
+    this.header = header;
+    this.columnsSpecs = columnsSpecifications;
+    this.errors = [];
+  }
 
-/**
- * Initialize the checker with the header, and the columns specifications
- * @param {string[]} header
- * @param {{title : string, property : PropertySpecifications}[]} requiredColumns
- */
-function init(_header, _requiredColumns) {
-  header = _header;
-  requiredColumns = _requiredColumns;
-  errors = [];
-  initialized = true;
+  /**
+   * Check if the header is corresponding to the specifications.
+   * @return {boolean} True if the tests passed without problems, false otherwise.
+   */
+  check() {
+    this.errors = [
+      ...checkMissingColumns(this.header, this.columnsSpecs),
+      ...checkDuplicateUniqueColumns(this.header, this.columnsSpecs),
+      ...checkInvalidColumns(this.header, this.columnsSpecs),
+      ...checkColumnsGroups(this.header, this.columnsSpecs),
+      ...checkHierarchicalColumnsOrder(this.header, this.columnsSpecs),
+    ];
+
+    return Boolean(this.errors.length === 0);
+  }
+
+  /**
+   * Returns the array of importation errors
+   * @return {ImportationError[]} errors
+   */
+  getErrors() {
+    return this.errors;
+  }
 }
 
-/**
- * Check if the header is corresponding to the specifications.
- * @return {boolean} True if the tests passed without problems, false otherwise.
- */
-function check() {
-  assertInitializedChecker();
-  _checkMissingColumns();
-  _checkDuplicateUniqueColumns();
-  _checkInvalidColumns();
-  _checkColumnsGroups();
-  _checkHierarchicalColumnsOrder();
-
-  return Boolean(errors.length === 0);
-}
-
-/**
- * Returns the array of importation errors
- * @return {ImportationError[]} errors
- */
-function getErrors() {
-  assertInitializedChecker();
-  return errors;
-}
-
+// TODO improve erros by adding code + french message
 export class ImportationError extends Error {
   constructor(message, code) {
     super();
@@ -57,28 +55,17 @@ ImportationError.DUPLICATE_UNIQUE_COLUMN = 2;
 ImportationError.EMPTY_FILE = 3;
 ImportationError.INVALID_COLUMN = 4;
 
-export default { init, check, getErrors };
-
 /// ***** INTERNAL FUNCTIONS *****
-
-/**
- * Throw an error if the checker is not initialized
- */
-function assertInitializedChecker() {
-  if (!initialized) {
-    throw new Error("Uninitialized checker.");
-  }
-}
 
 /**
  * Checks if all columns of the same property are grouped together
  */
-function _checkColumnsGroups() {
-  const nonUniqueColumnsTitles = requiredColumns
-    .filter((column) => !column.property.isUnique())
+function checkColumnsGroups(header, columnsSpecifications) {
+  const errors = [];
+  const nonUniqueColumnsTitles = columnsSpecifications
+    .filter((column) => !column.isUnique())
     .map((column) => column.title);
 
-  console.log(nonUniqueColumnsTitles);
   const visitedGroups = [];
   let currentGroup;
   header.forEach((headerColumn) => {
@@ -94,40 +81,46 @@ function _checkColumnsGroups() {
       }
     }
   });
+  return errors;
 }
 
 /**
  * Checks columns are missing
  */
-function _checkMissingColumns() {
-  requiredColumns.forEach((column) => {
+function checkMissingColumns(header, columnsSpecifications) {
+  const errors = [];
+  columnsSpecifications.forEach((column) => {
     if (!header.some((headerColumn) => new RegExp(column.title).test(headerColumn))) {
       errors.push(
         new ImportationError("Colonne manquante : " + column.title, ImportationError.MISSING_COLUMN)
       );
     }
   });
+  return errors;
 }
 
 /**
  * Checks if there are invalid columns
  */
-function _checkInvalidColumns() {
+function checkInvalidColumns(header, columnsSpecifications) {
+  const errors = [];
   header.forEach((headerColumn) => {
-    if (!requiredColumns.some((column) => new RegExp(column.title).test(headerColumn))) {
+    if (!columnsSpecifications.some((column) => new RegExp(column.title).test(headerColumn))) {
       errors.push(
         new ImportationError("Invalide colonne : " + headerColumn, ImportationError.INVALID_COLUMN)
       );
     }
   });
+  return errors;
 }
 
 /**
  * Checks if multiple columns have the same unique property
  */
-function _checkDuplicateUniqueColumns() {
-  let uniqueColumnTitles = requiredColumns
-    .filter((column) => column.property.isUnique())
+function checkDuplicateUniqueColumns(header, columnsSpecifications) {
+  const errors = [];
+  let uniqueColumnTitles = columnsSpecifications
+    .filter((column) => column.isUnique())
     .map((column) => column.title);
 
   let checkedColumns = [];
@@ -146,14 +139,16 @@ function _checkDuplicateUniqueColumns() {
       }
     }
   });
+  return errors;
 }
 
 /**
  * Checks whether columns of the same hierarchical property appear in hierarchy level order
  */
-function _checkHierarchicalColumnsOrder() {
-  let hierarchicalColumnTitles = requiredColumns
-    .filter((column) => column.property.isHierarchical())
+function checkHierarchicalColumnsOrder(header, columnsSpecifications) {
+  const errors = [];
+  let hierarchicalColumnTitles = columnsSpecifications
+    .filter((column) => column.isHierarchical())
     .map((column) => column.title);
 
   let currentGroup;
@@ -176,4 +171,5 @@ function _checkHierarchicalColumnsOrder() {
     }
     level++;
   });
+  return errors;
 }

@@ -8,13 +8,13 @@ import fs from "fs";
 chai.use(chaiHttp);
 const { expect } = chai;
 
-import { importData } from "../modules/CsvParser.js";
+import { importData } from "../../modules/CSVParser/Parser.js";
 
-const filesPath = "./test/CSVParserData/CSVFiles";
-const snapshotsPath = "./test/CSVParserData/snapshots";
+const filesPath = path.resolve("test", "ParserTests", "CSVFiles");
+const snapshotsPath = path.resolve("test", "ParserTests", "snapshots");
 
 const files = [
-  //{ name: "molecules.xlsx", snapshot: "molecules.json" },
+  { name: "molecules.xlsx", snapshot: "molecules.json" },
   { name: "molecules_movedColumns.xlsx", snapshot: "molecules.json" },
 ];
 
@@ -72,10 +72,14 @@ for (let file of files) {
 
     before("Import data", (done) => {
       data = JSON.parse(importData(path.resolve(filesPath, file.name)));
+
       done();
     });
 
     it("Imported data are equals to expected data", function (done) {
+      if (!file.snapshot) {
+        this.skip();
+      }
       let expectedData = fs.readFileSync(path.resolve(snapshotsPath, file.snapshot));
       expect(data).to.be.deep.equals(JSON.parse(expectedData));
       done();
