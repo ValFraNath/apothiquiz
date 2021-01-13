@@ -8,10 +8,10 @@ import MoleculeList from "./MoleculeList.js";
 
 /**
  * Import CSV file to parse data into an object
- * @param {string} filepath
+ * @param {string} filepath The path to the file
  * @return {JSON}
  */
-export function importData(filepath) {
+export function parseCSV(filepath) {
   let moleculesMatrix = cleanUpStringsInMatrix(readCsvFile(filepath));
 
   const columnsHeader = moleculesMatrix.shift();
@@ -64,15 +64,17 @@ export function importData(filepath) {
 // ***** INTERNAL FUNCTIONS *****
 
 /**
- *
+ * Returns the matrix without rows where the molecule dci is empty.
  * @param {[][]} matrix
+ * @param {number} dciIndex The index of the dci column
+ * @return {[][]}
  */
 function removeInvalidMoleculeLines(matrix, dciIndex) {
   return matrix.filter((row) => row[dciIndex]);
 }
 
 /**
- * Read the CSV file and parse it in a matrix
+ * Read the CSV file and return the content as a matrix
  * @param {string} filepath
  */
 function readCsvFile(filepath) {
@@ -81,7 +83,8 @@ function readCsvFile(filepath) {
 
 /**
  * Trim and remove successive whitespaces in all strings of the matrix
- * @param {any[][]} matrix
+ * @param {[][]} matrix
+ * @returns {[][]}
  */
 function cleanUpStringsInMatrix(matrix) {
   return matrix.map((row) =>
@@ -91,15 +94,20 @@ function cleanUpStringsInMatrix(matrix) {
   );
 }
 
+/**
+ * Test if a variable is a string
+ * @param {*} variable
+ * @return {boolean}
+ */
 function isString(variable) {
   return variable instanceof String || typeof variable === "string";
 }
 
 /**
  * Extract columns from a matrix
- * @param {array[]} matrix
- * @param {number} begin The first index
- * @param {number} end The last index (not include)
+ * @param {[][]} matrix
+ * @param {number[]} indexes The indexes of columns we want to extract
+ * @returns {[][]}
  */
 function extractColumns(matrix, ...indexes) {
   const res = [];
@@ -122,6 +130,7 @@ function extractColumns(matrix, ...indexes) {
 /**
  * Trim and remove successive white space in a string
  * @param {string} string
+ * @returns {string}
  */
 function removeSuccessiveWhiteSpaces(string = "") {
   return string.trim().replace(/\s+/g, " ");

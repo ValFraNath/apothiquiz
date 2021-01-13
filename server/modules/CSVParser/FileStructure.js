@@ -6,15 +6,14 @@ import { ColumnSpecifications } from "./ParserSpecifications.js";
  */
 export default class FileStructure {
   /**
-   * This function reads the first row and stores which index is associated with which property
+   * This object reads the first row and stores which index is associated with which property.
    * @param {string[]} header The CSV file first row
-   * @param {ColumnSpecifications[]} requiredColumns The columns we want to extract
-   * @throws {ImportationError} if the spreadsheet is incorrectly formatted
+   * @param {ColumnSpecifications[]} columnsSpecs The specifications of columns we want to extract
    */
-  constructor(header, requiredColumns) {
+  constructor(header, columnsSpecs) {
     this.header = header;
     this.propertiesIndexes = Object.create(null);
-    this.requiredColumns = requiredColumns;
+    this.columnsSpecs = columnsSpecs;
 
     this._forEachCorrespondingColumns((column, index) => {
       this._addProperty(column.property, index);
@@ -22,7 +21,8 @@ export default class FileStructure {
   }
 
   /**
-   * @param {string} property
+   * Return the indexes corresponding to a property
+   * @param {string} property The property name
    * @return {number[]} Indexes
    */
   getIndexesFor(property) {
@@ -30,11 +30,16 @@ export default class FileStructure {
   }
 
   /**
+   * @returns {ColumnSpecifications[]} The columns specifications
+   */
+  getColumnsSpecifications() {
+    return this.columnsSpecs;
+  }
+
+  /**
    * Add a property to the structure
    * @param {ColumnSpecifications} property
    * @param {number} index
-   * @param {number} level
-   * @throws {ImportationError} if en error has occured during the importation
    */
   _addProperty(property, index) {
     let currentIndexes = this.propertiesIndexes[property];
@@ -46,8 +51,8 @@ export default class FileStructure {
   }
 
   /**
-   * Iterate through all the header columns and run a callback for each one corresponding to a required column
-   * @param {function(ColumnSpecifications,number,number|undefined)} callback - Function to execute for each column corresponding to a property
+   * Iterate through all the header columns and run a callback for each one corresponding to a column in specifications
+   * @param {function(ColumnSpecifications,number)} callback - Function to execute for each column corresponding to a property
    */
   _forEachCorrespondingColumns(callback) {
     this.header.forEach((headerColumn, index) => {
@@ -55,9 +60,9 @@ export default class FileStructure {
         return;
       }
 
-      this.requiredColumns.forEach((requiredColumn) => {
-        if (new RegExp(requiredColumn.title).test(headerColumn)) {
-          callback(requiredColumn, index);
+      this.columnsSpecs.forEach((columnSpecs) => {
+        if (columnSpecs.matchTitle(headerColumn)) {
+          callback(columnSpecs, index);
         }
       });
     });

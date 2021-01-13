@@ -7,10 +7,10 @@ import MoleculesClassification, {
 } from "./MoleculesClassification.js";
 
 /**
- *
+ * Create a list of molecules from a matrix of molecules and classifications/properties data
  * @param {[][]} matrix
  * @param {FileStructure} structure
- * @param {*} data
+ * @param {object} data Object containing classifications & properties data
  */
 function create(matrix, structure, data) {
   const list = [];
@@ -23,24 +23,24 @@ function create(matrix, structure, data) {
 }
 
 /**
- *
- * @param {*} id
- * @param {*} row
- * @param {FileStructure} structure
- * @param {*} data
+ * Create a molecule
+ * @param {number} id The unique id
+ * @param {[]} row The complete row
+ * @param {FileStructure} structure The file structure
+ * @param {object} data  Object containing classifications & properties data
  */
 function createMolecule(id, row, structure, data) {
   let molecule = Object.create(null);
   molecule.id = id++;
 
-  structure.requiredColumns.forEach((column) => {
+  structure.getColumnsSpecifications().forEach((column) => {
     const property = column.property;
     if (column.isUnique()) {
       molecule[property] = row[structure.getIndexesFor(property)];
     }
     if (column.isMultiValued()) {
       const indexes = structure.getIndexesFor(property);
-      molecule[property] = getMultiValuedPropertyValues(
+      molecule[property] = getMultiValuedPropertyIDs(
         row,
         indexes,
         data[property]
@@ -48,7 +48,7 @@ function createMolecule(id, row, structure, data) {
     }
     if (column.isHierarchical()) {
       const indexes = structure.getIndexesFor(property);
-      molecule[property] = getHierarchicalPropertyValue(
+      molecule[property] = getClassificationNodeID(
         row,
         indexes,
         data[property]
@@ -63,9 +63,9 @@ function createMolecule(id, row, structure, data) {
  * @param {string[]} row
  * @param {number[]} indexes
  * @param {{id : number,name : string}} property
- * @param {number[]}
+ * @returns {number[]} The list of corresponding identifiers
  */
-function getMultiValuedPropertyValues(row, indexes, property) {
+function getMultiValuedPropertyIDs(row, indexes, property) {
   let values = [];
   indexes.forEach((index) => {
     let id = MoleculesProperty.findId(property, row[index]);
@@ -81,9 +81,9 @@ function getMultiValuedPropertyValues(row, indexes, property) {
  * @param {string[]} row
  * @param {number[]} indexes
  * @param {ClassificationNode[]} property
- * @param {number|null}
+ * @returns {number} The corresponding ID
  */
-function getHierarchicalPropertyValue(row, indexes, property) {
+function getClassificationNodeID(row, indexes, property) {
   let res = null;
   indexes.reverse().forEach((index) => {
     if (!row[index] || res) {

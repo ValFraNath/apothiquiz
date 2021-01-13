@@ -1,7 +1,7 @@
 /**
  * Class representing a classification node,
  * characterized by an identifier, a name and
- * consisting of a node that has child nodes.
+ * other children nodes.
  */
 export class ClassificationNode {
   /**
@@ -50,7 +50,7 @@ export class ClassificationNode {
         return res;
       }
     }
-    //console.log(name);
+
     return null;
   }
 }

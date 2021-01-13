@@ -1,6 +1,6 @@
 /**
- * Create a property
- * @param {any[][]} matrix
+ * Create a property, i.e. a set of value characterized by an ID
+ * @param {string[][]} matrix
  * @return {{id : number,name : string}[]}
  */
 function create(matrix) {
@@ -20,8 +20,11 @@ function create(matrix) {
 }
 
 /**
+ * Find a property value by its name
+ * and returns its ID.
  * @param {{id : number,name : string}[]} property
  * @param {string} name
+ * @return {number|null}
  */
 function findId(property, name) {
   if (!name) {

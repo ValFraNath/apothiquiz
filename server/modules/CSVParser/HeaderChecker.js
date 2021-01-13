@@ -1,6 +1,9 @@
 // eslint-disable-next-line no-unused-vars
 import { ColumnSpecifications } from "./ParserSpecifications.js";
 
+/**
+ * Header Checker reads the header of the file and verifies it is formatted correctly
+ */
 export default class HeaderChecker {
   /**
    * Initialize the checker with the header, and the columns specifications
@@ -26,11 +29,11 @@ export default class HeaderChecker {
       ...checkHierarchicalColumnsOrder(this.header, this.columnsSpecs),
     ];
 
-    return Boolean(this.errors.length === 0);
+    return this.errors.length === 0;
   }
 
   /**
-   * Returns the array of importation errors
+   * Returns the array of errors that occurred during checks
    * @return {ImportationError[]} errors
    */
   getErrors() {
