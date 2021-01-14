@@ -46,9 +46,7 @@ Database.connect = async function (err) {
 };
 
 Database.create = async function () {
-  const creationScript = fs
-    .readFileSync(path.resolve(__dirname, "db", "create_database.sql"))
-    .toString("utf8");
+  const creationScript = fs.readFileSync(path.resolve(__dirname, "db", "create_database.sql")).toString("utf8");
   console.log("Creation of database... ");
   await queryPromise(creationScript)
     .then(() => console.log("-> Database created!\n"))
@@ -99,16 +97,12 @@ Database.update = async function (version = versions[0]) {
           __dirname,
           "db",
           "updates",
-          `db_${versions[i - 1].split("-").join("")}_to_${versions[i]
-            .split("-")
-            .join("")}.sql`
+          `db_${versions[i - 1].split("-").join("")}_to_${versions[i].split("-").join("")}.sql`
         )
       )
       .toString("utf8");
 
-    console.log(
-      `Update database from ${versions[i - 1]} to ${versions[i]}... `
-    );
+    console.log(`Update database from ${versions[i - 1]} to ${versions[i]}... `);
 
     await queryPromise(updateQuery)
       .then(() => console.log("-> Database updated!\n"))

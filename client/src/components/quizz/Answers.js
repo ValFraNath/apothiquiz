@@ -7,11 +7,7 @@ const AnswerBtn = ({ value, isRight, showResult, onClick }) => {
     classBtn = isRight ? "good-answer" : "bad-answer";
   }
   return (
-    <button
-      id="quiz-answer"
-      className={classBtn}
-      onClick={() => onClick(isRight)}
-    >
+    <button id="quiz-answer" className={classBtn} onClick={() => onClick(isRight)}>
       {value}
     </button>
   );
