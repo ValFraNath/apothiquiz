@@ -9,19 +9,211 @@ chai.use(chaiHttp);
 const { expect } = chai;
 
 import { parseCSV } from "../../modules/CSVParser/Parser.js";
+import { expectations } from "./expectations.js";
+
+// eslint-disable-next-line no-unused-vars
+import { ClassificationNode } from "../../modules/CSVParser/MoleculesClassification.js";
 
 const filesPath = path.resolve("test", "ParserTests", "CSVFiles");
 const snapshotsPath = path.resolve("test", "ParserTests", "snapshots");
 
-const files = [
-  { name: "molecules.xlsx", snapshot: "molecules.json" },
-  { name: "molecules_movedColumns.xlsx", snapshot: "molecules.json" },
-];
+describe("Test if values are well imported", function () {
+  const files_ok = [
+    {
+      name: "molecules.xlsx",
+      snapshot: "molecules.json",
+      expectation: expectations.first_version,
+    },
+    {
+      name: "molecules_movedColumns.xlsx",
+      snapshot: "molecules.json",
+      expectation: expectations.first_version,
+    },
+  ];
 
-function removeDuplications(array) {
-  return [...new Set(array)];
+  for (let file of files_ok) {
+    describe(`File : ${file.name}`, () => {
+      let data;
+
+      before("Import data", (done) => {
+        parseCSV(path.resolve(filesPath, file.name), (errors, json) => {
+          if (errors) {
+            console.table(errors);
+          } else {
+            data = JSON.parse(json);
+            done();
+          }
+        });
+      });
+
+      it("Imported data are equals to its snapshot", function (done) {
+        if (!file.snapshot) {
+          this.skip();
+        }
+        let expectedData = fs.readFileSync(
+          path.resolve(snapshotsPath, file.snapshot)
+        );
+        expect(data).to.be.deep.equals(JSON.parse(expectedData));
+        done();
+      });
+
+      for (let classification of ["systems", "classes"]) {
+        it(`Classification : ${classification}`, (done) => {
+          const expectedValues = file.expectation[classification];
+
+          const names = getAllClassificationValues(
+            data[classification],
+            toName
+          );
+          const ids = getAllClassificationValues(data[classification], toId);
+
+          expectNotContainsDuplication(ids, "Unique ids");
+
+          expect(names, "Good number of name").to.have.length(
+            expectedValues.all.length
+          );
+          expect(ids, "Good number of ids").to.have.length(
+            expectedValues.all.length
+          );
+
+          expectSameContent(
+            expectedValues.all,
+            names,
+            "Values are same than expected"
+          );
+
+          for (let expected of expectedValues.contains) {
+            let value = getClassificationValue(
+              data[classification],
+              expected.name
+            );
+
+            expect(value, `Value '${expected.name}' not found.`).to.not.be
+              .undefined;
+
+            expectSameContent(
+              expected.children,
+              value.children.map(toName),
+              `'${expected.name}' has same children than expected`
+            );
+          }
+
+          done();
+        });
+      }
+
+      for (let property of ["side_effects", "interactions", "indications"]) {
+        it(`Property : ${property}`, function (done) {
+          const expectedNames = file.expectation[property];
+          const values = data[property];
+
+          expect(values).to.have.length(expectedNames.length);
+
+          expectNotContainsDuplication(
+            values.map((v) => v.id),
+            "Unique ids"
+          );
+
+          expectSameContent(
+            expectedNames,
+            values.map((v) => v.name),
+            "Same values"
+          );
+
+          done();
+        });
+      }
+
+      for (let expected of expectations.first_version.molecules) {
+        it(`Molecule : ${expected.dci}`, (done) => {
+          const molecule = getMoleculeByDci(data, expected.dci);
+
+          expect(molecule, `| Molecule not found : ${expected.dci} |`).not
+            .undefined;
+
+          for (let classification of ["systems", "classes"]) {
+            const value = getClassificationValue(
+              data[classification],
+              expected[classification]
+            );
+
+            expect(value, `| Class not found : ${expected[classification]} |`)
+              .not.undefined;
+
+            expect(value.id, `| Invalid class |`).equals(
+              molecule[classification]
+            );
+          }
+
+          done();
+        });
+      }
+
+      // it("Molecules : Intrinsic properties", (done) => {
+      //   let zanamivir = getMoleculeByDci(data, "ZANAMIVIR");
+
+      //   const moleculesDci = data.molecules.map(toDci);
+
+      //   expect(moleculesDci).to.have.length(140);
+      //   expect(containsDuplication(moleculesDci)).to.false;
+      //   expect(zanamivir.level_easy).to.be.equals(0);
+      //   expect(zanamivir.level_hard).to.be.equals(1);
+
+      //   done();
+      // });
+
+      // it("Molecules : Correct classes", (done) => {
+      //   expectMoleculeHasClass(
+      //     data,
+      //     "PIVMECILLINAM",
+      //     "PENICILLINES A LARGE SPECTRE"
+      //   );
+      //   expectMoleculeHasClass(
+      //     data,
+      //     "CEFEPIME",
+      //     "CEPHALOSPORINE DE 3EME GENERATION"
+      //   );
+      //   expectMoleculeHasClass(data, "METHYLENECYCLINE", "TETRACYCLINES");
+
+      //   done();
+      // });
+    });
+  }
+});
+
+describe("Tests for errors occurred while parsing an incorrectly formatted file", function () {
+  it("Empty file", (done) => {
+    done();
+  });
+});
+
+// ***** INTERNAL FUNCTIONS *****
+
+/**
+ * Test if an array contains duplications
+ * @param {[]} array
+ */
+function expectNotContainsDuplication(array, message = "") {
+  expect(
+    array.length === [...new Set(array)].length,
+    `| ${message} : Array do contains duplications |`
+  ).to.be.true;
 }
 
+function expectSameContent(expected, actual, description = "") {
+  for (let e of expected) {
+    expect(actual).contains(e, `| ${description} : Missing value : '${e}' |`);
+  }
+  for (let e of actual) {
+    expect(expected).contains(e, `| ${description} : Invalid value : '${e}' |`);
+  }
+}
+
+/**
+ * Return an array of all node of all level of a classification
+ * @param {ClassificationNode[]} classification
+ * @returns {ClassificationNode[]}
+ */
 function flattenClassification(classification) {
   function flattenNode(node) {
     let res = [node];
@@ -38,138 +230,37 @@ function flattenClassification(classification) {
   return res;
 }
 
-function getMolecule(data, dci) {
+/**
+ * Find a molecule by its dci
+ * @param {object} data
+ * @param {string} dci
+ */
+function getMoleculeByDci(data, dci) {
   return data.molecules.find((m) => m.dci === dci);
 }
 
-function getClasse(data, name) {
-  return flattenClassification(data.classes).find(
+/**
+ * Find a system by its name
+ * @param {ClassificationNode[]} classification
+ * @param {string} name
+ */
+function getClassificationValue(classification, name) {
+  return getAllClassificationValues(classification).find(
     (classe) => classe.name === name
   );
 }
 
-function getAllClasses(data, filter = identity) {
-  return removeDuplications(flattenClassification(data.classes).map(filter));
+/**
+ * Get all values of a classification
+ * @param {ClassificationNode[]} classification
+ * @param {function} filter
+ */
+function getAllClassificationValues(classification, filter = identity) {
+  return flattenClassification(classification).map(filter);
 }
 
-function getAllSystems(data, filter = identity) {
-  return removeDuplications(flattenClassification(data.systems).map(filter));
-}
-
-function expectMoleculeHaveClasse(data, molecule, classe) {
-  molecule = getMolecule(data, molecule);
-  classe = getClasse(data, classe);
-
-  expect(molecule.classes).to.be.equals(classe.id);
-}
-
+// Filters
 const toId = (object) => object.id;
 const toName = (object) => object.name;
-const toDci = (molecule) => molecule.dci;
+
 const identity = (e) => e;
-
-for (let file of files) {
-  describe(`The imported data contains the correct values : ${file.name}`, () => {
-    let data;
-
-    before("Import data", (done) => {
-      data = JSON.parse(parseCSV(path.resolve(filesPath, file.name)));
-
-      done();
-    });
-
-    it("Imported data are equals to expected data", function (done) {
-      if (!file.snapshot) {
-        this.skip();
-      }
-      let expectedData = fs.readFileSync(
-        path.resolve(snapshotsPath, file.snapshot)
-      );
-      expect(data).to.be.deep.equals(JSON.parse(expectedData));
-      done();
-    });
-
-    it("Systems", (done) => {
-      expect(getAllSystems(data, toName)).to.have.length(4);
-      expect(getAllSystems(data, toId)).to.have.length(4);
-
-      expect(data.systems).to.have.length(1);
-      expect(data.systems[0].children).to.have.length(3);
-      expect(data.systems[0].name).to.be.equals("ANTIINFECTIEUX");
-
-      done();
-    });
-
-    it("Classes", (done) => {
-      const EXPECTED_NUMBER = 48;
-
-      expect(getAllClasses(data, toName)).to.have.length(EXPECTED_NUMBER);
-      expect(getAllClasses(data, toId)).to.have.length(EXPECTED_NUMBER);
-
-      expect(data.classes).to.have.length(35);
-      expect(data.classes[2].name).to.be.equals("ANALOGUES NUCLEOSIDIQUES");
-      expect(data.classes[2].children).to.have.length(1);
-
-      done();
-    });
-
-    it("Interactions", (done) => {
-      const EXPECTED_NUMBER = 3;
-
-      expect(Object.keys(data.interactions)).to.have.length(EXPECTED_NUMBER);
-      expect(
-        removeDuplications(Object.values(data.interactions))
-      ).to.have.length(EXPECTED_NUMBER);
-
-      done();
-    });
-
-    it("Indications", (done) => {
-      const EXPECTED_NUMBER = 17;
-
-      expect(Object.keys(data.indications)).to.have.length(EXPECTED_NUMBER);
-      expect(
-        removeDuplications(Object.values(data.indications))
-      ).to.have.length(EXPECTED_NUMBER);
-
-      done();
-    });
-
-    it("Side effects", (done) => {
-      const EXPECTED_NUMBER = 10;
-
-      expect(Object.keys(data.side_effects)).to.have.length(EXPECTED_NUMBER);
-      expect(
-        removeDuplications(Object.values(data.side_effects))
-      ).to.have.length(EXPECTED_NUMBER);
-
-      done();
-    });
-
-    it("Molecules : Intrinsic properties", (done) => {
-      let zanamivir = getMolecule(data, "ZANAMIVIR");
-
-      expect(removeDuplications(data.molecules.map(toDci))).to.have.length(140);
-      expect(zanamivir.level_easy).to.be.equals(0);
-      expect(zanamivir.level_hard).to.be.equals(1);
-
-      done();
-    });
-
-    it("Molecules : Correct classes", (done) => {
-      expectMoleculeHaveClasse(
-        data,
-        "PIVMECILLINAM",
-        "PENICILLINES A LARGE SPECTRE"
-      );
-      expectMoleculeHaveClasse(
-        data,
-        "CEFEPIME",
-        "CEPHALOSPORINE DE 3EME GENERATION"
-      );
-      expectMoleculeHaveClasse(data, "METHYLENECYCLINE", "TETRACYCLINES");
-
-      done();
-    });
-  });
-}

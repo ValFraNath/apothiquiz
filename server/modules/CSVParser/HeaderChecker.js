@@ -22,6 +22,7 @@ export default class HeaderChecker {
    */
   check() {
     this.errors = [
+      ...checkNotEmptyHeader(this.header),
       ...checkMissingColumns(this.header, this.columnsSpecs),
       ...checkDuplicateUniqueColumns(this.header, this.columnsSpecs),
       ...checkInvalidColumns(this.header, this.columnsSpecs),
@@ -34,7 +35,7 @@ export default class HeaderChecker {
 
   /**
    * Returns the array of errors that occurred during checks
-   * @return {ImportationError[]} errors
+   * @return {HeaderError[]} errors
    */
   getErrors() {
     return this.errors;
@@ -42,23 +43,68 @@ export default class HeaderChecker {
 }
 
 // TODO improve erros by adding code + french message
-export class ImportationError extends Error {
-  constructor(message, code) {
+export class HeaderError extends Error {
+  /**
+   * Create an Error
+   * @param {number} code The error code
+   * @param {{title : string, index : number}} details Some details about where the error has occured
+   */
+  constructor(code, details) {
     super();
-    this.message = message;
+    this.name = "HeaderError";
     this.code = code;
-    this.name = "FileFormatError";
+    this.message = HeaderError.getMessage(code, details);
   }
   static isInstance(error) {
-    return error instanceof ImportationError;
+    return error instanceof HeaderError;
+  }
+
+  static getMessage(code, { index, title }) {
+    const messages = Object.create(null);
+
+    messages[HeaderError.EMPTY_FILE] = `L'en-tête du fichier est vide.`;
+
+    messages[
+      HeaderError.BAD_COLUMNS_GROUP
+    ] = `Les colonnes d'une même propriété sont mal regroupées : '${title}' (col. ${
+      index + 1
+    })`;
+
+    messages[
+      HeaderError.DUPLICATE_UNIQUE_COLUMN
+    ] = `Duplication de la colonne unique '${title}' (col. ${index + 1})`;
+
+    messages[HeaderError.MISSING_COLUMN] = `Colonne manquante : '${title}'`;
+
+    messages[
+      HeaderError.INVALID_COLUMN
+    ] = `Colonne invalide : '${title}' (col. ${index + 1})`;
+
+    messages[
+      HeaderError.BAD_HIERARCHICAL_COLUMNS_ORDER
+    ] = `Niveau de hiérachisation non respecté : ${title} (col. ${index})`;
   }
 }
-ImportationError.MISSING_COLUMN = 1;
-ImportationError.DUPLICATE_UNIQUE_COLUMN = 2;
-ImportationError.EMPTY_FILE = 3;
-ImportationError.INVALID_COLUMN = 4;
+
+HeaderError.MISSING_COLUMN = 1;
+HeaderError.DUPLICATE_UNIQUE_COLUMN = 2;
+HeaderError.EMPTY_FILE = 3;
+HeaderError.INVALID_COLUMN = 4;
+HeaderError.BAD_COLUMNS_GROUP = 5;
+HeaderError.BAD_HIERARCHICAL_COLUMNS_ORDER = 6;
 
 /// ***** INTERNAL FUNCTIONS *****
+
+/**
+ * Checks if the header is empty
+ * @param {string[]} header
+ */
+function checkNotEmptyHeader(header) {
+  if (header.length === 0) {
+    return [new HeaderError(HeaderError.EMPTY_FILE)];
+  }
+  return [];
+}
 
 /**
  * Checks columns are well grouped
@@ -73,10 +119,8 @@ function checkColumnsGroups(header, columnsSpecifications) {
 
   const visitedGroups = [];
   let currentGroup;
-  header.forEach((headerColumn) => {
-    let group = nonUniqueColumns.find((column) =>
-      column.matchTitle(headerColumn)
-    );
+  header.forEach((title, index) => {
+    let group = nonUniqueColumns.find((column) => column.matchTitle(title));
     if (!group) {
       return;
     }
@@ -85,7 +129,10 @@ function checkColumnsGroups(header, columnsSpecifications) {
       currentGroup = group;
       if (visitedGroups.includes(group)) {
         errors.push(
-          new ImportationError("Colonnes " + headerColumn + " non regroupés")
+          new HeaderError(HeaderError.BAD_COLUMNS_GROUP, {
+            index,
+            title,
+          })
         );
       }
     }
@@ -100,13 +147,10 @@ function checkColumnsGroups(header, columnsSpecifications) {
  */
 function checkMissingColumns(header, columnsSpecifications) {
   const errors = [];
-  columnsSpecifications.forEach((column) => {
-    if (!header.some((headerColumn) => column.matchTitle(headerColumn))) {
+  columnsSpecifications.forEach((column, index) => {
+    if (!header.some((title) => column.matchTitle(title))) {
       errors.push(
-        new ImportationError(
-          "Colonne manquante : " + column.title,
-          ImportationError.MISSING_COLUMN
-        )
+        new HeaderError(HeaderError.MISSING_COLUMN, { index, title: column })
       );
     }
   });
@@ -120,15 +164,13 @@ function checkMissingColumns(header, columnsSpecifications) {
  */
 function checkInvalidColumns(header, columnsSpecifications) {
   const errors = [];
-  header.forEach((headerColumn) => {
-    if (
-      !columnsSpecifications.some((column) => column.matchTitle(headerColumn))
-    ) {
+  header.forEach((title, index) => {
+    if (!columnsSpecifications.some((column) => column.matchTitle(title))) {
       errors.push(
-        new ImportationError(
-          "Invalide colonne : " + headerColumn,
-          ImportationError.INVALID_COLUMN
-        )
+        new HeaderError(HeaderError.INVALID_COLUMN, {
+          index,
+          title,
+        })
       );
     }
   });
@@ -148,17 +190,14 @@ function checkDuplicateUniqueColumns(header, columnsSpecifications) {
 
   let checkedColumns = [];
 
-  header.forEach((column) => {
-    if (uniqueColumnTitles.includes(column)) {
-      if (checkedColumns.includes(column)) {
+  header.forEach((title, index) => {
+    if (uniqueColumnTitles.includes(title)) {
+      if (checkedColumns.includes(title)) {
         errors.push(
-          new ImportationError(
-            "Colonne en double : " + column,
-            ImportationError.DUPLICATE_UNIQUE_COLUMN
-          )
+          new HeaderError(HeaderError.DUPLICATE_UNIQUE_COLUMN, { index, title })
         );
       } else {
-        checkedColumns.push(column);
+        checkedColumns.push(title);
       }
     }
   });
@@ -179,10 +218,8 @@ function checkHierarchicalColumnsOrder(header, columnsSpecifications) {
 
   let currentGroup;
   let level;
-  header.forEach((headerColumn) => {
-    let group = hierarchicalColumns.find((column) =>
-      column.matchTitle(headerColumn)
-    );
+  header.forEach((title, index) => {
+    let group = hierarchicalColumns.find((column) => column.matchTitle(title));
     if (!group) {
       return;
     }
@@ -192,13 +229,9 @@ function checkHierarchicalColumnsOrder(header, columnsSpecifications) {
       level = 1;
     }
 
-    let match = headerColumn.match(new RegExp(group));
+    let match = title.match(new RegExp(group));
     if (Number(match[1]) !== level) {
-      errors.push(
-        new ImportationError(
-          "Niveau de hiérachisation non respecté : " + headerColumn
-        )
-      );
+      errors.push(HeaderError.BAD_HIERARCHICAL_COLUMNS_ORDER, { title, index });
       level = null;
       return;
     }

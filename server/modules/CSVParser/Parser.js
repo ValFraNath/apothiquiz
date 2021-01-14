@@ -1,5 +1,6 @@
 import xlsx from "node-xlsx";
-import HeaderChecker from "./HeaderChecker.js";
+// eslint-disable-next-line no-unused-vars
+import HeaderChecker, { HeaderError } from "./HeaderChecker.js";
 import ParserSpecifications from "./ParserSpecifications.js";
 import FileStructure from "./FileStructure.js";
 import Classification from "./MoleculesClassification.js";
@@ -9,9 +10,9 @@ import MoleculeList from "./MoleculeList.js";
 /**
  * Import CSV file to parse data into an object
  * @param {string} filepath The path to the file
- * @return {JSON}
+ * @param {function(HeaderError[],JSON)} callback Function called at the end of the parsing process
  */
-export function parseCSV(filepath) {
+export function parseCSV(filepath, callback) {
   let moleculesMatrix = cleanUpStringsInMatrix(readCsvFile(filepath));
 
   const columnsHeader = moleculesMatrix.shift();
@@ -21,8 +22,8 @@ export function parseCSV(filepath) {
     ParserSpecifications.columns
   );
   if (!checker.check()) {
-    console.table(checker.getErrors());
-    process.exit(1);
+    callback(checker.getErrors());
+    return;
   }
 
   const structure = new FileStructure(
@@ -58,7 +59,7 @@ export function parseCSV(filepath) {
 
   //console.error(JSON.stringify(data));
 
-  return JSON.stringify(data);
+  callback(null, JSON.stringify(data));
 }
 
 // ***** INTERNAL FUNCTIONS *****
