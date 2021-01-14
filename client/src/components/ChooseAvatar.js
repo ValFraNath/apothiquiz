@@ -2,33 +2,35 @@ import React, { Component } from "react";
 import PropTypes from "proptypes";
 import axios from "axios";
 
+/** These const should match the number of possibilities in images/avatar/files.png */
 const NUMBER_OF_EYES = 5;
 const NUMBER_OF_HANDS = 5;
 const NUMBER_OF_HATS = 5;
 const NUMBER_OF_MOUTHES = 5;
 
-const Select = function (props) {
-  const options = [];
-  for (let i = 0; i < props.maxValue; ++i) {
-    options.push(
-      <option key={i} value={i}>
-        {i}
-      </option>
+class Select extends Component {
+  render() {
+    const options = [];
+    for (let i = 0; i < this.props.maxValue; ++i) {
+      options.push(
+        <option key={i} value={i}>
+          {i}
+        </option>
+      );
+    }
+    return (
+      <select
+        name={this.props.name}
+        value={this.props.value}
+        onChange={(event) => {
+          this.props.onValueChange(event.target.value);
+        }}
+      >
+        {options}
+      </select>
     );
   }
-
-  return (
-    <select
-      name={props.name}
-      value={props.value}
-      onChange={(event) => {
-        props.onValueChange(event.target.value);
-      }}
-    >
-      {options}
-    </select>
-  );
-};
+}
 
 Select.propTypes = {
   name: PropTypes.string.isRequired,
@@ -37,18 +39,20 @@ Select.propTypes = {
   onValueChange: PropTypes.func.isRequired,
 };
 
-const InputColor = function (props) {
-  return (
-    <input
-      name={props.name}
-      type="color"
-      value={props.value}
-      onChange={(event) => {
-        props.onValueChange(event.target.value);
-      }}
-    />
-  );
-};
+class InputColor extends Component {
+  render() {
+    return (
+      <input
+        name={this.props.name}
+        type="color"
+        value={this.props.value}
+        onChange={(event) => {
+          this.props.onValueChange(event.target.value);
+        }}
+      />
+    );
+  }
+}
 
 InputColor.propTypes = {
   name: PropTypes.string.isRequired,
@@ -56,17 +60,17 @@ InputColor.propTypes = {
   onValueChange: PropTypes.func.isRequired,
 };
 
-export default class ChooseAvatar extends Component {
+class ChooseAvatar extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      modified: "saved",
+      avatarChooserState: "saved",
     };
   }
 
   randomAvatar = () => {
-    this.setState({ modified: "modified" });
+    this.setState({ avatarChooserState: "not-saved" });
     this.props.handleInputEyes(Math.round(Math.random() * NUMBER_OF_EYES));
     this.props.handleInputHands(Math.round(Math.random() * NUMBER_OF_HANDS));
     this.props.handleInputHat(Math.round(Math.random() * NUMBER_OF_HATS));
@@ -76,7 +80,7 @@ export default class ChooseAvatar extends Component {
   };
 
   handleSaveAvatar = () => {
-    this.setState({ modified: "saving" });
+    this.setState({ avatarChooserState: "saving" });
 
     axios
       .patch(`/api/v1/user/me`, {
@@ -90,14 +94,13 @@ export default class ChooseAvatar extends Component {
         }),
       })
       .then((res) => {
-        console.log(res);
-        this.setState({ modified: "saved", message: "" });
+        this.setState({ avatarChooserState: "saved", message: "" });
       })
       .catch((error) => {
         console.error(error);
         this.setState({
           message: "Erreur lors de la requête. Veuillez réessayer plus tard",
-          modified: "modified",
+          avatarChooserState: "not-saved",
         });
       });
   };
@@ -111,7 +114,7 @@ export default class ChooseAvatar extends Component {
           value={this.props.choiceEyes}
           maxValue={NUMBER_OF_EYES}
           onValueChange={(ev) => {
-            this.setState({ modified: "modified" });
+            this.setState({ avatarChooserState: "not-saved" });
             this.props.handleInputEyes(ev);
           }}
         />
@@ -122,7 +125,7 @@ export default class ChooseAvatar extends Component {
           value={this.props.choiceHands}
           maxValue={NUMBER_OF_HANDS}
           onValueChange={(ev) => {
-            this.setState({ modified: "modified" });
+            this.setState({ avatarChooserState: "not-saved" });
             this.props.handleInputHands(ev);
           }}
         />
@@ -133,7 +136,7 @@ export default class ChooseAvatar extends Component {
           value={this.props.choiceHat}
           maxValue={NUMBER_OF_HATS}
           onValueChange={(ev) => {
-            this.setState({ modified: "modified" });
+            this.setState({ avatarChooserState: "not-saved" });
             this.props.handleInputHat(ev);
           }}
         />
@@ -144,7 +147,7 @@ export default class ChooseAvatar extends Component {
           value={this.props.choiceMouth}
           maxValue={NUMBER_OF_MOUTHES}
           onValueChange={(ev) => {
-            this.setState({ modified: "modified" });
+            this.setState({ avatarChooserState: "not-saved" });
             this.props.handleInputMouth(ev);
           }}
         />
@@ -154,7 +157,7 @@ export default class ChooseAvatar extends Component {
           name="body"
           value={this.props.choiceColorBody}
           onValueChange={(ev) => {
-            this.setState({ modified: "modified" });
+            this.setState({ avatarChooserState: "not-saved" });
             this.props.handleInputColorBody(ev);
           }}
         />
@@ -164,26 +167,21 @@ export default class ChooseAvatar extends Component {
           name="background"
           value={this.props.choiceColorBG}
           onValueChange={(ev) => {
-            this.setState({ modified: "modified" });
+            this.setState({ avatarChooserState: "not-saved" });
             this.props.handleInputColorBG(ev);
           }}
         />
 
-        <button onClick={this.randomAvatar} disabled={this.state.modified === "saving"}>
-          Avatar aléatoire
-        </button>
+        <button onClick={this.randomAvatar}>Générer un avatar aléatoire</button>
 
         <button
           onClick={this.handleSaveAvatar}
-          style={{
-            backgroundColor:
-              this.state.modified === "saved" ? "green" : this.state.modified === "saving" ? "blue" : "red",
-          }}
-          disabled={this.state.modified === "saved"}
+          className={this.state.avatarChooserState}
+          disabled={this.state.avatarChooserState === "saved"}
         >
-          {this.state.modified === "saved" && "Avatar sauvegardé"}
-          {this.state.modified === "saving" && "Sauvegarde en cours..."}
-          {this.state.modified === "modified" && "Valider l'avatar"}
+          {this.state.avatarChooserState === "saved" && "Avatar sauvegardé"}
+          {this.state.avatarChooserState === "saving" && "Sauvegarde en cours..."}
+          {this.state.avatarChooserState === "not-saved" && "Valider l'avatar"}
         </button>
 
         {this.state.message !== null && <span className="error">{this.state.message}</span>}
@@ -200,3 +198,5 @@ ChooseAvatar.propTypes = {
   handleInputColorBody: PropTypes.func.isRequired,
   handleInputColorBG: PropTypes.func.isRequired,
 };
+
+export default ChooseAvatar;
