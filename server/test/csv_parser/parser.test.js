@@ -15,10 +15,10 @@ chai.use(deepEqualAnyOrder);
 const { before } = mocha;
 const { expect } = chai;
 
-const CSVFolderPath = path.resolve("test", "ParserTests", "CSVFiles");
-const snapshotsFolderPath = path.resolve("test", "ParserTests", "snapshots");
+const CSVFolderPath = path.resolve("test", "csv_parser", "files");
+const snapshotsFolderPath = path.resolve("test", "csv_parser", "snapshots");
 
-// TODO errors test + data tests with different file configuration but same expectations
+// TODO errors test
 
 describe("Test if values are well imported", function () {
   const files = [
@@ -28,12 +28,12 @@ describe("Test if values are well imported", function () {
       expectation: expectations.first_version,
     },
     {
-      name: "molecules_movedColumns.xlsx",
-      snapshot: "molecules.json",
+      name: "molecules_moved_columns.xlsx",
+      snapshot: "moved_columns.json",
       expectation: expectations.first_version,
     },
     {
-      name: "molecules_littleSample.xlsx",
+      name: "molecules_little_sample.xlsx",
       snapshot: "sample.json",
       expectation: expectations.little_sample,
     },
