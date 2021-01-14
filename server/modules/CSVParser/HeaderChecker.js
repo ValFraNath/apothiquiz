@@ -66,19 +66,13 @@ export class HeaderError extends Error {
 
     messages[
       HeaderError.BAD_COLUMNS_GROUP
-    ] = `Les colonnes d'une même propriété sont mal regroupées : '${title}' (col. ${
-      index + 1
-    })`;
+    ] = `Les colonnes d'une même propriété sont mal regroupées : '${title}' (col. ${index + 1})`;
 
-    messages[
-      HeaderError.DUPLICATE_UNIQUE_COLUMN
-    ] = `Duplication de la colonne unique '${title}' (col. ${index + 1})`;
+    messages[HeaderError.DUPLICATE_UNIQUE_COLUMN] = `Duplication de la colonne unique '${title}' (col. ${index + 1})`;
 
     messages[HeaderError.MISSING_COLUMN] = `Colonne manquante : '${title}'`;
 
-    messages[
-      HeaderError.INVALID_COLUMN
-    ] = `Colonne invalide : '${title}' (col. ${index + 1})`;
+    messages[HeaderError.INVALID_COLUMN] = `Colonne invalide : '${title}' (col. ${index + 1})`;
 
     messages[
       HeaderError.BAD_HIERARCHICAL_COLUMNS_ORDER
@@ -113,9 +107,7 @@ function checkNotEmptyHeader(header) {
  */
 function checkColumnsGroups(header, columnsSpecifications) {
   const errors = [];
-  const nonUniqueColumns = columnsSpecifications.filter(
-    (column) => !column.isUnique()
-  );
+  const nonUniqueColumns = columnsSpecifications.filter((column) => !column.isUnique());
 
   const visitedGroups = [];
   let currentGroup;
@@ -149,9 +141,7 @@ function checkMissingColumns(header, columnsSpecifications) {
   const errors = [];
   columnsSpecifications.forEach((column, index) => {
     if (!header.some((title) => column.matchTitle(title))) {
-      errors.push(
-        new HeaderError(HeaderError.MISSING_COLUMN, { index, title: column })
-      );
+      errors.push(new HeaderError(HeaderError.MISSING_COLUMN, { index, title: column }));
     }
   });
   return errors;
@@ -184,18 +174,14 @@ function checkInvalidColumns(header, columnsSpecifications) {
  */
 function checkDuplicateUniqueColumns(header, columnsSpecifications) {
   const errors = [];
-  let uniqueColumnTitles = columnsSpecifications
-    .filter((column) => column.isUnique())
-    .map((column) => column.title);
+  let uniqueColumnTitles = columnsSpecifications.filter((column) => column.isUnique()).map((column) => column.title);
 
   let checkedColumns = [];
 
   header.forEach((title, index) => {
     if (uniqueColumnTitles.includes(title)) {
       if (checkedColumns.includes(title)) {
-        errors.push(
-          new HeaderError(HeaderError.DUPLICATE_UNIQUE_COLUMN, { index, title })
-        );
+        errors.push(new HeaderError(HeaderError.DUPLICATE_UNIQUE_COLUMN, { index, title }));
       } else {
         checkedColumns.push(title);
       }
@@ -212,9 +198,7 @@ function checkDuplicateUniqueColumns(header, columnsSpecifications) {
  */
 function checkHierarchicalColumnsOrder(header, columnsSpecifications) {
   const errors = [];
-  let hierarchicalColumns = columnsSpecifications.filter((column) =>
-    column.isHierarchical()
-  );
+  let hierarchicalColumns = columnsSpecifications.filter((column) => column.isHierarchical());
 
   let currentGroup;
   let level;

@@ -38,8 +38,7 @@ class SpriteSheet extends Component {
       throw new Error("Invalid frame number");
     }
     this.setState({
-      currentFrame:
-        newCurrentFrame === -1 ? this.props.steps - 1 : newCurrentFrame,
+      currentFrame: newCurrentFrame === -1 ? this.props.steps - 1 : newCurrentFrame,
     });
   };
 
@@ -51,10 +50,7 @@ class SpriteSheet extends Component {
   play = (onEachStep = null, onAnimationEnd) => {
     let int = setInterval(() => {
       const { currentFrame: frame, direction } = this.state;
-      if (
-        (frame === this.props.steps - 1 && direction === 1) ||
-        (frame === 0 && direction === -1)
-      ) {
+      if ((frame === this.props.steps - 1 && direction === 1) || (frame === 0 && direction === -1)) {
         clearInterval(int);
         this.setState({
           interval: null,
@@ -88,12 +84,8 @@ class SpriteSheet extends Component {
           height: `${this.props.frameHeight}px`,
           width: `${this.props.frameWidth}px`,
           backgroundImage: `url(${this.props.image})`,
-          backgroundSize: `${this.props.frameWidth * this.props.steps}px ${
-            this.props.frameHeight
-          }px`,
-          backgroundPositionX: `${
-            -this.state.currentFrame * this.props.frameWidth
-          }px`,
+          backgroundSize: `${this.props.frameWidth * this.props.steps}px ${this.props.frameHeight}px`,
+          backgroundPositionX: `${-this.state.currentFrame * this.props.frameWidth}px`,
         }}
       />
     );

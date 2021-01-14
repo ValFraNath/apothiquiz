@@ -33,7 +33,11 @@
       "name": "INHIBITEUR DIRECT ADN polymérase virale et transcriptase inverse",
       "children": []
     },
-    { "id": 10, "name": "INHIBITEURS NON NUCLEOSIDIQUES DE LA TI", "children": [] },
+    {
+      "id": 10,
+      "name": "INHIBITEURS NON NUCLEOSIDIQUES DE LA TI",
+      "children": []
+    },
     {
       "id": 11,
       "name": "INHIBITEUR ENTREE VHB ET HVD",
@@ -64,10 +68,26 @@
       "id": 29,
       "name": "CEPHALOSPORINES",
       "children": [
-        { "id": 30, "name": "CEPHALOSPORINE DE 1ERE GENERATION", "children": [] },
-        { "id": 31, "name": "CEPHALOSPORINE DE 2NDE GENERATION", "children": [] },
-        { "id": 32, "name": "CEPHALOSPORINE DE 3EME GENERATION", "children": [] },
-        { "id": 33, "name": "CEPHALOSPORINE DE 5EME GENERATION", "children": [] }
+        {
+          "id": 30,
+          "name": "CEPHALOSPORINE DE 1ERE GENERATION",
+          "children": []
+        },
+        {
+          "id": 31,
+          "name": "CEPHALOSPORINE DE 2NDE GENERATION",
+          "children": []
+        },
+        {
+          "id": 32,
+          "name": "CEPHALOSPORINE DE 3EME GENERATION",
+          "children": []
+        },
+        {
+          "id": 33,
+          "name": "CEPHALOSPORINE DE 5EME GENERATION",
+          "children": []
+        }
       ]
     },
     { "id": 34, "name": "TETRACYCLINES", "children": [] },
@@ -125,1275 +145,1823 @@
   "molecules": [
     {
       "id": 1,
+      "dci": "AMANTADINE",
+      "skeletal_formule": null,
       "systems": 2,
       "classes": 1,
+      "ntr": null,
       "interactions": [],
       "indications": [1, 2],
       "side_effects": [1],
-      "dci": "AMANTADINE",
-      "level_easy": 0,
+      "level_easy": null,
       "level_hard": 1
     },
     {
       "id": 2,
+      "dci": "OSELTAMIVIR",
+      "skeletal_formule": null,
       "systems": 2,
       "classes": 2,
+      "ntr": 1,
       "interactions": [],
       "indications": [1],
       "side_effects": [],
-      "dci": "OSELTAMIVIR",
-      "ntr": 1,
       "level_easy": 1,
       "level_hard": 1
     },
     {
       "id": 3,
+      "dci": "ZANAMIVIR",
+      "skeletal_formule": null,
       "systems": 2,
       "classes": 2,
+      "ntr": null,
       "interactions": [],
       "indications": [1],
       "side_effects": [],
-      "dci": "ZANAMIVIR",
-      "level_easy": 0,
+      "level_easy": null,
       "level_hard": 1
     },
     {
       "id": 4,
+      "dci": "LAMIVUDINE",
+      "skeletal_formule": "H2O",
       "systems": 2,
       "classes": 4,
+      "ntr": null,
       "interactions": [],
       "indications": [3, 4],
       "side_effects": [],
-      "dci": "LAMIVUDINE",
-      "ntr": 0,
-      "skeletal_formule": "H2O",
+      "level_easy": null,
       "level_hard": 1
     },
     {
       "id": 5,
+      "dci": "ENTECAVIR",
+      "skeletal_formule": null,
       "systems": 2,
       "classes": 3,
+      "ntr": null,
       "interactions": [],
       "indications": [3],
       "side_effects": [],
-      "dci": "ENTECAVIR",
+      "level_easy": null,
       "level_hard": 1
     },
     {
       "id": 6,
+      "dci": "TELBIVUDINE",
+      "skeletal_formule": null,
       "systems": 2,
       "classes": 3,
+      "ntr": null,
       "interactions": [],
       "indications": [3],
       "side_effects": [],
-      "dci": "TELBIVUDINE",
+      "level_easy": null,
       "level_hard": 1
     },
     {
       "id": 7,
+      "dci": "RIBAVIRINE",
+      "skeletal_formule": null,
       "systems": 2,
       "classes": 3,
+      "ntr": null,
       "interactions": [],
       "indications": [3],
       "side_effects": [],
-      "dci": "RIBAVIRINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 8,
+      "dci": "ADEFOVIR",
+      "skeletal_formule": null,
       "systems": 2,
       "classes": 3,
+      "ntr": null,
       "interactions": [],
       "indications": [3],
       "side_effects": [],
-      "dci": "ADEFOVIR"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 9,
+      "dci": "TENOFOVIR DISOPROXIL",
+      "skeletal_formule": null,
       "systems": 2,
       "classes": 4,
+      "ntr": null,
       "interactions": [],
       "indications": [3, 4],
       "side_effects": [],
-      "dci": "TENOFOVIR DISOPROXIL"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 10,
+      "dci": "TENOFOVIR ALAFENAMIDE",
+      "skeletal_formule": null,
       "systems": 2,
       "classes": 4,
+      "ntr": null,
       "interactions": [],
       "indications": [4],
       "side_effects": [],
-      "dci": "TENOFOVIR ALAFENAMIDE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 11,
+      "dci": "LETERMOVIR",
+      "skeletal_formule": null,
       "systems": 2,
       "classes": 5,
+      "ntr": null,
       "interactions": [],
       "indications": [5],
       "side_effects": [],
-      "dci": "LETERMOVIR"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 12,
+      "dci": "SOFOSBUVIR",
+      "skeletal_formule": null,
       "systems": 2,
       "classes": 6,
+      "ntr": null,
       "interactions": [],
       "indications": [6],
       "side_effects": [],
-      "dci": "SOFOSBUVIR"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 13,
+      "dci": "VELPASTASVIR",
+      "skeletal_formule": null,
       "systems": 2,
       "classes": 7,
+      "ntr": null,
       "interactions": [],
       "indications": [6],
       "side_effects": [],
-      "dci": "VELPASTASVIR"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 14,
+      "dci": "GLECAPREVIR",
+      "skeletal_formule": null,
       "systems": 2,
       "classes": 8,
+      "ntr": null,
       "interactions": [],
       "indications": [6],
       "side_effects": [],
-      "dci": "GLECAPREVIR"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 15,
+      "dci": "PIBRENTASVIR",
+      "skeletal_formule": null,
       "systems": 2,
       "classes": 7,
+      "ntr": null,
       "interactions": [],
       "indications": [6],
       "side_effects": [],
-      "dci": "PIBRENTASVIR"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 16,
+      "dci": "DACLATASVIR",
+      "skeletal_formule": null,
       "systems": 2,
       "classes": 7,
+      "ntr": null,
       "interactions": [],
       "indications": [6],
       "side_effects": [],
-      "dci": "DACLATASVIR"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 17,
+      "dci": "LEDIPASVIR",
+      "skeletal_formule": null,
       "systems": 2,
       "classes": 7,
+      "ntr": null,
       "interactions": [],
       "indications": [6],
       "side_effects": [],
-      "dci": "LEDIPASVIR"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 18,
+      "dci": "ACICLOVIR",
+      "skeletal_formule": null,
       "systems": 2,
       "classes": 3,
+      "ntr": null,
       "interactions": [],
       "indications": [7, 8],
       "side_effects": [2],
-      "dci": "ACICLOVIR"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 19,
+      "dci": "VALACICLOVIR",
+      "skeletal_formule": null,
       "systems": 2,
       "classes": 3,
+      "ntr": null,
       "interactions": [],
       "indications": [7, 8],
       "side_effects": [2],
-      "dci": "VALACICLOVIR"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 20,
+      "dci": "GANCICLOVIR",
+      "skeletal_formule": null,
       "systems": 2,
       "classes": 3,
+      "ntr": null,
       "interactions": [],
       "indications": [5],
       "side_effects": [2],
-      "dci": "GANCICLOVIR"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 21,
+      "dci": "VALGANCICLOVIR",
+      "skeletal_formule": null,
       "systems": 2,
       "classes": 3,
+      "ntr": null,
       "interactions": [],
       "indications": [5],
       "side_effects": [2],
-      "dci": "VALGANCICLOVIR"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 22,
+      "dci": "FOSCARNET",
+      "skeletal_formule": null,
       "systems": 2,
       "classes": 9,
+      "ntr": null,
       "interactions": [],
       "indications": [7, 8, 9, 5],
       "side_effects": [2],
-      "dci": "FOSCARNET"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 23,
+      "dci": "DORAVIRINE",
+      "skeletal_formule": null,
       "systems": 2,
       "classes": 10,
+      "ntr": null,
       "interactions": [],
       "indications": [4],
       "side_effects": [],
-      "dci": "DORAVIRINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 24,
+      "dci": "EFAVIRENZ",
+      "skeletal_formule": null,
       "systems": 2,
       "classes": 10,
+      "ntr": null,
       "interactions": [],
       "indications": [4],
       "side_effects": [],
-      "dci": "EFAVIRENZ"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 25,
+      "dci": "ETRAVIRINE",
+      "skeletal_formule": null,
       "systems": 2,
       "classes": 10,
+      "ntr": null,
       "interactions": [],
       "indications": [4],
       "side_effects": [],
-      "dci": "ETRAVIRINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 26,
+      "dci": "NEVIRAPINE",
+      "skeletal_formule": null,
       "systems": 2,
       "classes": 10,
+      "ntr": null,
       "interactions": [],
       "indications": [4],
       "side_effects": [],
-      "dci": "NEVIRAPINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 27,
+      "dci": "RILPIVIRINE",
+      "skeletal_formule": null,
       "systems": 2,
       "classes": 10,
+      "ntr": null,
       "interactions": [],
       "indications": [4],
       "side_effects": [],
-      "dci": "RILPIVIRINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 28,
+      "dci": "ABACAVIR",
+      "skeletal_formule": null,
       "systems": 2,
       "classes": 4,
+      "ntr": null,
       "interactions": [],
       "indications": [4],
       "side_effects": [],
-      "dci": "ABACAVIR"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 29,
+      "dci": "EMTRICITABINE",
+      "skeletal_formule": null,
       "systems": 2,
       "classes": 4,
+      "ntr": null,
       "interactions": [],
       "indications": [4],
       "side_effects": [],
-      "dci": "EMTRICITABINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 30,
+      "dci": "ZIDOVUDINE",
+      "skeletal_formule": null,
       "systems": 2,
       "classes": 4,
+      "ntr": null,
       "interactions": [],
       "indications": [4],
       "side_effects": [],
-      "dci": "ZIDOVUDINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 31,
+      "dci": "BULEVIRTIDE",
+      "skeletal_formule": null,
       "systems": 2,
       "classes": 12,
+      "ntr": null,
       "interactions": [],
       "indications": [10],
       "side_effects": [],
-      "dci": "BULEVIRTIDE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 32,
+      "dci": "COBICISTAT",
+      "skeletal_formule": null,
       "systems": 2,
       "classes": 13,
+      "ntr": null,
       "interactions": [],
       "indications": [4],
       "side_effects": [],
-      "dci": "COBICISTAT"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 33,
+      "dci": "MARAVIROC",
+      "skeletal_formule": null,
       "systems": 2,
       "classes": 14,
+      "ntr": null,
       "interactions": [],
       "indications": [4],
       "side_effects": [],
-      "dci": "MARAVIROC"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 34,
+      "dci": "ENFUVIRTIDE",
+      "skeletal_formule": null,
       "systems": 2,
       "classes": 1,
+      "ntr": null,
       "interactions": [],
       "indications": [4],
       "side_effects": [],
-      "dci": "ENFUVIRTIDE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 35,
+      "dci": "ATAZANAVIR",
+      "skeletal_formule": null,
       "systems": 2,
       "classes": 15,
+      "ntr": null,
       "interactions": [],
       "indications": [4],
       "side_effects": [],
-      "dci": "ATAZANAVIR"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 36,
+      "dci": "DARUNAVIR",
+      "skeletal_formule": null,
       "systems": 2,
       "classes": 15,
+      "ntr": null,
       "interactions": [],
       "indications": [4],
       "side_effects": [],
-      "dci": "DARUNAVIR"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 37,
+      "dci": "FOSAMPRENAVIR",
+      "skeletal_formule": null,
       "systems": 2,
       "classes": 15,
+      "ntr": null,
       "interactions": [],
       "indications": [4],
       "side_effects": [],
-      "dci": "FOSAMPRENAVIR"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 38,
+      "dci": "LOPINAVIR",
+      "skeletal_formule": null,
       "systems": 2,
       "classes": 15,
+      "ntr": null,
       "interactions": [],
       "indications": [4],
       "side_effects": [],
-      "dci": "LOPINAVIR"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 39,
+      "dci": "RITONAVIR",
+      "skeletal_formule": null,
       "systems": 2,
       "classes": 15,
+      "ntr": null,
       "interactions": [],
       "indications": [4],
       "side_effects": [],
-      "dci": "RITONAVIR"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 40,
+      "dci": "TIPRANAVIR",
+      "skeletal_formule": null,
       "systems": 2,
       "classes": 15,
+      "ntr": null,
       "interactions": [],
       "indications": [4],
       "side_effects": [],
-      "dci": "TIPRANAVIR"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 41,
+      "dci": "DOLUTEGRAVIR",
+      "skeletal_formule": null,
       "systems": 2,
       "classes": 16,
+      "ntr": null,
       "interactions": [],
       "indications": [4],
       "side_effects": [],
-      "dci": "DOLUTEGRAVIR"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 42,
+      "dci": "RALTEGRAVIR",
+      "skeletal_formule": null,
       "systems": 2,
       "classes": 16,
+      "ntr": null,
       "interactions": [],
       "indications": [4],
       "side_effects": [],
-      "dci": "RALTEGRAVIR"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 43,
+      "dci": "ELVITEGRAVIR",
+      "skeletal_formule": null,
       "systems": 2,
       "classes": 16,
+      "ntr": null,
       "interactions": [],
       "indications": [4],
       "side_effects": [],
-      "dci": "ELVITEGRAVIR"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 44,
+      "dci": "BICTEGRAVIR",
+      "skeletal_formule": null,
       "systems": 2,
       "classes": 16,
+      "ntr": null,
       "interactions": [],
       "indications": [4],
       "side_effects": [],
-      "dci": "BICTEGRAVIR"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 45,
+      "dci": "AMOXICILLINE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 18,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [],
-      "dci": "AMOXICILLINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 46,
+      "dci": "AMPICILLINE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 18,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [],
-      "dci": "AMPICILLINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 47,
+      "dci": "BENZYLPENICILLINE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 19,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [],
-      "dci": "BENZYLPENICILLINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 48,
+      "dci": "CLOXACILLINE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 20,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [],
-      "dci": "CLOXACILLINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 49,
+      "dci": "OXACILLINE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 20,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [],
-      "dci": "OXACILLINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 50,
+      "dci": "PHENOXYMETHYLPENICILLINE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 21,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [],
-      "dci": "PHENOXYMETHYLPENICILLINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 51,
+      "dci": "PIPERACILLINE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 22,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [],
-      "dci": "PIPERACILLINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 52,
+      "dci": "PIVMECILLINAM",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 23,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [],
-      "dci": "PIVMECILLINAM"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 53,
+      "dci": "TEMOCILLINE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 23,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [],
-      "dci": "TEMOCILLINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 54,
+      "dci": "TICARCILLINE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 24,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [],
-      "dci": "TICARCILLINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 55,
+      "dci": "ACIDE CLAVULANIQUE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 25,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [],
-      "dci": "ACIDE CLAVULANIQUE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 56,
+      "dci": "SULBACTAM",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 25,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [],
-      "dci": "SULBACTAM"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 57,
+      "dci": "TAZOBACTAM",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 25,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [],
-      "dci": "TAZOBACTAM"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 58,
+      "dci": "AVIBACTAM",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 25,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [],
-      "dci": "AVIBACTAM"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 59,
+      "dci": "AZTREONAM",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 26,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [],
-      "dci": "AZTREONAM"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 60,
+      "dci": "ERTAPENEME",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 27,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [],
-      "dci": "ERTAPENEME"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 61,
+      "dci": "MEROPENEME",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 27,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [],
-      "dci": "MEROPENEME"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 62,
+      "dci": "IMIPENEME",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 27,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [],
-      "dci": "IMIPENEME"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 63,
+      "dci": "CILASTATINE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 28,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [],
-      "dci": "CILASTATINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 64,
+      "dci": "CEFACLOR",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 30,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [],
-      "dci": "CEFACLOR"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 65,
+      "dci": "CEFAZOLINE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 30,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [],
-      "dci": "CEFAZOLINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 66,
+      "dci": "CEFAMANDOLE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 31,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [],
-      "dci": "CEFAMANDOLE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 67,
+      "dci": "CEFOXITINE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 31,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [],
-      "dci": "CEFOXITINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 68,
+      "dci": "CEFUROXIME",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 31,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [],
-      "dci": "CEFUROXIME"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 69,
+      "dci": "CEFIXIME",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 32,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [],
-      "dci": "CEFIXIME"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 70,
+      "dci": "CEFIDEROCOL",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 32,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [],
-      "dci": "CEFIDEROCOL"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 71,
+      "dci": "CEFOTAXIME,",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 32,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [],
-      "dci": "CEFOTAXIME,"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 72,
+      "dci": "CEFPODOXIME",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 32,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [],
-      "dci": "CEFPODOXIME"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 73,
+      "dci": "CEFTAZIDIME",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 32,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [],
-      "dci": "CEFTAZIDIME"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 74,
+      "dci": "CEFTRIAXONE,",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 32,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [],
-      "dci": "CEFTRIAXONE,"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 75,
+      "dci": "CEFEPIME",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 32,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [],
-      "dci": "CEFEPIME"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 76,
+      "dci": "CEFTOLOZANE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 33,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [],
-      "dci": "CEFTOLOZANE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 77,
+      "dci": "CEFTAROLINE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 33,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [],
-      "dci": "CEFTAROLINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 78,
+      "dci": "CEFTOBIPROL",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 33,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [],
-      "dci": "CEFTOBIPROL"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 79,
+      "dci": "DOXYCYCLINE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 34,
+      "ntr": null,
       "interactions": [],
       "indications": [11, 12],
       "side_effects": [3, 4, 5],
-      "dci": "DOXYCYCLINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 80,
+      "dci": "LYMECYCLINE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 34,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [3, 4, 5],
-      "dci": "LYMECYCLINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 81,
+      "dci": "METHYLENECYCLINE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 34,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [3, 4, 5],
-      "dci": "METHYLENECYCLINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 82,
+      "dci": "MINOCYCLINE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 34,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [3, 4, 5],
-      "dci": "MINOCYCLINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 83,
+      "dci": "OXYTETRACYCLINE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 34,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [3, 4, 5],
-      "dci": "OXYTETRACYCLINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 84,
+      "dci": "TIGECYCLINE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 34,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [3, 4, 5],
-      "dci": "TIGECYCLINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 85,
+      "dci": "AMIKACINE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 35,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [2, 6],
-      "dci": "AMIKACINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 86,
+      "dci": "GENTAMICINE,",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 35,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [2, 6],
-      "dci": "GENTAMICINE,"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 87,
+      "dci": "STREPTOMYCINE,",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 35,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [2, 6],
-      "dci": "STREPTOMYCINE,"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 88,
+      "dci": "TOBRAMYCINE,",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 35,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [2, 6],
-      "dci": "TOBRAMYCINE,"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 89,
+      "dci": "FRAMYCETINE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 35,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [2, 6],
-      "dci": "FRAMYCETINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 90,
+      "dci": "AZITHROMYCINE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 36,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [7],
-      "dci": "AZITHROMYCINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 91,
+      "dci": "CLARITHROMYCINE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 36,
+      "ntr": null,
       "interactions": [1],
       "indications": [11],
       "side_effects": [7],
-      "dci": "CLARITHROMYCINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 92,
+      "dci": "ERYTHROMYCINE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 36,
+      "ntr": null,
       "interactions": [1],
       "indications": [11],
       "side_effects": [7],
-      "dci": "ERYTHROMYCINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 93,
+      "dci": "JOSAMYCINE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 36,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [7],
-      "dci": "JOSAMYCINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 94,
+      "dci": "ROXITHROMYCINE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 36,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [7],
-      "dci": "ROXITHROMYCINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 95,
+      "dci": "SPIRAMYCINE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 36,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [7],
-      "dci": "SPIRAMYCINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 96,
+      "dci": "FIDAXOMICINE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 36,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [7],
-      "dci": "FIDAXOMICINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 97,
+      "dci": "PRISTINAMYCINE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 36,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [7],
-      "dci": "PRISTINAMYCINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 98,
+      "dci": "DALBAVANCINE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 37,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [2, 6],
-      "dci": "DALBAVANCINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 99,
+      "dci": "TEICOPLANINE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 37,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [2, 6],
-      "dci": "TEICOPLANINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 100,
+      "dci": "VANCOMYCINE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 37,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [2, 6],
-      "dci": "VANCOMYCINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 101,
+      "dci": "DAPTOMYCINE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 38,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [],
-      "dci": "DAPTOMYCINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 102,
+      "dci": "COLISTINE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 38,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [],
-      "dci": "COLISTINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 103,
+      "dci": "SULFADIAZINE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 39,
+      "ntr": null,
       "interactions": [],
       "indications": [11, 13],
       "side_effects": [],
-      "dci": "SULFADIAZINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 104,
+      "dci": "SULFADOXINE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 39,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [],
-      "dci": "SULFADOXINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 105,
+      "dci": "SULFAMETHIZOL",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 39,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [],
-      "dci": "SULFAMETHIZOL"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 106,
+      "dci": "SULFAMETHOXAZOLE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 39,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [],
-      "dci": "SULFAMETHOXAZOLE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 107,
+      "dci": "CIPROFLOXACINE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 40,
+      "ntr": null,
       "interactions": [2],
       "indications": [11],
       "side_effects": [8, 7],
-      "dci": "CIPROFLOXACINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 108,
+      "dci": "ENOXACINE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 40,
+      "ntr": null,
       "interactions": [2],
       "indications": [11],
       "side_effects": [8, 7],
-      "dci": "ENOXACINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 109,
+      "dci": "LEVOFLOXACINE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 40,
+      "ntr": null,
       "interactions": [2],
       "indications": [11],
       "side_effects": [8, 7],
-      "dci": "LEVOFLOXACINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 110,
+      "dci": "LOMEFLOXACINE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 40,
+      "ntr": null,
       "interactions": [2],
       "indications": [11],
       "side_effects": [8, 7],
-      "dci": "LOMEFLOXACINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 111,
+      "dci": "MOXIFLOXACINE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 40,
+      "ntr": null,
       "interactions": [2],
       "indications": [11],
       "side_effects": [8, 7],
-      "dci": "MOXIFLOXACINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 112,
+      "dci": "NORFLOXACINE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 40,
+      "ntr": null,
       "interactions": [2],
       "indications": [11],
       "side_effects": [8, 7],
-      "dci": "NORFLOXACINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 113,
+      "dci": "OFLOXACINE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 40,
+      "ntr": null,
       "interactions": [2],
       "indications": [11],
       "side_effects": [8, 7],
-      "dci": "OFLOXACINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 114,
+      "dci": "PEFLOXACINE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 40,
+      "ntr": null,
       "interactions": [2],
       "indications": [11],
       "side_effects": [8, 7],
-      "dci": "PEFLOXACINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 115,
+      "dci": "CLINDAMYCINE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 41,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [],
-      "dci": "CLINDAMYCINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 116,
+      "dci": "LINCOMYCINE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 41,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [],
-      "dci": "LINCOMYCINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 117,
+      "dci": "TEDIZOLIDE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 42,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [],
-      "dci": "TEDIZOLIDE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 118,
+      "dci": "LINEZOLIDE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 42,
+      "ntr": null,
       "interactions": [3],
       "indications": [11],
       "side_effects": [9, 10],
-      "dci": "LINEZOLIDE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 119,
+      "dci": "THIAMPHENICOL",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 43,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [],
-      "dci": "THIAMPHENICOL"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 120,
+      "dci": "FOSFOMYCINE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": null,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [],
-      "dci": "FOSFOMYCINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 121,
+      "dci": "ACIDE FUSIDIQUE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": null,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [],
-      "dci": "ACIDE FUSIDIQUE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 122,
+      "dci": "ETHAMBUTOL",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 44,
+      "ntr": null,
       "interactions": [],
       "indications": [14],
       "side_effects": [],
-      "dci": "ETHAMBUTOL"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 123,
+      "dci": "ISONIAZIDE,",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 44,
+      "ntr": null,
       "interactions": [],
       "indications": [14],
       "side_effects": [],
-      "dci": "ISONIAZIDE,"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 124,
+      "dci": "RIFABUTINE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 44,
+      "ntr": null,
       "interactions": [],
       "indications": [14],
       "side_effects": [],
-      "dci": "RIFABUTINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 125,
+      "dci": "RIFAMPICINE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 44,
+      "ntr": null,
       "interactions": [],
       "indications": [14],
       "side_effects": [],
-      "dci": "RIFAMPICINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 126,
+      "dci": "PYRAZINAMIDE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 44,
+      "ntr": null,
       "interactions": [],
       "indications": [14],
       "side_effects": [],
-      "dci": "PYRAZINAMIDE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 127,
+      "dci": "NIFUROXAZIDE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 45,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [],
-      "dci": "NIFUROXAZIDE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 128,
+      "dci": "NITROFURANTOÏNE",
+      "skeletal_formule": null,
       "systems": 3,
       "classes": 45,
+      "ntr": null,
       "interactions": [],
       "indications": [11],
       "side_effects": [],
-      "dci": "NITROFURANTOÏNE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 129,
+      "dci": "NICLOSAMIDE",
+      "skeletal_formule": null,
       "systems": 4,
       "classes": 46,
+      "ntr": null,
       "interactions": [],
       "indications": [15],
       "side_effects": [],
-      "dci": "NICLOSAMIDE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 130,
+      "dci": "PRAZIQUANTEL",
+      "skeletal_formule": null,
       "systems": 4,
       "classes": 46,
+      "ntr": null,
       "interactions": [],
       "indications": [15],
       "side_effects": [],
-      "dci": "PRAZIQUANTEL"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 131,
+      "dci": "ALBENDAZOLE",
+      "skeletal_formule": null,
       "systems": 4,
       "classes": 47,
+      "ntr": null,
       "interactions": [],
       "indications": [15],
       "side_effects": [],
-      "dci": "ALBENDAZOLE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 132,
+      "dci": "FLUBENDAZOLE",
+      "skeletal_formule": null,
       "systems": 4,
       "classes": 47,
+      "ntr": null,
       "interactions": [],
       "indications": [15],
       "side_effects": [],
-      "dci": "FLUBENDAZOLE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 133,
+      "dci": "TRICLABENDAZOLE",
+      "skeletal_formule": null,
       "systems": 4,
       "classes": 47,
+      "ntr": null,
       "interactions": [],
       "indications": [15],
       "side_effects": [],
-      "dci": "TRICLABENDAZOLE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 134,
+      "dci": "DIETHYLCARBAMAZINE",
+      "skeletal_formule": null,
       "systems": 4,
       "classes": null,
+      "ntr": null,
       "interactions": [],
       "indications": [15],
       "side_effects": [],
-      "dci": "DIETHYLCARBAMAZINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 135,
+      "dci": "IVERMECTINE",
+      "skeletal_formule": null,
       "systems": 4,
       "classes": null,
+      "ntr": null,
       "interactions": [],
       "indications": [15],
       "side_effects": [],
-      "dci": "IVERMECTINE"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 136,
+      "dci": "PYRANTEL",
+      "skeletal_formule": null,
       "systems": 4,
       "classes": null,
+      "ntr": null,
       "interactions": [],
       "indications": [15],
       "side_effects": [],
-      "dci": "PYRANTEL"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 137,
+      "dci": "METRONIDAZOLE,",
+      "skeletal_formule": null,
       "systems": 4,
       "classes": 48,
+      "ntr": null,
       "interactions": [],
       "indications": [16, 17],
       "side_effects": [],
-      "dci": "METRONIDAZOLE,"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 138,
+      "dci": "ORNIDAZOLE,",
+      "skeletal_formule": null,
       "systems": 4,
       "classes": 48,
+      "ntr": null,
       "interactions": [],
       "indications": [16, 17],
       "side_effects": [],
-      "dci": "ORNIDAZOLE,"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 139,
+      "dci": "SECNIDAZOLE,",
+      "skeletal_formule": null,
       "systems": 4,
       "classes": 48,
+      "ntr": null,
       "interactions": [],
       "indications": [16, 17],
       "side_effects": [],
-      "dci": "SECNIDAZOLE,"
+      "level_easy": null,
+      "level_hard": null
     },
     {
       "id": 140,
+      "dci": "TINIDAZOLE",
+      "skeletal_formule": null,
       "systems": 4,
       "classes": 48,
+      "ntr": null,
       "interactions": [],
       "indications": [16, 17],
       "side_effects": [],
-      "dci": "TINIDAZOLE"
+      "level_easy": null,
+      "level_hard": null
     }
   ]
 }

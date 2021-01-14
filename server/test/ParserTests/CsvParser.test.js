@@ -4,8 +4,11 @@ import chaiHttp from "chai-http";
 import mocha from "mocha";
 const { before } = mocha;
 import fs from "fs";
+import deepEqualAnyOrder from "deep-equal-in-any-order";
 
 chai.use(chaiHttp);
+chai.use(deepEqualAnyOrder);
+
 const { expect } = chai;
 
 import { parseCSV } from "../../modules/CSVParser/Parser.js";
@@ -50,9 +53,7 @@ describe("Test if values are well imported", function () {
         if (!file.snapshot) {
           this.skip();
         }
-        let expectedData = fs.readFileSync(
-          path.resolve(snapshotsPath, file.snapshot)
-        );
+        let expectedData = fs.readFileSync(path.resolve(snapshotsPath, file.snapshot));
         expect(data).to.be.deep.equals(JSON.parse(expectedData));
         done();
       });
@@ -61,40 +62,23 @@ describe("Test if values are well imported", function () {
         it(`Classification : ${classification}`, (done) => {
           const expectedValues = file.expectation[classification];
 
-          const names = getAllClassificationValues(
-            data[classification],
-            toName
-          );
+          const names = getAllClassificationValues(data[classification], toName);
           const ids = getAllClassificationValues(data[classification], toId);
 
           expectNotContainsDuplication(ids, "Unique ids");
 
-          expect(names, "Good number of name").to.have.length(
-            expectedValues.all.length
-          );
-          expect(ids, "Good number of ids").to.have.length(
-            expectedValues.all.length
-          );
+          expect(names, "Good number of name").to.have.length(expectedValues.all.length);
+          expect(ids, "Good number of ids").to.have.length(expectedValues.all.length);
 
-          expectSameContent(
-            expectedValues.all,
-            names,
-            "Values are same than expected"
-          );
+          expect(expectedValues.all, "Values are same than expected").to.be.deep.equalInAnyOrder(names);
 
           for (let expected of expectedValues.contains) {
-            let value = getClassificationValue(
-              data[classification],
-              expected.name
-            );
+            let value = getClassificationValue(data[classification], expected.name);
 
-            expect(value, `Value '${expected.name}' not found.`).to.not.be
-              .undefined;
+            expect(value, `Value '${expected.name}' not found.`).to.not.be.undefined;
 
-            expectSameContent(
-              expected.children,
-              value.children.map(toName),
-              `'${expected.name}' has same children than expected`
+            expect(expected.children, `'${expected.name}' has same children than expected`).to.be.deep.equalInAnyOrder(
+              value.children.map(toName)
             );
           }
 
@@ -114,11 +98,7 @@ describe("Test if values are well imported", function () {
             "Unique ids"
           );
 
-          expectSameContent(
-            expectedNames,
-            values.map((v) => v.name),
-            "Same values"
-          );
+          expect(expectedNames, "Same values").to.be.deep.equalInAnyOrder(values.map((v) => v.name));
 
           done();
         });
@@ -128,55 +108,30 @@ describe("Test if values are well imported", function () {
         it(`Molecule : ${expected.dci}`, (done) => {
           const molecule = getMoleculeByDci(data, expected.dci);
 
-          expect(molecule, `| Molecule not found : ${expected.dci} |`).not
-            .undefined;
+          expect(molecule, `| Molecule not found : ${expected.dci} |`).not.undefined;
 
           for (let classification of ["systems", "classes"]) {
-            const value = getClassificationValue(
-              data[classification],
-              expected[classification]
-            );
+            const value = getClassificationValue(data[classification], expected[classification]);
+            expect(value, `| Class not found : ${expected[classification]} |`).not.undefined;
+            expect(value.id, `| Invalid class |`).equals(molecule[classification]);
+          }
 
-            expect(value, `| Class not found : ${expected[classification]} |`)
-              .not.undefined;
+          for (let property of ["skeletal_formule", "ntr", "level_easy", "level_hard"]) {
+            expect(molecule[property], `| Invalid property ${property} |`).equals(expected[property]);
+          }
 
-            expect(value.id, `| Invalid class |`).equals(
-              molecule[classification]
-            );
+          for (let property of ["indications", "interactions", "side_effects"]) {
+            let expectedValues = expected[property].map((value) => {
+              let found = getPropertyValue(data[property], value);
+              expect(found, `| Invalid value '${value}' for property ${property} |`).not.undefined;
+              return found.id;
+            });
+            expect(molecule[property], `| Invalid property : ${property} |`).deep.equalInAnyOrder(expectedValues);
           }
 
           done();
         });
       }
-
-      // it("Molecules : Intrinsic properties", (done) => {
-      //   let zanamivir = getMoleculeByDci(data, "ZANAMIVIR");
-
-      //   const moleculesDci = data.molecules.map(toDci);
-
-      //   expect(moleculesDci).to.have.length(140);
-      //   expect(containsDuplication(moleculesDci)).to.false;
-      //   expect(zanamivir.level_easy).to.be.equals(0);
-      //   expect(zanamivir.level_hard).to.be.equals(1);
-
-      //   done();
-      // });
-
-      // it("Molecules : Correct classes", (done) => {
-      //   expectMoleculeHasClass(
-      //     data,
-      //     "PIVMECILLINAM",
-      //     "PENICILLINES A LARGE SPECTRE"
-      //   );
-      //   expectMoleculeHasClass(
-      //     data,
-      //     "CEFEPIME",
-      //     "CEPHALOSPORINE DE 3EME GENERATION"
-      //   );
-      //   expectMoleculeHasClass(data, "METHYLENECYCLINE", "TETRACYCLINES");
-
-      //   done();
-      // });
     });
   }
 });
@@ -194,19 +149,7 @@ describe("Tests for errors occurred while parsing an incorrectly formatted file"
  * @param {[]} array
  */
 function expectNotContainsDuplication(array, message = "") {
-  expect(
-    array.length === [...new Set(array)].length,
-    `| ${message} : Array do contains duplications |`
-  ).to.be.true;
-}
-
-function expectSameContent(expected, actual, description = "") {
-  for (let e of expected) {
-    expect(actual).contains(e, `| ${description} : Missing value : '${e}' |`);
-  }
-  for (let e of actual) {
-    expect(expected).contains(e, `| ${description} : Invalid value : '${e}' |`);
-  }
+  expect(array.length === [...new Set(array)].length, `| ${message} : Array do contains duplications |`).to.be.true;
 }
 
 /**
@@ -245,9 +188,7 @@ function getMoleculeByDci(data, dci) {
  * @param {string} name
  */
 function getClassificationValue(classification, name) {
-  return getAllClassificationValues(classification).find(
-    (classe) => classe.name === name
-  );
+  return getAllClassificationValues(classification).find((classe) => classe.name === name);
 }
 
 /**
@@ -259,8 +200,16 @@ function getAllClassificationValues(classification, filter = identity) {
   return flattenClassification(classification).map(filter);
 }
 
+/**
+ * Find a value in a property
+ * @param {{id : number, name : string}[]} property
+ * @param {string} name
+ */
+function getPropertyValue(property, name) {
+  return property.find((value) => value.name === name);
+}
+
 // Filters
 const toId = (object) => object.id;
 const toName = (object) => object.name;
-
 const identity = (e) => e;

@@ -17,42 +17,24 @@ export function parseCSV(filepath, callback) {
 
   const columnsHeader = moleculesMatrix.shift();
 
-  const checker = new HeaderChecker(
-    columnsHeader,
-    ParserSpecifications.columns
-  );
+  const checker = new HeaderChecker(columnsHeader, ParserSpecifications.columns);
   if (!checker.check()) {
     callback(checker.getErrors());
     return;
   }
 
-  const structure = new FileStructure(
-    columnsHeader,
-    ParserSpecifications.columns
-  );
+  const structure = new FileStructure(columnsHeader, ParserSpecifications.columns);
 
-  moleculesMatrix = removeInvalidMoleculeLines(
-    moleculesMatrix,
-    structure.getIndexesFor("dci")[0]
-  );
+  moleculesMatrix = removeInvalidMoleculeLines(moleculesMatrix, structure.getIndexesFor("dci")[0]);
 
   const data = Object.create(null);
 
-  const nonUniqueColumns = ParserSpecifications.columns.filter(
-    (column) => !column.isUnique()
-  );
+  const nonUniqueColumns = ParserSpecifications.columns.filter((column) => !column.isUnique());
 
   for (let column of nonUniqueColumns) {
-    const creator = column.isHierarchical()
-      ? Classification.create
-      : Property.create;
+    const creator = column.isHierarchical() ? Classification.create : Property.create;
 
-    data[column.property] = creator(
-      extractColumns(
-        moleculesMatrix,
-        ...structure.getIndexesFor(column.property)
-      )
-    );
+    data[column.property] = creator(extractColumns(moleculesMatrix, ...structure.getIndexesFor(column.property)));
   }
 
   data.molecules = MoleculeList.create(moleculesMatrix, structure, data);
@@ -88,11 +70,7 @@ function readCsvFile(filepath) {
  * @returns {[][]}
  */
 function cleanUpStringsInMatrix(matrix) {
-  return matrix.map((row) =>
-    row.map((value) =>
-      isString(value) ? removeSuccessiveWhiteSpaces(value) : value
-    )
-  );
+  return matrix.map((row) => row.map((value) => (isString(value) ? removeSuccessiveWhiteSpaces(value) : value)));
 }
 
 /**

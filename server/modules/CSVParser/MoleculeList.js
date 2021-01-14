@@ -16,9 +16,7 @@ function create(matrix, structure, data) {
   const list = [];
   let id = 1;
 
-  matrix.forEach((row) =>
-    list.push(createMolecule(id++, row, structure, data))
-  );
+  matrix.forEach((row) => list.push(createMolecule(id++, row, structure, data)));
   return list;
 }
 
@@ -36,23 +34,15 @@ function createMolecule(id, row, structure, data) {
   structure.getColumnsSpecifications().forEach((column) => {
     const property = column.property;
     if (column.isUnique()) {
-      molecule[property] = row[structure.getIndexesFor(property)];
+      molecule[property] = row[structure.getIndexesFor(property)] || null;
     }
     if (column.isMultiValued()) {
       const indexes = structure.getIndexesFor(property);
-      molecule[property] = getMultiValuedPropertyIDs(
-        row,
-        indexes,
-        data[property]
-      );
+      molecule[property] = getMultiValuedPropertyIDs(row, indexes, data[property]) || null;
     }
     if (column.isHierarchical()) {
       const indexes = structure.getIndexesFor(property);
-      molecule[property] = getClassificationNodeID(
-        row,
-        indexes,
-        data[property]
-      );
+      molecule[property] = getClassificationNodeID(row, indexes, data[property]) || null;
     }
   });
   return molecule;
