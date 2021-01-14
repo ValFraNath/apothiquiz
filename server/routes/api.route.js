@@ -13,7 +13,7 @@ apiRouter.get("/question/:type", QuestionController.generateQuestion);
 
 apiRouter.post("/user/login", UserController.login);
 
-apiRouter.get("/user/:pseudo", UserController.getInfos); // TODO add auth
+apiRouter.get("/user/:pseudo", auth, UserController.getInfos);
 
 apiRouter.patch("/user/:pseudo", auth, UserController.saveInfos);
 
