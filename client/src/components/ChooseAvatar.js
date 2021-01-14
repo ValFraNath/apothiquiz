@@ -1,5 +1,8 @@
 import React, { Component } from "react";
 import PropTypes from "proptypes";
+import axios from "axios";
+
+import AuthService from "../services/auth.service";
 
 const NUMBER_OF_EYES = 5;
 const NUMBER_OF_HANDS = 5;
@@ -70,19 +73,26 @@ export default class ChooseAvatar extends Component {
     this.props.handleInputHands(Math.round(Math.random() * NUMBER_OF_HANDS));
     this.props.handleInputHat(Math.round(Math.random() * NUMBER_OF_HATS));
     this.props.handleInputMouth(Math.round(Math.random() * NUMBER_OF_MOUTHES));
-    this.props.handleInputColorBody(
-      "#" + (((1 << 24) * Math.random()) | 0).toString(16)
-    );
-    this.props.handleInputColorBG(
-      "#" + (((1 << 24) * Math.random()) | 0).toString(16)
-    );
+    this.props.handleInputColorBody("#" + (((1 << 24) * Math.random()) | 0).toString(16));
+    this.props.handleInputColorBG("#" + (((1 << 24) * Math.random()) | 0).toString(16));
   };
 
-  saveAvatar = () => {
+  handleSaveAvatar = () => {
     this.setState({ modified: "saving" });
 
-    // TODO Send to backend
-    console.error(" Impossible d'enregistrer pour le moment");
+    const pseudo = AuthService.getCurrentUser().pseudo;
+    console.debug(pseudo);
+    axios
+      .patch(`/api/v1/user/${pseudo}`, { avatar: "loldede" })
+      .then((res) => {
+        console.log(res);
+        this.setState({ modified: "saved" });
+      })
+      .catch((error) => {
+        console.error(error);
+        this.setState({ message: "Erreur lors de la requête. Veuillez réessayer plus tard" });
+        this.setState({ modified: "modified" });
+      });
   };
 
   render() {
@@ -149,22 +159,15 @@ export default class ChooseAvatar extends Component {
           }}
         />
 
-        <button
-          onClick={this.randomAvatar}
-          disabled={this.state.modified === "saving"}
-        >
+        <button onClick={this.randomAvatar} disabled={this.state.modified === "saving"}>
           Avatar aléatoire
         </button>
 
         <button
-          onClick={this.saveAvatar}
+          onClick={this.handleSaveAvatar}
           style={{
             backgroundColor:
-              this.state.modified === "saved"
-                ? "green"
-                : this.state.modified === "saving"
-                ? "blue"
-                : "red",
+              this.state.modified === "saved" ? "green" : this.state.modified === "saving" ? "blue" : "red",
           }}
           disabled={this.state.modified === "saved"}
         >
@@ -172,6 +175,8 @@ export default class ChooseAvatar extends Component {
           {this.state.modified === "saving" && "Sauvegarde en cours..."}
           {this.state.modified === "modified" && "Valider l'avatar"}
         </button>
+
+        {this.state.message !== null && <span className="error">{this.state.message}</span>}
       </div>
     );
   }

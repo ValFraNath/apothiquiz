@@ -17,13 +17,7 @@ const Avatar = function (props) {
       }}
     >
       <div className="avatar-inside" style={{ backgroundColor: props.colorBG }}>
-        <img
-          className="avatar-eyes"
-          style={{ zIndex: 2 }}
-          src={ImageEyes}
-          data-choice={props.eyes}
-          alt="Avatar eyes"
-        />
+        <img className="avatar-eyes" style={{ zIndex: 2 }} src={ImageEyes} data-choice={props.eyes} alt="Avatar eyes" />
         <img
           className="avatar-hands"
           style={{ zIndex: 4 }}
@@ -31,13 +25,7 @@ const Avatar = function (props) {
           data-choice={props.hands}
           alt="Avatar hands"
         />
-        <img
-          className="avatar-hat"
-          style={{ zIndex: 3 }}
-          src={ImageHats}
-          data-choice={props.hat}
-          alt="Avatar hat"
-        />
+        <img className="avatar-hat" style={{ zIndex: 3 }} src={ImageHats} data-choice={props.hat} alt="Avatar hat" />
         <img
           className="avatar-mouth"
           style={{ zIndex: 2 }}
@@ -45,12 +33,7 @@ const Avatar = function (props) {
           data-choice={props.mouth}
           alt="Avatar mouth"
         />
-        <img
-          className="avatar-body"
-          style={{ zIndex: 1 }}
-          src={ImageBody}
-          alt="Avatar body"
-        />
+        <img className="avatar-body" style={{ zIndex: 1 }} src={ImageBody} alt="Avatar body" />
         <svg
           className="avatar-background"
           style={{ zIndex: 0 }}

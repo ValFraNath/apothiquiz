@@ -11,8 +11,10 @@ apiRouter.get("/status", ApiController.status);
 
 apiRouter.get("/question/:type", QuestionController.generateQuestion);
 
-apiRouter.get("/user", auth, UserController.getInfos);
-
 apiRouter.post("/user/login", UserController.login);
+
+apiRouter.get("/user/:pseudo", UserController.getInfos); // TODO add auth
+
+apiRouter.patch("/user/:pseudo", auth, UserController.saveInfos);
 
 export default apiRouter;

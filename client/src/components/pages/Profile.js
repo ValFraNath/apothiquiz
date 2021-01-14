@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import axios from "axios";
 
 import AuthService from "../../services/auth.service";
 import Avatar from "../Avatar";
@@ -9,28 +8,17 @@ export default class Profile extends Component {
   constructor(props) {
     super(props);
 
+    // TODO get values from profile
     this.state = {
       message: "",
       choiceEyes: 0,
       choiceHands: 0,
       choiceHat: 0,
       choiceMouth: 0,
-      choiceColorBody: "#0c04fc",
-      choiceColorBG: "lightgrey",
+      choiceColorBody: "#0c04fc", // blue
+      choiceColorBG: "#D3D3D3", // lightgray
     };
   }
-
-  handleButtonClick = () => {
-    axios
-      .get("/api/v1/user")
-      .then((res) => {
-        this.setState({ message: res.data.pseudo });
-      })
-      .catch((error) => {
-        console.error(error);
-        this.setState({ message: "Erreur lors de la requête" });
-      });
-  };
 
   handleLogoutClick = () => {
     AuthService.logout();
@@ -41,10 +29,6 @@ export default class Profile extends Component {
     return (
       <main id="profile">
         <button onClick={this.handleLogoutClick}>Me déconnecter</button>
-
-        <button onClick={this.handleButtonClick}>Who am I ? </button>
-
-        <span>{this.state.message !== null && this.state.message}</span>
 
         <Avatar
           size="256px"
@@ -105,19 +89,11 @@ export default class Profile extends Component {
           choiceMouth={this.state.choiceMouth}
           choiceColorBody={this.state.choiceColorBody}
           choiceColorBG={this.state.choiceColorBG}
-          handleInputEyes={(val) =>
-            this.setState({ choiceEyes: parseInt(val) })
-          }
-          handleInputHands={(val) =>
-            this.setState({ choiceHands: parseInt(val) })
-          }
+          handleInputEyes={(val) => this.setState({ choiceEyes: parseInt(val) })}
+          handleInputHands={(val) => this.setState({ choiceHands: parseInt(val) })}
           handleInputHat={(val) => this.setState({ choiceHat: parseInt(val) })}
-          handleInputMouth={(val) =>
-            this.setState({ choiceMouth: parseInt(val) })
-          }
-          handleInputColorBody={(val) =>
-            this.setState({ choiceColorBody: val })
-          }
+          handleInputMouth={(val) => this.setState({ choiceMouth: parseInt(val) })}
+          handleInputColorBody={(val) => this.setState({ choiceColorBody: val })}
           handleInputColorBG={(val) => this.setState({ choiceColorBG: val })}
         />
       </main>

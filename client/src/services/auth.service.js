@@ -2,6 +2,8 @@ import axios from "axios";
 
 const AuthService = {};
 
+const LOCAL_STORAGE_KEY = "user_informations";
+
 AuthService.login = async function (pseudo, password) {
   return new Promise((resolve, reject) => {
     axios
@@ -13,7 +15,7 @@ AuthService.login = async function (pseudo, password) {
         const { token } = res.data;
         if (token) {
           localStorage.setItem(
-            "user",
+            LOCAL_STORAGE_KEY,
             JSON.stringify({
               pseudo,
               token,
@@ -29,11 +31,11 @@ AuthService.login = async function (pseudo, password) {
 };
 
 AuthService.logout = function () {
-  localStorage.removeItem("user");
+  localStorage.removeItem(LOCAL_STORAGE_KEY);
 };
 
 AuthService.getCurrentUser = function () {
-  return JSON.parse(localStorage.getItem("user"));
+  return JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
 };
 
 export default AuthService;
