@@ -21,7 +21,7 @@ function create(matrix) {
 
 /**
  * Find a property value by its name
- * and returns its ID.
+ * and return its ID.
  * @param {{id : number,name : string}[]} property
  * @param {string} name
  * @return {number|null}
