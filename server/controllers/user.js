@@ -91,21 +91,14 @@ User.saveInfos = async function (req, res) {
 
   getUserInformations(user)
     .then((infos) => {
-      infos = {
-        pseudo: false || infos.pseudo,
-        wins: false || infos.wins,
-        losses: false || infos.losses,
-        avatar: avatar || infos.avatar,
-      };
+      infos.avatar = avatar || infos.avatar;
 
-      queryPromise(
-        "UPDATE user        \
-      SET us_wins = ?,    \
-      us_losts = ?, \
-      us_avatar = ? \
-      WHERE us_login = ?;",
-        [infos.wins, infos.losses, JSON.stringify(infos.avatar), infos.pseudo]
-      )
+      queryPromise("UPDATE user        \
+      SET us_avatar = ? \
+      WHERE us_login = ?;", [
+        JSON.stringify(infos.avatar),
+        infos.pseudo,
+      ])
         .then(() => res.status(200).json(infos))
         .catch((err) => {
           console.error(err);

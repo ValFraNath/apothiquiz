@@ -77,7 +77,7 @@ class ChooseAvatar extends Component {
 
   handleSaveAvatar = () => {
     this.setState({ avatarChooserState: "saving" });
-    
+
     axios
       .patch(`/api/v1/user/me`, {
         avatar: {
