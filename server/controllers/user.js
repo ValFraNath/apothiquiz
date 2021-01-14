@@ -24,10 +24,7 @@ User.login = function (req, res) {
         if (queryCAS(userPseudo, userPassword)) {
           res.status(200).json({
             pseudo: userPseudo,
-            token: jwt.sign(
-              { pseudo: userPseudo },
-              process.env.TOKEN_PRIVATE_KEY
-            ),
+            token: jwt.sign({ pseudo: userPseudo }, process.env.TOKEN_PRIVATE_KEY),
           });
         } else {
           res.status(401).json({
