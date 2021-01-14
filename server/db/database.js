@@ -10,7 +10,7 @@ dotenv.config();
 const Database = {};
 
 // Be sure to add a new version at the end of this array (it must be sorted)
-const versions = ["2021-01-08"];
+const versions = ["2021-01-08", "2021-01-14"];
 
 Database.currentAPIVersion = () => versions[versions.length - 1];
 
@@ -102,10 +102,10 @@ Database.update = async function (version = versions[0]) {
       )
       .toString("utf8");
 
-    console.log(`Update database from ${versions[i - 1]} to ${versions[i]}... `);
+    console.info(`Update database from ${versions[i - 1]} to ${versions[i]}... `);
 
     await queryPromise(updateQuery)
-      .then(() => console.log("-> Database updated!\n"))
+      .then(() => console.info("-> Database updated!\n"))
       .catch((err) => {
         throw err;
       });
