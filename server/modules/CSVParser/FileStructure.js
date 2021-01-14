@@ -2,7 +2,7 @@
 import { ColumnSpecifications } from "./ParserSpecifications.js";
 
 /**
- * Class representing the structure of the CSV file, i.e. which columns correspond to which property.
+ * Class representing the structure of the CSV file, i.e. which column correspond to which property.
  */
 export default class FileStructure {
   /**
