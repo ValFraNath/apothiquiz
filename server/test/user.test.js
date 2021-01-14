@@ -227,11 +227,43 @@ describe("Update user informations", function () {
       });
   });
 
+  it("Update bad avatar (not object)", function (done) {
+    chai
+      .request(app)
+      .patch("/api/v1/user/fpoguet")
+      .send({ avatar: "this-is-not-an-avatar" })
+      .set("Authorization", token)
+      .end((err, res) => {
+        if (err) {
+          throw err;
+        }
+        expect(res.status, res.error).to.be.equal(400);
+
+        done();
+      });
+  });
+
+  it("Update bad avatar (missing field)", function (done) {
+    chai
+      .request(app)
+      .patch("/api/v1/user/fpoguet")
+      .send({ avatar: { colorBG: "#ffffff", colorBody: "#dedede", eyes: 0, hands: 0, hat: 0 } }) // missing an information
+      .set("Authorization", token)
+      .end((err, res) => {
+        if (err) {
+          throw err;
+        }
+        expect(res.status, res.error).to.be.equal(400);
+
+        done();
+      });
+  });
+
   it("Update my avatar with /pseudo route", function (done) {
     chai
       .request(app)
       .patch("/api/v1/user/fpoguet")
-      .send({ avatar: "newAvatar" })
+      .send({ avatar: { colorBG: "#ffffff", colorBody: "#dedede", eyes: 0, hands: 0, hat: 0, mouth: 0 } })
       .set("Authorization", token)
       .end((err, res) => {
         if (err) {
@@ -243,7 +275,14 @@ describe("Update user informations", function () {
         expect(Object.keys(res.body)).to.contains("losses");
         expect(Object.keys(res.body)).to.contains("wins");
         expect(Object.keys(res.body)).to.contains("avatar");
-        expect(res.body.avatar).to.be.equal("newAvatar");
+        expect(res.body.avatar).to.be.deep.equal({
+          colorBG: "#ffffff",
+          colorBody: "#dedede",
+          eyes: 0,
+          hands: 0,
+          hat: 0,
+          mouth: 0,
+        });
         done();
       });
   });
@@ -252,7 +291,7 @@ describe("Update user informations", function () {
     chai
       .request(app)
       .patch("/api/v1/user/me")
-      .send({ avatar: "evenNewAvatar" })
+      .send({ avatar: { colorBG: "#158233", colorBody: "#9F7F53", eyes: 0, hands: 0, hat: 0, mouth: 0 } })
       .set("Authorization", token)
       .end((err, res) => {
         if (err) {
@@ -264,7 +303,14 @@ describe("Update user informations", function () {
         expect(Object.keys(res.body)).to.contains("losses");
         expect(Object.keys(res.body)).to.contains("wins");
         expect(Object.keys(res.body)).to.contains("avatar");
-        expect(res.body.avatar).to.be.equal("evenNewAvatar");
+        expect(res.body.avatar).to.be.deep.equal({
+          colorBG: "#158233",
+          colorBody: "#9F7F53",
+          eyes: 0,
+          hands: 0,
+          hat: 0,
+          mouth: 0,
+        });
         done();
       });
   });
@@ -285,7 +331,14 @@ describe("Update user informations", function () {
         expect(Object.keys(res.body)).to.contains("losses");
         expect(Object.keys(res.body)).to.contains("wins");
         expect(Object.keys(res.body)).to.contains("avatar");
-        expect(res.body.avatar).to.be.equal("evenNewAvatar");
+        expect(res.body.avatar).to.be.deep.equal({
+          colorBG: "#158233",
+          colorBody: "#9F7F53",
+          eyes: 0,
+          hands: 0,
+          hat: 0,
+          mouth: 0,
+        });
         done();
       });
   });

@@ -77,17 +77,17 @@ class ChooseAvatar extends Component {
 
   handleSaveAvatar = () => {
     this.setState({ avatarChooserState: "saving" });
-
+    
     axios
       .patch(`/api/v1/user/me`, {
-        avatar: JSON.stringify({
+        avatar: {
           eyes: this.props.choiceEyes,
           hands: this.props.choiceHands,
           hat: this.props.choiceHat,
           mouth: this.props.choiceMouth,
           colorBody: this.props.choiceColorBody,
           colorBG: this.props.choiceColorBG,
-        }),
+        },
       })
       .then((res) => {
         this.setState({ avatarChooserState: "saved", message: "" });

@@ -24,7 +24,7 @@ export default class Profile extends Component {
     axios
       .get(`/api/v1/user/me`)
       .then((res) => {
-        const avatar = JSON.parse(res.data.avatar);
+        const avatar = res.data.avatar;
         this.setState({
           choiceEyes: avatar.eyes,
           choiceHands: avatar.hands,

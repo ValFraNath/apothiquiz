@@ -70,7 +70,9 @@ User.saveInfos = async function (req, res) {
   if (req.body.auth_user != user) {
     // TODO? Add admin ?
     res.status(403).json({ error: "Not allowed" });
+    return;
   }
+
   const { avatar } = req.body;
 
   if (!avatar && true) {
@@ -79,10 +81,15 @@ User.saveInfos = async function (req, res) {
     return;
   }
 
+  if (avatar) {
+    const wantedProperties = ["colorBG", "eyes", "hands", "hat", "mouth", "colorBody"];
+    if (!wantedProperties.every((p) => Object.prototype.hasOwnProperty.call(avatar, p))) {
+      res.status(400).json({ error: "Bad request" });
+      return;
+    }
+  }
+
   getUserInformations(user)
-    .catch((error) => {
-      res.status(404).json({ error: error });
-    })
     .then((infos) => {
       infos = {
         pseudo: false || infos.pseudo,
@@ -93,17 +100,20 @@ User.saveInfos = async function (req, res) {
 
       queryPromise(
         "UPDATE user        \
-        SET us_wins = ?,    \
-              us_losts = ?, \
-              us_avatar = ? \
-        WHERE us_login = ?;",
-        [infos.wins, infos.losses, infos.avatar, infos.pseudo]
+      SET us_wins = ?,    \
+      us_losts = ?, \
+      us_avatar = ? \
+      WHERE us_login = ?;",
+        [infos.wins, infos.losses, JSON.stringify(infos.avatar), infos.pseudo]
       )
         .then(() => res.status(200).json(infos))
         .catch((err) => {
           console.error(err);
           res.status(500).json({ error: "Server side error" });
         });
+    })
+    .catch((error) => {
+      res.status(404).json({ error: error });
     });
 };
 
@@ -139,9 +149,10 @@ async function getUserInformations(pseudo) {
             pseudo: res[0].pseudo,
             wins: Number(res[0].wins),
             losses: Number(res[0].losses),
-            avatar: res[0].avatar,
+            avatar: JSON.parse(res[0].avatar),
           };
         } catch (e) {
+          console.error(e);
           reject("bad mysql response format");
           return;
         }
