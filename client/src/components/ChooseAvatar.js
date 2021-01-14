@@ -81,17 +81,19 @@ export default class ChooseAvatar extends Component {
     this.setState({ modified: "saving" });
 
     const pseudo = AuthService.getCurrentUser().pseudo;
-    console.debug(pseudo);
+
     axios
       .patch(`/api/v1/user/${pseudo}`, { avatar: "loldede" })
       .then((res) => {
         console.log(res);
-        this.setState({ modified: "saved" });
+        this.setState({ modified: "saved", message: "" });
       })
       .catch((error) => {
         console.error(error);
-        this.setState({ message: "Erreur lors de la requête. Veuillez réessayer plus tard" });
-        this.setState({ modified: "modified" });
+        this.setState({
+          message: "Erreur lors de la requête. Veuillez réessayer plus tard",
+          modified: "modified",
+        });
       });
   };
 
@@ -108,6 +110,7 @@ export default class ChooseAvatar extends Component {
             this.props.handleInputEyes(ev);
           }}
         />
+
         <label htmlFor="hands">Mains</label>
         <Select
           name="hands"
@@ -118,6 +121,7 @@ export default class ChooseAvatar extends Component {
             this.props.handleInputHands(ev);
           }}
         />
+
         <label htmlFor="hat">Chapeau</label>
         <Select
           name="hat"
@@ -128,6 +132,7 @@ export default class ChooseAvatar extends Component {
             this.props.handleInputHat(ev);
           }}
         />
+
         <label htmlFor="mouth">Bouche</label>
         <Select
           name="mouth"
