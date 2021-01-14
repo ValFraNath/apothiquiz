@@ -61,48 +61,6 @@ export default class Profile extends Component {
           colorBG={this.state.choiceColorBG}
         />
 
-        <div id="avatar-previews">
-          <Avatar
-            size="50px"
-            eyes={this.state.choiceEyes}
-            hands={this.state.choiceHands}
-            hat={this.state.choiceHat}
-            mouth={this.state.choiceMouth}
-            colorBody={this.state.choiceColorBody}
-            colorBG={this.state.choiceColorBG}
-          />
-
-          <Avatar
-            size="70px"
-            eyes={this.state.choiceEyes}
-            hands={this.state.choiceHands}
-            hat={this.state.choiceHat}
-            mouth={this.state.choiceMouth}
-            colorBody={this.state.choiceColorBody}
-            colorBG={this.state.choiceColorBG}
-          />
-
-          <Avatar
-            size="90px"
-            eyes={this.state.choiceEyes}
-            hands={this.state.choiceHands}
-            hat={this.state.choiceHat}
-            mouth={this.state.choiceMouth}
-            colorBody={this.state.choiceColorBody}
-            colorBG={this.state.choiceColorBG}
-          />
-
-          <Avatar
-            size="110px"
-            eyes={this.state.choiceEyes}
-            hands={this.state.choiceHands}
-            hat={this.state.choiceHat}
-            mouth={this.state.choiceMouth}
-            colorBody={this.state.choiceColorBody}
-            colorBG={this.state.choiceColorBG}
-          />
-        </div>
-
         <ChooseAvatar
           choiceEyes={this.state.choiceEyes}
           choiceHands={this.state.choiceHands}

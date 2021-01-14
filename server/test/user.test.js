@@ -90,7 +90,7 @@ describe("User login", function () {
 });
 
 describe("Get user informations", function () {
-  var token;
+  let token;
   this.beforeAll(function (done) {
     // Authenticate
     chai
@@ -186,7 +186,7 @@ describe("Get user informations", function () {
 });
 
 describe("Update user informations", function () {
-  var token;
+  let token;
 
   this.beforeAll(function (done) {
     // Authenticate

@@ -8,29 +8,27 @@ const NUMBER_OF_HANDS = 5;
 const NUMBER_OF_HATS = 5;
 const NUMBER_OF_MOUTHES = 5;
 
-class Select extends Component {
-  render() {
-    const options = [];
-    for (let i = 0; i < this.props.maxValue; ++i) {
-      options.push(
-        <option key={i} value={i}>
-          {i}
-        </option>
-      );
-    }
-    return (
-      <select
-        name={this.props.name}
-        value={this.props.value}
-        onChange={(event) => {
-          this.props.onValueChange(event.target.value);
-        }}
-      >
-        {options}
-      </select>
+const Select = (props) => {
+  const options = [];
+  for (let i = 0; i < props.maxValue; ++i) {
+    options.push(
+      <option key={i} value={i}>
+        {i}
+      </option>
     );
   }
-}
+  return (
+    <select
+      name={props.name}
+      value={props.value}
+      onChange={(event) => {
+        props.onValueChange(event.target.value);
+      }}
+    >
+      {options}
+    </select>
+  );
+};
 
 Select.propTypes = {
   name: PropTypes.string.isRequired,
@@ -39,20 +37,18 @@ Select.propTypes = {
   onValueChange: PropTypes.func.isRequired,
 };
 
-class InputColor extends Component {
-  render() {
-    return (
-      <input
-        name={this.props.name}
-        type="color"
-        value={this.props.value}
-        onChange={(event) => {
-          this.props.onValueChange(event.target.value);
-        }}
-      />
-    );
-  }
-}
+const InputColor = (props) => {
+  return (
+    <input
+      name={props.name}
+      type="color"
+      value={props.value}
+      onChange={(event) => {
+        props.onValueChange(event.target.value);
+      }}
+    />
+  );
+};
 
 InputColor.propTypes = {
   name: PropTypes.string.isRequired,
