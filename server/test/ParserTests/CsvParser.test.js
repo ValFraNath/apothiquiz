@@ -2,26 +2,24 @@ import path from "path";
 import chai from "chai";
 import chaiHttp from "chai-http";
 import mocha from "mocha";
-const { before } = mocha;
 import fs from "fs";
 import deepEqualAnyOrder from "deep-equal-in-any-order";
 
-chai.use(chaiHttp);
-chai.use(deepEqualAnyOrder);
-
-const { expect } = chai;
-
 import { parseCSV } from "../../modules/CSVParser/Parser.js";
 import { expectations } from "./expectations.js";
-
 // eslint-disable-next-line no-unused-vars
 import { ClassificationNode } from "../../modules/CSVParser/MoleculesClassification.js";
 
-const filesPath = path.resolve("test", "ParserTests", "CSVFiles");
-const snapshotsPath = path.resolve("test", "ParserTests", "snapshots");
+chai.use(chaiHttp);
+chai.use(deepEqualAnyOrder);
+const { before } = mocha;
+const { expect } = chai;
+
+const CSVFolderPath = path.resolve("test", "ParserTests", "CSVFiles");
+const snapshotsFolderPath = path.resolve("test", "ParserTests", "snapshots");
 
 describe("Test if values are well imported", function () {
-  const files_ok = [
+  const files = [
     {
       name: "molecules.xlsx",
       snapshot: "molecules.json",
@@ -34,12 +32,12 @@ describe("Test if values are well imported", function () {
     },
   ];
 
-  for (let file of files_ok) {
+  for (let file of files) {
     describe(`File : ${file.name}`, () => {
       let data;
 
       before("Import data", (done) => {
-        parseCSV(path.resolve(filesPath, file.name), (errors, json) => {
+        parseCSV(path.resolve(CSVFolderPath, file.name), (errors, json) => {
           if (errors) {
             console.table(errors);
           } else {
@@ -53,7 +51,7 @@ describe("Test if values are well imported", function () {
         if (!file.snapshot) {
           this.skip();
         }
-        let expectedData = fs.readFileSync(path.resolve(snapshotsPath, file.snapshot));
+        let expectedData = fs.readFileSync(path.resolve(snapshotsFolderPath, file.snapshot));
         expect(data).to.be.deep.equals(JSON.parse(expectedData));
         done();
       });
@@ -72,7 +70,7 @@ describe("Test if values are well imported", function () {
 
           expect(expectedValues.all, "Values are same than expected").to.be.deep.equalInAnyOrder(names);
 
-          for (let expected of expectedValues.contains) {
+          for (let expected of expectedValues.nodes) {
             let value = getClassificationValue(data[classification], expected.name);
 
             expect(value, `Value '${expected.name}' not found.`).to.not.be.undefined;

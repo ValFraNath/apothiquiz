@@ -1,3 +1,19 @@
+/**
+ * Here is the expected data for the imported files that we want to test.
+ * Each key of this object is an expectation object ( as we can test several files, we can have several expectations objects )
+ * in which each key is a classification, a property or a molecules list.
+ *
+ * For classifications (classes & systems) object :
+ * - all :  the complete (!) list of names of classification values
+ * - nodes : A sample of classification values, a node must consist of a name and the list of names of its children
+ *
+ * Properties consist of a list of values (names only).
+ *
+ * The list of molecules contains a sample of molecules that we want to test.
+ * A molecule must have a key for each classification and property (can be null),
+ * and values are strings or an array of strings
+ *
+ */
 export const expectations = {
   first_version: {
     classes: {
@@ -51,7 +67,7 @@ export const expectations = {
         "BENZIMIDAZOLES",
         "5-NITRO-IMIDAZOLES",
       ],
-      contains: [
+      nodes: [
         {
           name: "ANALOGUES NUCLEOSIDIQUES",
           children: ["INTI (INHIBITEURS NUCLEOSIDIQUES TRANSCRIPTASE INVERSE)"],
@@ -60,7 +76,7 @@ export const expectations = {
     },
     systems: {
       all: ["ANTIINFECTIEUX", "ANTIPARASITAIRE", "ANTIBIOTIQUE", "ANTIVIRAL"],
-      contains: [
+      nodes: [
         {
           name: "ANTIINFECTIEUX",
           children: ["ANTIVIRAL", "ANTIBIOTIQUE", "ANTIPARASITAIRE"],
