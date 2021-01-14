@@ -114,12 +114,13 @@ Database.update = async function (version = versions[0]) {
 
 /**
  * Execute a query to database and return a Promise
- * @param sql The sql query
+ * @param {String} sql The sql query
+ * @param {Array<String>|Object} values? optional values to be given put into the request placeholders
  * @return {Promise<Array>} The result if success, the error otherwise
  */
-export async function queryPromise(sql) {
+export async function queryPromise(sql, values) {
   return new Promise(function (resolve, reject) {
-    Database.connection.query(sql, function (err, res) {
+    Database.connection.query(sql, values, function (err, res) {
       if (err) {
         reject(err);
       }

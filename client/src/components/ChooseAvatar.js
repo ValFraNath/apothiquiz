@@ -83,7 +83,16 @@ export default class ChooseAvatar extends Component {
     const pseudo = AuthService.getCurrentUser().pseudo;
 
     axios
-      .patch(`/api/v1/user/${pseudo}`, { avatar: "loldede" })
+      .patch(`/api/v1/user/${pseudo}`, {
+        avatar: JSON.stringify({
+          eyes: this.props.choiceEyes,
+          hands: this.props.choiceHands,
+          hat: this.props.choiceHat,
+          mouth: this.props.choiceMouth,
+          colorBody: this.props.choiceColorBody,
+          colorBG: this.props.choiceColorBG,
+        }),
+      })
       .then((res) => {
         console.log(res);
         this.setState({ modified: "saved", message: "" });

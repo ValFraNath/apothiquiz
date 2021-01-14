@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import axios from "axios";
 
 import AuthService from "../../services/auth.service";
 import Avatar from "../Avatar";
@@ -8,7 +9,6 @@ export default class Profile extends Component {
   constructor(props) {
     super(props);
 
-    // TODO get values from profile
     this.state = {
       message: "",
       choiceEyes: 0,
@@ -18,6 +18,28 @@ export default class Profile extends Component {
       choiceColorBody: "#0c04fc", // blue
       choiceColorBG: "#D3D3D3", // lightgray
     };
+  }
+
+  componentDidMount() {
+    const pseudo = AuthService.getCurrentUser().pseudo;
+    axios
+      .get(`/api/v1/user/${pseudo}`)
+      .then((res) => {
+        const avatar = JSON.parse(res.data.avatar);
+        this.setState({
+          choiceEyes: avatar.eyes,
+          choiceHands: avatar.hands,
+          choiceHat: avatar.hat,
+          choiceMouth: avatar.mouth,
+          choiceColorBody: avatar.colorBody,
+          choiceColorBG: avatar.colorBG,
+        });
+      })
+      .catch((error) => {
+        // TODO show message
+        console.error(error);
+        return;
+      });
   }
 
   handleLogoutClick = () => {

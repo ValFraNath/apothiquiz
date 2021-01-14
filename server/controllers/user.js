@@ -85,14 +85,14 @@ User.saveInfos = async function (req, res) {
         avatar: avatar || infos.avatar,
       };
 
-      const sqlUpdateUser = `
-      UPDATE user 
-      SET us_wins = ${infos.wins},
-            us_losts = ${infos.losses},
-            us_avatar = "${infos.avatar}"
-      WHERE us_login = "${infos.pseudo}";`;
-
-      queryPromise(sqlUpdateUser)
+      queryPromise(
+        "UPDATE user        \
+        SET us_wins = ?,    \
+              us_losts = ?, \
+              us_avatar = ? \
+        WHERE us_login = ?;",
+        [infos.wins, infos.losses, infos.avatar, infos.pseudo]
+      )
         .then(() => res.status(200).json(infos))
         .catch((err) => {
           console.error(err);
@@ -107,16 +107,17 @@ User.saveInfos = async function (req, res) {
  * @return {Object|null} user informations or null if user not found
  */
 async function getUserInformations(pseudo) {
-  const sql = `SELECT 
-      us_login AS pseudo, 
-      us_wins AS wins, 
-      us_losts AS losses, 
-      us_avatar AS avatar 
-    FROM user
-    WHERE \`us_login\` = "${pseudo}"`;
-
   return new Promise(function (resolve, reject) {
-    queryPromise(sql)
+    queryPromise(
+      "SELECT \
+        us_login AS pseudo, \
+        us_wins AS wins,    \
+        us_losts AS losses, \
+        us_avatar AS avatar \
+      FROM user             \
+      WHERE `us_login` = ?",
+      [pseudo]
+    )
       .catch((error) => {
         reject("Error", error);
       })
