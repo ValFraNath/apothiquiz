@@ -42,7 +42,6 @@ export default class HeaderChecker {
   }
 }
 
-// TODO improve erros by adding code + french message
 export class HeaderError extends Error {
   /**
    * Create an Error
@@ -76,7 +75,9 @@ export class HeaderError extends Error {
 
     messages[
       HeaderError.BAD_HIERARCHICAL_COLUMNS_ORDER
-    ] = `Niveau de hiérachisation non respecté : ${title} (col. ${index})`;
+    ] = `Niveaux de hiérachisation non respectés : ${title} (col. ${index})`;
+
+    return messages[code];
   }
 }
 
@@ -174,7 +175,7 @@ function checkInvalidColumns(header, columnsSpecifications) {
  */
 function checkDuplicateUniqueColumns(header, columnsSpecifications) {
   const errors = [];
-  let uniqueColumnTitles = columnsSpecifications.filter((column) => column.isUnique()).map((column) => column.title);
+  const uniqueColumnTitles = columnsSpecifications.filter((column) => column.isUnique()).map((column) => column.title);
 
   let checkedColumns = [];
 
@@ -198,7 +199,7 @@ function checkDuplicateUniqueColumns(header, columnsSpecifications) {
  */
 function checkHierarchicalColumnsOrder(header, columnsSpecifications) {
   const errors = [];
-  let hierarchicalColumns = columnsSpecifications.filter((column) => column.isHierarchical());
+  const hierarchicalColumns = columnsSpecifications.filter((column) => column.isHierarchical());
 
   let currentGroup;
   let level;
