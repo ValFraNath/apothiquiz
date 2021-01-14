@@ -15,10 +15,7 @@
       --x: 0;
       width: 90%;
       position: fixed;
-
-      &:not(.avatar-background) {
-        margin-top: calc(-90% * var(--x));
-      }
+      margin-top: calc(-90% * var(--x));
     }
 
     img[data-choice="1"] {
@@ -35,6 +32,25 @@
 
     img[data-choice="4"] {
       --x: 4;
+    }
+
+    .avatar-eyes {
+      z-index: 2;
+    }
+    .avatar-hands {
+      z-index: 4;
+    }
+    .avatar-hat {
+      z-index: 3;
+    }
+    .avatar-mouth {
+      z-index: 2;
+    }
+    .avatar-body-top {
+      z-index: 1;
+    }
+    .avatar-body-bottom {
+      z-index: 0;
     }
   }
 }
