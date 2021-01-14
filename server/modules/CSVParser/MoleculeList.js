@@ -34,15 +34,17 @@ function createMolecule(id, row, structure, data) {
   structure.getColumnsSpecifications().forEach((column) => {
     const property = column.property;
     if (column.isUnique()) {
-      molecule[property] = row[structure.getIndexesFor(property)] || null;
+      const value = row[structure.getIndexesFor(property)];
+      molecule[property] = value !== undefined ? value : null;
     }
     if (column.isMultiValued()) {
       const indexes = structure.getIndexesFor(property);
-      molecule[property] = getMultiValuedPropertyIDs(row, indexes, data[property]) || null;
+      molecule[property] = getMultiValuedPropertyIDs(row, indexes, data[property]);
     }
     if (column.isHierarchical()) {
       const indexes = structure.getIndexesFor(property);
-      molecule[property] = getClassificationNodeID(row, indexes, data[property]) || null;
+      const id = getClassificationNodeID(row, indexes, data[property]);
+      molecule[property] = id !== undefined ? id : null;
     }
   });
   return molecule;

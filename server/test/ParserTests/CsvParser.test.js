@@ -18,6 +18,8 @@ const { expect } = chai;
 const CSVFolderPath = path.resolve("test", "ParserTests", "CSVFiles");
 const snapshotsFolderPath = path.resolve("test", "ParserTests", "snapshots");
 
+// TODO errors test + data tests with different file configuration but same expectations
+
 describe("Test if values are well imported", function () {
   const files = [
     {
@@ -29,6 +31,11 @@ describe("Test if values are well imported", function () {
       name: "molecules_movedColumns.xlsx",
       snapshot: "molecules.json",
       expectation: expectations.first_version,
+    },
+    {
+      name: "molecules_littleSample.xlsx",
+      snapshot: "sample.json",
+      expectation: expectations.little_sample,
     },
   ];
 
@@ -65,9 +72,6 @@ describe("Test if values are well imported", function () {
 
           expectNotContainsDuplication(ids, "Unique ids");
 
-          expect(names, "Good number of name").to.have.length(expectedValues.all.length);
-          expect(ids, "Good number of ids").to.have.length(expectedValues.all.length);
-
           expect(expectedValues.all, "Values are same than expected").to.be.deep.equalInAnyOrder(names);
 
           for (let expected of expectedValues.nodes) {
@@ -79,6 +83,8 @@ describe("Test if values are well imported", function () {
               value.children.map(toName)
             );
           }
+          expect(names, "Good number of name").to.have.length(expectedValues.all.length);
+          expect(ids, "Good number of ids").to.have.length(expectedValues.all.length);
 
           done();
         });
@@ -102,7 +108,7 @@ describe("Test if values are well imported", function () {
         });
       }
 
-      for (let expected of expectations.first_version.molecules) {
+      for (let expected of file.expectation.molecules) {
         it(`Molecule : ${expected.dci}`, (done) => {
           const molecule = getMoleculeByDci(data, expected.dci);
 

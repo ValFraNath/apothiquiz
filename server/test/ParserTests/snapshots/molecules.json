@@ -153,7 +153,7 @@
       "interactions": [],
       "indications": [1, 2],
       "side_effects": [1],
-      "level_easy": null,
+      "level_easy": 0,
       "level_hard": 1
     },
     {
@@ -179,7 +179,7 @@
       "interactions": [],
       "indications": [1],
       "side_effects": [],
-      "level_easy": null,
+      "level_easy": 0,
       "level_hard": 1
     },
     {
@@ -188,7 +188,7 @@
       "skeletal_formule": "H2O",
       "systems": 2,
       "classes": 4,
-      "ntr": null,
+      "ntr": 0,
       "interactions": [],
       "indications": [3, 4],
       "side_effects": [],
