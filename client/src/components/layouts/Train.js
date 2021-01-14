@@ -45,10 +45,7 @@ class Train extends Component {
   getNewQuestion = () => {
     const minQuestionType = 1,
       maxQuestionType = 1;
-    const questionType =
-      Math.floor(Math.random() * (maxQuestionType - minQuestionType)) +
-      minQuestionType;
-
+    const questionType = Math.floor(Math.random() * (maxQuestionType - minQuestionType)) + minQuestionType;
     axios
       .get(`/api/v1/question/${questionType}`)
       .then((res) => {
@@ -114,9 +111,7 @@ class Train extends Component {
     }
 
     const result = this.state.result;
-    const { goodPoint, badPoint } = isRightAnswer
-      ? { goodPoint: 1, badPoint: 0 }
-      : { goodPoint: 0, badPoint: 1 };
+    const { goodPoint, badPoint } = isRightAnswer ? { goodPoint: 1, badPoint: 0 } : { goodPoint: 0, badPoint: 1 };
     this.setState({
       inProgress: false,
       lastClicked: value,
@@ -128,15 +123,7 @@ class Train extends Component {
   };
 
   render() {
-    const {
-      question,
-      questionNumber,
-      inProgress,
-      lastClicked,
-      timer,
-      result,
-      error,
-    } = this.state;
+    const { question, questionNumber, inProgress, lastClicked, timer, result, error } = this.state;
 
     return (
       <main id="quiz">
@@ -147,12 +134,10 @@ class Train extends Component {
           <>
             <div id="quiz-score">
               <p id="good-score">
-                {result.good} <Plural word="bonne" count={result.good} />{" "}
-                <Plural word="réponse" count={result.good} />
+                {result.good} <Plural word="bonne" count={result.good} /> <Plural word="réponse" count={result.good} />
               </p>
               <p id="bad-score">
-                {result.bad} <Plural word="mauvaise" count={result.bad} />{" "}
-                <Plural word="réponse" count={result.bad} />
+                {result.bad} <Plural word="mauvaise" count={result.bad} /> <Plural word="réponse" count={result.bad} />
               </p>
             </div>
 
@@ -162,11 +147,7 @@ class Train extends Component {
             </div>
 
             {inProgress ? (
-              <Timer
-                inProgress={inProgress}
-                duration={timer}
-                updateParent={this.updateTimer}
-              />
+              <Timer inProgress={inProgress} duration={timer} updateParent={this.updateTimer} />
             ) : (
               <div id="next-btn">
                 <button onClick={this.getNewQuestion}>

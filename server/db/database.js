@@ -10,17 +10,9 @@ dotenv.config();
 const Database = {};
 
 // Be sure to add a new version at the end of this array (it must be sorted)
-const versions = [
-  "2020-10-18",
-  "2020-10-21",
-  "2020-10-27",
-  "2020-10-31",
-  "2020-11-04",
-  "2020-11-27",
-  "2020-12-29",
-];
+const versions = ["2021-01-08"];
 
-Database.currentVersion = () => versions[versions.length - 1];
+Database.currentAPIVersion = () => versions[versions.length - 1];
 
 Database.connection = mysql.createConnection({
   host: process.env.DB_HOST || "localhost",
@@ -39,7 +31,7 @@ Database.connect = async function (err) {
   }
   console.log("Connected to database!");
 
-  Database.getVersion().then(async (db_version) => {
+  Database.getSystemInformation("api_version").then(async (db_version) => {
     if (db_version === -1) {
       await Database.create();
       await Database.update();
@@ -54,36 +46,33 @@ Database.connect = async function (err) {
 };
 
 Database.create = async function () {
-  const creationScript = fs
-    .readFileSync(path.resolve(__dirname, "db", "create_database.sql"))
-    .toString("utf8");
+  const creationScript = fs.readFileSync(path.resolve(__dirname, "db", "create_database.sql")).toString("utf8");
   console.log("Creation of database... ");
   await queryPromise(creationScript)
-    .then(() => console.log("->Database created!\n"))
+    .then(() => console.log("-> Database created!\n"))
     .catch((err) => {
       throw err;
     });
 };
 
 /**
- * Get the database version
- * @return {Number|String} The database version, or -1 if no version found
+ * Get a system information from the database
+ *
+ * @param {String} key the name of the information
+ * @return {Promise<Number|String>} The value of the information, or -1 if the information is not found
  */
-Database.getVersion = function () {
-  let sql = "SELECT sy_version FROM `system`";
-
+Database.getSystemInformation = function (key) {
   return new Promise(function (resolve) {
-    Database.connection.query(sql, function (err, res) {
-      if (err) {
+    let sql = `SELECT value FROM \`server_informations\` WHERE \`key\`='${key}'`;
+    queryPromise(sql)
+      .then((res) => resolve(JSON.parse(JSON.stringify(res))[0].value))
+      .catch((err) => {
         if (err.code === "ER_NO_SUCH_TABLE") {
           resolve(-1);
         } else {
           throw err;
         }
-      } else {
-        resolve(JSON.parse(JSON.stringify(res))[0].sy_version);
-      }
-    });
+      });
   });
 };
 
@@ -92,7 +81,7 @@ Database.getVersion = function () {
  * @param {String} version The current database version, if undefined it use the first version
  */
 Database.update = async function (version = versions[0]) {
-  if (version === Database.currentVersion()) {
+  if (version === Database.currentAPIVersion()) {
     console.log("Database is up to date!");
     return;
   }
@@ -108,16 +97,12 @@ Database.update = async function (version = versions[0]) {
           __dirname,
           "db",
           "updates",
-          `db_${versions[i - 1].split("-").join("")}_to_${versions[i]
-            .split("-")
-            .join("")}.sql`
+          `db_${versions[i - 1].split("-").join("")}_to_${versions[i].split("-").join("")}.sql`
         )
       )
       .toString("utf8");
 
-    console.log(
-      `Update database from ${versions[i - 1]} to ${versions[i]}... `
-    );
+    console.log(`Update database from ${versions[i - 1]} to ${versions[i]}... `);
 
     await queryPromise(updateQuery)
       .then(() => console.log("-> Database updated!\n"))

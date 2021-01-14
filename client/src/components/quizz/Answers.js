@@ -28,13 +28,7 @@ AnswerBtn.propTypes = {
   onClick: PropTypes.func.isRequired,
 };
 
-const Answers = ({
-  inProgress,
-  goodAnswer,
-  badAnswers,
-  lastClicked,
-  onClick,
-}) => {
+const Answers = ({ inProgress, goodAnswer, badAnswers, lastClicked, onClick }) => {
   const [goodIndex, setGoodIndex] = useState(0);
   const arrayOfAnswers = [...badAnswers];
 
@@ -53,9 +47,7 @@ const Answers = ({
           key={index}
           value={value}
           isRight={value === goodAnswer}
-          showResult={
-            !inProgress && (value === goodAnswer || lastClicked === value)
-          }
+          showResult={!inProgress && (value === goodAnswer || lastClicked === value)}
           onClick={onClick}
         />
       ))}

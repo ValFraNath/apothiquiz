@@ -16,7 +16,7 @@ export default class Informations extends Component {
       .then((res) => {
         this.setState({
           serverStatus: res.data.status,
-          currentServerVersion: res.data.db_version,
+          currentServerAPIVersion: res.data.api_version,
         });
       })
       .catch((err) => {
@@ -31,39 +31,26 @@ export default class Informations extends Component {
     return (
       <div id="informations">
         <p>
-          Guacamole est une application d'apprentissage réflexe à destination
-          des étudiants en pharmacie de l'Université de Franche-Comté.
+          Guacamole est une application d'apprentissage réflexe à destination des étudiants en pharmacie de l'Université
+          de Franche-Comté.
         </p>
-        <p>
-          Elle est réalisée dans le cadre d'un projet tutoré de Licence 3
-          Informatique.
-        </p>
+        <p>Elle est réalisée dans le cadre d'un projet tutoré de Licence 3 Informatique.</p>
         <p>
           <b>Application en développement actif</b>
           <br />
           En cas de remarque sur cette application, vous pouvez nous écrire à{" "}
-          <a href="mailto:nathanael.houn@edu.univ-fcomte.fr">
-            nathanael.houn@edu.univ-fcomte.fr
-          </a>
-          ,{" "}
-          <a href="mailto:francois.poguet@edu.univ-fcomte.fr">
-            francois.poguet@edu.univ-fcomte.fr
-          </a>{" "}
-          ou{" "}
-          <a href="mailto:valentin.perignon@edu.univ-fcomte.fr">
-            valentin.perignon@edu.univ-fcomte.fr
-          </a>
+          <a href="mailto:nathanael.houn@edu.univ-fcomte.fr">nathanael.houn@edu.univ-fcomte.fr</a>,{" "}
+          <a href="mailto:francois.poguet@edu.univ-fcomte.fr">francois.poguet@edu.univ-fcomte.fr</a> ou{" "}
+          <a href="mailto:valentin.perignon@edu.univ-fcomte.fr">valentin.perignon@edu.univ-fcomte.fr</a>
         </p>
 
-        <button onClick={this.handleButtonClick}>
-          Récupérer les informations
-        </button>
+        <button onClick={this.handleButtonClick}>Récupérer les informations</button>
 
         {this.state.serverStatus && (
           <p>
-            Connection to the server: {this.state.serverStatus}
+            Server status: {this.state.serverStatus}
             <br />
-            Current server version: {this.state.currentServerVersion}
+            Current server API version: {this.state.currentServerAPIVersion}
           </p>
         )}
 

@@ -11,13 +11,11 @@ before(function insertData(done) {
   app.waitReady(async function () {
     console.log("Insert data in database...");
 
-    const insertionScript = fs
-      .readFileSync(path.resolve(__dirname, "db", "insert_data.sql"))
-      .toString("utf8");
+    const insertionScript = fs.readFileSync(path.resolve(__dirname, "db", "insert_data.sql")).toString("utf8");
 
     await queryPromise(insertionScript)
       .then(() => {
-        console.log("->Data inserted in database!");
+        console.log("-> Data inserted in database!");
         done();
       })
       .catch((err) => {

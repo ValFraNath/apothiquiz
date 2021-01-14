@@ -14,8 +14,8 @@ describe("GET /status", function () {
       .end((err, res) => {
         expect(res.status).to.be.equal(200);
         expect(res.body).to.be.deep.equal({
-          status: "online",
-          db_version: db.currentVersion(),
+          status: "connected",
+          api_version: db.currentAPIVersion(),
         });
         done();
       });
@@ -32,10 +32,7 @@ describe.skip("Question generation", function () {
           throw err;
         }
         expect(res.status, "Status value").to.be.equal(200);
-        expect(
-          Object.getOwnPropertyNames(res.body),
-          "Have property 'question' "
-        ).to.contains("question");
+        expect(Object.getOwnPropertyNames(res.body), "Have property 'question' ").to.contains("question");
         done();
       });
   });

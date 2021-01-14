@@ -11,8 +11,7 @@ describe("Create and delete table", function () {
   });
 
   it("Insert into", function (done) {
-    let sql =
-      "INSERT INTO testBasicTable (number, string) VALUES (2, 'Viva el guacamole'), (-10, 'Y las tortillas')";
+    let sql = "INSERT INTO testBasicTable (number, string) VALUES (2, 'Viva el guacamole'), (-10, 'Y las tortillas')";
     db.connection.query(sql, function (err) {
       if (err) throw err;
       done();
@@ -46,7 +45,7 @@ describe("Check the database structure", function () {
   let structure = [
     {
       name: "molecule",
-      fields: ["mo_id", "mo_dci", "mo_difficulty", "mo_skeletal_formula"],
+      fields: ["mo_id", "mo_dci", "mo_difficulty", "mo_skeletal_formula", "mo_ntr", "mo_class", "mo_system"],
     },
     {
       name: "property",
@@ -57,8 +56,8 @@ describe("Check the database structure", function () {
       fields: ["pr_id", "mo_id"],
     },
     {
-      name: "system",
-      fields: ["sy_version"],
+      name: "server_informations",
+      fields: ["key", "value"],
     },
     {
       name: "user",
@@ -76,6 +75,14 @@ describe("Check the database structure", function () {
       name: "category",
       fields: ["ca_id", "ca_name"],
     },
+    {
+      name: "system",
+      fields: ["sy_id", "sy_name", "sy_higher", "sy_level"],
+    },
+    {
+      name: "class",
+      fields: ["cl_id", "cl_name", "cl_higher", "cl_level"],
+    },
   ];
 
   it("Number of table", function (done) {
@@ -86,11 +93,7 @@ describe("Check the database structure", function () {
 
     db.connection.query(sql, function (err, res) {
       if (err) throw err;
-      assert.strictEqual(
-        res[0]["nbr"],
-        structure.length,
-        "Incorrect number of tables"
-      );
+      assert.strictEqual(res[0]["nbr"], structure.length, "Incorrect number of tables");
       done();
     });
   });
@@ -107,17 +110,10 @@ describe("Check the database structure", function () {
         assert(res.length !== 0, `The table '${table.name}' doesn't exist. `);
 
         let fieldsToTest = res.map((e) => e["COLUMN_NAME"]);
-        assert.strictEqual(
-          fieldsToTest.length,
-          table.fields.length,
-          "Incorrect number of fields."
-        );
+        assert.strictEqual(fieldsToTest.length, table.fields.length, "Incorrect number of fields.");
 
         table.fields.forEach((field) => {
-          assert(
-            fieldsToTest.includes(field),
-            `Incorrect field :  "${field}". `
-          );
+          assert(fieldsToTest.includes(field), `Incorrect field :  "${field}". `);
         });
         done();
       });
