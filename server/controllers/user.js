@@ -47,7 +47,10 @@ function queryCAS(login, pass) {
 }
 
 User.getInfos = function (req, res) {
-  const user = String(req.params.pseudo);
+  var user = String(req.params.pseudo);
+  if (user === "me") {
+    user = req.body.auth_user;
+  }
 
   getUserInformations(user)
     .then((infos) => {
@@ -58,9 +61,12 @@ User.getInfos = function (req, res) {
     });
 };
 
-// TODO
 User.saveInfos = async function (req, res) {
-  const user = String(req.params.pseudo);
+  var user = String(req.params.pseudo);
+  if (user === "me") {
+    user = req.body.auth_user;
+  }
+
   if (req.body.auth_user != user) {
     // TODO? Add admin ?
     res.status(403).json({ error: "Not allowed" });
@@ -69,7 +75,7 @@ User.saveInfos = async function (req, res) {
 
   if (!avatar && true) {
     // true will be replaced by another fields of the request
-    res.status(401).json({ error: "No information given" });
+    res.status(400).json({ error: "No information given" });
     return;
   }
 

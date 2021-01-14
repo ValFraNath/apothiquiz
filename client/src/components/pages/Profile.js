@@ -21,9 +21,8 @@ export default class Profile extends Component {
   }
 
   componentDidMount() {
-    const pseudo = AuthService.getCurrentUser().pseudo;
     axios
-      .get(`/api/v1/user/${pseudo}`)
+      .get(`/api/v1/user/me`)
       .then((res) => {
         const avatar = JSON.parse(res.data.avatar);
         this.setState({

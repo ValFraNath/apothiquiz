@@ -2,8 +2,6 @@ import React, { Component } from "react";
 import PropTypes from "proptypes";
 import axios from "axios";
 
-import AuthService from "../services/auth.service";
-
 const NUMBER_OF_EYES = 5;
 const NUMBER_OF_HANDS = 5;
 const NUMBER_OF_HATS = 5;
@@ -80,10 +78,8 @@ export default class ChooseAvatar extends Component {
   handleSaveAvatar = () => {
     this.setState({ modified: "saving" });
 
-    const pseudo = AuthService.getCurrentUser().pseudo;
-
     axios
-      .patch(`/api/v1/user/${pseudo}`, {
+      .patch(`/api/v1/user/me`, {
         avatar: JSON.stringify({
           eyes: this.props.choiceEyes,
           hands: this.props.choiceHands,
