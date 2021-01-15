@@ -65,7 +65,6 @@ describe("Test if values are well imported", function () {
             done();
           })
           .catch((error) => {
-            console.table(error);
             expect(error).to.be.null;
           });
       });

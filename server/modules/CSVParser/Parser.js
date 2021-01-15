@@ -43,8 +43,6 @@ export function parseCSV(filepath) {
 
         data.molecules = MoleculeList.create(moleculesMatrix, structure, data);
 
-        //console.error(JSON.stringify(data));
-
         resolve(JSON.stringify(data));
       })
       .catch(reject);
