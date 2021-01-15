@@ -3,9 +3,7 @@ import PropTypes from "proptypes";
 
 const AnswerBtn = ({ value, isRight, showResult, onClick }) => {
   let classBtn = "";
-  if (showResult) {
-    classBtn = isRight ? "good-answer" : "bad-answer";
-  }
+  if (showResult) classBtn = isRight ? "good-answer" : "bad-answer";
 
   return (
     <button

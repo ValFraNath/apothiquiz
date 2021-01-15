@@ -26,15 +26,12 @@ class Train extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      questionNumber: 0,
+      gameState: Train.STATE_INIT,
       question: {},
       inProgress: false,
       lastClicked: "",
       timer: 10,
-      result: {
-        good: 0,
-        bad: 0,
-      },
+      result: { good: 0, bad: 0 },
       error: null,
     };
   }
@@ -50,9 +47,10 @@ class Train extends Component {
       .get(`/api/v1/question/${questionType}`)
       .then((res) => {
         this.setState({
+          gameState: Train.STATE_PLAY,
           question: res.data.question,
-          questionNumber: this.state.questionNumber + 1,
           inProgress: true,
+          lastClicked: "",
           timer: 10,
           error: null,
         });
@@ -123,12 +121,12 @@ class Train extends Component {
   };
 
   render() {
-    const { question, questionNumber, inProgress, lastClicked, timer, result, error } = this.state;
+    const { gameState, question, inProgress, lastClicked, timer, result, error } = this.state;
 
     return (
       <main id="quiz">
         {error !== null && <Message type="error" content={error} />}
-        {questionNumber === 0 ? (
+        {gameState === Train.STATE_INIT ? (
           <IntroductionView onClick={this.getNewQuestion} />
         ) : (
           <>
@@ -142,7 +140,7 @@ class Train extends Component {
             </div>
 
             <div id="quiz-question">
-              <h2>Question {questionNumber}</h2>
+              <h2>Question {result.good + result.bad + 1}</h2>
               <h1>{this.generateQuestionText()}</h1>
             </div>
 
@@ -170,5 +168,9 @@ class Train extends Component {
     );
   }
 }
+
+Train.STATE_INIT = 0;
+Train.STATE_PLAY = 1;
+Train.STATE_SUMMURY = 2;
 
 export default Train;
