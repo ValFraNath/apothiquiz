@@ -1,0 +1,38 @@
+#change-avatar {
+  display: grid;
+  padding: 10px;
+  vertical-align: middle;
+
+  grid-template-columns: 1fr 0.7fr 1fr 0.7fr;
+  grid-template-areas:
+    "a b c d"
+    "a b c d"
+    "a b c d"
+    "button-left button-left button-right button-right"
+    "span-middle span-middle span-middle span-middle";
+
+  gap: 15px 20px;
+
+  label {
+    display: flex;
+    align-items: center;
+  }
+
+  select,
+  input {
+    height: 100%;
+  }
+
+  button:first-of-type {
+    grid-area: button-left;
+  }
+
+  button:last-of-type {
+    grid-area: button-right;
+  }
+
+  span {
+    grid-area: span-middle;
+    text-align: center;
+  }
+}
