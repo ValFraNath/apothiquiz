@@ -16,6 +16,7 @@
  */
 export const expectations = {
   first_version: {
+    number_of_molecules: 140,
     classes: {
       all: [
         "INHIBITEUR DE FUSION",
@@ -156,6 +157,7 @@ export const expectations = {
     ],
   },
   little_sample: {
+    number_of_molecules: 11,
     systems: {
       all: ["ANTIINFECTIEUX", "ANTIBIOTIQUE", "ANTIVIRAL"],
       nodes: [
@@ -198,5 +200,60 @@ export const expectations = {
         interactions: [],
       },
     ],
+  },
+  only_dci: {
+    number_of_molecules: 140,
+    systems: {
+      all: [],
+      nodes: [],
+    },
+    classes: {
+      all: [],
+      nodes: [],
+    },
+    indications: [],
+    interactions: [],
+    side_effects: [],
+    molecules: [
+      {
+        dci: "AMANTADINE",
+        ntr: null,
+        level_easy: null,
+        level_hard: null,
+        skeletal_formule: null,
+        systems: null,
+        classes: null,
+        indications: [],
+        side_effects: [],
+        interactions: [],
+      },
+      {
+        dci: "THIAMPHENICOL",
+        ntr: null,
+        level_easy: null,
+        level_hard: null,
+        skeletal_formule: null,
+        systems: null,
+        classes: null,
+        indications: [],
+        side_effects: [],
+        interactions: [],
+      },
+    ],
+  },
+  empty: {
+    number_of_molecules: 0,
+    systems: {
+      all: [],
+      nodes: [],
+    },
+    classes: {
+      all: [],
+      nodes: [],
+    },
+    indications: [],
+    interactions: [],
+    side_effects: [],
+    molecules: [],
   },
 };

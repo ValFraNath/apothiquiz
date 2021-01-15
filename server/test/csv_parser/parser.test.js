@@ -20,8 +20,6 @@ const filesFolderPath = path.resolve("test", "csv_parser", "files");
 const badFilesFolderPath = path.resolve(filesFolderPath, "bad_formatted_files");
 const snapshotsFolderPath = path.resolve("test", "csv_parser", "snapshots");
 
-// TODO errors test
-
 describe("Test if values are well imported", function () {
   const files = [
     {
@@ -38,6 +36,21 @@ describe("Test if values are well imported", function () {
       name: "molecules_little_sample.xlsx",
       snapshot: "sample.json",
       expectation: expectations.little_sample,
+    },
+    {
+      name: "molecules_only_dci.xlsx",
+      snapshot: "only_dci.json",
+      expectation: expectations.only_dci,
+    },
+    {
+      name: "molecules_empty.xlsx",
+      snapshot: "empty.json",
+      expectation: expectations.empty,
+    },
+    {
+      name: "molecules_separated_rows.xlsx",
+      snapshot: "separated_rows.json",
+      expectation: expectations.first_version,
     },
   ];
 
@@ -62,6 +75,11 @@ describe("Test if values are well imported", function () {
         }
         let expectedData = fs.readFileSync(path.resolve(snapshotsFolderPath, file.snapshot));
         expect(data).to.be.deep.equals(JSON.parse(expectedData));
+        done();
+      });
+
+      it("Good number of molecules", function (done) {
+        expect(data.molecules.length).to.be.equals(file.expectation.number_of_molecules);
         done();
       });
 
@@ -117,6 +135,9 @@ describe("Test if values are well imported", function () {
           expect(molecule, `| Molecule not found : ${expected.dci} |`).not.undefined;
 
           for (let classification of ["systems", "classes"]) {
+            if (expected[classification] === null) {
+              continue;
+            }
             const value = getClassificationValue(data[classification], expected[classification]);
             expect(value, `| Class not found : ${expected[classification]} |`).not.undefined;
             expect(value.id, `| Invalid class |`).equals(molecule[classification]);
@@ -176,13 +197,17 @@ describe("Tests for errors occurred while parsing an incorrectly formatted file"
       name: "missing_classification.xlsx",
       errors: [HeaderError.MISSING_COLUMN],
     },
+    {
+      name: "several_errors.xlsx",
+      errors: [HeaderError.INVALID_COLUMN, HeaderError.INVALID_COLUMN, HeaderError.MISSING_COLUMN],
+    },
   ];
 
   for (const file of bad_files) {
     it(`File : ${file.name}`, (done) => {
       parseCSV(path.resolve(badFilesFolderPath, file.name), (errors) => {
         expect(errors).to.not.be.null;
-        //console.table(errors);
+        console.table(errors);
         const errorsCodes = errors.map((error) => error.code);
         expect(errorsCodes).to.be.deep.equalInAnyOrder(file.errors);
         done();
