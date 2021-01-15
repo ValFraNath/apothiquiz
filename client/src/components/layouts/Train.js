@@ -32,7 +32,7 @@ class PlayView extends Component {
     this.state = {
       inProgress: true,
       lastClicked: "",
-      timer: 10,
+      timer: this.props.timerDuration,
     };
   }
 
@@ -91,12 +91,13 @@ class PlayView extends Component {
     this.setState({
       inProgress: true,
       lastClicked: "",
+      timer: this.props.timerDuration,
     });
   };
 
   render() {
     const { inProgress, timer, lastClicked } = this.state;
-    const { result, question } = this.props;
+    const { result, question, displaySummury } = this.props;
 
     return (
       <>
@@ -132,6 +133,8 @@ class PlayView extends Component {
           lastClicked={lastClicked}
           onClick={this.handleAnswerClick}
         />
+
+        <button onClick={displaySummury}>Arrêter l'entraînement</button>
       </>
     );
   }
@@ -140,16 +143,32 @@ class PlayView extends Component {
 PlayView.propTypes = {
   result: PropTypes.object.isRequired,
   question: PropTypes.object.isRequired,
+  timerDuration: PropTypes.number.isRequired,
   getNewQuestion: PropTypes.func.isRequired,
+  displaySummury: PropTypes.func.isRequired,
 };
 
 /* ---------- Summury view ---------- */
 
-const SummuryView = () => {
-  return <p>Fini !</p>;
+const SummuryView = ({ result }) => {
+  return (
+    <>
+      <h1>Fin de l'entraînement</h1>
+      <p>
+        Vous avez obtenu un score de {result.good}/{result.good + result.bad}
+      </p>
+    </>
+  );
 };
 
-/* ---------- Switch view componant ---------- */
+SummuryView.propTypes = {
+  result: PropTypes.shape({
+    good: PropTypes.number.isRequired,
+    bad: PropTypes.number.isRequired,
+  }).isRequired,
+};
+
+/* ---------- Switch view component ---------- */
 
 const SwitchView = ({ toDisplay, props }) => {
   switch (toDisplay) {
@@ -160,15 +179,22 @@ const SwitchView = ({ toDisplay, props }) => {
         <PlayView
           result={props.result}
           question={props.question}
+          timerDuration={props.timerDuration}
           getNewQuestion={props.getNewQuestion}
           updateResult={props.updateResult}
+          displaySummury={props.displaySummury}
         />
       );
     case Train.STATE_SUMMURY:
-      return <SummuryView />;
+      return <SummuryView result={props.result} />;
     default:
       return "Error";
   }
+};
+
+SwitchView.propTypes = {
+  toDisplay: PropTypes.number.isRequired,
+  props: PropTypes.object.isRequired,
 };
 
 /* ---------- Train ---------- */
@@ -224,12 +250,20 @@ class Train extends Component {
     });
   };
 
+  displaySummury = () => {
+    this.setState({
+      gameState: Train.STATE_SUMMURY,
+    });
+  };
+
   render() {
     const { gameState, error } = this.state;
     const switchProps = {
       ...this.state,
+      timerDuration: Train.TIMER_DURATION,
       getNewQuestion: this.getNewQuestion,
       updateResult: this.updateResult,
+      displaySummury: this.displaySummury,
     };
 
     return (
@@ -244,5 +278,7 @@ class Train extends Component {
 Train.STATE_INTRO = 0;
 Train.STATE_PLAY = 1;
 Train.STATE_SUMMURY = 2;
+
+Train.TIMER_DURATION = 10;
 
 export default Train;
