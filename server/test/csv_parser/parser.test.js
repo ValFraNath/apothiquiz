@@ -9,7 +9,7 @@ import { parseCSV } from "../../modules/CSVParser/Parser.js";
 import { expectations } from "./expectations.js";
 // eslint-disable-next-line no-unused-vars
 import { ClassificationNode } from "../../modules/CSVParser/MoleculesClassification.js";
-import { HeaderError } from "../../modules/CSVParser/HeaderChecker.js";
+import { HeaderErrors } from "../../modules/CSVParser/HeaderChecker.js";
 
 chai.use(chaiHttp);
 chai.use(deepEqualAnyOrder);
@@ -168,43 +168,43 @@ describe("Tests for errors occurred while parsing an incorrectly formatted file"
   const bad_files = [
     {
       name: "empty_file.csv",
-      errors: [HeaderError.EMPTY_FILE],
+      errors: [HeaderErrors.EMPTY_FILE],
     },
     {
       name: "invalid_column.csv",
-      errors: [HeaderError.INVALID_COLUMN],
+      errors: [HeaderErrors.INVALID_COLUMN],
     },
     {
       name: "missing_side_effects.csv",
-      errors: [HeaderError.MISSING_COLUMN],
+      errors: [HeaderErrors.MISSING_COLUMN],
     },
     {
       name: "missing_skeletal_formule.csv",
-      errors: [HeaderError.MISSING_COLUMN],
+      errors: [HeaderErrors.MISSING_COLUMN],
     },
     {
       name: "bad_grouped_property.csv",
-      errors: [HeaderError.BAD_COLUMNS_GROUP],
+      errors: [HeaderErrors.BAD_COLUMNS_GROUP],
     },
     {
       name: "bad_hierarchical_levels.csv",
-      errors: [HeaderError.BAD_HIERARCHICAL_COLUMNS_ORDER],
+      errors: [HeaderErrors.BAD_HIERARCHICAL_COLUMNS_ORDER],
     },
     {
       name: "bad_grouped_classification.csv",
-      errors: [HeaderError.BAD_COLUMNS_GROUP, HeaderError.BAD_COLUMNS_GROUP],
+      errors: [HeaderErrors.BAD_COLUMNS_GROUP, HeaderErrors.BAD_COLUMNS_GROUP],
     },
     {
       name: "missing_classification.csv",
-      errors: [HeaderError.MISSING_COLUMN],
+      errors: [HeaderErrors.MISSING_COLUMN],
     },
     {
       name: "several_errors.csv",
-      errors: [HeaderError.INVALID_COLUMN, HeaderError.INVALID_COLUMN, HeaderError.MISSING_COLUMN],
+      errors: [HeaderErrors.INVALID_COLUMN, HeaderErrors.INVALID_COLUMN, HeaderErrors.MISSING_COLUMN],
     },
     {
       name: "empty_column.csv",
-      errors: [HeaderError.EMPTY_COLUMN],
+      errors: [HeaderErrors.EMPTY_COLUMN],
     },
   ];
 
@@ -214,11 +214,11 @@ describe("Tests for errors occurred while parsing an incorrectly formatted file"
         const json = await parseCSV(path.resolve(badFilesFolderPath, file.name));
         expect(json === null, "The parsing is not supposed to pass").be.true;
       } catch (errors) {
-        if (errors instanceof Error) {
+        if (!HeaderErrors.isInstance(errors)) {
           throw errors;
         }
-        //console.table(errors);
-        const errorsCodes = errors.map((error) => error.code);
+
+        const errorsCodes = errors.errors.map((error) => error.code);
         expect(errorsCodes).to.be.deep.equalInAnyOrder(file.errors);
       }
     });

@@ -22,7 +22,7 @@ export default class HeaderChecker {
    */
   check() {
     if (checkNotEmptyHeader(this.header).length) {
-      this.errors = [new HeaderError(HeaderError.EMPTY_FILE)];
+      this.errors = [{ code: HeaderErrors.EMPTY_FILE }];
       return false;
     }
 
@@ -38,63 +38,68 @@ export default class HeaderChecker {
   }
 
   /**
-   * Returns the array of errors that occurred during checks
-   * @return {HeaderError[]} errors
+   * Returns the object of errors that occurred during checks
+   * @return {HeaderErrors} errors
    */
   getErrors() {
-    return this.errors;
+    return new HeaderErrors(this.errors);
   }
 }
 
-export class HeaderError extends Error {
+export class HeaderErrors extends Error {
   /**
    * Create an Error
    * @param {number} code The error code
-   * @param {{title : string, index : number}} details Some details about where the error has occured
+   * @param {{code : number,title : string, index : number}[]} errors Some details about where the error has occured
    */
-  constructor(code, details) {
+  constructor(errors) {
     super();
-    this.name = "HeaderError";
-    this.code = code;
-    this.message = HeaderError.getMessage(code, details);
+    this.name = "HeaderErrors";
+    this.message = "Errors have occurred about the header structure";
+    this.errors = errors.map((error) => {
+      return {
+        code: error.code,
+        message: HeaderErrors.getMessage(error.code, { index: error.index, title: error.title }),
+      };
+    });
   }
   static isInstance(error) {
-    return error instanceof HeaderError;
+    return error instanceof HeaderErrors;
   }
 
   static getMessage(code, { index, title } = { index: null, title: null }) {
     index++;
     const messages = Object.create(null);
 
-    messages[HeaderError.EMPTY_FILE] = `L'en-tête du fichier est vide.`;
+    messages[HeaderErrors.EMPTY_FILE] = `L'en-tête du fichier est vide.`;
 
     messages[
-      HeaderError.BAD_COLUMNS_GROUP
+      HeaderErrors.BAD_COLUMNS_GROUP
     ] = `Les colonnes d'une même propriété sont mal regroupées : '${title}' (col. ${index})`;
 
-    messages[HeaderError.DUPLICATE_UNIQUE_COLUMN] = `Duplication de la colonne unique '${title}' (col. ${index})`;
+    messages[HeaderErrors.DUPLICATE_UNIQUE_COLUMN] = `Duplication de la colonne unique '${title}' (col. ${index})`;
 
-    messages[HeaderError.MISSING_COLUMN] = `Colonne manquante : '${title}'`;
+    messages[HeaderErrors.MISSING_COLUMN] = `Colonne manquante : '${title}'`;
 
-    messages[HeaderError.INVALID_COLUMN] = `Colonne invalide : '${title}' (col. ${index})`;
+    messages[HeaderErrors.INVALID_COLUMN] = `Colonne invalide : '${title}' (col. ${index})`;
 
     messages[
-      HeaderError.BAD_HIERARCHICAL_COLUMNS_ORDER
+      HeaderErrors.BAD_HIERARCHICAL_COLUMNS_ORDER
     ] = `Niveaux de hiérachisation non respectés : ${title} (col. ${index})`;
 
-    messages[HeaderError.EMPTY_COLUMN] = `Colonne vide (col. ${index}) `;
+    messages[HeaderErrors.EMPTY_COLUMN] = `Colonne vide (col. ${index}) `;
 
     return messages[code];
   }
 }
 
-HeaderError.MISSING_COLUMN = 1;
-HeaderError.DUPLICATE_UNIQUE_COLUMN = 2;
-HeaderError.EMPTY_FILE = 3;
-HeaderError.INVALID_COLUMN = 4;
-HeaderError.BAD_COLUMNS_GROUP = 5;
-HeaderError.BAD_HIERARCHICAL_COLUMNS_ORDER = 6;
-HeaderError.EMPTY_COLUMN = 7;
+HeaderErrors.MISSING_COLUMN = 1;
+HeaderErrors.DUPLICATE_UNIQUE_COLUMN = 2;
+HeaderErrors.EMPTY_FILE = 3;
+HeaderErrors.INVALID_COLUMN = 4;
+HeaderErrors.BAD_COLUMNS_GROUP = 5;
+HeaderErrors.BAD_HIERARCHICAL_COLUMNS_ORDER = 6;
+HeaderErrors.EMPTY_COLUMN = 7;
 
 /// ***** INTERNAL FUNCTIONS *****
 
@@ -104,7 +109,7 @@ HeaderError.EMPTY_COLUMN = 7;
  */
 function checkNotEmptyHeader(header) {
   if (!header.some((c) => c !== null)) {
-    return [new HeaderError(HeaderError.EMPTY_FILE)];
+    return [{ code: HeaderErrors.EMPTY_FILE }];
   }
   return [];
 }
@@ -129,12 +134,7 @@ function checkColumnsGroups(header, columnsSpecifications) {
       visitedGroups.push(currentGroup);
       currentGroup = group;
       if (visitedGroups.includes(group)) {
-        errors.push(
-          new HeaderError(HeaderError.BAD_COLUMNS_GROUP, {
-            index,
-            title,
-          })
-        );
+        errors.push({ code: HeaderErrors.BAD_COLUMNS_GROUP, index, title });
       }
     }
   });
@@ -150,7 +150,7 @@ function checkMissingColumns(header, columnsSpecifications) {
   const errors = [];
   columnsSpecifications.forEach((column, index) => {
     if (!header.some((title) => column.matchTitle(title))) {
-      errors.push(new HeaderError(HeaderError.MISSING_COLUMN, { index, title: column.title }));
+      errors.push({ code: HeaderErrors.MISSING_COLUMN, index, title: column.title });
     }
   });
   return errors;
@@ -165,16 +165,11 @@ function checkInvalidColumns(header, columnsSpecifications) {
   const errors = [];
   header.forEach((title, index) => {
     if (title === null) {
-      errors.push(new HeaderError(HeaderError.EMPTY_COLUMN, { index }));
+      errors.push({ code: HeaderErrors.EMPTY_COLUMN, index });
       return;
     }
     if (!columnsSpecifications.some((column) => column.matchTitle(title))) {
-      errors.push(
-        new HeaderError(HeaderError.INVALID_COLUMN, {
-          index,
-          title,
-        })
-      );
+      errors.push({ code: HeaderErrors.INVALID_COLUMN, index, title });
     }
   });
   return errors;
@@ -194,7 +189,7 @@ function checkDuplicateUniqueColumns(header, columnsSpecifications) {
   header.forEach((title, index) => {
     if (uniqueColumnTitles.includes(title)) {
       if (checkedColumns.includes(title)) {
-        errors.push(new HeaderError(HeaderError.DUPLICATE_UNIQUE_COLUMN, { index, title }));
+        errors.push({ code: HeaderErrors.DUPLICATE_UNIQUE_COLUMN, index, title });
       } else {
         checkedColumns.push(title);
       }
@@ -230,7 +225,7 @@ function checkHierarchicalColumnsOrder(header, columnsSpecifications) {
 
     if (level !== expectedLevel) {
       if (expectedLevel !== null) {
-        errors.push(new HeaderError(HeaderError.BAD_HIERARCHICAL_COLUMNS_ORDER, { title, index }));
+        errors.push({ code: HeaderErrors.BAD_HIERARCHICAL_COLUMNS_ORDER, title, index });
       }
       expectedLevel = null;
       return;

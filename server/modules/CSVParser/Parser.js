@@ -1,6 +1,7 @@
 import { readCSV } from "./Reader.js";
 
-import HeaderChecker from "./HeaderChecker.js";
+// eslint-disable-next-line no-unused-vars
+import HeaderChecker, { HeaderErrors } from "./HeaderChecker.js";
 import ParserSpecifications from "./ParserSpecifications.js";
 import FileStructure from "./FileStructure.js";
 import Classification from "./MoleculesClassification.js";
@@ -10,7 +11,7 @@ import MoleculeList from "./MoleculeList.js";
 /**
  * Import CSV file to parse data into an object
  * @param {string} filepath The path to the file
- * @param {function(Error[]|null,JSON)} callback Function called at the end of the parsing process
+ * @returns {Promise<Error|HeaderErrors|JSON>}
  */
 export function parseCSV(filepath) {
   return new Promise((resolve, reject) => {
@@ -46,10 +47,7 @@ export function parseCSV(filepath) {
 
         resolve(JSON.stringify(data));
       })
-      .catch((error) => {
-        console.error(error);
-        reject(new Error("An error has occured while reading the csv file"));
-      });
+      .catch(reject);
   });
 }
 
