@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "proptypes";
 
+/* ---------- Buttons ---------- */
+
 const AnswerBtn = ({ value, isRight, showResult, onClick }) => {
   let classBtn = "";
   if (showResult) classBtn = isRight ? "good-answer" : "bad-answer";
@@ -25,6 +27,8 @@ AnswerBtn.propTypes = {
   showResult: PropTypes.bool.isRequired,
   onClick: PropTypes.func.isRequired,
 };
+
+/* ---------- List of buttons ---------- */
 
 const Answers = ({ inProgress, goodAnswer, badAnswers, lastClicked, onClick }) => {
   const [goodIndex, setGoodIndex] = useState(0);

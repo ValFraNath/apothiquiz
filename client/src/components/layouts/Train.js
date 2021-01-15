@@ -7,14 +7,18 @@ import Plural from "../Plural";
 import Timer from "../quizz/Timer";
 import Answers from "../quizz/Answers";
 import Message from "../quizz/Message";
+import InformationPilette from "../../images/information_crop.png";
 
 /* ---------- Introduction view ---------- */
 
 const IntroductionView = ({ onClick }) => {
   return (
     <>
-      <h1>Mode entraînement</h1>
-      <p id="about">Répondez à une série de questions aléatoire.</p>
+      <img src={InformationPilette} alt="Pilette is thinking deeply" id="" />
+      <div>
+        <h1>Mode entraînement</h1>
+        <p id="about">Répondez à une série de questions aléatoire.</p>
+      </div>
       <button onClick={onClick}>Lancer l'entraînement</button>
     </>
   );
@@ -287,9 +291,10 @@ class Train extends Component {
       addWrongAnswer: this.addWrongAnswer,
       displaySummury: this.displaySummury,
     };
+    const additionalClass = gameState === Train.STATE_INTRO ? "quiz-intro" : "";
 
     return (
-      <main id="quiz">
+      <main id="quiz" className={additionalClass}>
         {error !== null && <Message type="error" content={error} />}
         <SwitchView toDisplay={gameState} props={switchProps} />
       </main>

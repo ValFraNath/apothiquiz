@@ -2,22 +2,29 @@
 $timer-size: 100px;
 
 #quiz {
-  padding: 0.7em 1em;
+  padding: 1rem 0;
 
-  h1 {
-    font-size: 1.8rem;
-    text-align: center;
-    margin-bottom: 0.5rem;
-  }
+  &.quiz-intro {
+    img {
+      width: 100%;
+    }
 
-  h2 {
-    font-size: 1.2rem;
-    text-align: center;
-  }
+    div {
+      margin-bottom: 2rem;
+      text-align: center;
 
-  #about {
-    font-size: 1rem;
-    text-align: center;
+      h1 {
+        font-size: 2rem;
+      }
+
+      #about {
+        font-size: 1rem;
+      }
+    }
+
+    button {
+      margin: auto;
+    }
   }
 
   /* ---------- Score ---------- */
