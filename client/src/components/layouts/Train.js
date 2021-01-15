@@ -30,7 +30,7 @@ class PlayView extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      inProgress: false,
+      inProgress: true,
       lastClicked: "",
       timer: 10,
     };
@@ -40,7 +40,7 @@ class PlayView extends Component {
    * Generate the text of the question according to its type
    * @returns {string} Text of the question
    */
-  generateQuestionText = () => {
+  generateQuestionText() {
     const { type, subject } = this.props.question;
     let text;
     switch (type) {
@@ -52,24 +52,23 @@ class PlayView extends Component {
     }
 
     return text;
-  };
+  }
 
   /**
    * Update the timer
    */
   updateTimer = (value) => {
-    let { inProgress, result } = this.state;
+    let { inProgress } = this.state;
 
     if (!inProgress) return false;
     if (value === 0) {
-      result.bad += 1;
+      this.props.updateResult(false);
       inProgress = false;
     }
 
     this.setState({
       inProgress: inProgress,
       timer: value,
-      result: result,
     });
   };
 
@@ -78,25 +77,26 @@ class PlayView extends Component {
    * @param isRightAnswer True if the click is performed on the right answer
    */
   handleAnswerClick = (isRightAnswer, value) => {
-    if (!this.state.inProgress) {
-      return;
-    }
+    if (!this.state.inProgress) return;
 
-    const result = this.state.result;
-    const { goodPoint, badPoint } = isRightAnswer ? { goodPoint: 1, badPoint: 0 } : { goodPoint: 0, badPoint: 1 };
+    this.props.updateResult(isRightAnswer);
     this.setState({
       inProgress: false,
       lastClicked: value,
-      result: {
-        good: result.good + goodPoint,
-        bad: result.bad + badPoint,
-      },
+    });
+  };
+
+  nextQuestion = () => {
+    this.props.getNewQuestion();
+    this.setState({
+      inProgress: true,
+      lastClicked: "",
     });
   };
 
   render() {
     const { inProgress, timer, lastClicked } = this.state;
-    const { result, question, getNewQuestion } = this.props;
+    const { result, question } = this.props;
 
     return (
       <>
@@ -118,7 +118,7 @@ class PlayView extends Component {
           <Timer inProgress={inProgress} duration={timer} updateParent={this.updateTimer} />
         ) : (
           <div id="next-btn">
-            <button onClick={getNewQuestion}>
+            <button onClick={this.nextQuestion}>
               Question suivante
               <ArrowRightIcon />
             </button>
@@ -156,7 +156,14 @@ const SwitchView = ({ toDisplay, props }) => {
     case Train.STATE_INTRO:
       return <IntroductionView onClick={props.getNewQuestion} />;
     case Train.STATE_PLAY:
-      return <PlayView result={props.result} question={props.question} getNewQuestion={props.getNewQuestion} />;
+      return (
+        <PlayView
+          result={props.result}
+          question={props.question}
+          getNewQuestion={props.getNewQuestion}
+          updateResult={props.updateResult}
+        />
+      );
     case Train.STATE_SUMMURY:
       return <SummuryView />;
     default:
@@ -203,11 +210,26 @@ class Train extends Component {
       );
   };
 
+  /**
+   * Update result with the new score
+   */
+  updateResult = (increase) => {
+    const { good, bad } = this.state.result;
+    const { goodPoint, badPoint } = increase ? { goodPoint: 1, badPoint: 0 } : { goodPoint: 0, badPoint: 1 };
+    this.setState({
+      result: {
+        good: good + goodPoint,
+        bad: bad + badPoint,
+      },
+    });
+  };
+
   render() {
     const { gameState, error } = this.state;
     const switchProps = {
       ...this.state,
       getNewQuestion: this.getNewQuestion,
+      updateResult: this.updateResult,
     };
 
     return (
