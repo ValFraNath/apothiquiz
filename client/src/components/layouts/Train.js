@@ -30,6 +30,7 @@ class PlayView extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      currentQuestion: this.generateQuestionText(),
       inProgress: true,
       lastClicked: "",
       timer: this.props.timerDuration,
@@ -80,6 +81,7 @@ class PlayView extends Component {
     if (!this.state.inProgress) return;
 
     this.props.updateResult(isRightAnswer);
+    if (!isRightAnswer) this.props.addWrongAnswer(this.state.currentQuestion, value);
     this.setState({
       inProgress: false,
       lastClicked: value,
@@ -89,6 +91,7 @@ class PlayView extends Component {
   nextQuestion = () => {
     this.props.getNewQuestion();
     this.setState({
+      currentQuestion: this.generateQuestionText(),
       inProgress: true,
       lastClicked: "",
       timer: this.props.timerDuration,
@@ -96,7 +99,7 @@ class PlayView extends Component {
   };
 
   render() {
-    const { inProgress, timer, lastClicked } = this.state;
+    const { currentQuestion, inProgress, timer, lastClicked } = this.state;
     const { result, question, displaySummury } = this.props;
 
     return (
@@ -112,7 +115,7 @@ class PlayView extends Component {
 
         <div id="quiz-question">
           <h2>Question {result.good + result.bad + 1}</h2>
-          <h1>{this.generateQuestionText()}</h1>
+          <h1>{currentQuestion}</h1>
         </div>
 
         {inProgress ? (
@@ -150,13 +153,21 @@ PlayView.propTypes = {
 
 /* ---------- Summury view ---------- */
 
-const SummuryView = ({ result }) => {
+const SummuryView = ({ result, answers }) => {
   return (
     <>
       <h1>Fin de l'entraînement</h1>
       <p>
         Vous avez obtenu un score de {result.good}/{result.good + result.bad}
       </p>
+
+      <h2>Liste de vos erreurs :</h2>
+      {answers.map((value) => (
+        <ul>
+          {value.question} <span className="wrong">{value.userChoice}</span>{" "}
+          <span className="right">{value.goodChoice}</span>
+        </ul>
+      ))}
     </>
   );
 };
@@ -182,11 +193,12 @@ const SwitchView = ({ toDisplay, props }) => {
           timerDuration={props.timerDuration}
           getNewQuestion={props.getNewQuestion}
           updateResult={props.updateResult}
+          addWrongAnswer={props.addWrongAnswer}
           displaySummury={props.displaySummury}
         />
       );
     case Train.STATE_SUMMURY:
-      return <SummuryView result={props.result} />;
+      return <SummuryView result={props.result} answers={props.wrongAnswers} />;
     default:
       return "Error";
   }
@@ -206,6 +218,7 @@ class Train extends Component {
       gameState: Train.STATE_INTRO,
       question: { badAnswers: [], goodAnswer: "", subject: "", type: 0 },
       result: { good: 0, bad: 0 },
+      wrongAnswers: [],
       error: null,
     };
   }
@@ -250,6 +263,14 @@ class Train extends Component {
     });
   };
 
+  addWrongAnswer = (question, userChoice) => {
+    const { wrongAnswers } = this.state;
+    wrongAnswers.push({ question: question, userChoice: userChoice, goodChoice: this.state.question.goodAnswer });
+    this.setState({
+      wrongAnswers: wrongAnswers,
+    });
+  };
+
   displaySummury = () => {
     this.setState({
       gameState: Train.STATE_SUMMURY,
@@ -263,6 +284,7 @@ class Train extends Component {
       timerDuration: Train.TIMER_DURATION,
       getNewQuestion: this.getNewQuestion,
       updateResult: this.updateResult,
+      addWrongAnswer: this.addWrongAnswer,
       displaySummury: this.displaySummury,
     };
 
