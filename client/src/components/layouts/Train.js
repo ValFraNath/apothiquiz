@@ -92,6 +92,9 @@ class PlayView extends Component {
     });
   };
 
+  /**
+   * Get the next question and update the state
+   */
   nextQuestion = () => {
     this.props.getNewQuestion();
     this.setState({
@@ -267,6 +270,12 @@ class Train extends Component {
     });
   };
 
+  /**
+   * And the current questionn the user's answer and the right answer
+   * to the list of errors
+   * @param {string} question The question
+   * @param {string} userChoice The user's choice
+   */
   addWrongAnswer = (question, userChoice) => {
     const { wrongAnswers } = this.state;
     wrongAnswers.push({ question: question, userChoice: userChoice, goodChoice: this.state.question.goodAnswer });
@@ -275,6 +284,9 @@ class Train extends Component {
     });
   };
 
+  /**
+   * Change the state of the game to display the summury
+   */
   displaySummury = () => {
     this.setState({
       gameState: Train.STATE_SUMMURY,

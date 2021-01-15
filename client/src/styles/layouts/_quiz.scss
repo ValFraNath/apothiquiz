@@ -2,9 +2,11 @@
 $timer-size: 100px;
 
 #quiz {
-  padding: 1rem 0;
+  padding: 1rem 0.8rem;
 
   &.quiz-intro {
+    padding: 1rem 0;
+
     img {
       width: 100%;
     }
@@ -15,6 +17,7 @@ $timer-size: 100px;
 
       h1 {
         font-size: 2rem;
+        margin-bottom: 0.2rem;
       }
 
       #about {
