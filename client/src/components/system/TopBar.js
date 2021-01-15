@@ -2,23 +2,12 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 // import { CaretLeftIcon } from "@modulz/radix-icons";
 
-import AuthService from "../../services/auth.service";
 import SpriteSheet from "../SpriteSheet";
 
 import connection_anim from "../../images/connection_status.png";
 
-function handleLogoutClick() {
-  AuthService.logout();
-  document.location.replace("/");
-}
-
 const UserBadge = ({ pseudo }) => {
-  return (
-    <div id={"userBadge"}>
-      {pseudo}
-      <button onClick={handleLogoutClick}>Déconnexion</button>
-    </div>
-  );
+  return <div id={"userBadge"}>{pseudo}</div>;
 };
 
 const OfflineBanner = () => {
