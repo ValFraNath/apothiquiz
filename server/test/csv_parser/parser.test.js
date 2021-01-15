@@ -9,13 +9,15 @@ import { parseCSV } from "../../modules/CSVParser/Parser.js";
 import { expectations } from "./expectations.js";
 // eslint-disable-next-line no-unused-vars
 import { ClassificationNode } from "../../modules/CSVParser/MoleculesClassification.js";
+import { HeaderError } from "../../modules/CSVParser/HeaderChecker.js";
 
 chai.use(chaiHttp);
 chai.use(deepEqualAnyOrder);
 const { before } = mocha;
 const { expect } = chai;
 
-const CSVFolderPath = path.resolve("test", "csv_parser", "files");
+const filesFolderPath = path.resolve("test", "csv_parser", "files");
+const badFilesFolderPath = path.resolve(filesFolderPath, "bad_formatted_files");
 const snapshotsFolderPath = path.resolve("test", "csv_parser", "snapshots");
 
 // TODO errors test
@@ -44,7 +46,7 @@ describe("Test if values are well imported", function () {
       let data;
 
       before("Import data", (done) => {
-        parseCSV(path.resolve(CSVFolderPath, file.name), (errors, json) => {
+        parseCSV(path.resolve(filesFolderPath, file.name), (errors, json) => {
           if (errors) {
             console.table(errors);
           } else {
@@ -141,9 +143,52 @@ describe("Test if values are well imported", function () {
 });
 
 describe("Tests for errors occurred while parsing an incorrectly formatted file", function () {
-  it("Empty file", (done) => {
-    done();
-  });
+  const bad_files = [
+    {
+      name: "empty_file.xlsx",
+      errors: [HeaderError.EMPTY_FILE],
+    },
+    {
+      name: "invalid_column.xlsx",
+      errors: [HeaderError.INVALID_COLUMN],
+    },
+    {
+      name: "missing_side_effects.xlsx",
+      errors: [HeaderError.MISSING_COLUMN],
+    },
+    {
+      name: "missing_skeletal_formule.xlsx",
+      errors: [HeaderError.MISSING_COLUMN],
+    },
+    {
+      name: "bad_grouped_property.xlsx",
+      errors: [HeaderError.BAD_COLUMNS_GROUP],
+    },
+    {
+      name: "bad_hierarchical_levels.xlsx",
+      errors: [HeaderError.BAD_HIERARCHICAL_COLUMNS_ORDER],
+    },
+    {
+      name: "bad_grouped_classification.xlsx",
+      errors: [HeaderError.BAD_COLUMNS_GROUP, HeaderError.BAD_COLUMNS_GROUP],
+    },
+    {
+      name: "missing_classification.xlsx",
+      errors: [HeaderError.MISSING_COLUMN],
+    },
+  ];
+
+  for (const file of bad_files) {
+    it(`File : ${file.name}`, (done) => {
+      parseCSV(path.resolve(badFilesFolderPath, file.name), (errors) => {
+        expect(errors).to.not.be.null;
+        //console.table(errors);
+        const errorsCodes = errors.map((error) => error.code);
+        expect(errorsCodes).to.be.deep.equalInAnyOrder(file.errors);
+        done();
+      });
+    });
+  }
 });
 
 // ***** INTERNAL FUNCTIONS *****

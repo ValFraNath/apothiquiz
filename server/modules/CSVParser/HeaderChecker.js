@@ -21,8 +21,12 @@ export default class HeaderChecker {
    * @return {boolean} True if the tests passed without problems, false otherwise.
    */
   check() {
+    if (checkNotEmptyHeader(this.header).length) {
+      this.errors = [new HeaderError(HeaderError.EMPTY_FILE)];
+      return false;
+    }
+
     this.errors = [
-      ...checkNotEmptyHeader(this.header),
       ...checkMissingColumns(this.header, this.columnsSpecs),
       ...checkDuplicateUniqueColumns(this.header, this.columnsSpecs),
       ...checkInvalidColumns(this.header, this.columnsSpecs),
@@ -58,7 +62,7 @@ export class HeaderError extends Error {
     return error instanceof HeaderError;
   }
 
-  static getMessage(code, { index, title }) {
+  static getMessage(code, { index, title } = { index: null, title: null }) {
     const messages = Object.create(null);
 
     messages[HeaderError.EMPTY_FILE] = `L'en-tête du fichier est vide.`;
@@ -142,7 +146,7 @@ function checkMissingColumns(header, columnsSpecifications) {
   const errors = [];
   columnsSpecifications.forEach((column, index) => {
     if (!header.some((title) => column.matchTitle(title))) {
-      errors.push(new HeaderError(HeaderError.MISSING_COLUMN, { index, title: column }));
+      errors.push(new HeaderError(HeaderError.MISSING_COLUMN, { index, title: column.title }));
     }
   });
   return errors;
@@ -201,26 +205,29 @@ function checkHierarchicalColumnsOrder(header, columnsSpecifications) {
   const errors = [];
   const hierarchicalColumns = columnsSpecifications.filter((column) => column.isHierarchical());
 
-  let currentGroup;
-  let level;
+  let currentGroupTitle;
+  let expectedLevel;
   header.forEach((title, index) => {
     let group = hierarchicalColumns.find((column) => column.matchTitle(title));
     if (!group) {
       return;
     }
-    group = group.title;
-    if (currentGroup !== group) {
-      currentGroup = group;
-      level = 1;
+
+    if (currentGroupTitle !== group.title) {
+      currentGroupTitle = group.title;
+      expectedLevel = 1;
     }
 
-    let match = title.match(new RegExp(group));
-    if (Number(match[1]) !== level) {
-      errors.push(HeaderError.BAD_HIERARCHICAL_COLUMNS_ORDER, { title, index });
-      level = null;
+    let level = group.getHierarchicalLevel(title);
+
+    if (level !== expectedLevel) {
+      if (expectedLevel !== null) {
+        errors.push(new HeaderError(HeaderError.BAD_HIERARCHICAL_COLUMNS_ORDER, { title, index }));
+      }
+      expectedLevel = null;
       return;
     }
-    level++;
+    expectedLevel++;
   });
   return errors;
 }

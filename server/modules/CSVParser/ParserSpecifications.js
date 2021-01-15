@@ -24,11 +24,25 @@ export class ColumnSpecifications {
   }
 
   /**
-   * Test if a string match the column title (which is a regex)
+   * Test if a string match the column title (where "n" can be replaced by any number)
    * @param {string} value
    */
   matchTitle(value) {
-    return new RegExp(this.title).test(value);
+    let title = this.title.replace("n", "(\\d+)");
+    return new RegExp(title).test(value);
+  }
+
+  /**
+   * Get the hierarchical level of a value corresponding to the title
+   * @param {string} value The title value
+   * @return {number}
+   */
+  getHierarchicalLevel(value) {
+    if (this.isHierarchical() && this.matchTitle(value)) {
+      let title = this.title.replace("n", "(\\d+)");
+      return Number(value.match(new RegExp(title))[1]);
+    }
+    return null;
   }
 }
 ColumnSpecifications.HIERARCHICAL = 1;
@@ -38,8 +52,8 @@ ColumnSpecifications.MULTI_VALUED = 3;
 const columns = [
   new ColumnSpecifications("DCI", "dci", ColumnSpecifications.UNIQUE),
   new ColumnSpecifications("FORMULE_CHIMIQUE", "skeletal_formule", ColumnSpecifications.UNIQUE),
-  new ColumnSpecifications("SYSTEME_(\\d+)", "systems", ColumnSpecifications.HIERARCHICAL),
-  new ColumnSpecifications("CLASSE_PHARMA_(\\d+)", "classes", ColumnSpecifications.HIERARCHICAL),
+  new ColumnSpecifications("SYSTEME_n", "systems", ColumnSpecifications.HIERARCHICAL),
+  new ColumnSpecifications("CLASSE_PHARMA_n", "classes", ColumnSpecifications.HIERARCHICAL),
   new ColumnSpecifications("MTE", "ntr", ColumnSpecifications.UNIQUE),
   new ColumnSpecifications("INTERACTION", "interactions", ColumnSpecifications.MULTI_VALUED),
   new ColumnSpecifications("INDICATION", "indications", ColumnSpecifications.MULTI_VALUED),

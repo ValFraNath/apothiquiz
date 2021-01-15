@@ -10,7 +10,7 @@ import MoleculeList from "./MoleculeList.js";
 /**
  * Import CSV file to parse data into an object
  * @param {string} filepath The path to the file
- * @param {function(HeaderError[],JSON)} callback Function called at the end of the parsing process
+ * @param {function(HeaderError[]|null,JSON)} callback Function called at the end of the parsing process
  */
 export function parseCSV(filepath, callback) {
   let moleculesMatrix = cleanUpStringsInMatrix(readCsvFile(filepath));
