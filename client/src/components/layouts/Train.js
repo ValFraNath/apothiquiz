@@ -8,6 +8,8 @@ import Timer from "../quizz/Timer";
 import Answers from "../quizz/Answers";
 import Message from "../quizz/Message";
 
+/* ---------- Introduction view ---------- */
+
 const IntroductionView = ({ onClick }) => {
   return (
     <>
@@ -22,112 +24,24 @@ IntroductionView.propTypes = {
   onClick: PropTypes.func.isRequired,
 };
 
-const PlayView = () => {
-  return (
-    <>
-      <div id="quiz-score">
-        <p id="good-score">
-          {result.good} <Plural word="bonne" count={result.good} /> <Plural word="réponse" count={result.good} />
-        </p>
-        <p id="bad-score">
-          {result.bad} <Plural word="mauvaise" count={result.bad} /> <Plural word="réponse" count={result.bad} />
-        </p>
-      </div>
+/* ---------- Play view ---------- */
 
-      <div id="quiz-question">
-        <h2>Question {result.good + result.bad + 1}</h2>
-        <h1>{this.generateQuestionText()}</h1>
-      </div>
-
-      {inProgress ? (
-        <Timer inProgress={inProgress} duration={timer} updateParent={this.updateTimer} />
-      ) : (
-        <div id="next-btn">
-          <button onClick={this.getNewQuestion}>
-            Question suivante
-            <ArrowRightIcon />
-          </button>
-        </div>
-      )}
-
-      <Answers
-        inProgress={inProgress}
-        goodAnswer={question.goodAnswer}
-        badAnswers={question.badAnswers}
-        lastClicked={lastClicked}
-        onClick={this.handleAnswerClick}
-      />
-    </>
-  );
-};
-
-const SummuryView = () => {
-  return (
-    <>
-      <p>Fin !</p>
-    </>
-  );
-};
-
-const SwitchView = ({ toDisplay, props }) => {
-  switch (toDisplay) {
-    case Train.STATE_INTRO:
-      return <IntroductionView />;
-    case Train.STATE_PLAY:
-      return <PlayView />;
-    case Train.STATE_SUMMURY:
-      return <SummuryView />;
-    default:
-      return "Error";
-  }
-};
-
-class Train extends Component {
+class PlayView extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      gameState: Train.STATE_INTRO,
-      question: {},
       inProgress: false,
       lastClicked: "",
       timer: 10,
-      result: { good: 0, bad: 0 },
-      error: null,
     };
   }
-
-  /**
-   * Get a new question (random type) from the server
-   */
-  getNewQuestion = () => {
-    const minQuestionType = 1,
-      maxQuestionType = 1;
-    const questionType = Math.floor(Math.random() * (maxQuestionType - minQuestionType)) + minQuestionType;
-    axios
-      .get(`/api/v1/question/${questionType}`)
-      .then((res) => {
-        this.setState({
-          gameState: Train.STATE_PLAY,
-          question: res.data.question,
-          inProgress: true,
-          lastClicked: "",
-          timer: 10,
-          error: null,
-        });
-      })
-      .catch(() =>
-        this.setState({
-          error: "Impossible de récupérer les données depuis le serveur.",
-        })
-      );
-  };
 
   /**
    * Generate the text of the question according to its type
    * @returns {string} Text of the question
    */
-  generateQuestionText() {
-    const { type, subject } = this.state.question;
+  generateQuestionText = () => {
+    const { type, subject } = this.props.question;
     let text;
     switch (type) {
       case 1:
@@ -138,7 +52,7 @@ class Train extends Component {
     }
 
     return text;
-  }
+  };
 
   /**
    * Update the timer
@@ -181,12 +95,125 @@ class Train extends Component {
   };
 
   render() {
+    const { inProgress, timer, lastClicked } = this.state;
+    const { result, question, getNewQuestion } = this.props;
+
+    return (
+      <>
+        <div id="quiz-score">
+          <p id="good-score">
+            {result.good} <Plural word="bonne" count={result.good} /> <Plural word="réponse" count={result.good} />
+          </p>
+          <p id="bad-score">
+            {result.bad} <Plural word="mauvaise" count={result.bad} /> <Plural word="réponse" count={result.bad} />
+          </p>
+        </div>
+
+        <div id="quiz-question">
+          <h2>Question {result.good + result.bad + 1}</h2>
+          <h1>{this.generateQuestionText()}</h1>
+        </div>
+
+        {inProgress ? (
+          <Timer inProgress={inProgress} duration={timer} updateParent={this.updateTimer} />
+        ) : (
+          <div id="next-btn">
+            <button onClick={getNewQuestion}>
+              Question suivante
+              <ArrowRightIcon />
+            </button>
+          </div>
+        )}
+
+        <Answers
+          inProgress={inProgress}
+          goodAnswer={question.goodAnswer}
+          badAnswers={question.badAnswers}
+          lastClicked={lastClicked}
+          onClick={this.handleAnswerClick}
+        />
+      </>
+    );
+  }
+}
+
+PlayView.propTypes = {
+  result: PropTypes.object.isRequired,
+  question: PropTypes.object.isRequired,
+  getNewQuestion: PropTypes.func.isRequired,
+};
+
+/* ---------- Summury view ---------- */
+
+const SummuryView = () => {
+  return <p>Fini !</p>;
+};
+
+/* ---------- Switch view componant ---------- */
+
+const SwitchView = ({ toDisplay, props }) => {
+  switch (toDisplay) {
+    case Train.STATE_INTRO:
+      return <IntroductionView onClick={props.getNewQuestion} />;
+    case Train.STATE_PLAY:
+      return <PlayView result={props.result} question={props.question} getNewQuestion={props.getNewQuestion} />;
+    case Train.STATE_SUMMURY:
+      return <SummuryView />;
+    default:
+      return "Error";
+  }
+};
+
+/* ---------- Train ---------- */
+
+class Train extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      gameState: Train.STATE_INTRO,
+      question: { badAnswers: [], goodAnswer: "", subject: "", type: 0 },
+      result: { good: 0, bad: 0 },
+      error: null,
+    };
+  }
+
+  /**
+   * Get a new question (random type) from the server
+   */
+  getNewQuestion = () => {
+    const minQuestionType = 1,
+      maxQuestionType = 1;
+    const questionType = Math.floor(Math.random() * (maxQuestionType - minQuestionType)) + minQuestionType;
+    axios
+      .get(`/api/v1/question/${questionType}`)
+      .then((res) => {
+        this.setState({
+          gameState: Train.STATE_PLAY,
+          question: res.data.question,
+          inProgress: true,
+          lastClicked: "",
+          timer: 10,
+          error: null,
+        });
+      })
+      .catch(() =>
+        this.setState({
+          error: "Impossible de récupérer les données depuis le serveur.",
+        })
+      );
+  };
+
+  render() {
     const { gameState, error } = this.state;
+    const switchProps = {
+      ...this.state,
+      getNewQuestion: this.getNewQuestion,
+    };
 
     return (
       <main id="quiz">
         {error !== null && <Message type="error" content={error} />}
-        <SwitchView toDisplay={gameState} props={this.state} />
+        <SwitchView toDisplay={gameState} props={switchProps} />
       </main>
     );
   }
