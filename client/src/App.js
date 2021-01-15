@@ -19,7 +19,7 @@ import Profile from "./components/pages/Profile";
 axios.interceptors.request.use(function (config) {
   const user = AuthService.getCurrentUser();
   if (user && user.token && user.pseudo) {
-    config.headers.Authorization = `Barear ${user.token}`;
+    config.headers.Authorization = `Bearer ${user.token}`;
   }
   return config;
 });
