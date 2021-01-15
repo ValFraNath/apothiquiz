@@ -23,32 +23,32 @@ const snapshotsFolderPath = path.resolve("test", "csv_parser", "snapshots");
 describe("Test if values are well imported", function () {
   const files = [
     {
-      name: "molecules.xlsx",
+      name: "molecules.csv",
       snapshot: "molecules.json",
       expectation: expectations.first_version,
     },
     {
-      name: "molecules_moved_columns.xlsx",
+      name: "molecules_moved_columns.csv",
       snapshot: "moved_columns.json",
       expectation: expectations.first_version,
     },
     {
-      name: "molecules_little_sample.xlsx",
+      name: "molecules_little_sample.csv",
       snapshot: "sample.json",
       expectation: expectations.little_sample,
     },
     {
-      name: "molecules_only_dci.xlsx",
+      name: "molecules_only_dci.csv",
       snapshot: "only_dci.json",
       expectation: expectations.only_dci,
     },
     {
-      name: "molecules_empty.xlsx",
+      name: "molecules_empty.csv",
       snapshot: "empty.json",
       expectation: expectations.empty,
     },
     {
-      name: "molecules_separated_rows.xlsx",
+      name: "molecules_separated_rows.csv",
       snapshot: "separated_rows.json",
       expectation: expectations.first_version,
     },
@@ -59,14 +59,15 @@ describe("Test if values are well imported", function () {
       let data;
 
       before("Import data", (done) => {
-        parseCSV(path.resolve(filesFolderPath, file.name), (errors, json) => {
-          if (errors) {
-            console.table(errors);
-          } else {
+        parseCSV(path.resolve(filesFolderPath, file.name))
+          .then((json) => {
             data = JSON.parse(json);
             done();
-          }
-        });
+          })
+          .catch((error) => {
+            console.table(error);
+            expect(error).to.be.null;
+          });
       });
 
       it("Imported data are equals to its snapshot", function (done) {
@@ -166,52 +167,60 @@ describe("Test if values are well imported", function () {
 describe("Tests for errors occurred while parsing an incorrectly formatted file", function () {
   const bad_files = [
     {
-      name: "empty_file.xlsx",
+      name: "empty_file.csv",
       errors: [HeaderError.EMPTY_FILE],
     },
     {
-      name: "invalid_column.xlsx",
+      name: "invalid_column.csv",
       errors: [HeaderError.INVALID_COLUMN],
     },
     {
-      name: "missing_side_effects.xlsx",
+      name: "missing_side_effects.csv",
       errors: [HeaderError.MISSING_COLUMN],
     },
     {
-      name: "missing_skeletal_formule.xlsx",
+      name: "missing_skeletal_formule.csv",
       errors: [HeaderError.MISSING_COLUMN],
     },
     {
-      name: "bad_grouped_property.xlsx",
+      name: "bad_grouped_property.csv",
       errors: [HeaderError.BAD_COLUMNS_GROUP],
     },
     {
-      name: "bad_hierarchical_levels.xlsx",
+      name: "bad_hierarchical_levels.csv",
       errors: [HeaderError.BAD_HIERARCHICAL_COLUMNS_ORDER],
     },
     {
-      name: "bad_grouped_classification.xlsx",
+      name: "bad_grouped_classification.csv",
       errors: [HeaderError.BAD_COLUMNS_GROUP, HeaderError.BAD_COLUMNS_GROUP],
     },
     {
-      name: "missing_classification.xlsx",
+      name: "missing_classification.csv",
       errors: [HeaderError.MISSING_COLUMN],
     },
     {
-      name: "several_errors.xlsx",
+      name: "several_errors.csv",
       errors: [HeaderError.INVALID_COLUMN, HeaderError.INVALID_COLUMN, HeaderError.MISSING_COLUMN],
+    },
+    {
+      name: "empty_column.csv",
+      errors: [HeaderError.EMPTY_COLUMN],
     },
   ];
 
   for (const file of bad_files) {
-    it(`File : ${file.name}`, (done) => {
-      parseCSV(path.resolve(badFilesFolderPath, file.name), (errors) => {
-        expect(errors).to.not.be.null;
-        console.table(errors);
+    it(`File : ${file.name}`, async () => {
+      try {
+        const json = await parseCSV(path.resolve(badFilesFolderPath, file.name));
+        expect(json === null, "The parsing is not supposed to pass").be.true;
+      } catch (errors) {
+        if (errors instanceof Error) {
+          throw errors;
+        }
+        //console.table(errors);
         const errorsCodes = errors.map((error) => error.code);
         expect(errorsCodes).to.be.deep.equalInAnyOrder(file.errors);
-        done();
-      });
+      }
     });
   }
 });

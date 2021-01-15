@@ -1,6 +1,6 @@
-import xlsx from "node-xlsx";
-// eslint-disable-next-line no-unused-vars
-import HeaderChecker, { HeaderError } from "./HeaderChecker.js";
+import { readCSV } from "./Reader.js";
+
+import HeaderChecker from "./HeaderChecker.js";
 import ParserSpecifications from "./ParserSpecifications.js";
 import FileStructure from "./FileStructure.js";
 import Classification from "./MoleculesClassification.js";
@@ -10,38 +10,47 @@ import MoleculeList from "./MoleculeList.js";
 /**
  * Import CSV file to parse data into an object
  * @param {string} filepath The path to the file
- * @param {function(HeaderError[]|null,JSON)} callback Function called at the end of the parsing process
+ * @param {function(Error[]|null,JSON)} callback Function called at the end of the parsing process
  */
-export function parseCSV(filepath, callback) {
-  let moleculesMatrix = cleanUpStringsInMatrix(readCsvFile(filepath));
+export function parseCSV(filepath) {
+  return new Promise((resolve, reject) => {
+    readCSV(filepath)
+      .then((matrix) => {
+        let moleculesMatrix = cleanUpStringsInMatrix(matrix);
 
-  const columnsHeader = moleculesMatrix.shift();
+        const columnsHeader = moleculesMatrix.shift();
 
-  const checker = new HeaderChecker(columnsHeader, ParserSpecifications.columns);
-  if (!checker.check()) {
-    callback(checker.getErrors());
-    return;
-  }
+        const checker = new HeaderChecker(columnsHeader, ParserSpecifications.columns);
+        if (!checker.check()) {
+          reject(checker.getErrors());
+          return;
+        }
 
-  const structure = new FileStructure(columnsHeader, ParserSpecifications.columns);
+        const structure = new FileStructure(columnsHeader, ParserSpecifications.columns);
 
-  moleculesMatrix = removeInvalidMoleculeLines(moleculesMatrix, structure.getIndexesFor("dci")[0]);
+        moleculesMatrix = removeInvalidMoleculeLines(moleculesMatrix, structure.getIndexesFor("dci")[0]);
 
-  const data = Object.create(null);
+        const data = Object.create(null);
 
-  const nonUniqueColumns = ParserSpecifications.columns.filter((column) => !column.isUnique());
+        const nonUniqueColumns = ParserSpecifications.columns.filter((column) => !column.isUnique());
 
-  for (let column of nonUniqueColumns) {
-    const creator = column.isHierarchical() ? Classification.create : Property.create;
+        for (let column of nonUniqueColumns) {
+          const creator = column.isHierarchical() ? Classification.create : Property.create;
 
-    data[column.property] = creator(extractColumns(moleculesMatrix, ...structure.getIndexesFor(column.property)));
-  }
+          data[column.property] = creator(extractColumns(moleculesMatrix, ...structure.getIndexesFor(column.property)));
+        }
 
-  data.molecules = MoleculeList.create(moleculesMatrix, structure, data);
+        data.molecules = MoleculeList.create(moleculesMatrix, structure, data);
 
-  //console.error(JSON.stringify(data));
+        //console.error(JSON.stringify(data));
 
-  callback(null, JSON.stringify(data));
+        resolve(JSON.stringify(data));
+      })
+      .catch((error) => {
+        console.error(error);
+        reject(new Error("An error has occured while reading the csv file"));
+      });
+  });
 }
 
 // ***** INTERNAL FUNCTIONS *****
@@ -57,20 +66,21 @@ function removeInvalidMoleculeLines(matrix, dciIndex) {
 }
 
 /**
- * Read the CSV file and return the content as a matrix
- * @param {string} filepath
- */
-function readCsvFile(filepath) {
-  return xlsx.parse(filepath)[0].data;
-}
-
-/**
  * Trim and remove successive whitespaces in all strings of the matrix
  * @param {[][]} matrix
  * @returns {[][]}
  */
 function cleanUpStringsInMatrix(matrix) {
-  return matrix.map((row) => row.map((value) => (isString(value) ? removeSuccessiveWhiteSpaces(value) : value)));
+  //console.log(matrix);
+  return matrix.map((row) =>
+    row.map((value) => {
+      if (isString(value)) {
+        value = removeSuccessiveWhiteSpaces(value);
+        return value === "" ? null : value;
+      }
+      return value;
+    })
+  );
 }
 
 /**

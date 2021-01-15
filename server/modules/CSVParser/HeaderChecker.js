@@ -63,23 +63,26 @@ export class HeaderError extends Error {
   }
 
   static getMessage(code, { index, title } = { index: null, title: null }) {
+    index++;
     const messages = Object.create(null);
 
     messages[HeaderError.EMPTY_FILE] = `L'en-tête du fichier est vide.`;
 
     messages[
       HeaderError.BAD_COLUMNS_GROUP
-    ] = `Les colonnes d'une même propriété sont mal regroupées : '${title}' (col. ${index + 1})`;
+    ] = `Les colonnes d'une même propriété sont mal regroupées : '${title}' (col. ${index})`;
 
-    messages[HeaderError.DUPLICATE_UNIQUE_COLUMN] = `Duplication de la colonne unique '${title}' (col. ${index + 1})`;
+    messages[HeaderError.DUPLICATE_UNIQUE_COLUMN] = `Duplication de la colonne unique '${title}' (col. ${index})`;
 
     messages[HeaderError.MISSING_COLUMN] = `Colonne manquante : '${title}'`;
 
-    messages[HeaderError.INVALID_COLUMN] = `Colonne invalide : '${title}' (col. ${index + 1})`;
+    messages[HeaderError.INVALID_COLUMN] = `Colonne invalide : '${title}' (col. ${index})`;
 
     messages[
       HeaderError.BAD_HIERARCHICAL_COLUMNS_ORDER
     ] = `Niveaux de hiérachisation non respectés : ${title} (col. ${index})`;
+
+    messages[HeaderError.EMPTY_COLUMN] = `Colonne vide (col. ${index}) `;
 
     return messages[code];
   }
@@ -91,6 +94,7 @@ HeaderError.EMPTY_FILE = 3;
 HeaderError.INVALID_COLUMN = 4;
 HeaderError.BAD_COLUMNS_GROUP = 5;
 HeaderError.BAD_HIERARCHICAL_COLUMNS_ORDER = 6;
+HeaderError.EMPTY_COLUMN = 7;
 
 /// ***** INTERNAL FUNCTIONS *****
 
@@ -99,7 +103,7 @@ HeaderError.BAD_HIERARCHICAL_COLUMNS_ORDER = 6;
  * @param {string[]} header
  */
 function checkNotEmptyHeader(header) {
-  if (header.length === 0) {
+  if (!header.some((c) => c !== null)) {
     return [new HeaderError(HeaderError.EMPTY_FILE)];
   }
   return [];
@@ -160,6 +164,10 @@ function checkMissingColumns(header, columnsSpecifications) {
 function checkInvalidColumns(header, columnsSpecifications) {
   const errors = [];
   header.forEach((title, index) => {
+    if (title === null) {
+      errors.push(new HeaderError(HeaderError.EMPTY_COLUMN, { index }));
+      return;
+    }
     if (!columnsSpecifications.some((column) => column.matchTitle(title))) {
       errors.push(
         new HeaderError(HeaderError.INVALID_COLUMN, {
