@@ -2,13 +2,20 @@
 
 button {
   display: block;
-  border: 1px solid #000000;
+  border: 2px solid #000000;
   background: $button-bg;
   color: $button-fg;
   border-radius: $button-border-radius;
   text-transform: uppercase;
   padding: 0.7rem 0.9rem;
-  cursor: pointer;
+
+  &:not(:disabled) {
+    cursor: pointer;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+  }
 
   svg {
     vertical-align: top;
