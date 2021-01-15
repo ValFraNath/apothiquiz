@@ -22,11 +22,71 @@ IntroductionView.propTypes = {
   onClick: PropTypes.func.isRequired,
 };
 
+const PlayView = () => {
+  return (
+    <>
+      <div id="quiz-score">
+        <p id="good-score">
+          {result.good} <Plural word="bonne" count={result.good} /> <Plural word="réponse" count={result.good} />
+        </p>
+        <p id="bad-score">
+          {result.bad} <Plural word="mauvaise" count={result.bad} /> <Plural word="réponse" count={result.bad} />
+        </p>
+      </div>
+
+      <div id="quiz-question">
+        <h2>Question {result.good + result.bad + 1}</h2>
+        <h1>{this.generateQuestionText()}</h1>
+      </div>
+
+      {inProgress ? (
+        <Timer inProgress={inProgress} duration={timer} updateParent={this.updateTimer} />
+      ) : (
+        <div id="next-btn">
+          <button onClick={this.getNewQuestion}>
+            Question suivante
+            <ArrowRightIcon />
+          </button>
+        </div>
+      )}
+
+      <Answers
+        inProgress={inProgress}
+        goodAnswer={question.goodAnswer}
+        badAnswers={question.badAnswers}
+        lastClicked={lastClicked}
+        onClick={this.handleAnswerClick}
+      />
+    </>
+  );
+};
+
+const SummuryView = () => {
+  return (
+    <>
+      <p>Fin !</p>
+    </>
+  );
+};
+
+const SwitchView = ({ toDisplay, props }) => {
+  switch (toDisplay) {
+    case Train.STATE_INTRO:
+      return <IntroductionView />;
+    case Train.STATE_PLAY:
+      return <PlayView />;
+    case Train.STATE_SUMMURY:
+      return <SummuryView />;
+    default:
+      return "Error";
+  }
+};
+
 class Train extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      gameState: Train.STATE_INIT,
+      gameState: Train.STATE_INTRO,
       question: {},
       inProgress: false,
       lastClicked: "",
@@ -121,55 +181,18 @@ class Train extends Component {
   };
 
   render() {
-    const { gameState, question, inProgress, lastClicked, timer, result, error } = this.state;
+    const { gameState, error } = this.state;
 
     return (
       <main id="quiz">
         {error !== null && <Message type="error" content={error} />}
-        {gameState === Train.STATE_INIT ? (
-          <IntroductionView onClick={this.getNewQuestion} />
-        ) : (
-          <>
-            <div id="quiz-score">
-              <p id="good-score">
-                {result.good} <Plural word="bonne" count={result.good} /> <Plural word="réponse" count={result.good} />
-              </p>
-              <p id="bad-score">
-                {result.bad} <Plural word="mauvaise" count={result.bad} /> <Plural word="réponse" count={result.bad} />
-              </p>
-            </div>
-
-            <div id="quiz-question">
-              <h2>Question {result.good + result.bad + 1}</h2>
-              <h1>{this.generateQuestionText()}</h1>
-            </div>
-
-            {inProgress ? (
-              <Timer inProgress={inProgress} duration={timer} updateParent={this.updateTimer} />
-            ) : (
-              <div id="next-btn">
-                <button onClick={this.getNewQuestion}>
-                  Question suivante
-                  <ArrowRightIcon />
-                </button>
-              </div>
-            )}
-
-            <Answers
-              inProgress={inProgress}
-              goodAnswer={question.goodAnswer}
-              badAnswers={question.badAnswers}
-              lastClicked={lastClicked}
-              onClick={this.handleAnswerClick}
-            />
-          </>
-        )}
+        <SwitchView toDisplay={gameState} props={this.state} />
       </main>
     );
   }
 }
 
-Train.STATE_INIT = 0;
+Train.STATE_INTRO = 0;
 Train.STATE_PLAY = 1;
 Train.STATE_SUMMURY = 2;
 
