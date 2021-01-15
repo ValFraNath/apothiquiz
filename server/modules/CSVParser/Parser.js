@@ -67,7 +67,6 @@ function removeInvalidMoleculeLines(matrix, dciIndex) {
  * @returns {[][]}
  */
 function cleanUpStringsInMatrix(matrix) {
-  //console.log(matrix);
   return matrix.map((row) =>
     row.map((value) => {
       if (isString(value)) {
