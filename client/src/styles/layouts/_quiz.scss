@@ -52,16 +52,21 @@ $timer-size: 100px;
         }
 
         p:last-of-type {
-          display: flex;
-          justify-content: space-around;
+          display: grid;
+          grid-template-columns: 1fr 1fr 1fr;
 
-          .right {
-            color: $color-green-success;
-            font-weight: bold;
+          span:first-of-type {
+            color: $color-red-error;
+            text-align: right;
           }
 
-          .wrong {
-            color: $color-red-error;
+          span:nth-of-type(2) {
+            text-align: center;
+          }
+
+          span:last-of-type {
+            color: $color-green-success;
+            font-weight: bold;
           }
         }
       }

@@ -180,11 +180,11 @@ const SummuryView = ({ result, answers }) => {
           <li>
             <p>{value.question}</p>
             <p>
-              <span className="wrong">{value.userChoice}</span>
+              <span>{value.userChoice}</span>
               <span>
                 <ArrowRightIcon />
               </span>
-              <span className="right">{value.goodChoice}</span>
+              <span>{value.goodChoice}</span>
             </p>
           </li>
         ))}
