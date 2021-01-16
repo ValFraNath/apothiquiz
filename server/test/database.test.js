@@ -48,12 +48,12 @@ describe("Check the database structure", function () {
       fields: ["mo_id", "mo_dci", "mo_difficulty", "mo_skeletal_formula", "mo_ntr", "mo_class", "mo_system"],
     },
     {
-      name: "property",
-      fields: ["pr_id", "pr_name", "pr_category"],
+      name: "property_value",
+      fields: ["pv_id", "pv_name", "pv_property"],
     },
     {
       name: "molecule_property",
-      fields: ["pr_id", "mo_id"],
+      fields: ["pv_id", "mo_id"],
     },
     {
       name: "server_informations",
@@ -72,8 +72,8 @@ describe("Check the database structure", function () {
       fields: ["us_login", "du_id", "re_answers"],
     },
     {
-      name: "category",
-      fields: ["ca_id", "ca_name"],
+      name: "property",
+      fields: ["pr_id", "pr_name"],
     },
     {
       name: "system",
