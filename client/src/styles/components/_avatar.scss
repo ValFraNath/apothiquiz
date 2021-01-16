@@ -1,0 +1,64 @@
+.avatar {
+  contain: paint;
+
+  .avatar-inside {
+    width: 90%;
+    height: 90%;
+    top: calc(5% - 2px);
+    left: calc(5% - 2px);
+    position: absolute;
+    margin: 0;
+    border: 2px solid black;
+    border-radius: 50%;
+
+    img {
+      --x: 0;
+      width: 90%;
+      position: fixed;
+      margin-top: calc(-90% * var(--x));
+
+      pointer-events: none;
+      user-drag: none;
+      user-select: none;
+      -moz-user-select: none;
+      -webkit-user-drag: none;
+      -webkit-user-select: none;
+      -ms-user-select: none;
+    }
+
+    img[data-choice="1"] {
+      --x: 1;
+    }
+
+    img[data-choice="2"] {
+      --x: 2;
+    }
+
+    img[data-choice="3"] {
+      --x: 3;
+    }
+
+    img[data-choice="4"] {
+      --x: 4;
+    }
+
+    .avatar-eyes {
+      z-index: 2;
+    }
+    .avatar-hands {
+      z-index: 4;
+    }
+    .avatar-hat {
+      z-index: 3;
+    }
+    .avatar-mouth {
+      z-index: 2;
+    }
+    .avatar-body-top {
+      z-index: 1;
+    }
+    .avatar-body-bottom {
+      z-index: 0;
+    }
+  }
+}

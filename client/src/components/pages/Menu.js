@@ -9,7 +9,7 @@ const Menu = ({ installPromptEvent, user }) => {
       <div id="list">
         <Link to="/train">Entraînement libre</Link>
         {user === null && <Link to="/login">Se connecter</Link>}
-        <Link to="/private">Qui suis-je ?</Link>
+        {user !== null && <Link to="/profile">Mon profil</Link>}
         <Link to="/informations">Informations</Link>
         {installPromptEvent !== null && <InstallApp installPromptEvent={installPromptEvent} />}
       </div>

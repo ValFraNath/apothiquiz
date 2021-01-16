@@ -14,6 +14,6 @@ reactRouter.get("/train", goToReactIndex);
 
 reactRouter.get("/login", goToReactIndex);
 
-reactRouter.get("/private", goToReactIndex);
+reactRouter.get("/profile", goToReactIndex);
 
 export default reactRouter;

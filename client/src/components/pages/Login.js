@@ -15,10 +15,10 @@ class Login extends Component {
 
     AuthService.login(pseudoInput.value.trim(), passwordInput.value)
       .then((user) => {
-        console.log(`User ${user} is successfully logged in`);
+        console.info(`User ${user} is successfully logged in`);
         document.location.replace("/");
       })
-      .catch((error) => console.log(`An error has occurred : ${error}`));
+      .catch((error) => console.error(`An error has occurred : ${error}`));
   }
 
   componentDidMount() {

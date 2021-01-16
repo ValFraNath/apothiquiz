@@ -4,6 +4,14 @@ button {
   &:focus {
     outline: none;
   }
+
+  &:not(:disabled) {
+    cursor: pointer;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+  }
 }
 
 /* ---------- Default button ---------- */
