@@ -108,7 +108,7 @@ HeaderErrors.EMPTY_COLUMN = 7;
  * @param {string[]} header
  */
 function checkNotEmptyHeader(header) {
-  if (!header.some((c) => c !== null)) {
+  if (header.every((c) => c === null)) {
     return [{ code: HeaderErrors.EMPTY_FILE }];
   }
   return [];
