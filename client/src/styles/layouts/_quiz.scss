@@ -17,7 +17,7 @@ $timer-size: 100px;
 
       h1 {
         font-size: 2rem;
-        margin-bottom: 0.2rem;
+        margin-bottom: 0.3rem;
       }
 
       #about {
@@ -30,19 +30,43 @@ $timer-size: 100px;
     }
   }
 
-  /* ---------- Score ---------- */
+  /* ---------- Topbar ---------- */
 
-  #quiz-score {
+  #quiz-topbar {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    margin-bottom: 1.5rem;
+    padding: 0 0.2rem;
+    margin-bottom: 1.2rem;
 
-    #good-score {
-      text-align: left;
+    span {
+      svg {
+        vertical-align: top;
+      }
+
+      &#score-good {
+        color: $color-green-success;
+        margin-right: 0.6rem;
+      }
+      &#score-bad {
+        color: $color-red-error;
+      }
     }
 
-    #bad-score {
+    div:last-of-type {
       text-align: right;
+
+      button {
+        display: inline;
+        border: none;
+        background: transparent;
+        padding: 0;
+        color: black;
+        box-shadow: none;
+
+        svg {
+          color: #5a5a5a;
+        }
+      }
     }
   }
 
@@ -50,7 +74,7 @@ $timer-size: 100px;
 
   #quiz-question {
     position: relative;
-    padding: 3.6em 0.8em 3em 0.8em;
+    padding: 3.6em 1em 3em 1em;
     margin-bottom: 1em;
     box-shadow: 0 0 12px 4px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
@@ -58,6 +82,7 @@ $timer-size: 100px;
 
     h1 {
       font-size: 1.3em;
+      line-height: 1.2;
     }
 
     h2 {
@@ -131,18 +156,18 @@ $timer-size: 100px;
     button {
       padding: 3em 0.8em;
       text-transform: capitalize;
-      font-size: 1em;
+      font-size: 1rem;
+      border: 3px solid $button-bg;
     }
 
     .good-answer {
-      color: green;
-      border: 1px solid green;
+      color: $color-green-success;
+      border: 3px solid $color-green-success;
     }
 
     .bad-answer {
-      background-color: white;
-      color: red;
-      border: 1px solid red;
+      color: $color-red-error;
+      border: 3px solid $color-red-error;
     }
   }
 }

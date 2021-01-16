@@ -2,13 +2,14 @@
 
 button {
   display: block;
-  border: 1px solid #000000;
+  border: none;
   background: $button-bg;
   color: $button-fg;
   border-radius: $button-border-radius;
-  text-transform: uppercase;
-  padding: 0.8rem 1.5rem;
+  padding: 0.9rem 1.6rem;
   cursor: pointer;
+  font-size: 0.9rem;
+  box-shadow: 0 2px 4px rgba(134, 134, 134, 0.4);
 
   svg {
     vertical-align: top;

@@ -1,9 +1,8 @@
 import React, { Component } from "react";
 import axios from "axios";
 import PropTypes from "proptypes";
-import { ArrowRightIcon } from "@modulz/radix-icons";
+import { ArrowRightIcon, CheckCircledIcon, CrossCircledIcon, ExitIcon } from "@modulz/radix-icons";
 
-import Plural from "../Plural";
 import Timer from "../quizz/Timer";
 import Answers from "../quizz/Answers";
 import Message from "../quizz/Message";
@@ -111,40 +110,51 @@ class PlayView extends Component {
 
     return (
       <>
-        <div id="quiz-score">
-          <p id="good-score">
-            {result.good} <Plural word="bonne" count={result.good} /> <Plural word="réponse" count={result.good} />
-          </p>
-          <p id="bad-score">
-            {result.bad} <Plural word="mauvaise" count={result.bad} /> <Plural word="réponse" count={result.bad} />
-          </p>
-        </div>
-
-        <div id="quiz-question">
-          <h2>Question {result.good + result.bad + 1}</h2>
-          <h1>{currentQuestion}</h1>
-        </div>
-
-        {inProgress ? (
-          <Timer inProgress={inProgress} duration={timer} updateParent={this.updateTimer} />
-        ) : (
-          <div id="next-btn">
-            <button onClick={this.nextQuestion}>
-              Question suivante
-              <ArrowRightIcon />
-            </button>
+        <section>
+          <div id="quiz-topbar">
+            <div>
+              <span id="score-good">
+                <CheckCircledIcon /> {result.good}
+              </span>
+              <span id="score-bad">
+                <CrossCircledIcon /> {result.bad}
+              </span>
+            </div>
+            <div>
+              <button onClick={displaySummury}>
+                <ExitIcon /> Terminer
+              </button>
+            </div>
           </div>
-        )}
 
-        <Answers
-          inProgress={inProgress}
-          goodAnswer={question.goodAnswer}
-          badAnswers={question.badAnswers}
-          lastClicked={lastClicked}
-          onClick={this.handleAnswerClick}
-        />
+          <div id="quiz-question">
+            <h2>Question {result.good + result.bad + 1}</h2>
+            <h1>{currentQuestion}</h1>
+          </div>
+        </section>
 
-        <button onClick={displaySummury}>Arrêter l'entraînement</button>
+        <section>
+          {inProgress ? (
+            <Timer inProgress={inProgress} duration={timer} updateParent={this.updateTimer} />
+          ) : (
+            <div id="next-btn">
+              <button onClick={this.nextQuestion}>
+                Question suivante
+                <ArrowRightIcon />
+              </button>
+            </div>
+          )}
+        </section>
+
+        <section>
+          <Answers
+            inProgress={inProgress}
+            goodAnswer={question.goodAnswer}
+            badAnswers={question.badAnswers}
+            lastClicked={lastClicked}
+            onClick={this.handleAnswerClick}
+          />
+        </section>
       </>
     );
   }

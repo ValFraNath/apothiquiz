@@ -7,11 +7,16 @@ $bg: #ffffff;
 
 /* ---------- Buttons ---------- */
 
-$button-bg: #48484a;
+$button-bg: #1e2034;
 $button-fg: #ffffff;
-$button-border-radius: 8px;
+$button-border-radius: 6px;
 
 /* ---------- Top Bar ---------- */
 
 $top-bar-bg: #bbbbbb;
 $top-bar-fg: #000000;
+
+/* ---------- Success and errors ---------- */
+
+$color-green-success: #488c54;
+$color-red-error: #e23737;
