@@ -7,7 +7,7 @@ import Timer from "../quizz/Timer";
 import Answers from "../quizz/Answers";
 import Message from "../quizz/Message";
 import InformationPilette from "../../images/information_crop.png";
-import ButtonFullWidth from "../Buttons/ButtonFullWidth";
+import ButtonDefault from "../Buttons/ButtonDefault";
 import ButtonCircle from "../Buttons/ButtonCircle";
 
 /* ---------- Introduction view ---------- */
@@ -20,7 +20,7 @@ const IntroductionView = ({ onClick }) => {
         <h1>Mode entraînement</h1>
         <p id="about">Répondez à une série de questions aléatoire.</p>
       </div>
-      <ButtonFullWidth onClick={onClick}>Lancer l'entraînement</ButtonFullWidth>
+      <ButtonDefault onClick={onClick}>Lancer l'entraînement</ButtonDefault>
     </>
   );
 };

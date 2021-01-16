@@ -30,6 +30,9 @@ $timer-size: 100px;
     }
   }
 
+  &.quiz-summury {
+  }
+
   /* ---------- Topbar ---------- */
 
   #quiz-topbar {
@@ -39,10 +42,6 @@ $timer-size: 100px;
     margin-bottom: 1.2rem;
 
     span {
-      svg {
-        vertical-align: top;
-      }
-
       &#score-good {
         color: $color-green-success;
         margin-right: 0.6rem;
@@ -68,14 +67,18 @@ $timer-size: 100px;
         }
       }
     }
+
+    @media screen and (max-width: $little-smartphone) {
+      margin-bottom: 0.9rem;
+    }
   }
 
   /* ---------- Question ---------- */
 
   #quiz-question {
     position: relative;
-    padding: 3.6em 1em 3em 1em;
-    margin-bottom: 2em;
+    padding: 3.6rem 1rem 3rem 1rem;
+    margin-bottom: 1.5em;
     box-shadow: 0 0 12px 4px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
     overflow: hidden;
@@ -94,6 +97,11 @@ $timer-size: 100px;
       background-color: $mascot-blue-light;
       color: white;
       border-bottom-right-radius: 10px;
+    }
+
+    @media screen and (max-width: $little-smartphone) {
+      padding: 2.5rem 1rem 1.8rem 1rem;
+      margin-bottom: 1rem;
     }
   }
 
@@ -125,23 +133,12 @@ $timer-size: 100px;
     }
   }
 
-  /* ---------- "Next question" button ---------- */
+  /* ---------- Next question button ---------- */
 
   #next-btn {
     display: flex;
-    align-items: center;
     justify-content: center;
-    height: $timer-size;
-
-    button {
-      text-transform: none;
-      font-size: 1em;
-
-      svg {
-        vertical-align: middle;
-        margin-left: 5px;
-      }
-    }
+    height: 100px;
   }
 
   /* ---------- Answers ---------- */
@@ -150,14 +147,17 @@ $timer-size: 100px;
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr;
-    grid-gap: 0.5em;
-    margin-top: 2rem;
+    grid-gap: 0.5rem;
+    margin-top: 1.5rem;
 
     button {
       padding: 3em 0.8em;
       text-transform: capitalize;
       font-size: 1rem;
       border: 3px solid $button-bg;
+      background-color: $button-bg;
+      color: white;
+      border-radius: 8px;
     }
 
     .good-answer {
@@ -168,6 +168,15 @@ $timer-size: 100px;
     .bad-answer {
       color: $color-red-error;
       border: 3px solid $color-red-error;
+    }
+
+    @media screen and (max-width: $little-smartphone) {
+      margin-top: 1rem;
+      grid-gap: 0.4rem;
+
+      button {
+        padding: 2.2rem 0.8rem;
+      }
     }
   }
 }

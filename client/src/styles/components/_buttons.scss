@@ -1,6 +1,14 @@
-/* ---------- General buttons ---------- */
+/* ---------- For all buttons ---------- */
 
 button {
+  &:focus {
+    outline: none;
+  }
+}
+
+/* ---------- Default button ---------- */
+
+button.btn {
   display: block;
   border: none;
   background: $button-bg;
@@ -10,14 +18,27 @@ button {
   cursor: pointer;
   font-size: 0.9rem;
   box-shadow: 0 2px 4px rgba(134, 134, 134, 0.4);
-
-  svg {
-    vertical-align: top;
-  }
 }
 
-button:focus {
-  outline: none;
+/* ---------- Full width button ---------- */
+
+button.btn.btn-fw {
+  width: 80%;
+  margin: auto;
+}
+
+/* ---------- Button circle ---------- */
+
+button.btn.btn-circle {
+  border-radius: 50%;
+  margin: auto;
+  padding: 1rem;
+
+  svg {
+    margin: 0;
+    width: 25px;
+    height: auto;
+  }
 }
 
 /* ---------- Update app button ---------- */
@@ -43,10 +64,10 @@ button:focus {
   svg {
     margin-right: 0.4rem;
   }
-}
 
-#update-app:active {
-  transform: translateX(-50%) scale(1.1);
+  &:active {
+    transform: translateX(-50%) scale(1.1);
+  }
 }
 
 @keyframes appear-update {
