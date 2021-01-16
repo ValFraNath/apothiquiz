@@ -11,7 +11,7 @@ import Train from "./components/layouts/Train";
 import Login from "./components/pages/Login";
 import AuthService from "./services/auth.service";
 import axios from "axios";
-import WhoAmI from "./components/pages/PrivateTemp";
+import Profile from "./components/pages/Profile";
 
 /**
  * Set up the authorization header in all request if the user is logged in
@@ -19,7 +19,7 @@ import WhoAmI from "./components/pages/PrivateTemp";
 axios.interceptors.request.use(function (config) {
   const user = AuthService.getCurrentUser();
   if (user && user.token && user.pseudo) {
-    config.headers.Authorization = `Barear ${user.token}`;
+    config.headers.Authorization = `Bearer ${user.token}`;
   }
   return config;
 });
@@ -100,7 +100,7 @@ export default class App extends Component {
             <Route path="/informations" exact component={Informations} />
             <Route path="/train" exact component={Train} />
             <Route path="/login" exact component={Login} />
-            <Route path="/private" exact component={WhoAmI} />
+            <Route path="/profile" exact component={Profile} />
           </Switch>
         </main>
       </Router>

@@ -11,6 +11,14 @@ button {
   font-size: 0.9rem;
   box-shadow: 0 2px 4px rgba(134, 134, 134, 0.4);
 
+  &:not(:disabled) {
+    cursor: pointer;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+  }
+
   svg {
     vertical-align: top;
   }
