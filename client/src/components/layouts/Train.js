@@ -36,6 +36,7 @@ class PlayView extends Component {
     super(props);
     this.state = {
       currentQuestion: this.generateQuestionText(),
+      questionNum: 1,
       inProgress: true,
       lastClicked: "",
       timer: this.props.timerDuration,
@@ -100,6 +101,7 @@ class PlayView extends Component {
     this.props.getNewQuestion();
     this.setState({
       currentQuestion: this.generateQuestionText(),
+      questionNum: this.state.questionNum + 1,
       inProgress: true,
       lastClicked: "",
       timer: this.props.timerDuration,
@@ -107,7 +109,7 @@ class PlayView extends Component {
   };
 
   render() {
-    const { currentQuestion, inProgress, timer, lastClicked } = this.state;
+    const { currentQuestion, questionNum, inProgress, timer, lastClicked } = this.state;
     const { result, question, displaySummury } = this.props;
 
     return (
@@ -129,7 +131,7 @@ class PlayView extends Component {
         </div>
 
         <div id="quiz-question">
-          <h2>Question {result.good + result.bad + 1}</h2>
+          <h2>Question {questionNum}</h2>
           <h1>{currentQuestion}</h1>
         </div>
 
@@ -168,18 +170,25 @@ PlayView.propTypes = {
 const SummuryView = ({ result, answers }) => {
   return (
     <>
-      <h1>Fin de l'entraînement</h1>
+      <h1>Résultat</h1>
       <p>
-        Vous avez obtenu un score de {result.good}/{result.good + result.bad}
+        Votre score : {result.good}/{result.good + result.bad}
       </p>
 
-      <h2>Liste de vos erreurs :</h2>
-      {answers.map((value) => (
-        <ul>
-          {value.question} <span className="wrong">{value.userChoice}</span>{" "}
-          <span className="right">{value.goodChoice}</span>
-        </ul>
-      ))}
+      <ul>
+        {answers.map((value) => (
+          <li>
+            <p>{value.question}</p>
+            <p>
+              <span className="wrong">{value.userChoice}</span>
+              <span>
+                <ArrowRightIcon />
+              </span>
+              <span className="right">{value.goodChoice}</span>
+            </p>
+          </li>
+        ))}
+      </ul>
     </>
   );
 };
@@ -308,7 +317,12 @@ class Train extends Component {
       addWrongAnswer: this.addWrongAnswer,
       displaySummury: this.displaySummury,
     };
-    const additionalClass = gameState === Train.STATE_INTRO ? "quiz-intro" : "";
+    let additionalClass = "";
+    if (gameState === Train.STATE_INTRO) {
+      additionalClass = "quiz-intro";
+    } else if (gameState === Train.STATE_SUMMURY) {
+      additionalClass = "quiz-summury";
+    }
 
     return (
       <main id="quiz" className={additionalClass}>

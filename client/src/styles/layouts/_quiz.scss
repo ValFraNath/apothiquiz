@@ -31,6 +31,41 @@ $timer-size: 100px;
   }
 
   &.quiz-summury {
+    h1 {
+      font-size: 1.6rem;
+      text-align: center;
+      margin-bottom: 0.2rem;
+    }
+
+    h1 ~ p {
+      font-size: 1.3rem;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    ul {
+      li {
+        margin-bottom: 0.8rem;
+
+        p:first-of-type {
+          font-style: italic;
+        }
+
+        p:last-of-type {
+          display: flex;
+          justify-content: space-around;
+
+          .right {
+            color: $color-green-success;
+            font-weight: bold;
+          }
+
+          .wrong {
+            color: $color-red-error;
+          }
+        }
+      }
+    }
   }
 
   /* ---------- Topbar ---------- */
