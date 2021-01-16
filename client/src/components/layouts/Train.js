@@ -7,6 +7,8 @@ import Timer from "../quizz/Timer";
 import Answers from "../quizz/Answers";
 import Message from "../quizz/Message";
 import InformationPilette from "../../images/information_crop.png";
+import ButtonFullWidth from "../Buttons/ButtonFullWidth";
+import ButtonCircle from "../Buttons/ButtonCircle";
 
 /* ---------- Introduction view ---------- */
 
@@ -18,7 +20,7 @@ const IntroductionView = ({ onClick }) => {
         <h1>Mode entraînement</h1>
         <p id="about">Répondez à une série de questions aléatoire.</p>
       </div>
-      <button onClick={onClick}>Lancer l'entraînement</button>
+      <ButtonFullWidth onClick={onClick}>Lancer l'entraînement</ButtonFullWidth>
     </>
   );
 };
@@ -110,51 +112,44 @@ class PlayView extends Component {
 
     return (
       <>
-        <section>
-          <div id="quiz-topbar">
-            <div>
-              <span id="score-good">
-                <CheckCircledIcon /> {result.good}
-              </span>
-              <span id="score-bad">
-                <CrossCircledIcon /> {result.bad}
-              </span>
-            </div>
-            <div>
-              <button onClick={displaySummury}>
-                <ExitIcon /> Terminer
-              </button>
-            </div>
+        <div id="quiz-topbar">
+          <div>
+            <span id="score-good">
+              <CheckCircledIcon /> {result.good}
+            </span>
+            <span id="score-bad">
+              <CrossCircledIcon /> {result.bad}
+            </span>
           </div>
-
-          <div id="quiz-question">
-            <h2>Question {result.good + result.bad + 1}</h2>
-            <h1>{currentQuestion}</h1>
+          <div>
+            <button onClick={displaySummury}>
+              <ExitIcon /> Terminer
+            </button>
           </div>
-        </section>
+        </div>
 
-        <section>
-          {inProgress ? (
-            <Timer inProgress={inProgress} duration={timer} updateParent={this.updateTimer} />
-          ) : (
-            <div id="next-btn">
-              <button onClick={this.nextQuestion}>
-                Question suivante
-                <ArrowRightIcon />
-              </button>
-            </div>
-          )}
-        </section>
+        <div id="quiz-question">
+          <h2>Question {result.good + result.bad + 1}</h2>
+          <h1>{currentQuestion}</h1>
+        </div>
 
-        <section>
-          <Answers
-            inProgress={inProgress}
-            goodAnswer={question.goodAnswer}
-            badAnswers={question.badAnswers}
-            lastClicked={lastClicked}
-            onClick={this.handleAnswerClick}
-          />
-        </section>
+        {inProgress ? (
+          <Timer inProgress={inProgress} duration={timer} updateParent={this.updateTimer} />
+        ) : (
+          <div id="next-btn">
+            <ButtonCircle onClick={this.nextQuestion}>
+              <ArrowRightIcon />
+            </ButtonCircle>
+          </div>
+        )}
+
+        <Answers
+          inProgress={inProgress}
+          goodAnswer={question.goodAnswer}
+          badAnswers={question.badAnswers}
+          lastClicked={lastClicked}
+          onClick={this.handleAnswerClick}
+        />
       </>
     );
   }

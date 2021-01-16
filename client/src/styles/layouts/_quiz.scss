@@ -75,7 +75,7 @@ $timer-size: 100px;
   #quiz-question {
     position: relative;
     padding: 3.6em 1em 3em 1em;
-    margin-bottom: 1em;
+    margin-bottom: 2em;
     box-shadow: 0 0 12px 4px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
     overflow: hidden;
@@ -151,7 +151,7 @@ $timer-size: 100px;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr;
     grid-gap: 0.5em;
-    margin-top: 1rem;
+    margin-top: 2rem;
 
     button {
       padding: 3em 0.8em;
