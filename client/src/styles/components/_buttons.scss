@@ -1,10 +1,6 @@
 /* ---------- For all buttons ---------- */
 
 button {
-  &:focus {
-    outline: none;
-  }
-
   &:not(:disabled) {
     cursor: pointer;
   }
