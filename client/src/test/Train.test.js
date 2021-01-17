@@ -27,11 +27,12 @@ describe("Train component", () => {
     expect(wrapper.find("#quiz-answers")).to.have.lengthOf(1);
   });
 
-  it("should display the summury correctly", () => {
-    wrapper.setState({ gameState: Train.STATE_SUMMURY });
+  it("should display the summary correctly", () => {
+    wrapper.setState({ gameState: Train.STATE_SUMMARY });
 
     expect(wrapper.find("h1")).to.have.lengthOf(1);
     expect(wrapper.find("p")).to.have.lengthOf(1);
+    expect(wrapper.find("details")).to.have.lengthOf(1);
     expect(wrapper.find("ul")).to.have.lengthOf(1);
   });
 });

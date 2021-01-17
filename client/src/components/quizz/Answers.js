@@ -13,7 +13,7 @@ const AnswerBtn = ({ value, isRight, showResult, onClick }) => {
       className={classBtn}
       onClick={() => {
         if (showResult) return;
-        onClick(isRight, value);
+        onClick(value);
       }}
     >
       {value}

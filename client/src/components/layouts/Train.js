@@ -39,7 +39,7 @@ class PlayView extends Component {
       questionNum: 1,
       inProgress: true,
       lastClicked: "",
-      timer: this.props.timerDuration,
+      timer: Train.TIMER_DURATION,
     };
   }
 
@@ -63,13 +63,14 @@ class PlayView extends Component {
 
   /**
    * Update the timer
+   * @param {number} value New timer value
    */
   updateTimer = (value) => {
     let { inProgress } = this.state;
 
     if (!inProgress) return false;
     if (value === 0) {
-      this.props.updateResult(false);
+      this.props.addUserAnswer(this.state.currentQuestion, null);
       inProgress = false;
     }
 
@@ -81,13 +82,11 @@ class PlayView extends Component {
 
   /**
    * Handle a click on an answer button
-   * @param isRightAnswer True if the click is performed on the right answer
+   * @param {string} value The clicked answer
    */
-  handleAnswerClick = (isRightAnswer, value) => {
+  handleAnswerClick = (value) => {
     if (!this.state.inProgress) return;
-
-    this.props.updateResult(isRightAnswer);
-    if (!isRightAnswer) this.props.addWrongAnswer(this.state.currentQuestion, value);
+    this.props.addUserAnswer(this.state.currentQuestion, value);
     this.setState({
       inProgress: false,
       lastClicked: value,
@@ -104,7 +103,7 @@ class PlayView extends Component {
       questionNum: this.state.questionNum + 1,
       inProgress: true,
       lastClicked: "",
-      timer: this.props.timerDuration,
+      timer: Train.TIMER_DURATION,
     });
   };
 
@@ -117,10 +116,10 @@ class PlayView extends Component {
         <div id="quiz-topbar">
           <div>
             <span id="score-good">
-              <CheckCircledIcon /> {result.good}
+              <CheckCircledIcon /> {result.good.length}
             </span>
             <span id="score-bad">
-              <CrossCircledIcon /> {result.bad}
+              <CrossCircledIcon /> {result.bad.length}
             </span>
           </div>
           <div>
@@ -160,74 +159,69 @@ class PlayView extends Component {
 PlayView.propTypes = {
   result: PropTypes.object.isRequired,
   question: PropTypes.object.isRequired,
-  timerDuration: PropTypes.number.isRequired,
   getNewQuestion: PropTypes.func.isRequired,
+  addUserAnswer: PropTypes.func.isRequired,
   displaySummury: PropTypes.func.isRequired,
 };
 
 /* ---------- Summury view ---------- */
 
-const SummuryView = ({ result, answers }) => {
+const SummaryView = ({ result }) => {
   return (
     <>
       <h1>Résultat</h1>
       <p>
-        Votre score : {result.good}/{result.good + result.bad}
+        Votre score : {result.good.length}/{result.good.length + result.bad.length}
       </p>
 
+      <details>
+        <summary>Les bonnes réponses</summary>
+        <ul>
+          {result.good.length === 0 ? (
+            <li>Aucune bonne réponse.</li>
+          ) : (
+            <>
+              {result.good.map((value) => (
+                <li>
+                  <p>{value.question}</p>
+                  <p>{value.userChoice}</p>
+                </li>
+              ))}
+            </>
+          )}
+        </ul>
+      </details>
+
+      <h2>Les erreurs</h2>
       <ul>
-        {answers.map((value) => (
-          <li>
-            <p>{value.question}</p>
-            <p>
-              <span>{value.userChoice}</span>
-              <span>
-                <ArrowRightIcon />
-              </span>
-              <span>{value.goodChoice}</span>
-            </p>
-          </li>
-        ))}
+        {result.bad.length === 0 ? (
+          <li>Aucune mauvaise réponse.</li>
+        ) : (
+          <>
+            {result.bad.map((value) => (
+              <li>
+                <p>{value.question}</p>
+                <p>
+                  <span>{value.userChoice}</span>
+                  <span>
+                    <ArrowRightIcon />
+                  </span>
+                  <span>{value.goodChoice}</span>
+                </p>
+              </li>
+            ))}
+          </>
+        )}
       </ul>
     </>
   );
 };
 
-SummuryView.propTypes = {
+SummaryView.propTypes = {
   result: PropTypes.shape({
-    good: PropTypes.number.isRequired,
-    bad: PropTypes.number.isRequired,
+    good: PropTypes.array.isRequired,
+    bad: PropTypes.array.isRequired,
   }).isRequired,
-};
-
-/* ---------- Switch view component ---------- */
-
-const SwitchView = ({ toDisplay, props }) => {
-  switch (toDisplay) {
-    case Train.STATE_INTRO:
-      return <IntroductionView onClick={props.getNewQuestion} />;
-    case Train.STATE_PLAY:
-      return (
-        <PlayView
-          result={props.result}
-          question={props.question}
-          timerDuration={props.timerDuration}
-          getNewQuestion={props.getNewQuestion}
-          updateResult={props.updateResult}
-          addWrongAnswer={props.addWrongAnswer}
-          displaySummury={props.displaySummury}
-        />
-      );
-    case Train.STATE_SUMMURY:
-      return <SummuryView result={props.result} answers={props.wrongAnswers} />;
-    default:
-      return "Error";
-  }
-};
-
-SwitchView.propTypes = {
-  toDisplay: PropTypes.number.isRequired,
-  props: PropTypes.object.isRequired,
 };
 
 /* ---------- Train ---------- */
@@ -238,8 +232,7 @@ class Train extends Component {
     this.state = {
       gameState: Train.STATE_INTRO,
       question: { badAnswers: [], goodAnswer: "", subject: "", type: 0 },
-      result: { good: 0, bad: 0 },
-      wrongAnswers: [],
+      result: { good: [], bad: [] },
       error: null,
     };
   }
@@ -271,30 +264,21 @@ class Train extends Component {
   };
 
   /**
-   * Update result with the new score
+   * Add the question and the answer to the list of results
+   * @param {string} question The question text
+   * @param {string} userChoice The user's answer
    */
-  updateResult = (increase) => {
+  addUserAnswer = (question, userChoice) => {
     const { good, bad } = this.state.result;
-    const { goodPoint, badPoint } = increase ? { goodPoint: 1, badPoint: 0 } : { goodPoint: 0, badPoint: 1 };
-    this.setState({
-      result: {
-        good: good + goodPoint,
-        bad: bad + badPoint,
-      },
-    });
-  };
+    const rightAnswer = this.state.question.goodAnswer;
 
-  /**
-   * And the current questionn the user's answer and the right answer
-   * to the list of errors
-   * @param {string} question The question
-   * @param {string} userChoice The user's choice
-   */
-  addWrongAnswer = (question, userChoice) => {
-    const { wrongAnswers } = this.state;
-    wrongAnswers.push({ question: question, userChoice: userChoice, goodChoice: this.state.question.goodAnswer });
+    if (userChoice === rightAnswer) {
+      good.push({ question: question, userChoice: userChoice });
+    } else {
+      bad.push({ question: question, userChoice: userChoice, goodChoice: rightAnswer });
+    }
     this.setState({
-      wrongAnswers: wrongAnswers,
+      result: { good: good, bad: bad },
     });
   };
 
@@ -303,31 +287,47 @@ class Train extends Component {
    */
   displaySummury = () => {
     this.setState({
-      gameState: Train.STATE_SUMMURY,
+      gameState: Train.STATE_SUMMARY,
     });
   };
 
+  /**
+   * Change the main component according to the state of the game
+   */
+  switchComponent() {
+    switch (this.state.gameState) {
+      case Train.STATE_INTRO:
+        return <IntroductionView onClick={this.getNewQuestion} />;
+      case Train.STATE_PLAY:
+        return (
+          <PlayView
+            result={this.state.result}
+            question={this.state.question}
+            getNewQuestion={this.getNewQuestion}
+            addUserAnswer={this.addUserAnswer}
+            displaySummury={this.displaySummury}
+          />
+        );
+      case Train.STATE_SUMMARY:
+        return <SummaryView result={this.state.result} />;
+      default:
+        return <pre>Error</pre>;
+    }
+  }
+
   render() {
     const { gameState, error } = this.state;
-    const switchProps = {
-      ...this.state,
-      timerDuration: Train.TIMER_DURATION,
-      getNewQuestion: this.getNewQuestion,
-      updateResult: this.updateResult,
-      addWrongAnswer: this.addWrongAnswer,
-      displaySummury: this.displaySummury,
-    };
     let additionalClass = "";
     if (gameState === Train.STATE_INTRO) {
       additionalClass = "quiz-intro";
-    } else if (gameState === Train.STATE_SUMMURY) {
+    } else if (gameState === Train.STATE_SUMMARY) {
       additionalClass = "quiz-summury";
     }
 
     return (
       <main id="quiz" className={additionalClass}>
         {error !== null && <Message type="error" content={error} />}
-        <SwitchView toDisplay={gameState} props={switchProps} />
+        {this.switchComponent()}
       </main>
     );
   }
@@ -335,7 +335,7 @@ class Train extends Component {
 
 Train.STATE_INTRO = 0;
 Train.STATE_PLAY = 1;
-Train.STATE_SUMMURY = 2;
+Train.STATE_SUMMARY = 2;
 
 Train.TIMER_DURATION = 10;
 
