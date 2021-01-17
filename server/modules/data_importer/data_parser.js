@@ -1,9 +1,38 @@
 import mysql from "mysql";
 import { parseCSV } from "./csv_parser/Parser.js";
 
-const properties = ["side_effects", "interactions", "indications"];
+const propertiesId = {
+  side_effects: 1,
+  interactions: 2,
+  indications: 3,
+  _get(property) {
+    return propertiesId[property];
+  },
+};
 
-async function parserToSql(data) {
+/**
+ * Create a sql insertion command (curryfied)
+ * @param {string} table
+ * @return {function(...string):function(...string):string}
+ */
+function insertInto(table) {
+  let sql = `INSERT INTO ${table} `;
+  return function columns(...columns) {
+    if (columns.length) {
+      sql += `(${columns.join(", ")}) `;
+    }
+    return function values(...values) {
+      return sql + `VALUES (${values.map(mysql.escape).join(", ")});\n`;
+    };
+  };
+}
+
+/**
+ * Create a script to insert parsed data in database
+ * @param {object} data
+ * @param {string}
+ */
+export async function insertAllData(data) {
   data = JSON.parse(await parseCSV("../server/test/csv_parser/files/molecules.csv"));
 
   let script = "";
@@ -11,15 +40,21 @@ async function parserToSql(data) {
   script += insertClassificationSql("class", data["classes"]);
   script += insertClassificationSql("system", data["systems"]);
 
-  for (let property of properties) {
+  for (let property of ["side_effects", "indications", "interactions"]) {
     script += insertPropertySql(property, data[property]);
   }
-  script += insertMoleculesSql(data.molecules);
+  script += insertAllMolecules(data.molecules);
   console.log(script);
+  return script;
 }
 
+/**
+ * Create the script to insert all values of classifications
+ * @param {string} name The classification table
+ * @param {object[]} classification The list of higher nodes
+ */
 function insertClassificationSql(name, classification) {
-  let insertNodeAndChildren = insertIn(name);
+  let insertNodeAndChildren = insertInClassification(name);
   let sql = "";
 
   for (let node of classification) {
@@ -30,71 +65,124 @@ function insertClassificationSql(name, classification) {
 }
 
 /**
- *
+ * Create the function that creates the sql script to insert a node and its children
  * @param {string} classification
  */
-function insertIn(classification) {
-  function insertNodeSql(id, name, higher, level) {
-    return mysql.format(`INSERT INTO ${classification} VALUES (?,?,?,?);\n`, [id, name, higher, level]);
+function insertInClassification(classification) {
+  function insertNode(id, name, higher, level) {
+    return insertInto(classification)()([id, name, higher, level]);
   }
   return function insertNodeAndChildren({ id, name, children }, higher, level) {
-    return (
-      insertNodeSql(id, name, higher, level) + children.map((c) => insertNodeAndChildren(c, id, level + 1)).join("")
-    );
+    return insertNode(id, name, higher, level) + children.map((c) => insertNodeAndChildren(c, id, level + 1)).join("");
   };
 }
 
 /**
- * Create the insertion script for a property
+ * Create the sql script to insert a property and its values
  * @param {{name : string, id : number}[]} property
  */
 function insertPropertySql(name, property) {
-  const id = properties.indexOf(name) + 1;
+  const id = propertiesId._get(name);
+  let script = insertInto("property")("pr_id", "pr_name")(id, name);
 
-  let sql = `INSERT INTO property (pr_id, pr_name) VALUES (${id},"${name}");\n`;
-  for (let value of property) {
-    sql += `INSERT INTO property_value (pv_id, pv_name, pv_property) VALUES (${id}${value.id},'${value.name}',${id});\n `;
-  }
-  return sql;
+  return property.reduce((sql, value) => {
+    let valueId = newIdForPropertyValue(id, value.id);
+    return sql + insertInto("property_value")("pv_id", "pv_name", "pv_property")(valueId, value.name, id);
+  }, script);
 }
 
 /**
- *
- * @param {{
- *      id : number,
- *      dci : string,
- *      systems: number,
- *      classes : number,
- *      interactions : number[],
- *      indications : number[],
- *      ntr : number,
- *      level_easy : number,
- *      level_hard : number
- *    }[]} molecules
+ * Create a unique id for a property values, from the id of the property and the id of the value
+ * @param {number} propertyId
+ * @param {number} valueId
  */
-function insertMoleculesSql(molecules) {
-  let sql = "";
-
-  molecules.forEach((molecule) => {
-    sql += insertMoleculeSql(molecule);
-    properties.forEach((property, index) => {
-      molecule[property].forEach((value) => {
-        sql += `INSERT INTO molecule_property (mo_id,pv_id) VALUES (${molecule.id},${index + 1}${value});\n`;
-      });
-    });
-  });
-  return sql;
+function newIdForPropertyValue(propertyId, valueId) {
+  return Number(String(propertyId) + String(valueId));
 }
 
-function insertMoleculeSql({ dci, skeletal_formule, ntr, id, level_hard, systems, classes }) {
-  skeletal_formule = skeletal_formule || "";
-  let difficulty = level_hard ? "HARD" : "EASY";
-  ntr = Number(ntr);
-  return mysql.format(
-    `INSERT INTO molecule (mo_id, mo_dci, mo_skeletal_formula, mo_ntr, mo_difficulty,mo_system,mo_class) \
-          VALUES (?,?,?,?,?,?,?);\n`,
-    [id, dci, skeletal_formule, ntr, difficulty, systems, classes]
+/**
+ * Create the sql script to insert all molecules in database
+ * @param {object[]} molecules
+ */
+function insertAllMolecules(molecules) {
+  return molecules.reduce((sql, molecule) => sql + insertMolecule(new FormattedMolecule(molecule)), "");
+}
+
+/**
+ * Create the sql command to insert a molecule in database
+ * @param {FormattedMolecule} molecule
+ * @returns {string}
+ */
+function insertMolecule(molecule) {
+  if (!FormattedMolecule.isInstance(molecule)) {
+    throw Error("Molecule must be formatted to be inserted");
+  }
+
+  const columns = ["mo_id", "mo_dci", "mo_skeletal_formula", "mo_ntr", "mo_difficulty", "mo_system", "mo_class"];
+  const values = ["id", "dci", "skeletal_formule", "ntr", "difficulty", "system", "class"].map((p) =>
+    molecule.getValue(p)
   );
+
+  return insertInto("molecule")(...columns)(...values) + insertMoleculeProperties(molecule);
 }
 
-parserToSql();
+/**
+ * Create sql script to insert all referenced property values of a molecule
+ * @param {FormattedMolecule} molecule
+ * @param {string}
+ */
+function insertMoleculeProperties(molecule) {
+  return Object.keys(molecule.properties).reduce((script, property) => {
+    const insertIntoMoleculeProperty = insertInto("molecule_property")("mo_id", "pv_id");
+
+    return (
+      script +
+      molecule.properties[property].reduce(
+        (sql, value) =>
+          sql + insertIntoMoleculeProperty(molecule.id, newIdForPropertyValue(propertiesId._get(property), value)),
+        ""
+      )
+    );
+  }, "");
+}
+
+/**
+ * Class representing a formatted molecule, ready to be inserted into the database
+ */
+class FormattedMolecule {
+  /**
+   * Format a given molecule
+   * @param {object} molecule
+   */
+  constructor(molecule) {
+    this.id = Number(molecule.id);
+    this.dci = molecule.dci;
+    this.ntr = Number(molecule.ntr);
+    this.system = molecule.system;
+    this.class = molecule.class;
+    this.skeletal_formule = String(molecule.skeletal_formule || "");
+    this.difficulty = molecule.level_easy ? "EASY" : "HARD";
+    this.properties = Object.create(null);
+    this.properties.indications = molecule.indications.slice();
+    this.properties.side_effects = molecule.side_effects.slice();
+    this.properties.interactions = molecule.interactions.slice();
+  }
+
+  /**
+   * Get the value for a property
+   * @param {string} property
+   */
+  getValue(property) {
+    return this[property];
+  }
+
+  /**
+   * Check if an object is an instane of FormattedMolecule
+   * @param {*} o
+   */
+  static isInstance(o) {
+    return o instanceof FormattedMolecule;
+  }
+}
+
+insertAllData();
