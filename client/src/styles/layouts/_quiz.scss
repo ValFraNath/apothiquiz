@@ -66,32 +66,34 @@ $timer-size: 100px;
           margin-bottom: 0.1rem;
         }
       }
+    }
 
-      &:first-of-type {
-        p:last-of-type {
+    details ul {
+      p:last-of-type {
+        color: $color-green-success;
+        font-weight: bold;
+      }
+    }
+
+    h2 ~ ul {
+      padding-bottom: 0.5rem;
+
+      p:last-of-type {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+
+        span:first-of-type {
+          color: $color-red-error;
+          text-align: right;
+        }
+
+        span:nth-of-type(2) {
+          text-align: center;
+        }
+
+        span:last-of-type {
           color: $color-green-success;
           font-weight: bold;
-        }
-      }
-
-      &:last-of-type {
-        p:last-of-type {
-          display: grid;
-          grid-template-columns: 1fr 1fr 1fr;
-
-          span:first-of-type {
-            color: $color-red-error;
-            text-align: right;
-          }
-
-          span:nth-of-type(2) {
-            text-align: center;
-          }
-
-          span:last-of-type {
-            color: $color-green-success;
-            font-weight: bold;
-          }
         }
       }
     }

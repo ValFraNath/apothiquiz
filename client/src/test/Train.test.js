@@ -33,6 +33,6 @@ describe("Train component", () => {
     expect(wrapper.find("h1")).to.have.lengthOf(1);
     expect(wrapper.find("p")).to.have.lengthOf(1);
     expect(wrapper.find("details")).to.have.lengthOf(1);
-    expect(wrapper.find("ul")).to.have.lengthOf(1);
+    expect(wrapper.find("ul")).to.have.lengthOf(2);
   });
 });

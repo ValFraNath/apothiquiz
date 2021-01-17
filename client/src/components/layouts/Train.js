@@ -178,11 +178,11 @@ const SummaryView = ({ result }) => {
         <summary>Les bonnes réponses</summary>
         <ul>
           {result.good.length === 0 ? (
-            <li>Aucune bonne réponse.</li>
+            <li key={0}>Aucune bonne réponse.</li>
           ) : (
             <>
-              {result.good.map((value) => (
-                <li>
+              {result.good.map((value, index) => (
+                <li key={index}>
                   <p>{value.question}</p>
                   <p>{value.userChoice}</p>
                 </li>
@@ -195,11 +195,11 @@ const SummaryView = ({ result }) => {
       <h2>Les erreurs</h2>
       <ul>
         {result.bad.length === 0 ? (
-          <li>Aucune mauvaise réponse.</li>
+          <li key={0}>Aucune mauvaise réponse.</li>
         ) : (
           <>
-            {result.bad.map((value) => (
-              <li>
+            {result.bad.map((value, index) => (
+              <li key={index}>
                 <p>{value.question}</p>
                 <p>
                   <span>{value.userChoice}</span>
