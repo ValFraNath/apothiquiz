@@ -186,7 +186,7 @@ class FormattedMolecule {
   }
 
   /**
-   * Check if an object is an instane of FormattedMolecule
+   * Check if an object is an instance of FormattedMolecule
    * @param {*} o
    */
   static isInstance(o) {
