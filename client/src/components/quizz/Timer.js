@@ -1,18 +1,27 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "proptypes";
 
-const Timer = ({ inProgress, duration, updateParent }) => {
+const Timer = ({ duration, updateParent }) => {
+  const [initialTime] = useState(duration);
+
   useEffect(() => {
-    if (!inProgress || duration === 0) {
-      return;
-    }
-
-    setTimeout(() => {
-      updateParent();
+    let interval = setTimeout(() => {
+      updateParent(duration - 1);
     }, 1000);
-  }, [inProgress, duration, updateParent]);
 
-  return <p>{duration} s</p>;
+    return () => clearInterval(interval);
+  }, [duration, updateParent]);
+
+  const timerStyle = {
+    animationDuration: `${initialTime}s`,
+  };
+
+  return (
+    <div id="timer">
+      <div id="timer-color" style={timerStyle}></div>
+      <div id="timer-stroke"></div>
+    </div>
+  );
 };
 
 Timer.propTypes = {
