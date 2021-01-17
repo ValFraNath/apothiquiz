@@ -29,7 +29,7 @@ export default class Informations extends Component {
 
   render() {
     return (
-      <div id="informations">
+      <main id="informations">
         <p>
           Guacamole est une application d'apprentissage réflexe à destination des étudiants en pharmacie de l'Université
           de Franche-Comté.
@@ -60,7 +60,7 @@ export default class Informations extends Component {
             content="Pas de connexion. Veuillez vérifier votre connexion et que le serveur fonctionne"
           />
         )}
-      </div>
+      </main>
     );
   }
 }
