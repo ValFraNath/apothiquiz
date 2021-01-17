@@ -5,7 +5,7 @@ import InstallApp from "../system/InstallApp";
 
 const Menu = ({ installPromptEvent, user }) => {
   return (
-    <div id="menu">
+    <main id="menu">
       <div id="list">
         <Link to="/train">Entraînement libre</Link>
         {user === null && <Link to="/login">Se connecter</Link>}
@@ -13,7 +13,7 @@ const Menu = ({ installPromptEvent, user }) => {
         <Link to="/informations">Informations</Link>
         {installPromptEvent !== null && <InstallApp installPromptEvent={installPromptEvent} />}
       </div>
-    </div>
+    </main>
   );
 };
 
