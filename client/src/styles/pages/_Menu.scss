@@ -2,7 +2,7 @@ main#menu {
   background-image: url("../../images/bg_menu.png");
   background-size: cover;
   background-position: center 0px;
-  height: calc(100% - $top-bar-height);
+  height: calc(100% - #{$top-bar-height});
   overflow: auto;
 
   #list {
