@@ -1,7 +1,7 @@
 import app from "../index.js";
 
 /**
- * Wait until the server and the database are ready, to insert the data and run the tests
+ * Wait until the server and the database are ready to run tests
  */
 before(function insertData(done) {
   app.waitReady(() => done());

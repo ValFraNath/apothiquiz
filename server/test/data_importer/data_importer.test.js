@@ -27,7 +27,7 @@ for (let file of files) {
       });
     });
 
-    after("Truncate table", async () => {
+    after("Remove data", async () => {
       await queryPromise(
         forceTruncateTables("molecule", "class", "system", "property", "property_value", "molecule_property")
       );

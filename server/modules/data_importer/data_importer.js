@@ -39,12 +39,12 @@ export function insertAllData(data) {
     script += insertPropertySql(property, data[property]);
   }
   script += insertAllMolecules(data.molecules);
-  //console.log(script);
+
   return script;
 }
 
 /**
- * Create a sql insertion command (curryfied)
+ * Create an sql insertion command (curryfied)
  * @param {string} table
  * @return {function(...string):function(...string):string}
  */
@@ -61,31 +61,28 @@ function insertInto(table) {
 }
 
 /**
- * Create the script to insert all values of classifications
+ * Create the script to insert all values of classification
  * @param {string} name The classification table
  * @param {object[]} classification The list of higher nodes
  */
 function insertClassificationSql(name, classification) {
-  let insertNodeAndChildren = insertInClassification(name);
-  let sql = "";
-
-  for (let node of classification) {
-    sql += insertNodeAndChildren(node, null, 1);
-  }
-
-  return sql;
+  let insertNodeAndChildren = createClassificationNodeInserter(name);
+  return classification.reduce((sql, node) => sql + insertNodeAndChildren(node, null, 1), "");
 }
 
 /**
  * Create the function that creates the sql script to insert a node and its children
  * @param {string} classification
  */
-function insertInClassification(classification) {
+function createClassificationNodeInserter(classification) {
   function insertNode(id, name, higher, level) {
     return insertInto(classification)()([id, name, higher, level]);
   }
   return function insertNodeAndChildren({ id, name, children }, higher, level) {
-    return insertNode(id, name, higher, level) + children.map((c) => insertNodeAndChildren(c, id, level + 1)).join("");
+    return (
+      insertNode(id, name, higher, level) +
+      children.reduce((sql, node) => sql + insertNodeAndChildren(node, id, level + 1), "")
+    );
   };
 }
 
