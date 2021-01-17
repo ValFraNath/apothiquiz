@@ -10,6 +10,10 @@ const propertiesId = {
   },
 };
 
+/**
+ * Parse a csv file and create the sql script to insert it in database
+ * @param {string} filename
+ */
 export function parseAndImport(filename) {
   return new Promise((resolve, reject) => {
     parseCSV(filename)
