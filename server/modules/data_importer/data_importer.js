@@ -10,6 +10,35 @@ const propertiesId = {
   },
 };
 
+export function parseAndImport(filename) {
+  return new Promise((resolve, reject) => {
+    parseCSV(filename)
+      .then((json) => {
+        resolve(insertAllData(JSON.parse(json)));
+      })
+      .catch(reject);
+  });
+}
+
+/**
+ * Create a script to insert parsed data in database
+ * @param {object} data
+ * @param {string}
+ */
+export function insertAllData(data) {
+  let script = "";
+
+  script += insertClassificationSql("class", data["classes"]);
+  script += insertClassificationSql("system", data["systems"]);
+
+  for (let property of ["side_effects", "indications", "interactions"]) {
+    script += insertPropertySql(property, data[property]);
+  }
+  script += insertAllMolecules(data.molecules);
+  //console.log(script);
+  return script;
+}
+
 /**
  * Create a sql insertion command (curryfied)
  * @param {string} table
@@ -25,27 +54,6 @@ function insertInto(table) {
       return sql + `VALUES (${values.map(mysql.escape).join(", ")});\n`;
     };
   };
-}
-
-/**
- * Create a script to insert parsed data in database
- * @param {object} data
- * @param {string}
- */
-export async function insertAllData(data) {
-  data = JSON.parse(await parseCSV("../server/test/csv_parser/files/molecules.csv"));
-
-  let script = "";
-
-  script += insertClassificationSql("class", data["classes"]);
-  script += insertClassificationSql("system", data["systems"]);
-
-  for (let property of ["side_effects", "indications", "interactions"]) {
-    script += insertPropertySql(property, data[property]);
-  }
-  script += insertAllMolecules(data.molecules);
-  console.log(script);
-  return script;
 }
 
 /**
@@ -184,5 +192,3 @@ class FormattedMolecule {
     return o instanceof FormattedMolecule;
   }
 }
-
-insertAllData();
