@@ -2,6 +2,10 @@
 
 const cacheName = "guacamolePWA-v1";
 
+/**
+ * Install the service worker
+ * JavaScript files and assets (e.g. images) are cached
+ */
 self.addEventListener("install", (e) => {
   console.info("[Service Worker] Install");
 
@@ -14,6 +18,10 @@ self.addEventListener("install", (e) => {
   );
 });
 
+/**
+ * Activate the service worker
+ * Older versions of the cache (with a different cache name than the current one) are deleted.
+ */
 self.addEventListener("activate", (e) => {
   e.waitUntil(
     caches.keys().then((keyList) => {
@@ -22,6 +30,12 @@ self.addEventListener("activate", (e) => {
   );
 });
 
+/**
+ * Fetch resources
+ * If it is a call to the API, it is performed as usual
+ * Otherwise, either the resource is cached and returned to the user, or the resource is not
+ * cached, it is cached and returned.
+ */
 self.addEventListener("fetch", (e) => {
   const currentLocation = self.location.origin;
   if (!e.request.url.startsWith("http") || new RegExp(`^${currentLocation}/api/v[1-9][0-9]*/`).test(e.request.url)) {
