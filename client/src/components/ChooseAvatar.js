@@ -168,11 +168,13 @@ class ChooseAvatar extends Component {
           }}
         />
 
-        <button onClick={this.randomAvatar}>Générer un avatar aléatoire</button>
+        <button onClick={this.randomAvatar} className="btn">
+          Générer un avatar aléatoire
+        </button>
 
         <button
           onClick={this.handleSaveAvatar}
-          className={this.state.avatarChooserState}
+          className={"btn " + this.state.avatarChooserState}
           disabled={this.state.avatarChooserState === "saved"}
         >
           {this.state.avatarChooserState === "saved" && "Avatar sauvegardé"}

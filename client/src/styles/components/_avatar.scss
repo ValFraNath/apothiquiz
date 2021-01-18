@@ -1,24 +1,25 @@
 .avatar {
-  contain: paint;
+  overflow: hidden;
+  position: relative;
 
   .avatar-inside {
     width: 90%;
     height: 90%;
     top: calc(5% - 2px);
     left: calc(5% - 2px);
-    position: absolute;
+    position: relative;
     margin: 0;
     border: 2px solid black;
     border-radius: 50%;
 
+    svg,
     img {
       --x: 0;
-      width: 90%;
-      position: fixed;
-      margin-top: calc(-90% * var(--x));
+      width: 100%;
+      position: absolute;
+      margin-top: calc(-100% * var(--x));
 
       pointer-events: none;
-      user-drag: none;
       user-select: none;
       -moz-user-select: none;
       -webkit-user-drag: none;
