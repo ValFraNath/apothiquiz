@@ -1,13 +1,21 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "proptypes";
 
+/* ---------- Buttons ---------- */
+
 const AnswerBtn = ({ value, isRight, showResult, onClick }) => {
   let classBtn = "";
-  if (showResult) {
-    classBtn = isRight ? "good-answer" : "bad-answer";
-  }
+  if (showResult) classBtn = isRight ? "good-answer" : "bad-answer";
+
   return (
-    <button id="quiz-answer" className={classBtn} onClick={() => onClick(isRight)}>
+    <button
+      id="quiz-answer"
+      className={classBtn}
+      onClick={() => {
+        if (showResult) return;
+        onClick(value);
+      }}
+    >
       {value}
     </button>
   );
@@ -20,12 +28,15 @@ AnswerBtn.propTypes = {
   onClick: PropTypes.func.isRequired,
 };
 
-const Answers = ({ inProgress, goodAnswer, badAnswers, onClick }) => {
+/* ---------- List of buttons ---------- */
+
+const Answers = ({ inProgress, goodAnswer, badAnswers, lastClicked, onClick }) => {
   const [goodIndex, setGoodIndex] = useState(0);
   const arrayOfAnswers = [...badAnswers];
 
+  const numberOfQuestion = 4;
   useEffect(() => {
-    const index = Math.floor(Math.random() * 4);
+    const index = Math.floor(Math.random() * numberOfQuestion);
     setGoodIndex(index);
   }, [goodAnswer]);
 
@@ -38,7 +49,7 @@ const Answers = ({ inProgress, goodAnswer, badAnswers, onClick }) => {
           key={index}
           value={value}
           isRight={value === goodAnswer}
-          showResult={!inProgress}
+          showResult={!inProgress && (value === goodAnswer || lastClicked === value)}
           onClick={onClick}
         />
       ))}
@@ -50,6 +61,7 @@ Answers.propTypes = {
   inProgress: PropTypes.bool.isRequired,
   goodAnswer: PropTypes.string.isRequired,
   badAnswers: PropTypes.arrayOf(PropTypes.string).isRequired,
+  lastClicked: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
 };
 

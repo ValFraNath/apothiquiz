@@ -92,17 +92,15 @@ export default class App extends Component {
           </button>
         )}
 
-        <main>
-          <Switch>
-            <Route path="/" exact Menu>
-              <Menu user={this.state.user} installPromptEvent={installPromptEvent} />
-            </Route>
-            <Route path="/informations" exact component={Informations} />
-            <Route path="/train" exact component={Train} />
-            <Route path="/login" exact component={Login} />
-            <Route path="/profile" exact component={Profile} />
-          </Switch>
-        </main>
+        <Switch>
+          <Route path="/" exact Menu>
+            <Menu user={this.state.user} installPromptEvent={installPromptEvent} />
+          </Route>
+          <Route path="/informations" exact component={Informations} />
+          <Route path="/train" exact component={Train} />
+          <Route path="/login" exact component={Login} />
+          <Route path="/profile" exact component={Profile} />
+        </Switch>
       </Router>
     );
   }
