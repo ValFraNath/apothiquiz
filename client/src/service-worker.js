@@ -24,14 +24,12 @@ self.addEventListener("activate", (e) => {
 
 self.addEventListener("fetch", (e) => {
   const currentLocation = self.location.origin;
-  if (new RegExp(`^${currentLocation}/api/v[1-9][0-9]*/`).test(e.request.url)) {
-    console.info("[Service Woker] Own API fetched");
+  if (!e.request.url.startsWith("http") || new RegExp(`^${currentLocation}/api/v[1-9][0-9]*/`).test(e.request.url)) {
     return;
   }
 
   e.respondWith(
     caches.match(e.request).then((res) => {
-      console.info(`[Service Worker] Fetching resource: ${e.request.url}`);
       return (
         res ||
         fetch(e.request).then((r) => {
