@@ -149,7 +149,7 @@ async function getPropertyValuesList(property) {
                 WHERE pv_property = pr_id
                 AND pr_name = '${property}'`;
 
-  let values = await queryPromise(sql);
+  const values = await queryPromise(sql);
 
   return values.map((value) => value["value"]);
 }
