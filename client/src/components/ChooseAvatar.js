@@ -15,7 +15,7 @@ const Select = (props) => {
   return (
     <div className="choice">
       <ArrowLeftIcon
-        onClick={(event) => {
+        onClick={() => {
           const newValue = value - 1;
           setValue(newValue);
           props.onValueChange(newValue);
@@ -26,12 +26,12 @@ const Select = (props) => {
       />
 
       <ArrowRightIcon
-        onClick={(event) => {
+        onClick={() => {
           const newValue = value + 1;
           setValue(newValue);
           props.onValueChange(newValue);
         }}
-        className={value === props.maxValue ? "disabled" : ""}
+        className={value >= props.maxValue - 1 ? "disabled" : ""}
         height="30px"
         width="30px"
       />
@@ -185,11 +185,7 @@ class ChooseAvatar extends Component {
           Générer un avatar aléatoire
         </button>
 
-        <button
-          onClick={this.handleSaveAvatar}
-          className="btn"
-          disabled={this.state.avatarChooserState === "saved"}
-        >
+        <button onClick={this.handleSaveAvatar} className="btn" disabled={this.state.avatarChooserState === "saved"}>
           {this.state.avatarChooserState === "saved" && "Avatar sauvegardé"}
           {this.state.avatarChooserState === "saving" && "Sauvegarde en cours..."}
           {this.state.avatarChooserState === "not-saved" && "Sauvegarder l'avatar"}
