@@ -187,7 +187,7 @@ class ChooseAvatar extends Component {
 
         <button
           onClick={this.handleSaveAvatar}
-          className={"btn " + this.state.avatarChooserState}
+          className="btn"
           disabled={this.state.avatarChooserState === "saved"}
         >
           {this.state.avatarChooserState === "saved" && "Avatar sauvegardé"}
