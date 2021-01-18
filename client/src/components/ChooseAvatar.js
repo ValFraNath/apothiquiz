@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, { Component } from "react";
 import PropTypes from "proptypes";
 import axios from "axios";
 import { ArrowLeftIcon, ArrowRightIcon } from "@modulz/radix-icons";
@@ -10,28 +10,22 @@ const NUMBER_OF_HATS = 5;
 const NUMBER_OF_MOUTHES = 5;
 
 const Select = (props) => {
-  const [value, setValue] = useState(0);
-
   return (
     <div className="choice">
       <ArrowLeftIcon
         onClick={() => {
-          const newValue = value - 1;
-          setValue(newValue);
-          props.onValueChange(newValue);
+          props.onValueChange(props.value - 1);
         }}
-        className={value === 0 ? "disabled" : ""}
+        className={props.value === 0 ? "disabled" : ""}
         height="30px"
         width="30px"
       />
 
       <ArrowRightIcon
         onClick={() => {
-          const newValue = value + 1;
-          setValue(newValue);
-          props.onValueChange(newValue);
+          props.onValueChange(props.value + 1);
         }}
-        className={value >= props.maxValue - 1 ? "disabled" : ""}
+        className={props.value >= props.maxValue - 1 ? "disabled" : ""}
         height="30px"
         width="30px"
       />
@@ -49,7 +43,6 @@ Select.propTypes = {
 const InputColor = (props) => {
   return (
     <input
-      id={props.name}
       name={props.name}
       style={{ height: "25px" }}
       type="color"
