@@ -1,7 +1,7 @@
 import React, { Component, useState } from "react";
 import PropTypes from "proptypes";
 import axios from "axios";
-import { ArrowLeftIcon, ArrowRightIcon, BlendingModeIcon } from "@modulz/radix-icons";
+import { ArrowLeftIcon, ArrowRightIcon } from "@modulz/radix-icons";
 
 /** These const should match the number of possibilities in images/avatar/files.png */
 const NUMBER_OF_EYES = 5;
@@ -48,18 +48,16 @@ Select.propTypes = {
 
 const InputColor = (props) => {
   return (
-    <label>
-      <BlendingModeIcon height="30px" width="30px" />
-      <input
-        name={props.name}
-        style={{ display: "none" }}
-        type="color"
-        value={props.value}
-        onChange={(event) => {
-          props.onValueChange(event.target.value);
-        }}
-      />
-    </label>
+    <input
+      id={props.name}
+      name={props.name}
+      style={{ height: "25px" }}
+      type="color"
+      value={props.value}
+      onChange={(event) => {
+        props.onValueChange(event.target.value);
+      }}
+    />
   );
 };
 
@@ -102,7 +100,7 @@ class ChooseAvatar extends Component {
           colorBG: this.props.choiceColorBG,
         },
       })
-      .then((res) => {
+      .then(() => {
         this.setState({ avatarChooserState: "saved", message: "" });
       })
       .catch((error) => {
@@ -117,9 +115,9 @@ class ChooseAvatar extends Component {
   render() {
     return (
       <div id="change-avatar">
-        <span htmlFor="eyes">Yeux</span>
+        <span>Yeux</span>
         <Select
-          name="eyes"
+          name="choice-eyes"
           value={this.props.choiceEyes}
           maxValue={NUMBER_OF_EYES}
           onValueChange={(ev) => {
@@ -128,9 +126,9 @@ class ChooseAvatar extends Component {
           }}
         />
 
-        <span htmlFor="hands">Mains</span>
+        <span>Mains</span>
         <Select
-          name="hands"
+          name="choice-hands"
           value={this.props.choiceHands}
           maxValue={NUMBER_OF_HANDS}
           onValueChange={(ev) => {
@@ -139,9 +137,9 @@ class ChooseAvatar extends Component {
           }}
         />
 
-        <span htmlFor="hat">Chapeau</span>
+        <span>Chapeau</span>
         <Select
-          name="hat"
+          name="choice-hat"
           value={this.props.choiceHat}
           maxValue={NUMBER_OF_HATS}
           onValueChange={(ev) => {
@@ -150,9 +148,9 @@ class ChooseAvatar extends Component {
           }}
         />
 
-        <span htmlFor="mouth">Bouche</span>
+        <span>Bouche</span>
         <Select
-          name="mouth"
+          name="choice-mouth"
           value={this.props.choiceMouth}
           maxValue={NUMBER_OF_MOUTHES}
           onValueChange={(ev) => {
@@ -161,9 +159,9 @@ class ChooseAvatar extends Component {
           }}
         />
 
-        <span htmlFor="body">Couleur du corps</span>
+        <span>Couleur du corps</span>
         <InputColor
-          name="body"
+          name="choice-body"
           value={this.props.choiceColorBody}
           onValueChange={(ev) => {
             this.setState({ avatarChooserState: "not-saved" });
@@ -171,9 +169,9 @@ class ChooseAvatar extends Component {
           }}
         />
 
-        <span htmlFor="background">Couleur de fond</span>
+        <span>Couleur de fond</span>
         <InputColor
-          name="background"
+          name="choice-background"
           value={this.props.choiceColorBG}
           onValueChange={(ev) => {
             this.setState({ avatarChooserState: "not-saved" });
