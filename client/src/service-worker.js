@@ -49,7 +49,7 @@ self.addEventListener("fetch", (e) => {
       }
 
       return fetch(e.request).then((r) => {
-        if (!r || r.status !== 200 || r.type !== basic) {
+        if (!r || r.status !== 200 || r.type !== "basic") {
           return r;
         }
         caches.open(cacheName).then((cache) => {
