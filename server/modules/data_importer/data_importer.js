@@ -98,7 +98,7 @@ function createSqlToInsertProperty(name, values) {
   let script = createSqlToInsertInto("property")("pr_id", "pr_name")(id, name);
 
   return values.reduce((sql, value) => {
-    let valueId = newIdForPropertyValue(id, value.id);
+    const valueId = newIdForPropertyValue(id, value.id);
     return sql + createSqlToInsertInto("property_value")("pv_id", "pv_name", "pv_property")(valueId, value.name, id);
   }, script);
 }
