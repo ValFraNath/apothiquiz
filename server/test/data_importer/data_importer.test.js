@@ -9,7 +9,7 @@ chai.use(deepEqualAnyOrder);
 
 import { queryPromise } from "../../db/database.js";
 import { forceTruncateTables } from "../index.test.js";
-import { parseAndImport } from "../../modules/data_importer/data_importer.js";
+import { parseAndCreateSqlToInsertAllData } from "../../modules/data_importer/data_importer.js";
 import { expectations } from "./expectations.js";
 
 const files = [
@@ -22,7 +22,7 @@ const files = [
 for (let file of files) {
   describe("Data are well imported in database", function () {
     before("Import data", function (done) {
-      parseAndImport(path.resolve("test", "data_importer", "files", file.name)).then((script) => {
+      parseAndCreateSqlToInsertAllData(path.resolve("test", "data_importer", "files", file.name)).then((script) => {
         queryPromise(script).then(() => done());
       });
     });
