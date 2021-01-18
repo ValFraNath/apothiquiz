@@ -128,7 +128,7 @@ async function getMoleculeData(dci) {
  */
 async function getClassification(classification) {
   let singular = classification.replace(/e?s$/, "");
-  let prefix = classification.slice(0, 2);
+  const prefix = classification.slice(0, 2);
   const sql = `SELECT l3.${prefix}_name as ${singular}, l2.${prefix}_name as parent, l1.${prefix}_name as grand_parent 
               FROM ((${singular} as l1 RIGHT OUTER JOIN ${singular} as l2 ON l1.${prefix}_id = l2.${prefix}_higher) 
                 RIGHT OUTER JOIN ${singular} as l3 ON l3.${prefix}_higher = l2.${prefix}_id) `;
