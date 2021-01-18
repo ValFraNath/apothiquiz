@@ -1,13 +1,63 @@
-import React, { useState, useEffect } from "react";
+import React, { Component, useState, useEffect } from "react";
+import PropTypes from "proptypes";
+import axios from "axios";
 import { Link } from "react-router-dom";
 // import { CaretLeftIcon } from "@modulz/radix-icons";
 
 import SpriteSheet from "../SpriteSheet";
+import Avatar from "../Avatar";
 
 import connection_anim from "../../images/connection_status.png";
 
-const UserBadge = ({ pseudo }) => {
-  return <div id={"userBadge"}>{pseudo}</div>;
+class UserBadge extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {};
+  }
+
+  componentDidMount() {
+    // TODO? Use global state?
+    axios
+      .get(`/api/v1/user/me`)
+      .then((res) => {
+        const avatar = res.data.avatar;
+        this.setState({
+          eyes: avatar.eyes,
+          hands: avatar.hands,
+          hat: avatar.hat,
+          mouth: avatar.mouth,
+          colorBody: avatar.colorBody,
+          colorBG: avatar.colorBG,
+        });
+      })
+      .catch((error) => {
+        // TODO show message
+        console.error(error);
+        return;
+      });
+  }
+
+  render() {
+    return (
+      <div id={"userBadge"}>
+        <Avatar
+          size="32px"
+          eyes={this.state.eyes}
+          hands={this.state.hands}
+          hat={this.state.hat}
+          mouth={this.state.mouth}
+          colorBody={this.state.colorBody}
+          colorBG={this.state.colorBG}
+        />
+        <span>{this.props.pseudo}</span>
+      </div>
+    );
+  }
+}
+
+UserBadge.propTypes = {
+  pseudo: PropTypes.string.isRequired,
 };
 
 const OfflineBanner = () => {

@@ -20,36 +20,24 @@ nav a {
   }
 }
 
-nav #return {
-  position: absolute;
-  left: 10px;
-  height: 20px;
-}
-
 nav h1 a {
   text-align: center;
   text-transform: uppercase;
   height: 16px;
-  margin: auto;
   font-weight: bolder;
+  padding: 10px 15px;
+  border-radius: 10px;
+  background-color: gray;
 }
 
 nav #offlineBanner {
   position: absolute;
-  right: 5px;
+  right: 0px;
   margin: 10px;
-  top: -20px;
-
-  &.online {
-    color: green;
-  }
-
-  &.offline {
-    color: red;
-  }
 }
+
 nav #userBadge {
   position: absolute;
-  left: 10px;
+  left: 0px;
   margin: 10px;
 }

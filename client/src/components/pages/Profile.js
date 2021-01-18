@@ -9,15 +9,7 @@ export default class Profile extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      message: "",
-      choiceEyes: 0,
-      choiceHands: 0,
-      choiceHat: 0,
-      choiceMouth: 0,
-      choiceColorBody: "#0c04fc", // blue
-      choiceColorBG: "#D3D3D3", // lightgray
-    };
+    this.state = {};
   }
 
   componentDidMount() {
@@ -49,8 +41,6 @@ export default class Profile extends Component {
   render() {
     return (
       <main id="profile">
-        <button onClick={this.handleLogoutClick}>Me déconnecter</button>
-
         <Avatar
           size="256px"
           eyes={this.state.choiceEyes}
@@ -75,6 +65,10 @@ export default class Profile extends Component {
           handleInputColorBody={(val) => this.setState({ choiceColorBody: val })}
           handleInputColorBG={(val) => this.setState({ choiceColorBG: val })}
         />
+
+        <button className="btn" onClick={this.handleLogoutClick}>
+          Me déconnecter
+        </button>
       </main>
     );
   }

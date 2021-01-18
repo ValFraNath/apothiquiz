@@ -1,6 +1,7 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import PropTypes from "proptypes";
 import axios from "axios";
+import { ArrowLeftIcon, ArrowRightIcon } from "@modulz/radix-icons";
 
 /** These const should match the number of possibilities in images/avatar/files.png */
 const NUMBER_OF_EYES = 5;
@@ -9,24 +10,32 @@ const NUMBER_OF_HATS = 5;
 const NUMBER_OF_MOUTHES = 5;
 
 const Select = (props) => {
-  const options = [];
-  for (let i = 0; i < props.maxValue; ++i) {
-    options.push(
-      <option key={i} value={i}>
-        {i}
-      </option>
-    );
-  }
+  const [value, setValue] = useState(0);
+
   return (
-    <select
-      name={props.name}
-      value={props.value}
-      onChange={(event) => {
-        props.onValueChange(event.target.value);
-      }}
-    >
-      {options}
-    </select>
+    <div className="choice">
+      <ArrowLeftIcon
+        onClick={(event) => {
+          const newValue = value - 1;
+          setValue(newValue);
+          props.onValueChange(newValue);
+        }}
+        className={value === 0 ? "disabled" : ""}
+        height="30px"
+        width="30px"
+      />
+      <span>{value}</span>
+      <ArrowRightIcon
+        onClick={(event) => {
+          const newValue = value + 1;
+          setValue(newValue);
+          props.onValueChange(newValue);
+        }}
+        className={value === props.maxValue ? "disabled" : ""}
+        height="30px"
+        width="30px"
+      />
+    </div>
   );
 };
 
@@ -179,7 +188,7 @@ class ChooseAvatar extends Component {
         >
           {this.state.avatarChooserState === "saved" && "Avatar sauvegardé"}
           {this.state.avatarChooserState === "saving" && "Sauvegarde en cours..."}
-          {this.state.avatarChooserState === "not-saved" && "Valider l'avatar"}
+          {this.state.avatarChooserState === "not-saved" && "Sauvegarder l'avatar"}
         </button>
 
         {this.state.message !== null && <span className="error">{this.state.message}</span>}
