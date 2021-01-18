@@ -13,7 +13,14 @@ class UserBadge extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      eyes: 0,
+      hands: 0,
+      hat: 0,
+      mouth: 0,
+      colorBody: "#0c04fc", // blue
+      colorBG: "#D3D3D3", // lightgray
+    };
   }
 
   componentDidMount() {
