@@ -133,8 +133,7 @@ const OfflineBanner = () => {
 const TopBar = ({ user }) => {
   return (
     <nav>
-      {/* <CaretLeftIcon id="return" /> */}
-      {user && <UserBadge pseudo={user} />}
+      {user ? <UserBadge pseudo={user} /> : <span></span>}
       <h1>
         <Link to="/">Guacamole</Link>
       </h1>
