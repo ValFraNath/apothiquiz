@@ -13,7 +13,14 @@ class UserBadge extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      eyes: 0,
+      hands: 0,
+      hat: 0,
+      mouth: 0,
+      colorBody: "#0c04fc",
+      colorBG: "#D3D3D3",
+    };
   }
 
   componentDidMount() {
@@ -40,7 +47,7 @@ class UserBadge extends Component {
 
   render() {
     return (
-      <div id={"userBadge"}>
+      <div id="userBadge">
         <Avatar
           size="32px"
           eyes={this.state.eyes}
@@ -111,8 +118,8 @@ const OfflineBanner = () => {
     <div id={"offlineBanner"} className={isOnline ? "online" : "offline"}>
       <SpriteSheet
         image={connection_anim}
-        frameHeight={60}
-        frameWidth={65}
+        frameHeight={35}
+        frameWidth={35}
         steps={37}
         timing={1.5}
         get={(sp) => {

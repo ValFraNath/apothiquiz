@@ -9,7 +9,14 @@ export default class Profile extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      choiceEyes: 0,
+      choiceHands: 0,
+      choiceHat: 0,
+      choiceMouth: 0,
+      choiceColorBody: "#0c04fc", // blue
+      choiceColorBG: "#D3D3D3", // lightgray
+    };
   }
 
   componentDidMount() {
