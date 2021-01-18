@@ -20,11 +20,7 @@
       margin-top: calc(-100% * var(--x));
 
       pointer-events: none;
-      user-select: none;
-      -moz-user-select: none;
-      -webkit-user-drag: none;
-      -webkit-user-select: none;
-      -ms-user-select: none;
+      @include not-selectable;
     }
 
     img[data-choice="1"] {

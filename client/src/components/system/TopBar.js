@@ -13,14 +13,7 @@ class UserBadge extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      eyes: 0,
-      hands: 0,
-      hat: 0,
-      mouth: 0,
-      colorBody: "#0c04fc",
-      colorBG: "#D3D3D3",
-    };
+    this.state = {};
   }
 
   componentDidMount() {
@@ -47,7 +40,7 @@ class UserBadge extends Component {
 
   render() {
     return (
-      <div id="userBadge">
+      <Link to="/profile" id={"userBadge"}>
         <Avatar
           size="32px"
           eyes={this.state.eyes}
@@ -58,7 +51,7 @@ class UserBadge extends Component {
           colorBG={this.state.colorBG}
         />
         <span>{this.props.pseudo}</span>
-      </div>
+      </Link>
     );
   }
 }

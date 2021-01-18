@@ -1,7 +1,7 @@
 import React, { Component, useState } from "react";
 import PropTypes from "proptypes";
 import axios from "axios";
-import { ArrowLeftIcon, ArrowRightIcon } from "@modulz/radix-icons";
+import { ArrowLeftIcon, ArrowRightIcon, BlendingModeIcon } from "@modulz/radix-icons";
 
 /** These const should match the number of possibilities in images/avatar/files.png */
 const NUMBER_OF_EYES = 5;
@@ -24,7 +24,7 @@ const Select = (props) => {
         height="30px"
         width="30px"
       />
-      <span>{value}</span>
+
       <ArrowRightIcon
         onClick={(event) => {
           const newValue = value + 1;
@@ -48,14 +48,18 @@ Select.propTypes = {
 
 const InputColor = (props) => {
   return (
-    <input
-      name={props.name}
-      type="color"
-      value={props.value}
-      onChange={(event) => {
-        props.onValueChange(event.target.value);
-      }}
-    />
+    <label>
+      <BlendingModeIcon height="30px" width="30px" />
+      <input
+        name={props.name}
+        style={{ display: "none" }}
+        type="color"
+        value={props.value}
+        onChange={(event) => {
+          props.onValueChange(event.target.value);
+        }}
+      />
+    </label>
   );
 };
 
@@ -113,7 +117,7 @@ class ChooseAvatar extends Component {
   render() {
     return (
       <div id="change-avatar">
-        <label htmlFor="eyes">Yeux</label>
+        <span htmlFor="eyes">Yeux</span>
         <Select
           name="eyes"
           value={this.props.choiceEyes}
@@ -124,7 +128,7 @@ class ChooseAvatar extends Component {
           }}
         />
 
-        <label htmlFor="hands">Mains</label>
+        <span htmlFor="hands">Mains</span>
         <Select
           name="hands"
           value={this.props.choiceHands}
@@ -135,7 +139,7 @@ class ChooseAvatar extends Component {
           }}
         />
 
-        <label htmlFor="hat">Chapeau</label>
+        <span htmlFor="hat">Chapeau</span>
         <Select
           name="hat"
           value={this.props.choiceHat}
@@ -146,7 +150,7 @@ class ChooseAvatar extends Component {
           }}
         />
 
-        <label htmlFor="mouth">Bouche</label>
+        <span htmlFor="mouth">Bouche</span>
         <Select
           name="mouth"
           value={this.props.choiceMouth}
@@ -157,7 +161,7 @@ class ChooseAvatar extends Component {
           }}
         />
 
-        <label htmlFor="body">Couleur du corps</label>
+        <span htmlFor="body">Couleur du corps</span>
         <InputColor
           name="body"
           value={this.props.choiceColorBody}
@@ -167,7 +171,7 @@ class ChooseAvatar extends Component {
           }}
         />
 
-        <label htmlFor="background">Couleur de fond</label>
+        <span htmlFor="background">Couleur de fond</span>
         <InputColor
           name="background"
           value={this.props.choiceColorBG}
