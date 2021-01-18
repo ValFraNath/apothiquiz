@@ -65,7 +65,7 @@ function createSqlToInsertInto(table) {
  * @returns {string}
  */
 function createSqlToInsertClassification(name, classification) {
-  let insertNodeAndChildren = createClassificationNodeInserter(name);
+  const insertNodeAndChildren = createClassificationNodeInserter(name);
   return classification.reduce((sql, node) => sql + insertNodeAndChildren(node, null, 1), "");
 }
 
