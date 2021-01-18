@@ -51,7 +51,7 @@ export function insertAllData(data) {
 function insertInto(table) {
   let sql = `INSERT INTO ${table} `;
   return function columns(...columns) {
-    if (columns.length) {
+    if (columns.length > 0) {
       sql += `(${columns.join(", ")}) `;
     }
     return function values(...values) {
