@@ -44,7 +44,7 @@ function createMolecule(id, row, structure, data) {
     if (column.isHierarchical()) {
       const indexes = structure.getIndexesFor(property);
       const id = getClassificationNodeID(row, indexes, data[property]);
-      let propertyWithoutPlural = property.replace(/e?s$/, "");
+      const propertyWithoutPlural = property.replace(/e?s$/, "");
       molecule[propertyWithoutPlural] = id !== undefined ? id : null;
     }
   });
