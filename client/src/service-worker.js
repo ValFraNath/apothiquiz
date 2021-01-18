@@ -44,16 +44,20 @@ self.addEventListener("fetch", (e) => {
 
   e.respondWith(
     caches.match(e.request).then((res) => {
-      return (
-        res ||
-        fetch(e.request).then((r) => {
-          return caches.open(cacheName).then((cache) => {
-            console.info(`[Service Worker] Caching new resource: ${e.request.url}`);
-            cache.put(e.request, r.clone());
-            return r;
-          });
-        })
-      );
+      if (res) {
+        return res;
+      }
+
+      return fetch(e.request).then((r) => {
+        if (!r || r.status !== 200 || r.type !== basic) {
+          return r;
+        }
+        caches.open(cacheName).then((cache) => {
+          console.info(`[Service Worker] Caching new resource: ${e.request.url}`);
+          cache.put(e.request, r.clone());
+        });
+        return r;
+      });
     })
   );
 });
