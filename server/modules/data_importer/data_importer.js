@@ -44,7 +44,7 @@ export function createSqlToInsertAllData(data) {
 /**
  * Create an sql insertion command (curryfied)
  * @param {string} table The table name
- * @return {function(...string):function(...string):string}
+ * @returns {function(...string):function(...string):string}
  */
 function createSqlToInsertInto(table) {
   let sql = `INSERT INTO ${table} `;
