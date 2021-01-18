@@ -79,7 +79,7 @@ for (let file of files) {
  * @return {Promise<number>}
  */
 async function getNumberOfEntry(table) {
-  let sql = `SELECT COUNT(*) as number_of_entry FROM ${table}`;
+  const sql = `SELECT COUNT(*) as number_of_entry FROM ${table}`;
   const res = await queryPromise(sql);
   expect(res).has.length(1);
   return Number(res[0]["number_of_entry"]);
