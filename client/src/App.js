@@ -42,26 +42,26 @@ export default class App extends Component {
   }
 
   componentDidMount() {
-    // Install serviceWorker
+    // Install service-worker
+    const newUpdateAvailable = (newSW) => {
+      this.setState({
+        waitingServiceWorker: newSW,
+        isUpdateAvailable: true,
+      });
+    };
     serviceWorker.register({
-      onUpdate: (registration) => {
-        this.setState({
-          waitingServiceWorker: registration.waiting,
-          isUpdateAvailable: true,
-        });
+      onUpdate: (reg) => {
+        newUpdateAvailable(reg);
       },
-      onWaiting: (waiting) => {
-        this.setState({
-          waitingServiceWorker: waiting,
-          isUpdateAvailable: true,
-        });
+      onWaiting: (reg) => {
+        newUpdateAvailable(reg);
       },
     });
+    serviceWorker.controllerChange();
 
     // Display installation button
     window.addEventListener("beforeinstallprompt", (event) => {
       event.preventDefault();
-
       this.setState({
         installPromptEvent: event,
       });

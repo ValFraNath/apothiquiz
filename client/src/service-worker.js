@@ -1,6 +1,11 @@
 /* eslint-disable no-restricted-globals */
 
-const cacheName = "guacamolePWA-v1";
+let cacheName = "guacamolePWA-v1";
+caches.has(cacheName).then((res) => {
+  if (res) {
+    cacheName = "guacamolePWA-v2";
+  }
+});
 
 /**
  * Install the service worker
@@ -52,12 +57,19 @@ self.addEventListener("fetch", (e) => {
         if (!r || r.status !== 200 || r.type !== "basic") {
           return r;
         }
+        const newResource = r.clone();
         caches.open(cacheName).then((cache) => {
           console.info(`[Service Worker] Caching new resource: ${e.request.url}`);
-          cache.put(e.request, r.clone());
+          cache.put(e.request, newResource);
         });
         return r;
       });
     })
   );
+});
+
+self.addEventListener("message", (e) => {
+  if (e.data.type && e.data.type === "SKIP_WAITING") {
+    self.skipWaiting();
+  }
 });
