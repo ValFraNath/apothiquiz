@@ -75,7 +75,11 @@ export default class About extends Component {
             <li>Supervisé par Anne-Laure Claire, Frédéric Dadeau, et Marc Pudlo.</li>
             <li>Graphismes par Roxane Herbstmeyer.</li>
             <li>
-              Icônes par <a href="https://icons.modulz.app/">Modulz</a>.
+              Icônes par{" "}
+              <a href="https://icons.modulz.app/" target="_blank" rel="noreferrer">
+                Modulz
+              </a>
+              .
             </li>
           </ol>
         </p>
