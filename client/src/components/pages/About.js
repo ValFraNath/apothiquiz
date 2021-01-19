@@ -3,6 +3,7 @@ import axios from "axios";
 import GitInfo from "react-git-info/macro";
 
 import Message from "../quizz/Message";
+import Button from "../Buttons/ButtonDefault"
 
 export default class About extends Component {
   constructor(props) {
@@ -50,9 +51,9 @@ export default class About extends Component {
           </a>
         </p>
 
-        <button className="btn" onClick={this.handleButtonClick}>
+        <Button  onClick={this.handleButtonClick}>
           Tester la connexion au serveur
-        </button>
+        </Button>
 
         {this.state.serverStatus && (
           <p>
