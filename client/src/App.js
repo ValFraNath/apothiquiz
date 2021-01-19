@@ -7,7 +7,7 @@ import "./styles/styles.scss";
 import ProtectedRoute from "./components/ProtectedRoute";
 import TopBar from "./components/system/TopBar";
 import Menu from "./components/pages/Menu";
-import Informations from "./components/pages/Informations";
+import About from "./components/pages/About";
 import Train from "./components/layouts/Train";
 import Login from "./components/pages/Login";
 import AuthService from "./services/auth.service";
@@ -96,7 +96,7 @@ export default class App extends Component {
           <Route path="/" exact Menu>
             <Menu user={this.state.user} installPromptEvent={installPromptEvent} />
           </Route>
-          <Route path="/informations" exact component={Informations} />
+          <Route path="/about" exact component={About} />
           <Route path="/train" exact component={Train} />
           <Route path="/login" exact component={Login} />
           <ProtectedRoute path="/profile" exact component={Profile} />

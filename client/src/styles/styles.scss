@@ -3,6 +3,6 @@
 @import "components/TopBar", "components/buttons", "components/messages", "components/userBadge", "components/avatar",
   "components/chooseAvatar";
 
-@import "layouts/App", "layouts/quiz", "layouts/login";
+@import "layouts/App", "layouts/quiz";
 
-@import "pages/Menu", "pages/Informations", "pages/Profile";
+@import "pages/Menu", "pages/About", "pages/Profile", "pages/Login";

@@ -7,6 +7,7 @@ class SpriteSheet extends Component {
     this.state = {
       currentFrame: 0,
       direction: 1,
+      currentTimer: null,
     };
   }
 
@@ -68,12 +69,18 @@ class SpriteSheet extends Component {
         onEachStep(this.state.currentFrame, this.state.direction);
       }
     }, (1000 * this.props.timing) / this.props.steps);
+
+    this.setState({ currentTimer: int });
   };
 
   componentDidMount() {
     if (this.props.get) {
       this.props.get(this);
     }
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.state.currentTimer);
   }
 
   render() {
