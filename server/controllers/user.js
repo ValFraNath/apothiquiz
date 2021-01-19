@@ -13,11 +13,11 @@ User.login = function (req, res) {
     return;
   }
 
-  let sql = `SELECT COUNT(*) as found
-                FROM user
-                WHERE us_login = "${userPseudo}"`;
+  const sql = "SELECT COUNT(*) as found \
+               FROM user                \
+               WHERE us_login = ?";
 
-  queryPromise(sql)
+  queryPromise(sql, [userPseudo])
     .then((sqlRes) => {
       let found = sqlRes[0]["found"];
       if (found) {
@@ -105,9 +105,9 @@ User.saveInfos = async function (req, res) {
     .then((infos) => {
       infos.avatar = avatar || infos.avatar;
 
-      queryPromise("UPDATE user        \
-      SET us_avatar = ? \
-      WHERE us_login = ?;", [
+      queryPromise("UPDATE user \
+         SET us_avatar = ?      \
+         WHERE us_login = ?;", [
         JSON.stringify(infos.avatar),
         infos.pseudo,
       ])

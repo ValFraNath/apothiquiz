@@ -63,8 +63,11 @@ Database.create = async function () {
  */
 Database.getSystemInformation = function (key) {
   return new Promise(function (resolve) {
-    let sql = `SELECT value FROM \`server_informations\` WHERE \`key\`='${key}'`;
-    queryPromise(sql)
+    const sql = "SELECT value   \
+       FROM server_informations \
+       WHERE `key` = ? ;";
+
+    queryPromise(sql, [key])
       .then((res) => resolve(JSON.parse(JSON.stringify(res))[0].value))
       .catch((err) => {
         if (err.code === "ER_NO_SUCH_TABLE") {
