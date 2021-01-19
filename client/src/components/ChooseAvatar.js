@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "proptypes";
 import axios from "axios";
+import { ArrowLeftIcon, ArrowRightIcon } from "@modulz/radix-icons";
 
 /** These const should match the number of possibilities in images/avatar/files.png */
 const NUMBER_OF_EYES = 5;
@@ -9,24 +10,26 @@ const NUMBER_OF_HATS = 5;
 const NUMBER_OF_MOUTHES = 5;
 
 const Select = (props) => {
-  const options = [];
-  for (let i = 0; i < props.maxValue; ++i) {
-    options.push(
-      <option key={i} value={i}>
-        {i}
-      </option>
-    );
-  }
   return (
-    <select
-      name={props.name}
-      value={props.value}
-      onChange={(event) => {
-        props.onValueChange(event.target.value);
-      }}
-    >
-      {options}
-    </select>
+    <div className="choice">
+      <ArrowLeftIcon
+        onClick={() => {
+          props.onValueChange(props.value - 1);
+        }}
+        className={props.value === 0 ? "disabled" : ""}
+        height="30px"
+        width="30px"
+      />
+
+      <ArrowRightIcon
+        onClick={() => {
+          props.onValueChange(props.value + 1);
+        }}
+        className={props.value >= props.maxValue - 1 ? "disabled" : ""}
+        height="30px"
+        width="30px"
+      />
+    </div>
   );
 };
 
@@ -41,6 +44,7 @@ const InputColor = (props) => {
   return (
     <input
       name={props.name}
+      style={{ height: "25px" }}
       type="color"
       value={props.value}
       onChange={(event) => {
@@ -89,7 +93,7 @@ class ChooseAvatar extends Component {
           colorBG: this.props.choiceColorBG,
         },
       })
-      .then((res) => {
+      .then(() => {
         this.setState({ avatarChooserState: "saved", message: "" });
       })
       .catch((error) => {
@@ -104,9 +108,9 @@ class ChooseAvatar extends Component {
   render() {
     return (
       <div id="change-avatar">
-        <label htmlFor="eyes">Yeux</label>
+        <span>Yeux</span>
         <Select
-          name="eyes"
+          name="choice-eyes"
           value={this.props.choiceEyes}
           maxValue={NUMBER_OF_EYES}
           onValueChange={(ev) => {
@@ -115,9 +119,9 @@ class ChooseAvatar extends Component {
           }}
         />
 
-        <label htmlFor="hands">Mains</label>
+        <span>Mains</span>
         <Select
-          name="hands"
+          name="choice-hands"
           value={this.props.choiceHands}
           maxValue={NUMBER_OF_HANDS}
           onValueChange={(ev) => {
@@ -126,9 +130,9 @@ class ChooseAvatar extends Component {
           }}
         />
 
-        <label htmlFor="hat">Chapeau</label>
+        <span>Chapeau</span>
         <Select
-          name="hat"
+          name="choice-hat"
           value={this.props.choiceHat}
           maxValue={NUMBER_OF_HATS}
           onValueChange={(ev) => {
@@ -137,9 +141,9 @@ class ChooseAvatar extends Component {
           }}
         />
 
-        <label htmlFor="mouth">Bouche</label>
+        <span>Bouche</span>
         <Select
-          name="mouth"
+          name="choice-mouth"
           value={this.props.choiceMouth}
           maxValue={NUMBER_OF_MOUTHES}
           onValueChange={(ev) => {
@@ -148,9 +152,9 @@ class ChooseAvatar extends Component {
           }}
         />
 
-        <label htmlFor="body">Couleur du corps</label>
+        <span>Couleur du corps</span>
         <InputColor
-          name="body"
+          name="choice-body"
           value={this.props.choiceColorBody}
           onValueChange={(ev) => {
             this.setState({ avatarChooserState: "not-saved" });
@@ -158,9 +162,9 @@ class ChooseAvatar extends Component {
           }}
         />
 
-        <label htmlFor="background">Couleur de fond</label>
+        <span>Couleur de fond</span>
         <InputColor
-          name="background"
+          name="choice-background"
           value={this.props.choiceColorBG}
           onValueChange={(ev) => {
             this.setState({ avatarChooserState: "not-saved" });
@@ -168,16 +172,14 @@ class ChooseAvatar extends Component {
           }}
         />
 
-        <button onClick={this.randomAvatar}>Générer un avatar aléatoire</button>
+        <button onClick={this.randomAvatar} className="btn">
+          Générer un avatar aléatoire
+        </button>
 
-        <button
-          onClick={this.handleSaveAvatar}
-          className={this.state.avatarChooserState}
-          disabled={this.state.avatarChooserState === "saved"}
-        >
+        <button onClick={this.handleSaveAvatar} className="btn" disabled={this.state.avatarChooserState === "saved"}>
           {this.state.avatarChooserState === "saved" && "Avatar sauvegardé"}
           {this.state.avatarChooserState === "saving" && "Sauvegarde en cours..."}
-          {this.state.avatarChooserState === "not-saved" && "Valider l'avatar"}
+          {this.state.avatarChooserState === "not-saved" && "Sauvegarder l'avatar"}
         </button>
 
         {this.state.message !== null && <span className="error">{this.state.message}</span>}

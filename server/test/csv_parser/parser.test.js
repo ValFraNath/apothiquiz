@@ -5,11 +5,11 @@ import mocha from "mocha";
 import fs from "fs";
 import deepEqualAnyOrder from "deep-equal-in-any-order";
 
-import { parseCSV } from "../../modules/CSVParser/Parser.js";
+import { parseCSV } from "../../modules/data_importer/csv_parser/Parser.js";
 import { expectations } from "./expectations.js";
 // eslint-disable-next-line no-unused-vars
-import { ClassificationNode } from "../../modules/CSVParser/MoleculesClassification.js";
-import { HeaderErrors } from "../../modules/CSVParser/HeaderChecker.js";
+import { ClassificationNode } from "../../modules/data_importer/csv_parser/MoleculesClassification.js";
+import { HeaderErrors } from "../../modules/data_importer/csv_parser/HeaderChecker.js";
 
 chai.use(chaiHttp);
 chai.use(deepEqualAnyOrder);
@@ -94,14 +94,15 @@ describe("Test if values are well imported", function () {
 
           expect(expectedValues.all, "Values are same than expected").to.be.deep.equalInAnyOrder(names);
 
-          for (let expected of expectedValues.nodes) {
-            let value = getClassificationValue(data[classification], expected.name);
+          for (let expectedNode of expectedValues.nodes) {
+            let value = getClassificationValue(data[classification], expectedNode.name);
 
-            expect(value, `Value '${expected.name}' not found.`).to.not.be.undefined;
+            expect(value, `Value '${expectedNode.name}' not found.`).to.not.be.undefined;
 
-            expect(expected.children, `'${expected.name}' has same children than expected`).to.be.deep.equalInAnyOrder(
-              value.children.map(toName)
-            );
+            expect(
+              expectedNode.children,
+              `'${expectedNode.name}' has same children than expected`
+            ).to.be.deep.equalInAnyOrder(value.children.map(toName));
           }
           expect(names, "Good number of name").to.have.length(expectedValues.all.length);
           expect(ids, "Good number of ids").to.have.length(expectedValues.all.length);
@@ -135,12 +136,13 @@ describe("Test if values are well imported", function () {
           expect(molecule, `| Molecule not found : ${expected.dci} |`).not.undefined;
 
           for (let classification of ["systems", "classes"]) {
-            if (expected[classification] === null) {
+            const moleculeProperty = classification.replace("classes", "class").replace("systems", "system");
+            if (expected[moleculeProperty] === null) {
               continue;
             }
-            const value = getClassificationValue(data[classification], expected[classification]);
-            expect(value, `| Class not found : ${expected[classification]} |`).not.undefined;
-            expect(value.id, `| Invalid class |`).equals(molecule[classification]);
+            const value = getClassificationValue(data[classification], expected[moleculeProperty]);
+            expect(value, `| ${classification} not found : ${expected[moleculeProperty]} |`).not.undefined;
+            expect(value.id, `| Invalid class |`).equals(molecule[moleculeProperty]);
           }
 
           for (let property of ["skeletal_formule", "ntr", "level_easy", "level_hard"]) {

@@ -1,55 +1,51 @@
 nav {
-  display: flex;
-  justify-content: center;
+  display: grid;
   align-items: center;
   width: 100%;
   height: $top-bar-height;
+  margin: 0;
   background-color: $top-bar-bg;
+
+  grid-template-columns: 30% 40% 30%;
 }
 
 nav > * {
   display: inline-block;
-  margin: 10px;
+  margin: auto;
   color: $top-bar-fg;
+  @include not-selectable;
+
+  &:first-child {
+    margin-left: 5px;
+  }
+
+  &:last-child {
+    margin-right: 5px;
+  }
 }
 
 nav a {
   text-decoration: none;
-  &:visited {
-    color: $top-bar-fg;
-  }
 }
 
-nav #return {
-  position: absolute;
-  left: 10px;
-  height: 20px;
-}
-
-nav h1 a {
+nav h1 {
   text-align: center;
-  text-transform: uppercase;
-  height: 16px;
-  margin: auto;
-  font-weight: bolder;
-}
 
-nav #offlineBanner {
-  position: absolute;
-  right: 5px;
-  margin: 10px;
-  top: -20px;
+  a {
+    text-align: center;
+    text-transform: uppercase;
+    height: 16px;
+    font-weight: bolder;
+    padding: 10px 15px;
+    border-radius: 10px;
+    background-color: gray;
 
-  &.online {
-    color: green;
-  }
-
-  &.offline {
-    color: red;
+    &:visited {
+      color: $top-bar-fg;
+    }
   }
 }
-nav #userBadge {
-  position: absolute;
-  left: 10px;
-  margin: 10px;
+
+nav #offlineBanner div {
+  margin-left: auto;
 }
