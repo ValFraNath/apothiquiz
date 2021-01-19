@@ -1,9 +1,9 @@
 main#profile {
-  button {
+  > .avatar {
     margin: auto;
   }
 
-  > .avatar {
-    margin: 10px auto 0 auto;
+  .btn {
+    margin: 10px auto;
   }
 }

@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
+import * as Collapsible from "@radix-ui/react-collapsible";
+import { CaretSortIcon } from "@modulz/radix-icons";
 
 import AuthService from "../../services/auth.service";
 import Avatar from "../Avatar";
@@ -10,7 +12,6 @@ export default class Profile extends Component {
     super(props);
 
     this.state = {
-      message: "",
       choiceEyes: 0,
       choiceHands: 0,
       choiceHat: 0,
@@ -49,8 +50,6 @@ export default class Profile extends Component {
   render() {
     return (
       <main id="profile">
-        <button onClick={this.handleLogoutClick}>Me déconnecter</button>
-
         <Avatar
           size="256px"
           eyes={this.state.choiceEyes}
@@ -61,20 +60,32 @@ export default class Profile extends Component {
           colorBG={this.state.choiceColorBG}
         />
 
-        <ChooseAvatar
-          choiceEyes={this.state.choiceEyes}
-          choiceHands={this.state.choiceHands}
-          choiceHat={this.state.choiceHat}
-          choiceMouth={this.state.choiceMouth}
-          choiceColorBody={this.state.choiceColorBody}
-          choiceColorBG={this.state.choiceColorBG}
-          handleInputEyes={(val) => this.setState({ choiceEyes: parseInt(val) })}
-          handleInputHands={(val) => this.setState({ choiceHands: parseInt(val) })}
-          handleInputHat={(val) => this.setState({ choiceHat: parseInt(val) })}
-          handleInputMouth={(val) => this.setState({ choiceMouth: parseInt(val) })}
-          handleInputColorBody={(val) => this.setState({ choiceColorBody: val })}
-          handleInputColorBG={(val) => this.setState({ choiceColorBG: val })}
-        />
+        <Collapsible.Root>
+          <Collapsible.Button className="btn">
+            Personnaliser mon avatar
+            <CaretSortIcon height="20px" width="20px" style={{ marginLeft: "10px" }} />
+          </Collapsible.Button>
+          <Collapsible.Content>
+            <ChooseAvatar
+              choiceEyes={this.state.choiceEyes}
+              choiceHands={this.state.choiceHands}
+              choiceHat={this.state.choiceHat}
+              choiceMouth={this.state.choiceMouth}
+              choiceColorBody={this.state.choiceColorBody}
+              choiceColorBG={this.state.choiceColorBG}
+              handleInputEyes={(val) => this.setState({ choiceEyes: parseInt(val) })}
+              handleInputHands={(val) => this.setState({ choiceHands: parseInt(val) })}
+              handleInputHat={(val) => this.setState({ choiceHat: parseInt(val) })}
+              handleInputMouth={(val) => this.setState({ choiceMouth: parseInt(val) })}
+              handleInputColorBody={(val) => this.setState({ choiceColorBody: val })}
+              handleInputColorBG={(val) => this.setState({ choiceColorBG: val })}
+            />
+          </Collapsible.Content>
+        </Collapsible.Root>
+
+        <button className="btn" onClick={this.handleLogoutClick}>
+          Me déconnecter
+        </button>
       </main>
     );
   }
