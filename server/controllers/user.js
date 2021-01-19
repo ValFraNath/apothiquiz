@@ -87,6 +87,18 @@ User.saveInfos = async function (req, res) {
       res.status(400).json({ error: "Bad request" });
       return;
     }
+
+    const integerProperties = ["eyes", "hands", "hat", "mouth"];
+    if (!integerProperties.every((p) => Number(avatar[p]) === avatar[p])) {
+      res.status(400).json({ error: "Bad request" });
+      return;
+    }
+
+    const hexColorProperties = ["colorBG", "colorBody"];
+    if (!hexColorProperties.every((p) => /^#[0-9A-Fa-f]{6}$/i.test(avatar[p]))) {
+      res.status(400).json({ error: "Bad request" });
+      return;
+    }
   }
 
   getUserInformations(user)
