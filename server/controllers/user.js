@@ -13,11 +13,11 @@ User.login = function (req, res) {
     return;
   }
 
-  let sql = `SELECT COUNT(*) as found
-                FROM user
-                WHERE us_login = "${userPseudo}"`;
+  const sql = "SELECT COUNT(*) as found \
+               FROM user                \
+               WHERE us_login = ?";
 
-  queryPromise(sql)
+  queryPromise(sql, [userPseudo])
     .then((sqlRes) => {
       let found = sqlRes[0]["found"];
       if (found) {
@@ -87,15 +87,27 @@ User.saveInfos = async function (req, res) {
       res.status(400).json({ error: "Bad request" });
       return;
     }
+
+    const integerProperties = ["eyes", "hands", "hat", "mouth"];
+    if (!integerProperties.every((p) => Number(avatar[p]) === avatar[p])) {
+      res.status(400).json({ error: "Bad request" });
+      return;
+    }
+
+    const hexColorProperties = ["colorBG", "colorBody"];
+    if (!hexColorProperties.every((p) => /^#[0-9A-Fa-f]{6}$/i.test(avatar[p]))) {
+      res.status(400).json({ error: "Bad request" });
+      return;
+    }
   }
 
   getUserInformations(user)
     .then((infos) => {
       infos.avatar = avatar || infos.avatar;
 
-      queryPromise("UPDATE user        \
-      SET us_avatar = ? \
-      WHERE us_login = ?;", [
+      queryPromise("UPDATE user \
+         SET us_avatar = ?      \
+         WHERE us_login = ?;", [
         JSON.stringify(infos.avatar),
         infos.pseudo,
       ])

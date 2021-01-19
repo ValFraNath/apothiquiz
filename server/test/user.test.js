@@ -269,6 +269,60 @@ describe("User test", function () {
         });
     });
 
+    it("Update bad avatar (integer is not an integer)", function (done) {
+      chai
+        .request(app)
+        .patch("/api/v1/user/fpoguet")
+        .send({
+          avatar: { colorBG: "#ffffff", colorBody: "#dedede", eyes: 0, hands: 0, hat: 0, mouth: "this-is-not-an-int" },
+        }) // missing an information
+        .set("Authorization", token)
+        .end((err, res) => {
+          if (err) {
+            throw err;
+          }
+          expect(res.status, res.error).to.be.equal(400);
+
+          done();
+        });
+    });
+
+    it("Update bad avatar (integer is not an integer but a string with an integer inside)", function (done) {
+      chai
+        .request(app)
+        .patch("/api/v1/user/fpoguet")
+        .send({
+          avatar: { colorBG: "#ffffff", colorBody: "#dedede", eyes: 0, hands: 0, hat: 0, mouth: "0" },
+        }) // missing an information
+        .set("Authorization", token)
+        .end((err, res) => {
+          if (err) {
+            throw err;
+          }
+          expect(res.status, res.error).to.be.equal(400);
+
+          done();
+        });
+    });
+
+    it("Update bad avatar (color is not a color)", function (done) {
+      chai
+        .request(app)
+        .patch("/api/v1/user/fpoguet")
+        .send({
+          avatar: { colorBG: "#ffffff", colorBody: "#camion", eyes: 0, hands: 0, hat: 0, mouth: 0 },
+        }) // missing an information
+        .set("Authorization", token)
+        .end((err, res) => {
+          if (err) {
+            throw err;
+          }
+          expect(res.status, res.error).to.be.equal(400);
+
+          done();
+        });
+    });
+
     it("Update my avatar with /pseudo route", function (done) {
       chai
         .request(app)
