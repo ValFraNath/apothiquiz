@@ -41,7 +41,7 @@ function registerValidSW(swUrl, config) {
       }
 
       // A new worker appeared in reg.installing
-      reg.addEventListener("onupdatefound", () => {
+      reg.addEventListener("updatefound", () => {
         const newWorker = reg.installing;
         if (newWorker == null) return;
 
