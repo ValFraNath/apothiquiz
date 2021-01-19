@@ -4,6 +4,7 @@ import * as serviceWorker from "./serviceWorker";
 import { ReloadIcon } from "@modulz/radix-icons";
 
 import "./styles/styles.scss";
+import ProtectedRoute from "./components/ProtectedRoute";
 import TopBar from "./components/system/TopBar";
 import Menu from "./components/pages/Menu";
 import Informations from "./components/pages/Informations";
@@ -99,7 +100,7 @@ export default class App extends Component {
           <Route path="/informations" exact component={Informations} />
           <Route path="/train" exact component={Train} />
           <Route path="/login" exact component={Login} />
-          <Route path="/profile" exact component={Profile} />
+          <ProtectedRoute path="/profile" exact component={Profile} />
         </Switch>
       </Router>
     );
