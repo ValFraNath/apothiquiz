@@ -8,7 +8,7 @@ function goToReactIndex(req, res) {
 
 reactRouter.get("/", goToReactIndex);
 
-reactRouter.get("/informations", goToReactIndex);
+reactRouter.get("/about", goToReactIndex);
 
 reactRouter.get("/train", goToReactIndex);
 
