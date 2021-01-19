@@ -55,49 +55,37 @@ export function register(config) {
 function registerValidSW(swUrl, config) {
   navigator.serviceWorker
     .register(swUrl)
-    .then((registration) => {
-      if (registration.waiting) {
+    .then((reg) => {
+      // Check if a new service worker is waiting
+      if (reg.waiting) {
+        console.info("[Client: sw] A new service worker is waiting");
         if (config && config.onWaiting) {
-          config.onWaiting(registration.waiting);
+          config.onWaiting(reg.waiting);
         }
       }
-      registration.onupdatefound = () => {
-        const installingWorker = registration.installing;
-        if (installingWorker == null) {
-          return;
-        }
-        installingWorker.onstatechange = () => {
-          if (installingWorker.state === "installed") {
-            if (navigator.serviceWorker.controller) {
-              // At this point, the updated precached content has been fetched,
-              // but the previous service worker will still serve the older
-              // content until all client tabs are closed.
-              console.log(
-                "New content is available and will be used when all " +
-                  "tabs for this page are closed. See https://bit.ly/CRA-PWA."
-              );
 
-              // Execute callback
+      // A new worker appeared in reg.installing
+      reg.addEventListener("onupdatefound", () => {
+        const newWorker = reg.installing;
+        if (newWorker == null) return;
+
+        newWorker.addEventListener("statechange", () => {
+          if (newWorker.state === "installed") {
+            if (navigator.serviceWorker.controller) {
+              console.info("[Client: sw] New content available, update possible");
+
               if (config && config.onUpdate) {
-                config.onUpdate(registration);
+                config.onUpdate(newWorker);
               }
             } else {
-              // At this point, everything has been precached.
-              // It's the perfect time to display a
-              // "Content is cached for offline use." message.
-              console.log("Content is cached for offline use.");
-
-              // Execute callback
-              if (config && config.onSuccess) {
-                config.onSuccess(registration);
-              }
+              console.info("[Client: sw] New service-worker installed");
             }
           }
-        };
-      };
+        });
+      });
     })
     .catch((error) => {
-      console.error("Error during service worker registration:", error);
+      console.log(`Error during service worker registration: ${error}`);
     });
 }
 
