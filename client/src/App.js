@@ -57,7 +57,6 @@ export default class App extends Component {
         newUpdateAvailable(reg);
       },
     });
-    serviceWorker.controllerChange();
 
     // Display installation button
     window.addEventListener("beforeinstallprompt", (event) => {

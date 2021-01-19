@@ -75,9 +75,3 @@ export function unregister() {
       });
   }
 }
-
-export function controllerChange() {
-  navigator.serviceWorker.addEventListener("controllerchange", () => {
-    console.info("[Client: sw] A new service-worker become the active worker");
-  });
-}
