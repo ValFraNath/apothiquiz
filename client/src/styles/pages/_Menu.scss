@@ -28,23 +28,27 @@ main#menu {
 /* ---------- Install app button ---------- */
 
 button#installButton {
-  box-sizing: content-box;
+  display: grid;
+  grid-template-columns: auto 1fr;
   width: 60%;
-  background-color: #66bb6a;
+  padding: 0;
   border: none;
+  background-color: $mascot-blue-light;
   margin: 1rem auto;
-  height: 16px;
-  margin: 20px auto;
-  padding: 20px;
-  font-size: 1em;
-  border-radius: 5px;
-  box-shadow: 0 0 18px 3px #338a3e;
-  cursor: pointer;
+  border-radius: 6px;
+  overflow: hidden;
+  color: white;
   transition: transform 0.3s ease-in-out;
-  text-transform: initial;
-  font-weight: bolder;
-}
 
-button#installButton:hover {
-  transform: scale(1.1);
+  &:hover {
+    transform: scale(1.06);
+  }
+
+  span {
+    padding: 1rem 1.5rem;
+
+    &:first-of-type {
+      background-color: $mascot-blue-dark;
+    }
+  }
 }
