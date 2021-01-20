@@ -12,7 +12,7 @@ function auth(req, res, next) {
     req.body.auth_user = decodedToken.pseudo;
     next();
   } catch (e) {
-    res.status(401).json({ error: "Unauthorized connection" });
+    res.status(401).json({ message: "Unauthorized connection" });
   }
 }
 
