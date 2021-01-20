@@ -60,6 +60,15 @@ InputColor.propTypes = {
   onValueChange: PropTypes.func.isRequired,
 };
 
+function randomHexColor() {
+  const hexCode = "0123456789abcdef";
+
+  let color = "#";
+  for (let i = 0; i < 6; i++) color += hexCode[Math.floor(Math.random() * 16)];
+
+  return color;
+}
+
 class ChooseAvatar extends Component {
   constructor(props) {
     super(props);
@@ -75,8 +84,8 @@ class ChooseAvatar extends Component {
     this.props.handleInputHands(Math.round(Math.random() * NUMBER_OF_HANDS));
     this.props.handleInputHat(Math.round(Math.random() * NUMBER_OF_HATS));
     this.props.handleInputMouth(Math.round(Math.random() * NUMBER_OF_MOUTHES));
-    this.props.handleInputColorBody("#" + (((1 << 24) * Math.random()) | 0).toString(16));
-    this.props.handleInputColorBG("#" + (((1 << 24) * Math.random()) | 0).toString(16));
+    this.props.handleInputColorBody(randomHexColor());
+    this.props.handleInputColorBG(randomHexColor());
   };
 
   handleSaveAvatar = () => {
