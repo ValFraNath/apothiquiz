@@ -9,9 +9,15 @@ $timer-size: 100px;
 
     img {
       width: 100%;
+      float: right;
+
+      @media screen and (min-width: $desktop-size) and (max-height: 860px) {
+        width: 70%;
+      }
     }
 
     div {
+      clear: both;
       margin-bottom: 2rem;
       text-align: center;
 

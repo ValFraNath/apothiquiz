@@ -21,6 +21,7 @@ button {
   padding: 0.9rem 1.6rem;
   font-size: 0.9rem;
   box-shadow: 0 2px 4px rgba(134, 134, 134, 0.4);
+  flex-shrink: 0;
 }
 
 /* ---------- Full width button ---------- */
