@@ -1,17 +1,20 @@
 import { queryPromise } from "../db/database.js";
 
 /**
- * Generate a question of type <type>
- * @param req {object} The http request object
- * @param res {object} The http response object
- * @return {Promise<object|null>} The question object or null if an error has occured
- * ```
- * {
- *     type : number,
- *     subject : string
- *     goodAnswer : string,
- *     badAnswer : Array<string>
- * }
+ * @api {get} /question/:type Get a random question
+ * @apiName GetRandomQuestion
+ * @apiGroup Question
+ *
+ * @apiParam  {number{1...1}}         :type               Question type
+ *
+ * @apiSuccess (200) {Object}         question            Question object
+ * @apiSuccess (200) {Number}         question.type       Type of the question
+ * @apiSuccess (200) {String}         question.subject    Question subject
+ * @apiSuccess (200) {String}         question.goodAnswer The good answer
+ * @apiSuccess (200) {Array[String]}  question.badAnswers Three false answers
+ *
+ * @apiError   (404) NotFound Incorrect type of question
+ * @apiUse     ErrorBadRequest
  */
 async function generateQuestion(req, res) {
   let type = Number(req.params.type);
@@ -26,7 +29,7 @@ async function generateQuestion(req, res) {
     }
   }
   if (generator === null) {
-    res.status(404).json({ error: "Incorrect type of question" });
+    res.status(404).json({ message: "Incorrect type of question" });
     return;
   }
 
@@ -36,7 +39,7 @@ async function generateQuestion(req, res) {
     })
     .catch((error) => {
       res.status(400).json({
-        error: `Error while generating question of type ${type} : ${error}`,
+        message: `Error while generating question of type ${type} : ${error}`,
       });
     });
 }

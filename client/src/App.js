@@ -4,15 +4,15 @@ import * as serviceWorker from "./serviceWorker";
 import { ReloadIcon } from "@modulz/radix-icons";
 
 import "./styles/styles.scss";
+import ProtectedRoute from "./components/ProtectedRoute";
 import TopBar from "./components/system/TopBar";
 import Menu from "./components/pages/Menu";
-import Informations from "./components/pages/Informations";
+import About from "./components/pages/About";
 import Train from "./components/layouts/Train";
 import Login from "./components/pages/Login";
 import AuthService from "./services/auth.service";
 import axios from "axios";
 import Profile from "./components/pages/Profile";
-import UserHomePage from "./components/pages/UserHomePage";
 
 /**
  * Set up the authorization header in all request if the user is logged in
@@ -43,26 +43,25 @@ export default class App extends Component {
   }
 
   componentDidMount() {
-    // Install serviceWorker
+    // Install service-worker
+    const newUpdateAvailable = (newSW) => {
+      this.setState({
+        waitingServiceWorker: newSW,
+        isUpdateAvailable: true,
+      });
+    };
     serviceWorker.register({
-      onUpdate: (registration) => {
-        this.setState({
-          waitingServiceWorker: registration.waiting,
-          isUpdateAvailable: true,
-        });
+      onUpdate: (reg) => {
+        newUpdateAvailable(reg);
       },
-      onWaiting: (waiting) => {
-        this.setState({
-          waitingServiceWorker: waiting,
-          isUpdateAvailable: true,
-        });
+      onWaiting: (reg) => {
+        newUpdateAvailable(reg);
       },
     });
 
     // Display installation button
     window.addEventListener("beforeinstallprompt", (event) => {
       event.preventDefault();
-
       this.setState({
         installPromptEvent: event,
       });
@@ -97,11 +96,10 @@ export default class App extends Component {
           <Route path="/" exact Menu>
             <Menu user={this.state.user} installPromptEvent={installPromptEvent} />
           </Route>
-          <Route path="/informations" exact component={Informations} />
+          <Route path="/about" exact component={About} />
           <Route path="/train" exact component={Train} />
           <Route path="/login" exact component={Login} />
-          <Route path="/profile" exact component={Profile} />
-          <Route path="/userhome" exact component={UserHomePage} />
+          <ProtectedRoute path="/profile" exact component={Profile} />
         </Switch>
       </Router>
     );

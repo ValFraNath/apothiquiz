@@ -1,0 +1,20 @@
+main#informations {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  padding: 10px;
+
+  p {
+    text-align: center;
+    margin: 1rem auto;
+  }
+
+  #credits {
+    margin-top: auto;
+
+    ol {
+      margin-top: 1rem;
+    }
+  }
+}

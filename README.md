@@ -5,8 +5,10 @@
 
 A third year undergraduate project by Nathanaël Houn, Valentin Perignon and François Poguet, three students at the Université de _Franche-Comté_ (FR).
 
-![A random image](./docs/random-image.png)
-
 ## Deployment, developer setup and more
 
 You can learn more about this project in our [wiki](https://github.com/nathanaelhoun/glowing-octo-guacamole/wiki).
+
+## Server API Documentation
+
+Please follow the instructions [here](https://github.com/ValFraNath/guacamole-api-docs)

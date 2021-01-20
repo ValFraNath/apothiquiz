@@ -63,8 +63,11 @@ Database.create = async function () {
  */
 Database.getSystemInformation = function (key) {
   return new Promise(function (resolve) {
-    let sql = `SELECT value FROM \`server_informations\` WHERE \`key\`='${key}'`;
-    queryPromise(sql)
+    const sql = "SELECT value   \
+       FROM server_informations \
+       WHERE `key` = ? ;";
+
+    queryPromise(sql, [key])
       .then((res) => resolve(JSON.parse(JSON.stringify(res))[0].value))
       .catch((err) => {
         if (err.code === "ER_NO_SUCH_TABLE") {
@@ -118,7 +121,7 @@ Database.update = async function (version = versions[0]) {
  * @param {Array<String>|Object} values? optional values to be given put into the request placeholders
  * @return {Promise<Array>} The result if success, the error otherwise
  */
-export async function queryPromise(sql, values) {
+export async function queryPromise(sql, values = []) {
   return new Promise(function (resolve, reject) {
     Database.connection.query(sql, values, function (err, res) {
       if (err) {
