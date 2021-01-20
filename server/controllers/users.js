@@ -1,4 +1,3 @@
-// import jwt from "jsonwebtoken";
 import { queryPromise } from "../db/database.js";
 import dotenv from "dotenv";
 dotenv.config();
@@ -19,7 +18,20 @@ Users.getInfos = function (req, res) {
 
   queryPromise(sql, listOfUsers)
     .then((sqlRes) => {
-      res.status(200).json(sqlRes);
+      const usersData = {};
+      try {
+        for (let value of sqlRes) {
+          usersData[value.pseudo] = {
+            pseudo: value.pseudo,
+            wins: Number(value.wins),
+            losses: Number(value.losses),
+            avatar: JSON.parse(value.avatar),
+          };
+        }
+      } catch (e) {
+        res.status(500).json({ error: e });
+      }
+      res.status(200).json(usersData);
     })
     .catch((error) => {
       res.status(500).json({ error: error });
