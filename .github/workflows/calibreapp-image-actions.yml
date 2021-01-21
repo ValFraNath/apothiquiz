@@ -1,4 +1,5 @@
 name: Compress Images
+
 on:
   pull_request:
     branches: [$default-branch]
@@ -9,6 +10,7 @@ on:
       - "**.jpeg"
       - "**.png"
       - "**.webp"
+
 jobs:
   compress-images:
     # Only run on Pull Requests within the same repository, and not from forks.
