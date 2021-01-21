@@ -1,11 +1,8 @@
-# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
-
-name: Build and test
+name: Build and test the app
 
 on:
   pull_request:
-    branches: [main, production]
+    branches: [$default-branch]
 
 jobs:
   build:
@@ -23,15 +20,26 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Enable and start MySQL
-        run: sudo systemctl start mysql.service
+      - name: Stop default mysql server
+        run: sudo systemctl stop mysql
 
-      - name: Create and setup database
+      - name: Start mariadb server
+        uses: getong/mariadb-action@v1.1
+        with:
+          mariadb version: "10.4.10"
+          mysql database: "glowingOctoGuacamole"
+          mysql user: "glowing-octo-guacamole"
+          mysql password: ${{ secrets.CI_DATABASE_PASS }}
+
+      - name: Wait for mariadb server to be ready
+        env:
+          PORT: 3306
         run: |
-          export MYSQL_PWD=root;
-          mysql -uroot -e "CREATE USER 'glowing-octo-guacamole'@'localhost' IDENTIFIED BY '${{ secrets.CI_DATABASE_PASS }}';"
-          mysql -uroot -e "CREATE DATABASE glowingOctoGuacamole;"
-          mysql -uroot -e "GRANT ALL PRIVILEGES ON glowingOctoGuacamole.* TO 'glowing-octo-guacamole'@'localhost';"
+          while ! mysqladmin ping -h"127.0.0.1" -P"$PORT" --silent; do
+            sleep 1
+          done
+          docker exec `docker ps -q` mysqld --version
+
       - name: Server npm install and test
         run: |
           cd server
