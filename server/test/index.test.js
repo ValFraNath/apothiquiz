@@ -39,11 +39,3 @@ export function insertData(filename) {
       .catch(reject);
   });
 }
-
-export function insertData(filename) {
-  return new Promise((resolve, reject) => {
-    fs.readFile(path.resolve("test", "required_data", filename), { encoding: "utf8" })
-      .then((script) => queryPromise(script).then(() => resolve()))
-      .catch(reject);
-  });
-}

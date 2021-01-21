@@ -60,14 +60,14 @@ async function generateQuestionA1() {
         .then((res) => {
           let question = null;
           try {
-            const badAnswers = res[4].map((e) => e.bad_answers);
+            const badAnswers = res[4].map((e) => e.bad_answer);
             const goodAnswer = res[4][0].good_answer;
             const randomIndex = Math.floor(Math.random() * 4);
             const answers = badAnswers.slice();
             answers.splice(randomIndex, 0, goodAnswer);
             question = {
               type: 1,
-              subject: res[4][0].class,
+              subject: res[4][0].subject,
               goodAnswer: randomIndex,
               answers,
             };

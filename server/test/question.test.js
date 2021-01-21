@@ -28,7 +28,7 @@ describe("Question generation", function () {
           }
 
           expect(res.status, "Status value").to.be.equal(200);
-          expect(Object.getOwnPropertyNames(res.body), "Have property 'question' ").to.contains("subject");
+          expect(Object.getOwnPropertyNames(res.body), "Have property 'subject' ").to.contains("subject");
           done();
         });
     });

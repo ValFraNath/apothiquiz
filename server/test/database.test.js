@@ -128,13 +128,9 @@ describe("Check the database structure", function () {
 
 describe("Procedures", () => {
   before("Insert data", (done) => {
-    insertData("molecules.sql").then(() => done());
-  });
-
-  after("Remove data", (done) => {
-    queryPromise(
-      forceTruncateTables("molecule", "property", "property_value", "molecule_property", "class", "system")
-    ).then(() => done());
+    forceTruncateTables("molecule", "property", "property_value", "molecule_property", "class", "system").then(() =>
+      insertData("molecules.sql").then(() => done())
+    );
   });
 
   it("GetClassesOf", async () => {
