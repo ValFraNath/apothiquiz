@@ -1,3 +1,5 @@
+import fs from "fs/promises";
+import path from "path";
 import { queryPromise } from "../db/database.js";
 
 /**
@@ -31,11 +33,12 @@ async function generateQuestion(req, res) {
   }
 
   generator()
-    .then((question) => {
-      res.status(200).json({ question });
+    .then(({ type, subject, goodAnswer, answers }) => {
+      res.status(200).json({ type, subject, goodAnswer, answers });
     })
     .catch((error) => {
-      res.status(400).json({
+      console.error(error);
+      res.status(500).json({
         error: `Error while generating question of type ${type} : ${error}`,
       });
     });
@@ -45,51 +48,36 @@ export default { generateQuestion };
 
 // ***** Internal functions *****
 
+const scriptsFolderPath = path.resolve("modules", "question_generator_scripts");
+
 /**
  * Generate a question of type 1
  * @return {Promise<object>} The question
  */
 async function generateQuestionType1() {
-  let script = `SET @id = (SELECT cl_id 
-                      FROM class
-                      ORDER BY RAND() 
-                      LIMIT 1);
-                    
-                      SELECT cl_name
-                        FROM class
-                        WHERE cl_id = @id;    
-                    
-                                             
-                    SELECT  mo_dci
-                        FROM molecule NATURAL JOIN molecule_class
-                        WHERE cl_id <> @id
-                        ORDER BY RAND()
-                        LIMIT 3 ;
-                        
-                    SELECT  mo_dci
-                        FROM molecule NATURAL JOIN molecule_class
-                        WHERE cl_id = @id
-                        ORDER BY RAND()
-                        LIMIT 1;`;
-
   return new Promise(function (resolve, reject) {
-    queryPromise(script)
-      .catch((error) => {
-        reject(error);
-      })
-      .then((res) => {
-        let question = null;
-        try {
-          question = {
-            type: 1,
-            subject: res[1][0].cl_name,
-            goodAnswer: res[3][0].mo_dci,
-            badAnswers: res[2].map((e) => e.mo_dci),
-          };
-        } catch (e) {
-          reject("bad mysql response format");
-        }
-        resolve(question);
-      });
+    fs.readFile(path.resolve(scriptsFolderPath, "question_A1.sql"), { encoding: "utf-8" }).then((script) => {
+      queryPromise(script)
+        .then((res) => {
+          let question = null;
+          try {
+            const badAnswers = res[4].map((e) => e.bad_answers);
+            const goodAnswer = res[4][0].good_answer;
+            const randomIndex = Math.floor(Math.random() * 4);
+            const answers = badAnswers.slice();
+            answers.splice(randomIndex, 0, goodAnswer);
+            question = {
+              type: 1,
+              subject: res[4][0].class,
+              goodAnswer: randomIndex,
+              answers,
+            };
+          } catch (e) {
+            reject("bad mysql response format");
+          }
+          resolve(question);
+        })
+        .catch(reject);
+    });
   });
 }

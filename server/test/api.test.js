@@ -1,8 +1,9 @@
-import db from "../db/database.js";
+import db, { queryPromise } from "../db/database.js";
 import app from "../index.js";
 
 import chai from "chai";
 import chaiHttp from "chai-http";
+import { forceTruncateTables, insertData } from "./index.test.js";
 chai.use(chaiHttp);
 const expect = chai.expect;
 
@@ -22,7 +23,13 @@ describe("GET /status", function () {
   });
 });
 
-describe.skip("Question generation", function () {
+describe("Question generation", function () {
+  before("Import data", (done) => {
+    forceTruncateTables("molecule", "class", "system", "property", "property_value", "molecule_property").then(() =>
+      insertData("molecules.sql").then(done)
+    );
+  });
+
   it("return a question of type 1 well formatted", function (done) {
     chai
       .request(app)
@@ -31,8 +38,9 @@ describe.skip("Question generation", function () {
         if (err) {
           throw err;
         }
+
         expect(res.status, "Status value").to.be.equal(200);
-        expect(Object.getOwnPropertyNames(res.body), "Have property 'question' ").to.contains("question");
+        expect(Object.getOwnPropertyNames(res.body), "Have property 'question' ").to.contains("subject");
         done();
       });
   });
@@ -50,3 +58,15 @@ describe.skip("Question generation", function () {
       });
   });
 });
+
+// eslint-disable-next-line no-unused-vars
+function getClassesOf(dci) {
+  return new Promise((resolve, reject) => {
+    queryPromise("CALL getClassesOf(?)", [dci])
+      .then((res) => {
+        console.log(res);
+        resolve();
+      })
+      .catch(reject);
+  });
+}

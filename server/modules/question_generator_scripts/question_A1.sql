@@ -72,7 +72,9 @@ SELECT (SELECT mo_dci
 FROM classes_by_molecule
 WHERE cl_id <> @class1
 ORDER BY RAND()
-LIMIT 3
+LIMIT 3;
+
+DROP TABLE classes_by_molecule;
 
          
         

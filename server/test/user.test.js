@@ -1,23 +1,15 @@
-import path from "path";
-import fs from "fs";
 import chai from "chai";
 import chaiHttp from "chai-http";
 import jwt from "jsonwebtoken";
 
 import app from "../index.js";
-import { queryPromise } from "../db/database.js";
-import { forceTruncateTables } from "./index.test.js";
+import { forceTruncateTables, insertData } from "./index.test.js";
 
 chai.use(chaiHttp);
 const expect = chai.expect;
 describe("User test", function () {
-  before("Insert users data", async () => {
-    const insertionScript = fs.readFileSync(path.resolve("test", "required_data", "users.sql")).toString("utf8");
-    await queryPromise(insertionScript);
-  });
-
-  after("Remove users data", async () => {
-    await queryPromise(forceTruncateTables("user"));
+  before("Insert users data", (done) => {
+    forceTruncateTables("user").then(() => insertData("users.sql").then(done));
   });
 
   describe("User login", function () {
