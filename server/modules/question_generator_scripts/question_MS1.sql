@@ -69,7 +69,9 @@ SELECT (SELECT sy_name
 FROM systems_by_molecule
 WHERE sy_id <> @good
 ORDER BY RAND()
-LIMIT 3
+LIMIT 3;
+
+DROP TABLE systems_by_molecule;
         	
                 
                	

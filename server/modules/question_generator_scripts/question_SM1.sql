@@ -70,12 +70,14 @@ SELECT (SELECT mo_dci
         WHERE mo_id = @good) AS good_answer,
         (SELECT sy_name
          FROM system
-         WHERE sy_id = @system1) AS system,
-         mo_dci as bad_answers
+         WHERE sy_id = @system1) AS subject,
+         mo_dci as bad_answer
 FROM systems_by_molecule
 WHERE sy_id <> @system1
 ORDER BY RAND()
-LIMIT 3
+LIMIT 3;
+
+DROP TABLE systems_by_molecule;
 
          
         

@@ -8,7 +8,7 @@ import { forceTruncateTables, insertData } from "./index.test.js";
 chai.use(chaiHttp);
 const { expect } = chai;
 
-const questionTypes = ["A ", " A", "   a    "];
+const questionTypes = [1, 2, 3];
 
 describe("Question generation", function () {
   before("Import data", (done) => {
@@ -18,65 +18,65 @@ describe("Question generation", function () {
   });
 
   for (let type of questionTypes) {
-    it(`Question of type ${type} well formatted`, function (done) {
-      chai
-        .request(app)
-        .get("/api/v1/question/" + type)
-        .end((err, res) => {
-          if (err) {
-            throw err;
-          }
+    it(`Question of type ${type} well formatted`, async () => {
+      const res = await requestAPI("question/" + type);
 
-          expect(res.status, "Status value").to.be.equal(200);
-          expect(Object.getOwnPropertyNames(res.body), "Have property 'subject' ").to.contains("subject");
-          done();
-        });
+      expect(res.status, "Status value").to.be.equal(200);
+      expect(res.body.type).to.be.equals(type);
+      expect(res.body.answers).to.not.contains(null);
+      expect(Object.getOwnPropertyNames(res.body), "Have property 'subject' ").to.contains("subject");
     });
   }
 
-  it("Type A : Consistent values", (done) => {
-    chai
-      .request(app)
-      .get("/api/v1/question/A")
-      .end((err, res) => {
-        if (err) {
-          throw err;
-        }
-        const { answers, subject, goodAnswer } = res.body;
+  it("Type 1 : Consistent values", async () => {
+    const res = await requestAPI("question/1");
+    const { answers, subject, goodAnswer } = res.body;
 
-        const answersBelongsToClass = answers.map((value) => doesBelongToClass(value, subject));
+    const answersBelongsToClass = await Promise.all(answers.map((value) => doesBelongToClass(value, subject)));
 
-        Promise.all(answersBelongsToClass).then((res) => {
-          res.forEach((value, index) => expect(value).equals(index === Number(goodAnswer)));
-          done();
-        });
-      });
+    answersBelongsToClass.forEach((value, index) => expect(value).to.be.equals(index === Number(goodAnswer)));
   });
 
-  it("Incorrect question type", function (done) {
-    chai
-      .request(app)
-      .get("/api/v1/question/-3")
-      .end((err, res) => {
-        if (err) {
-          throw err;
-        }
-        expect(res.status, "Status value").to.be.equal(404);
-        done();
-      });
+  it("Type 2 : Consistent values", async () => {
+    const res = await requestAPI("question/2");
+    const { answers, subject, goodAnswer } = res.body;
+
+    const answersContainingSubject = await Promise.all(answers.map((value) => doesBelongToClass(subject, value)));
+
+    answersContainingSubject.forEach((value, index) => expect(value).to.be.equals(index === Number(goodAnswer)));
+  });
+
+  it("Type 3 : Consistent value", async () => {
+    const res = await requestAPI("question/3");
+    const { answers, subject, goodAnswer } = res.body;
+
+    const answersBelongsToSystem = await Promise.all(answers.map((value) => doesBelongToSystem(value, subject)));
+
+    answersBelongsToSystem.forEach((value, index) => expect(value).to.be.equals(index === Number(goodAnswer)));
+  });
+
+  it("Type 4 : error 500 expected", async () => {
+    const res = await requestAPI("question/4");
+    expect(res.status).to.be.equals(500);
+  });
+
+  it("Incorrect question type", async () => {
+    const res = await requestAPI("question/-3");
+    expect(res.status, "Status value").to.be.equal(404);
   });
 });
 
 /**
- * get the classes to which a given molecule belongs
+ * Test if a molecule belongs to a system
  * @param {string} dci The molecule's dci
+ * @param {string} systemName The system name
  * @return {Promise<string[]>}
  */
-function getClassesOf(dci) {
+function doesBelongToSystem(dci, systemName) {
   return new Promise((resolve, reject) => {
-    queryPromise("CALL getClassesOf(?)", [dci])
+    queryPromise("CALL getSystemsOf(?)", [dci])
       .then((res) => {
-        resolve(res[0].map((e) => e.cl_name));
+        resolve(res[0].map((e) => e.sy_name).includes(systemName));
       })
       .catch(reject);
   });
@@ -89,7 +89,30 @@ function getClassesOf(dci) {
  * @returns {Promise<boolean>}
  */
 function doesBelongToClass(dci, className) {
-  return new Promise((resolve) => {
-    getClassesOf(dci).then((classes) => resolve(classes.includes(className)));
+  return new Promise((resolve, reject) => {
+    queryPromise("CALL getClassesOf(?)", [dci])
+      .then((res) => {
+        resolve(res[0].map((e) => e.cl_name).includes(className));
+      })
+      .catch(reject);
+  });
+}
+
+/**
+ * Make a request to the api
+ * @param {string} endpoint The endpoint
+ * @returns {Promise}
+ */
+function requestAPI(endpoint) {
+  return new Promise((resolve, reject) => {
+    chai
+      .request(app)
+      .get("/api/v1/" + endpoint)
+      .end(async (err, res) => {
+        if (err) {
+          reject(err);
+        }
+        resolve(res);
+      });
   });
 }

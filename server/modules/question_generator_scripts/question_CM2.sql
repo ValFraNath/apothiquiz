@@ -82,3 +82,5 @@ AND C.cl_higher = ( SELECT cl_higher
               		WHERE cl_id = @class2 )
 ORDER BY RAND()
 LIMIT 3;
+
+DROP TABLE classes_by_molecule;

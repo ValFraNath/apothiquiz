@@ -3,7 +3,10 @@ import path from "path";
 import { queryPromise } from "../db/database.js";
 
 const generatorsByType = {
-  A: generateQuestionA1,
+  1: generateQuestionType1,
+  2: generateQuestionType2,
+  3: generateQuestionType3,
+  4: generateQuestionType4,
 };
 
 /**
@@ -23,7 +26,7 @@ const generatorsByType = {
  * @apiUse     ErrorBadRequest
  */
 async function generateQuestion(req, res) {
-  let type = String(req.params.type).trim().toUpperCase();
+  let type = Number(req.params.type);
   let generateQuestion = generatorsByType[type];
 
   if (!generateQuestion) {
@@ -36,7 +39,7 @@ async function generateQuestion(req, res) {
       res.status(200).json({ type, subject, goodAnswer, answers });
     })
     .catch((error) => {
-      console.error(error);
+      //console.error(error);
       res.status(500).json({
         message: `Error while generating question of type ${type} : ${error}`,
       });
@@ -50,33 +53,79 @@ export default { generateQuestion };
 const scriptsFolderPath = path.resolve("modules", "question_generator_scripts");
 
 /**
- * Generate a question of type 1
+ * Create a question by requesting database with a given script
+ * @param {string} filename The script filename
+ * @param {string} before An SQL script to add at the start of the script
  * @return {Promise<object>} The question
  */
-async function generateQuestionA1() {
+async function queryQuestion(filename, type, before = "") {
   return new Promise(function (resolve, reject) {
-    fs.readFile(path.resolve(scriptsFolderPath, "question_A1.sql"), { encoding: "utf-8" }).then((script) => {
-      queryPromise(script)
+    fs.readFile(path.resolve(scriptsFolderPath, filename), { encoding: "utf-8" }).then((script) => {
+      queryPromise(before + script)
         .then((res) => {
-          let question = null;
-          try {
-            const badAnswers = res[4].map((e) => e.bad_answer);
-            const goodAnswer = res[4][0].good_answer;
-            const randomIndex = Math.floor(Math.random() * 4);
-            const answers = badAnswers.slice();
-            answers.splice(randomIndex, 0, goodAnswer);
-            question = {
-              type: 1,
-              subject: res[4][0].subject,
-              goodAnswer: randomIndex,
-              answers,
-            };
-          } catch (e) {
-            reject("bad mysql response format");
+          const data = res.find((e) => e instanceof Array);
+
+          if (data.length < 3) {
+            reject(new Error("Not enought data to generate question"));
           }
-          resolve(question);
+          resolve(Object.assign(formatQuestion(data), { type }));
         })
         .catch(reject);
     });
   });
+}
+
+/**
+ * Compute a script filename with a random level
+ * @param {string} filenamePrefix The beginning of the filename, without the level
+ * @param {number} maxLevel The level maximum
+ * @returns {string} The filename
+ */
+function filenameRandomLevel(filenamePrefix, maxLevel) {
+  const level = Math.floor(1 + Math.random() * maxLevel);
+  return `${filenamePrefix}${level}.sql`;
+}
+
+function generateQuestionType1() {
+  return new Promise((resolve) => {
+    resolve(queryQuestion(filenameRandomLevel("question_CM", 2), 1));
+  });
+}
+
+function generateQuestionType2() {
+  return new Promise((resolve) => {
+    resolve(queryQuestion(filenameRandomLevel("question_MC", 2), 2));
+  });
+}
+
+function generateQuestionType3() {
+  return new Promise((resolve) => {
+    resolve(queryQuestion(filenameRandomLevel("question_SM", 2), 3));
+  });
+}
+
+function generateQuestionType4() {
+  return new Promise((resolve) => {
+    resolve(queryQuestion(filenameRandomLevel("question_MS", 2), 4));
+  });
+}
+
+/**
+ * Format a question from the SQL reponse data
+ * @param {object[]} data The sql response data
+ * @returns {string} The formatted question
+ */
+function formatQuestion(data) {
+  const badAnswers = data.map((e) => e.bad_answer);
+  const goodAnswer = data[0].good_answer;
+  const randomIndex = Math.floor(Math.random() * 4);
+
+  const answers = badAnswers.slice();
+  answers.splice(randomIndex, 0, goodAnswer);
+
+  return {
+    subject: data[0].subject,
+    goodAnswer: randomIndex,
+    answers,
+  };
 }

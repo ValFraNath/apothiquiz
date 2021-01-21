@@ -70,11 +70,11 @@ SET @good = ( SELECT mo_id
 -- // Get 3 random molecules, belonging to the parent system of @system2, but not to @system2
 SELECT 	(SELECT mo_dci
          FROM molecule
-         WHERE mo_id = @good) AS good_asnwer,
+         WHERE mo_id = @good) AS good_answer,
         (SELECT sy_name
          FROM system
-         WHERE sy_id = @system2) AS system,
-         mo_dci AS wrong_answer
+         WHERE sy_id = @system2) AS subject,
+         mo_dci AS bad_answer
 FROM systems_by_molecule AS C
 WHERE C.sy_id <> @system2
 AND C.sy_higher = ( SELECT sy_higher
@@ -82,3 +82,5 @@ AND C.sy_higher = ( SELECT sy_higher
               		WHERE sy_id = @system2 )
 ORDER BY RAND()
 LIMIT 3;
+
+DROP TABLE systems_by_molecule;

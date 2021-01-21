@@ -89,5 +89,7 @@ FROM systems_by_molecule
 WHERE sy_higher = @system1
 AND sy_id <> @good
 ORDER BY RAND()
-LIMIT 3
+LIMIT 3;
+
+DROP TABLE systems_by_molecule;
           

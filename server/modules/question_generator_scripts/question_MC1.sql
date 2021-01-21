@@ -69,8 +69,8 @@ SELECT (SELECT cl_name
 FROM classes_by_molecule
 WHERE cl_id <> @good
 ORDER BY RAND()
-LIMIT 3
+LIMIT 3;
         	
                 
-               	
+DROP TABLE classes_by_molecule;               	
 
