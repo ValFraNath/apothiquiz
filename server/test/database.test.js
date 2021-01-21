@@ -1,5 +1,10 @@
+import chai from "chai";
+
 import assert from "assert";
-import db from "../db/database.js";
+import db, { queryPromise } from "../db/database.js";
+import { insertData, forceTruncateTables } from "./index.test.js";
+
+const { expect } = chai;
 
 describe("Create and delete table", function () {
   it("Create table", function (done) {
@@ -119,4 +124,67 @@ describe("Check the database structure", function () {
       });
     });
   }
+});
+
+describe("Procedures", () => {
+  before("Insert data", (done) => {
+    insertData("molecules.sql").then(() => done());
+  });
+
+  after("Remove data", (done) => {
+    queryPromise(
+      forceTruncateTables("molecule", "property", "property_value", "molecule_property", "class", "system")
+    ).then(() => done());
+  });
+
+  it("GetClassesOf", async () => {
+    let classes = (await queryPromise("CALL getClassesOf(?)", ["AMANTADINE"]))[0].map((e) => e.cl_name);
+    expect(classes).to.be.deep.equals(["INHIBITEUR DE FUSION"]);
+
+    classes = (await queryPromise("CALL getClassesOf(?)", ["TENOFOVIR DISOPROXIL"]))[0].map((e) => e.cl_name);
+    expect(classes).to.be.deep.equals([
+      "camion",
+      "INTI (INHIBITEURS NUCLEOSIDIQUES TRANSCRIPTASE INVERSE)",
+      "ANALOGUES NUCLEOSIDIQUES",
+    ]);
+
+    classes = (await queryPromise("CALL getClassesOf(?)", ["INVALID"]))[0];
+    expect(classes).to.be.deep.equals([]);
+  });
+
+  it("GetSystemsOf", async () => {
+    let systems = (await queryPromise("CALL getSystemsOf(?)", ["AMANTADINE"]))[0].map((e) => e.sy_name);
+    expect(systems).to.be.deep.equals(["ANTIVIRAL", "ANTIINFECTIEUX"]);
+
+    systems = (await queryPromise("CALL getSystemsOf(?)", ["NEXISTPA"]))[0].map((e) => e.sy_name);
+    expect(systems).to.be.deep.equals(["TRESNULLE", "ANTIRIEN"]);
+
+    systems = (await queryPromise("CALL getSystemsOf(?)", ["INVALID"]))[0];
+    expect(systems).to.be.deep.equals([]);
+  });
+
+  it("GetPropertyValuesOf", async () => {
+    const indications = (await queryPromise("CALL getPropertyValuesOf(?,?)", ["AMANTADINE", "indications"]))[0].map(
+      (e) => e.value
+    );
+    expect(indications).to.be.deep.equalInAnyOrder(["Grippe", "Parkinson"]);
+
+    const interactions = (
+      await queryPromise("CALL getPropertyValuesOf(?,?)", ["LEVOFLOXACINE", "interactions"])
+    )[0].map((e) => e.value);
+    expect(interactions).to.be.deep.equalInAnyOrder(["Allongement QT"]);
+
+    const side_effects = (
+      await queryPromise("CALL getPropertyValuesOf(?,?)", ["METHYLENECYCLINE", "side_effects"])
+    )[0].map((e) => e.value);
+    expect(side_effects).to.be.deep.equalInAnyOrder(["Décoloration dents", "Hypoplasie email dentaire", "oesophagite"]);
+
+    let invalid = (await queryPromise("CALL getPropertyValuesOf(?,?)", ["METHYLENECYCLINE", "colors"]))[0].map(
+      (e) => e.value
+    );
+    expect(invalid).to.be.deep.equalInAnyOrder([]);
+
+    invalid = (await queryPromise("CALL getPropertyValuesOf(?,?)", ["ENOET", "side_effects"]))[0].map((e) => e.value);
+    expect(invalid).to.be.deep.equalInAnyOrder([]);
+  });
 });
