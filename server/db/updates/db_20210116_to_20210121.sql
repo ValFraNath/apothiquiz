@@ -1,5 +1,4 @@
-CREATE DEFINER=`glowing-octo-guacamole`@`localhost` 
-PROCEDURE `getClassesOf`(IN `dci` VARCHAR(256)) NOT DETERMINISTIC NO SQL SQL SECURITY DEFINER 
+CREATE PROCEDURE `getClassesOf`(IN `dci` VARCHAR(256)) NOT DETERMINISTIC NO SQL SQL SECURITY DEFINER 
 WITH RECURSIVE classification AS ( 
     SELECT cl_id ,cl_name ,cl_higher ,cl_level 
     FROM class JOIN molecule ON mo_class = cl_id 
