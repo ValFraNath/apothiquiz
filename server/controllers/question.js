@@ -40,6 +40,7 @@ async function generateQuestion(req, res) {
       res.status(200).json({ type, subject, goodAnswer, answers });
     })
     .catch((error) => {
+      console.error(error);
       res.status(500).json({
         message: `Error while generating question of type ${type} : ${error}`,
       });
