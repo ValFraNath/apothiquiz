@@ -51,7 +51,7 @@ describe("User test", function () {
           if (err) {
             throw err;
           }
-          expect(res.status).to.be.equal(401);
+          expect(res.status).to.be.equal(404);
           done();
         });
     });
