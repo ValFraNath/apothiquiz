@@ -64,8 +64,8 @@ SELECT (SELECT cl_name
         WHERE cl_id = @good) AS good_answer,
         (SELECT mo_dci
          FROM molecule 
-         WHERE mo_id = @molecule),
-         cl_name
+         WHERE mo_id = @molecule) as subject,
+         cl_name as bad_answer
 FROM classes_by_molecule
 WHERE cl_id <> @good
 ORDER BY RAND()

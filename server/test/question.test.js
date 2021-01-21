@@ -45,6 +45,7 @@ describe("Question generation", function () {
         const { answers, subject, goodAnswer } = res.body;
 
         const answersBelongsToClass = answers.map((value) => doesBelongToClass(value, subject));
+
         Promise.all(answersBelongsToClass).then((res) => {
           res.forEach((value, index) => expect(value).equals(index === Number(goodAnswer)));
           done();
@@ -69,7 +70,7 @@ describe("Question generation", function () {
 /**
  * get the classes to which a given molecule belongs
  * @param {string} dci The molecule's dci
- * @return {string[]}
+ * @return {Promise<string[]>}
  */
 function getClassesOf(dci) {
   return new Promise((resolve, reject) => {
@@ -85,7 +86,7 @@ function getClassesOf(dci) {
  * Test if a molecule belongs to a class
  * @param {string} dci The molecule dci
  * @param {String} className The class name
- * @returns {boolean}
+ * @returns {Promise<boolean>}
  */
 function doesBelongToClass(dci, className) {
   return new Promise((resolve) => {

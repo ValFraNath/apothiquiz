@@ -70,11 +70,11 @@ SET @good = ( SELECT mo_id
 -- // Get 3 random molecules, belonging to the parent class of @class2, but not to @class2
 SELECT 	(SELECT mo_dci
          FROM molecule
-         WHERE mo_id = @good) AS good_asnwer,
+         WHERE mo_id = @good) AS good_answer,
         (SELECT cl_name
          FROM class
-         WHERE cl_id = @class2) AS class,
-         mo_dci AS wrong_answer
+         WHERE cl_id = @class2) AS subject,
+         mo_dci AS bad_answer
 FROM classes_by_molecule AS C
 WHERE C.cl_id <> @class2
 AND C.cl_higher = ( SELECT cl_higher

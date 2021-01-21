@@ -77,11 +77,11 @@ SET @molecule = (SELECT mo_id
 -- // Get 3 classes different than @class2, but belonging to @class1                 
 SELECT (SELECT mo_dci
         FROM molecule 
-        WHERE mo_id = @molecule) as molecule,
+        WHERE mo_id = @molecule) as subject,
         (SELECT cl_name 
          FROM class
          WHERE cl_id = @good) AS good_answer,
-         cl_name AS bad_answers
+         cl_name AS bad_answer
 FROM classes_by_molecule
 WHERE cl_higher = @class1
 AND cl_id <> @good
