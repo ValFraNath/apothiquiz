@@ -2,6 +2,10 @@ import fs from "fs/promises";
 import path from "path";
 import { queryPromise } from "../db/database.js";
 
+const generatorsByType = {
+  A: generateQuestionA1,
+};
+
 /**
  * @api {get} /question/:type Get a random question
  * @apiName GetRandomQuestion
@@ -19,23 +23,15 @@ import { queryPromise } from "../db/database.js";
  * @apiUse     ErrorBadRequest
  */
 async function generateQuestion(req, res) {
-  let type = Number(req.params.type);
-  let generator;
-  switch (type) {
-    case 1: {
-      generator = generateQuestionType1;
-      break;
-    }
-    default: {
-      generator = null;
-    }
-  }
-  if (generator === null) {
+  let type = String(req.params.type).trim().toUpperCase();
+  let generateQuestion = generatorsByType[type];
+
+  if (!generateQuestion) {
     res.status(404).json({ message: "Incorrect type of question" });
     return;
   }
 
-  generator()
+  generateQuestion()
     .then(({ type, subject, goodAnswer, answers }) => {
       res.status(200).json({ type, subject, goodAnswer, answers });
     })
@@ -57,7 +53,7 @@ const scriptsFolderPath = path.resolve("modules", "question_generator_scripts");
  * Generate a question of type 1
  * @return {Promise<object>} The question
  */
-async function generateQuestionType1() {
+async function generateQuestionA1() {
   return new Promise(function (resolve, reject) {
     fs.readFile(path.resolve(scriptsFolderPath, "question_A1.sql"), { encoding: "utf-8" }).then((script) => {
       queryPromise(script)
