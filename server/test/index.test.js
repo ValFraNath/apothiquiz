@@ -1,5 +1,6 @@
 import fs from "fs/promises";
 import path from "path";
+
 import app from "../index.js";
 import { queryPromise } from "../db/database.js";
 
@@ -31,6 +32,14 @@ export function forceTruncateTables(...tables) {
  * @param {string} filename The filename
  * @returns {Promise}
  */
+export function insertData(filename) {
+  return new Promise((resolve, reject) => {
+    fs.readFile(path.resolve("test", "required_data", filename), { encoding: "utf8" })
+      .then((script) => queryPromise(script).then(() => resolve()))
+      .catch(reject);
+  });
+}
+
 export function insertData(filename) {
   return new Promise((resolve, reject) => {
     fs.readFile(path.resolve("test", "required_data", filename), { encoding: "utf8" })

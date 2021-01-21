@@ -6,10 +6,31 @@ on:
   pull_request:
     branches: [main]
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
+env:
+  CI: true
 
+jobs:
+  build-test-client:
+    name: Build and test client
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14.x]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: npm install, lint, build and test
+        run: |
+          cd client
+          npm ci
+          npm run lint
+          npm run build --if-present
+          npm test
+
+  build-test-server:
+    name: Build and test server
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version: [14.x]
@@ -42,7 +63,7 @@ jobs:
           done
           docker exec `docker ps -q` mysqld --version
 
-      - name: Server npm install and test
+      - name: npm install, lint, build and test
         run: |
           cd server
           echo "TOKEN_PRIVATE_KEY=TMP_TOKEN_KEY" >> .env
@@ -50,15 +71,3 @@ jobs:
           npm run lint
           npm run build --if-present
           npm test
-        env:
-          CI: true
-
-      - name: Client npm install and test
-        run: |
-          cd client
-          npm ci
-          npm run lint
-          npm run build --if-present
-          npm test
-        env:
-          CI: true
