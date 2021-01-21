@@ -1,9 +1,13 @@
 import React from "react";
 import PropTypes from "proptypes";
+import { DownloadIcon } from "@modulz/radix-icons";
 
 const InstallApp = ({ installPromptEvent }) => (
   <button id="installButton" onClick={() => installPromptEvent.prompt()}>
-    Installer l'application
+    <span>
+      <DownloadIcon />
+    </span>
+    <span>Installer l'application</span>
   </button>
 );
 
