@@ -8,9 +8,24 @@ import { forceTruncateTables, insertData } from "./index.test.js";
 chai.use(chaiHttp);
 const { expect } = chai;
 
-const questionTypes = [1, 2, 3, 5, 6, 7, 8, 9];
+describe("Question generation with empty database", () => {
+  before("Remove all data", (done) => {
+    forceTruncateTables("molecule", "class", "system", "property_value", "molecule_property", "property").then(() =>
+      done()
+    );
+  });
+
+  for (let type = 1; type <= 10; ++type) {
+    it("Question type " + type, async () => {
+      const res = await requestAPI("question/" + type);
+      expect(res.status).equals(422);
+    });
+  }
+});
 
 describe("Question generation", function () {
+  const questionTypes = [1, 2, 3, 5, 6, 7, 8, 9];
+
   before("Import data", (done) => {
     forceTruncateTables("molecule", "class", "system", "property", "property_value", "molecule_property").then(() =>
       insertData("molecules.sql").then(done)
@@ -161,6 +176,13 @@ function doesBelongToClass(dci, className) {
   });
 }
 
+/**
+ * Test if a molecule has a property value
+ * @param {string} dci The molecule
+ * @param {string} property The property
+ * @param {string} value The property value
+ * @returns {Promise<boolean>}
+ */
 function doesHavePropertyValue(dci, property, value) {
   return new Promise((resolve, reject) =>
     queryPromise("CALL getPropertyValuesOf(?,?);", [dci, property])

@@ -2,7 +2,7 @@ import fs from "fs/promises";
 import path from "path";
 import { queryPromise } from "../db/database.js";
 
-const typeGeneratorInfos = {
+const generatorInfosByType = {
   1: {
     createFilename: () => filenameRandomLevel("question_CM", 2),
     before: "",
@@ -69,6 +69,7 @@ const typeGeneratorInfos = {
  * @apiSuccess (200) {Array[String]}  question.answers    All answers possible
  * @apiSuccess (200) {String}         question.wording    The question wording
  *
+ * @apiError   (422) NotEnoughData  There is not enough data to generate the question
  * @apiError   (404) NotFound Incorrect type of question
  * @apiUse     ErrorBadRequest
  */
@@ -105,6 +106,7 @@ const scriptsFolderPath = path.resolve("modules", "question_generator_scripts");
 /**
  * Create a question by requesting database with a given script
  * @param {string} filename The script filename
+ * @param {number} type The question type
  * @param {string} before An SQL script to add at the start of the script
  * @return {Promise<object>} The question
  */
@@ -118,7 +120,11 @@ async function queryQuestion(filename, type, before = "") {
           if (data.length < 3) {
             reject(new NotEnoughDataError());
           }
-          resolve(Object.assign(formatQuestion(data), { type }));
+          const formattedQuestion = formatQuestion(data);
+          if (formattedQuestion.answers.includes(null)) {
+            reject(new NotEnoughDataError());
+          }
+          resolve(Object.assign(formattedQuestion, { type }));
         })
         .catch(reject);
     });
@@ -137,17 +143,17 @@ function filenameRandomLevel(filenamePrefix, maxLevel) {
 }
 
 /**
- * Create a function who generate a question f a given type
+ * Create a function generator to a given type
  * @param {number} type The question type
  * @returns {function():Promise}
  */
 function createGeneratorOfType(type) {
-  const typeInfos = typeGeneratorInfos[type];
+  const typeInfos = generatorInfosByType[type];
   if (!typeInfos) {
     return null;
   }
 
-  return () => {
+  return function () {
     return new Promise((resolve, reject) => {
       const filename = typeInfos.createFilename();
       const before = typeInfos.before;
@@ -161,7 +167,7 @@ function createGeneratorOfType(type) {
 /**
  * Format a question from the SQL reponse data
  * @param {object[]} data The sql response data
- * @returns {string} The formatted question
+ * @returns {{subject : string, goodAnswer : number, answers : string[]}} The formatted question
  */
 function formatQuestion(data) {
   const badAnswers = data.map((e) => e.bad_answer);

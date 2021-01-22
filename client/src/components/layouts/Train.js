@@ -221,7 +221,7 @@ class Train extends Component {
    * Get a new question (random type) from the server
    * @param {number} nthRetry The number of attempts
    */
-  getNewQuestion = (e, nthRetry = 0) => {
+  getNewQuestion = (nthRetry = 0) => {
     const minQuestionType = 1,
       maxQuestionType = 10;
     const questionType = Math.floor(Math.random() * (maxQuestionType - minQuestionType)) + minQuestionType;
@@ -238,7 +238,7 @@ class Train extends Component {
         });
       })
       .catch((error) => {
-        if (error.response.status === 422 && nthRetry < 10) {
+        if (error.response?.status === 422 && nthRetry < 10) {
           this.getNewQuestion(nthRetry + 1);
           return;
         }
