@@ -35,7 +35,6 @@ class PlayView extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentQuestion: this.generateQuestionText(),
       questionNum: 1,
       inProgress: true,
       lastClicked: "",
@@ -94,12 +93,11 @@ class PlayView extends Component {
   };
 
   /**
-   * Get the next question and update the state
+   * Get the next question
    */
   nextQuestion = () => {
     this.props.getNewQuestion();
     this.setState({
-      currentQuestion: this.generateQuestionText(),
       questionNum: this.state.questionNum + 1,
       inProgress: true,
       lastClicked: "",
@@ -108,7 +106,8 @@ class PlayView extends Component {
   };
 
   render() {
-    const { currentQuestion, questionNum, inProgress, timer, lastClicked } = this.state;
+    console.log("rendered", this.state.currentQuestion);
+    const { questionNum, inProgress, timer, lastClicked } = this.state;
     const { result, question, displaySummury } = this.props;
 
     return (
@@ -131,7 +130,7 @@ class PlayView extends Component {
 
         <div id="quiz-question">
           <h2>Question {questionNum}</h2>
-          <h1>{currentQuestion}</h1>
+          <h1>{this.generateQuestionText()}</h1>
         </div>
 
         {inProgress ? (
@@ -146,8 +145,8 @@ class PlayView extends Component {
 
         <Answers
           inProgress={inProgress}
-          goodAnswer={question.goodAnswer}
-          badAnswers={question.badAnswers}
+          goodAnswerIndex={question.goodAnswer}
+          answers={question.answers}
           lastClicked={lastClicked}
           onClick={this.handleAnswerClick}
         />
@@ -231,7 +230,7 @@ class Train extends Component {
     super(props);
     this.state = {
       gameState: Train.STATE_INTRO,
-      question: { badAnswers: [], goodAnswer: "", subject: "", type: 0 },
+      question: { answers: [], goodAnswerIndex: -1, subject: "", type: 0 },
       result: { good: [], bad: [] },
       error: null,
     };
@@ -249,7 +248,7 @@ class Train extends Component {
       .then((res) => {
         this.setState({
           gameState: Train.STATE_PLAY,
-          question: res.data.question,
+          question: res.data,
           inProgress: true,
           lastClicked: "",
           timer: 10,

@@ -20,12 +20,12 @@ describe("Question generation", function () {
   for (let type of questionTypes) {
     it(`Question of type ${type} well formatted`, async () => {
       const res = await requestAPI("question/" + type);
-      console.log(type, res.body);
+
       expect(res.status, "Status value").to.be.equal(200);
       expect(res.body.type).to.be.equals(type);
       expect(res.body.answers).to.not.contains(null);
       expect(res.body.answers).to.be.deep.equals([...new Set(res.body.answers)]);
-      expect(Object.getOwnPropertyNames(res.body), "Have property 'subject' ").to.contains("subject");
+      expect(Object.getOwnPropertyNames(res.body)).to.contains("wording");
     });
   }
 
