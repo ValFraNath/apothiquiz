@@ -43,24 +43,6 @@ class PlayView extends Component {
   }
 
   /**
-   * Generate the text of the question according to its type
-   * @returns {string} Text of the question
-   */
-  generateQuestionText() {
-    const { type, subject } = this.props.question;
-    let text;
-    switch (type) {
-      case 1:
-        text = 'Quelle molécule fait partie de la classe "' + subject + '" ?';
-        break;
-      default:
-        text = "Erreur : type de question invalide.";
-    }
-
-    return text;
-  }
-
-  /**
    * Update the timer
    * @param {number} value New timer value
    */
@@ -106,7 +88,6 @@ class PlayView extends Component {
   };
 
   render() {
-    console.log("rendered", this.state.currentQuestion);
     const { questionNum, inProgress, timer, lastClicked } = this.state;
     const { result, question, displaySummury } = this.props;
 
@@ -130,7 +111,7 @@ class PlayView extends Component {
 
         <div id="quiz-question">
           <h2>Question {questionNum}</h2>
-          <h1>{this.generateQuestionText()}</h1>
+          <h1>{question.wording}</h1>
         </div>
 
         {inProgress ? (
@@ -241,7 +222,7 @@ class Train extends Component {
    */
   getNewQuestion = () => {
     const minQuestionType = 1,
-      maxQuestionType = 1;
+      maxQuestionType = 10;
     const questionType = Math.floor(Math.random() * (maxQuestionType - minQuestionType)) + minQuestionType;
     axios
       .get(`/api/v1/question/${questionType}`)
@@ -255,11 +236,15 @@ class Train extends Component {
           error: null,
         });
       })
-      .catch(() =>
+      .catch((error) => {
+        if (error.response.status === 422) {
+          this.getNewQuestion();
+          return;
+        }
         this.setState({
           error: "Impossible de récupérer les données depuis le serveur.",
-        })
-      );
+        });
+      });
   };
 
   /**

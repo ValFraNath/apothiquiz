@@ -56,9 +56,10 @@ describe("Question generation", function () {
     answersBelongsToSystem.forEach((value, index) => expect(value).to.be.equals(index === Number(goodAnswer)));
   });
 
-  it("Type 4 : error 500 expected", async () => {
+  it("Type 4 : not enough data", async () => {
     const res = await requestAPI("question/4");
-    expect(res.status).to.be.equals(500);
+    expect(res.status).to.be.equals(422);
+    expect(res.body.code).to.be.equals("NED");
   });
 
   it("Type 5 : Consistent values", async () => {
@@ -116,9 +117,10 @@ describe("Question generation", function () {
     answersHavePropertyValue.forEach((value, index) => expect(value).to.be.equals(index === Number(goodAnswer)));
   });
 
-  it("Type 10 : Error 500 expected", async () => {
+  it("Type 10 : Not enough data", async () => {
     const res = await requestAPI("question/10");
-    expect(res.status).equals(500);
+    expect(res.status).equals(422);
+    expect(res.body.code).to.be.equals("NED");
   });
 
   it("Incorrect question type", async () => {

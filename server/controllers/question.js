@@ -87,7 +87,8 @@ async function generateQuestion(req, res) {
     })
     .catch((error) => {
       if (NotEnoughDataError.isInstance(error)) {
-        res.status(422).json({ message: error.message });
+        res.status(422).json({ message: error.message, code: error.code });
+        return;
       }
       res.status(500).json({
         message: `Error while generating question of type ${type} : ${error}`,
@@ -182,6 +183,7 @@ class NotEnoughDataError extends Error {
     super();
     this.message = "This type of question is currently not available";
     this.name = "Not Enough Data";
+    this.code = "NED";
   }
 
   static isInstance(error) {
