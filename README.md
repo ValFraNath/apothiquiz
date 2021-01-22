@@ -4,6 +4,18 @@
 ![Build and test the app](https://github.com/nathanaelhoun/glowing-octo-guacamole/workflows/Build%20and%20test%20the%20app/badge.svg)
 
 A third year undergraduate project by Nathanaël Houn, Valentin Perignon and François Poguet, three students at the Université de _Franche-Comté_ (FR).
+Reflex-learning application for pharmacist students.
+
+**This project is still under development**
+
+<details>
+  <summary>
+    Glowing-Octo-Guacamole doesn't mean anything, it's a temporary code name for our project.
+  </summary>  
+    We were searching a name at the beginning of the project, but weren't able to find one that sounded good. 
+    So we used the wonderful "random name" option of Github, and now were are Guacamolers!
+</details>
+
 
 ## Deployment, coding convention and more
 
