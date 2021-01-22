@@ -67,7 +67,7 @@ class PlayView extends Component {
    */
   handleAnswerClick = (value) => {
     if (!this.state.inProgress) return;
-    this.props.addUserAnswer(this.state.currentQuestion, value);
+    this.props.addUserAnswer(this.props.question.wording, value);
     this.setState({
       inProgress: false,
       lastClicked: value,
@@ -219,8 +219,9 @@ class Train extends Component {
 
   /**
    * Get a new question (random type) from the server
+   * @param {number} nthRetry The number of attempts
    */
-  getNewQuestion = () => {
+  getNewQuestion = (e, nthRetry = 0) => {
     const minQuestionType = 1,
       maxQuestionType = 10;
     const questionType = Math.floor(Math.random() * (maxQuestionType - minQuestionType)) + minQuestionType;
@@ -237,8 +238,8 @@ class Train extends Component {
         });
       })
       .catch((error) => {
-        if (error.response.status === 422) {
-          this.getNewQuestion();
+        if (error.response.status === 422 && nthRetry < 10) {
+          this.getNewQuestion(nthRetry + 1);
           return;
         }
         this.setState({
@@ -254,7 +255,8 @@ class Train extends Component {
    */
   addUserAnswer = (question, userChoice) => {
     const { good, bad } = this.state.result;
-    const rightAnswer = this.state.question.goodAnswer;
+    const { answers, goodAnswer } = this.state.question;
+    const rightAnswer = answers[goodAnswer];
 
     if (userChoice === rightAnswer) {
       good.push({ question: question, userChoice: userChoice });
@@ -281,7 +283,7 @@ class Train extends Component {
   switchComponent() {
     switch (this.state.gameState) {
       case Train.STATE_INTRO:
-        return <IntroductionView onClick={this.getNewQuestion} />;
+        return <IntroductionView onClick={() => this.getNewQuestion()} />;
       case Train.STATE_PLAY:
         return (
           <PlayView
