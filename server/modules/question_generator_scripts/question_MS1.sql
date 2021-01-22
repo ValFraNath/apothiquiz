@@ -59,13 +59,13 @@ SET @molecule =  ( 	SELECT mo_id
               	LIMIT 1);
                 
 -- // Get 3 random system different than @good                 
-SELECT (SELECT sy_name 	
+SELECT DISTINCT (SELECT sy_name 	
         FROM system
         WHERE sy_id = @good) AS good_answer,
         (SELECT mo_dci
          FROM molecule 
-         WHERE mo_id = @molecule) AS molecule,
-         sy_name
+         WHERE mo_id = @molecule) AS subject,
+         sy_name AS bad_answer
 FROM systems_by_molecule
 WHERE sy_id <> @good
 ORDER BY RAND()

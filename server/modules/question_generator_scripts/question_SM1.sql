@@ -65,7 +65,7 @@ SET @good = (SELECT mo_id
            
 
 -- // Get 3 random molecule belonging to an other system 1 than @system1
-SELECT (SELECT mo_dci 
+SELECT DISTINCT (SELECT mo_dci 
         FROM molecule 
         WHERE mo_id = @good) AS good_answer,
         (SELECT sy_name

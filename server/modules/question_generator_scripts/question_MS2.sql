@@ -78,13 +78,13 @@ SET @molecule = (SELECT mo_id
                  LIMIT 1);
 
 -- // Get 3 systems different than @class2, but belonging to @system1                 
-SELECT (SELECT mo_dci
+SELECT DISTINCT (SELECT mo_dci
         FROM molecule 
-        WHERE mo_id = @molecule) as molecule,
+        WHERE mo_id = @molecule) as subject,
         (SELECT sy_name 
          FROM system
          WHERE sy_id = @good) AS good_answer,
-         sy_name AS bad_answers
+         sy_name AS bad_answer
 FROM systems_by_molecule
 WHERE sy_higher = @system1
 AND sy_id <> @good

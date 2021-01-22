@@ -62,7 +62,7 @@ SET @good = (SELECT mo_id
              LIMIT 1);
 
 -- // Get 3 random molecule belonging to an other class 1 than @class1
-SELECT (SELECT mo_dci 
+SELECT DISTINCT (SELECT mo_dci 
         FROM molecule 
         WHERE mo_id = @good) AS good_answer,
         (SELECT cl_name

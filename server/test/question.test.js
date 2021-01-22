@@ -8,7 +8,7 @@ import { forceTruncateTables, insertData } from "./index.test.js";
 chai.use(chaiHttp);
 const { expect } = chai;
 
-const questionTypes = [1, 2, 3];
+const questionTypes = [1, 2, 3, 5, 6, 7, 8, 9];
 
 describe("Question generation", function () {
   before("Import data", (done) => {
@@ -20,10 +20,11 @@ describe("Question generation", function () {
   for (let type of questionTypes) {
     it(`Question of type ${type} well formatted`, async () => {
       const res = await requestAPI("question/" + type);
-
+      console.log(type, res.body);
       expect(res.status, "Status value").to.be.equal(200);
       expect(res.body.type).to.be.equals(type);
       expect(res.body.answers).to.not.contains(null);
+      expect(res.body.answers).to.be.deep.equals([...new Set(res.body.answers)]);
       expect(Object.getOwnPropertyNames(res.body), "Have property 'subject' ").to.contains("subject");
     });
   }
@@ -58,6 +59,66 @@ describe("Question generation", function () {
   it("Type 4 : error 500 expected", async () => {
     const res = await requestAPI("question/4");
     expect(res.status).to.be.equals(500);
+  });
+
+  it("Type 5 : Consistent values", async () => {
+    const res = await requestAPI("question/5");
+    const { answers, subject, goodAnswer } = res.body;
+
+    const answersHavePropertyValue = await Promise.all(
+      answers.map((value) => doesHavePropertyValue(value, "indications", subject))
+    );
+
+    answersHavePropertyValue.forEach((value, index) => expect(value).to.be.equals(index === Number(goodAnswer)));
+  });
+
+  it("Type 6 : Consistent values", async () => {
+    const res = await requestAPI("question/6");
+    const { answers, subject, goodAnswer } = res.body;
+
+    const answersHavePropertyValue = await Promise.all(
+      answers.map((value) => doesHavePropertyValue(value, "side_effects", subject))
+    );
+
+    answersHavePropertyValue.forEach((value, index) => expect(value).to.be.equals(index === Number(goodAnswer)));
+  });
+
+  it("Type 7 : Consistent values", async () => {
+    const res = await requestAPI("question/7");
+    const { answers, subject, goodAnswer } = res.body;
+
+    const answersHavePropertyValue = await Promise.all(
+      answers.map((value) => doesHavePropertyValue(value, "interactions", subject))
+    );
+
+    answersHavePropertyValue.forEach((value, index) => expect(value).to.be.equals(index === Number(goodAnswer)));
+  });
+
+  it("Type 8 : Consistent values", async () => {
+    const res = await requestAPI("question/8");
+    const { answers, subject, goodAnswer } = res.body;
+
+    const answersHavePropertyValue = await Promise.all(
+      answers.map((value) => doesHavePropertyValue(subject, "indications", value))
+    );
+
+    answersHavePropertyValue.forEach((value, index) => expect(value).to.be.equals(index === Number(goodAnswer)));
+  });
+
+  it("Type 9 : Consistent values", async () => {
+    const res = await requestAPI("question/9");
+    const { answers, subject, goodAnswer } = res.body;
+
+    const answersHavePropertyValue = await Promise.all(
+      answers.map((value) => doesHavePropertyValue(subject, "side_effects", value))
+    );
+
+    answersHavePropertyValue.forEach((value, index) => expect(value).to.be.equals(index === Number(goodAnswer)));
+  });
+
+  it("Type 10 : Error 500 expected", async () => {
+    const res = await requestAPI("question/10");
+    expect(res.status).equals(500);
   });
 
   it("Incorrect question type", async () => {
@@ -96,6 +157,14 @@ function doesBelongToClass(dci, className) {
       })
       .catch(reject);
   });
+}
+
+function doesHavePropertyValue(dci, property, value) {
+  return new Promise((resolve, reject) =>
+    queryPromise("CALL getPropertyValuesOf(?,?);", [dci, property])
+      .then((res) => resolve(res[0].map((e) => e.value).includes(value)))
+      .catch(reject)
+  );
 }
 
 /**

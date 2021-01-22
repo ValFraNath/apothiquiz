@@ -2,11 +2,47 @@ import fs from "fs/promises";
 import path from "path";
 import { queryPromise } from "../db/database.js";
 
-const generatorsByType = {
-  1: generateQuestionType1,
-  2: generateQuestionType2,
-  3: generateQuestionType3,
-  4: generateQuestionType4,
+const typeGeneratorInfos = {
+  1: {
+    createFilename: () => filenameRandomLevel("question_CM", 2),
+    before: "",
+  },
+  2: {
+    createFilename: () => filenameRandomLevel("question_MC", 2),
+    before: "",
+  },
+  3: {
+    createFilename: () => filenameRandomLevel("question_SM", 2),
+    before: "",
+  },
+  4: {
+    createFilename: () => filenameRandomLevel("question_MS", 2),
+    before: "",
+  },
+  5: {
+    createFilename: () => "question_PM.sql",
+    before: "SET @property = 'indications';",
+  },
+  6: {
+    createFilename: () => "question_PM.sql",
+    before: "SET @property = 'side_effects';",
+  },
+  7: {
+    createFilename: () => "question_PM.sql",
+    before: "SET @property = 'interactions';",
+  },
+  8: {
+    createFilename: () => "question_MP.sql",
+    before: "SET @property = 'indications';",
+  },
+  9: {
+    createFilename: () => "question_MP.sql",
+    before: "SET @property = 'side_effects';",
+  },
+  10: {
+    createFilename: () => "question_MP.sql",
+    before: "SET @property = 'interactions';",
+  },
 };
 
 /**
@@ -27,7 +63,7 @@ const generatorsByType = {
  */
 async function generateQuestion(req, res) {
   let type = Number(req.params.type);
-  let generateQuestion = generatorsByType[type];
+  let generateQuestion = generateQuestionOfType(type);
 
   if (!generateQuestion) {
     res.status(404).json({ message: "Incorrect type of question" });
@@ -39,7 +75,7 @@ async function generateQuestion(req, res) {
       res.status(200).json({ type, subject, goodAnswer, answers });
     })
     .catch((error) => {
-      //console.error(error);
+      console.error(error);
       res.status(500).json({
         message: `Error while generating question of type ${type} : ${error}`,
       });
@@ -86,28 +122,18 @@ function filenameRandomLevel(filenamePrefix, maxLevel) {
   return `${filenamePrefix}${level}.sql`;
 }
 
-function generateQuestionType1() {
-  return new Promise((resolve) => {
-    resolve(queryQuestion(filenameRandomLevel("question_CM", 2), 1));
-  });
-}
-
-function generateQuestionType2() {
-  return new Promise((resolve) => {
-    resolve(queryQuestion(filenameRandomLevel("question_MC", 2), 2));
-  });
-}
-
-function generateQuestionType3() {
-  return new Promise((resolve) => {
-    resolve(queryQuestion(filenameRandomLevel("question_SM", 2), 3));
-  });
-}
-
-function generateQuestionType4() {
-  return new Promise((resolve) => {
-    resolve(queryQuestion(filenameRandomLevel("question_MS", 2), 4));
-  });
+function generateQuestionOfType(type) {
+  const typeInfos = typeGeneratorInfos[type];
+  if (!typeInfos) {
+    return null;
+  }
+  return () => {
+    return new Promise((resolve, reject) => {
+      const filename = typeInfos.createFilename();
+      const before = typeInfos.before;
+      queryQuestion(filename, type, before).then(resolve).catch(reject);
+    });
+  };
 }
 
 /**

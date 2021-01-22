@@ -75,7 +75,7 @@ SET @molecule = (SELECT mo_id
                  LIMIT 1);
 
 -- // Get 3 classes different than @class2, but belonging to @class1                 
-SELECT (SELECT mo_dci
+SELECT DISTINCT (SELECT mo_dci
         FROM molecule 
         WHERE mo_id = @molecule) as subject,
         (SELECT cl_name 
