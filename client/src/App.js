@@ -13,6 +13,7 @@ import Login from "./components/pages/Login";
 import AuthService from "./services/auth.service";
 import axios from "axios";
 import Profile from "./components/pages/Profile";
+import HomePage from "./components/pages/HomePage";
 
 /**
  * Set up the authorization header in all request if the user is logged in
@@ -100,6 +101,7 @@ export default class App extends Component {
           <Route path="/train" exact component={Train} />
           <Route path="/login" exact component={Login} />
           <ProtectedRoute path="/profile" exact component={Profile} />
+          <ProtectedRoute path="/homepage" exact component={HomePage} />
         </Switch>
       </Router>
     );
