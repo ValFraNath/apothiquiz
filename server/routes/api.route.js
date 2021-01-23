@@ -20,6 +20,8 @@ apiRouter.patch("/user/:pseudo", auth, UserController.saveInfos);
 
 apiRouter.post("/duel/new", auth, DuelController.create);
 
+apiRouter.get("/duel/", auth, DuelController.fetchAll);
+
 apiRouter.get("/duel/:id", auth, DuelController.fetch);
 
 apiRouter.post("/duel/:id/:round", auth, DuelController.play);

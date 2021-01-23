@@ -147,7 +147,7 @@ function filenameRandomLevel(filenamePrefix, maxLevel) {
  * @param {number} type The question type
  * @returns {function():Promise}
  */
-function createGeneratorOfType(type) {
+export function createGeneratorOfType(type) {
   const typeInfos = generatorInfosByType[type];
   if (!typeInfos) {
     return null;
