@@ -35,30 +35,11 @@ class PlayView extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentQuestion: this.generateQuestionText(),
       questionNum: 1,
       inProgress: true,
       lastClicked: "",
       timer: Train.TIMER_DURATION,
     };
-  }
-
-  /**
-   * Generate the text of the question according to its type
-   * @returns {string} Text of the question
-   */
-  generateQuestionText() {
-    const { type, subject } = this.props.question;
-    let text;
-    switch (type) {
-      case 1:
-        text = 'Quelle molécule fait partie de la classe "' + subject + '" ?';
-        break;
-      default:
-        text = "Erreur : type de question invalide.";
-    }
-
-    return text;
   }
 
   /**
@@ -86,7 +67,7 @@ class PlayView extends Component {
    */
   handleAnswerClick = (value) => {
     if (!this.state.inProgress) return;
-    this.props.addUserAnswer(this.state.currentQuestion, value);
+    this.props.addUserAnswer(this.props.question.wording, value);
     this.setState({
       inProgress: false,
       lastClicked: value,
@@ -94,12 +75,11 @@ class PlayView extends Component {
   };
 
   /**
-   * Get the next question and update the state
+   * Get the next question
    */
   nextQuestion = () => {
     this.props.getNewQuestion();
     this.setState({
-      currentQuestion: this.generateQuestionText(),
       questionNum: this.state.questionNum + 1,
       inProgress: true,
       lastClicked: "",
@@ -108,7 +88,7 @@ class PlayView extends Component {
   };
 
   render() {
-    const { currentQuestion, questionNum, inProgress, timer, lastClicked } = this.state;
+    const { questionNum, inProgress, timer, lastClicked } = this.state;
     const { result, question, displaySummury } = this.props;
 
     return (
@@ -131,7 +111,7 @@ class PlayView extends Component {
 
         <div id="quiz-question">
           <h2>Question {questionNum}</h2>
-          <h1>{currentQuestion}</h1>
+          <h1>{question.wording}</h1>
         </div>
 
         {inProgress ? (
@@ -146,8 +126,8 @@ class PlayView extends Component {
 
         <Answers
           inProgress={inProgress}
-          goodAnswer={question.goodAnswer}
-          badAnswers={question.badAnswers}
+          goodAnswerIndex={question.goodAnswer}
+          answers={question.answers}
           lastClicked={lastClicked}
           onClick={this.handleAnswerClick}
         />
@@ -231,7 +211,7 @@ class Train extends Component {
     super(props);
     this.state = {
       gameState: Train.STATE_INTRO,
-      question: { badAnswers: [], goodAnswer: "", subject: "", type: 0 },
+      question: { answers: [], goodAnswerIndex: -1, subject: "", type: 0 },
       result: { good: [], bad: [] },
       error: null,
     };
@@ -239,28 +219,33 @@ class Train extends Component {
 
   /**
    * Get a new question (random type) from the server
+   * @param {number} nthRetry The number of attempts
    */
-  getNewQuestion = () => {
+  getNewQuestion = (nthRetry = 0) => {
     const minQuestionType = 1,
-      maxQuestionType = 1;
+      maxQuestionType = 10;
     const questionType = Math.floor(Math.random() * (maxQuestionType - minQuestionType)) + minQuestionType;
     axios
       .get(`/api/v1/question/${questionType}`)
       .then((res) => {
         this.setState({
           gameState: Train.STATE_PLAY,
-          question: res.data.question,
+          question: res.data,
           inProgress: true,
           lastClicked: "",
           timer: 10,
           error: null,
         });
       })
-      .catch(() =>
+      .catch((error) => {
+        if (error.response?.status === 422 && nthRetry < 10) {
+          this.getNewQuestion(nthRetry + 1);
+          return;
+        }
         this.setState({
           error: "Impossible de récupérer les données depuis le serveur.",
-        })
-      );
+        });
+      });
   };
 
   /**
@@ -270,7 +255,8 @@ class Train extends Component {
    */
   addUserAnswer = (question, userChoice) => {
     const { good, bad } = this.state.result;
-    const rightAnswer = this.state.question.goodAnswer;
+    const { answers, goodAnswer } = this.state.question;
+    const rightAnswer = answers[goodAnswer];
 
     if (userChoice === rightAnswer) {
       good.push({ question: question, userChoice: userChoice });
@@ -297,7 +283,7 @@ class Train extends Component {
   switchComponent() {
     switch (this.state.gameState) {
       case Train.STATE_INTRO:
-        return <IntroductionView onClick={this.getNewQuestion} />;
+        return <IntroductionView onClick={() => this.getNewQuestion()} />;
       case Train.STATE_PLAY:
         return (
           <PlayView

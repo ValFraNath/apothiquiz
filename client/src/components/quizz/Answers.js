@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import PropTypes from "proptypes";
 
 /* ---------- Buttons ---------- */
@@ -30,26 +30,15 @@ AnswerBtn.propTypes = {
 
 /* ---------- List of buttons ---------- */
 
-const Answers = ({ inProgress, goodAnswer, badAnswers, lastClicked, onClick }) => {
-  const [goodIndex, setGoodIndex] = useState(0);
-  const arrayOfAnswers = [...badAnswers];
-
-  const numberOfQuestion = 4;
-  useEffect(() => {
-    const index = Math.floor(Math.random() * numberOfQuestion);
-    setGoodIndex(index);
-  }, [goodAnswer]);
-
-  arrayOfAnswers.splice(goodIndex, 0, goodAnswer);
-
+const Answers = ({ inProgress, answers, goodAnswerIndex, lastClicked, onClick }) => {
   return (
     <div id="quiz-answers">
-      {arrayOfAnswers.map((value, index) => (
+      {answers.map((value, index) => (
         <AnswerBtn
           key={index}
           value={value}
-          isRight={value === goodAnswer}
-          showResult={!inProgress && (value === goodAnswer || lastClicked === value)}
+          isRight={index === goodAnswerIndex}
+          showResult={!inProgress && (index === goodAnswerIndex || lastClicked === value)}
           onClick={onClick}
         />
       ))}
@@ -59,8 +48,8 @@ const Answers = ({ inProgress, goodAnswer, badAnswers, lastClicked, onClick }) =
 
 Answers.propTypes = {
   inProgress: PropTypes.bool.isRequired,
-  goodAnswer: PropTypes.string.isRequired,
-  badAnswers: PropTypes.arrayOf(PropTypes.string).isRequired,
+  goodAnswerIndex: PropTypes.number.isRequired,
+  answers: PropTypes.arrayOf(PropTypes.string).isRequired,
   lastClicked: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
 };

@@ -37,7 +37,6 @@ export function createSqlToInsertAllData(data) {
     script += createSqlToInsertProperty(property, data[property]);
   }
   script += createSqlToInsertAllMolecules(data.molecules);
-
   return script;
 }
 

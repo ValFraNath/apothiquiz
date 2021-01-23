@@ -1,6 +1,5 @@
 import path from "path";
 import chai from "chai";
-import chaiHttp from "chai-http";
 import mocha from "mocha";
 import fs from "fs";
 import deepEqualAnyOrder from "deep-equal-in-any-order";
@@ -11,7 +10,6 @@ import { expectations } from "./expectations.js";
 import { ClassificationNode } from "../../modules/data_importer/csv_parser/MoleculesClassification.js";
 import { HeaderErrors } from "../../modules/data_importer/csv_parser/HeaderChecker.js";
 
-chai.use(chaiHttp);
 chai.use(deepEqualAnyOrder);
 const { before } = mocha;
 const { expect } = chai;

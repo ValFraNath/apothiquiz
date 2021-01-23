@@ -4,7 +4,7 @@ import deepEqualAnyOrder from "deep-equal-in-any-order";
 import path from "path";
 
 const { expect } = chai;
-const { describe, it, before, after } = mocha;
+const { describe, it, before } = mocha;
 chai.use(deepEqualAnyOrder);
 
 import { queryPromise } from "../../db/database.js";
@@ -21,15 +21,11 @@ const files = [
 
 for (let file of files) {
   describe("Data are well imported in database", function () {
-    before("Import data", function (done) {
-      parseAndCreateSqlToInsertAllData(path.resolve("test", "data_importer", "files", file.name)).then((script) => {
-        queryPromise(script).then(() => done());
-      });
-    });
-
-    after("Remove data", async () => {
-      await queryPromise(
-        forceTruncateTables("molecule", "class", "system", "property", "property_value", "molecule_property")
+    before("Import data", (done) => {
+      forceTruncateTables("molecule", "property", "property_value", "molecule_property", "class", "system").then(() =>
+        parseAndCreateSqlToInsertAllData(path.resolve("test", "data_importer", "files", file.name)).then((script) => {
+          queryPromise(script).then(() => done());
+        })
       );
     });
 

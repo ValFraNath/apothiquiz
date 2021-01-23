@@ -1,8 +1,8 @@
 export const expectations = {
   molecules: {
-    number_of_molecule: 140,
+    number_of_molecule: 141,
     systems: {
-      all: ["ANTIINFECTIEUX", "ANTIPARASITAIRE", "ANTIBIOTIQUE", "ANTIVIRAL"],
+      all: ["ANTIINFECTIEUX", "ANTIPARASITAIRE", "ANTIBIOTIQUE", "ANTIVIRAL", "ANTIRIEN", "TRESNULLE"],
       nodes: [
         {
           name: "ANTIINFECTIEUX",
@@ -17,6 +17,7 @@ export const expectations = {
     classes: {
       all: [
         "camion",
+        "PLACEBO",
         "INHIBITEUR DE FUSION",
         "INHIBITEURS DE NEURAMINISASE",
         "ANALOGUES NUCLEOSIDIQUES",
