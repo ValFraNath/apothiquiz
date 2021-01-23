@@ -19,7 +19,7 @@ class Login extends Component {
     AuthService.login(pseudoInput.value.trim(), passwordInput.value)
       .then((user) => {
         console.info(`User ${user} successfully logged in`);
-        document.location.replace("/");
+        document.location.replace("/userhome");
       })
       .catch((error) => {
         console.error(`An error has occurred : ${error}`);
