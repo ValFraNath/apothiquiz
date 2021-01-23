@@ -24,6 +24,7 @@ describe("Question generation with empty database", () => {
 });
 
 describe("Question generation", function () {
+  // Only question types we can generate with current data
   const questionTypes = [1, 2, 3, 5, 6, 7, 8, 9];
 
   before("Import data", (done) => {
@@ -41,6 +42,8 @@ describe("Question generation", function () {
       expect(res.body.answers).to.not.contains(null);
       expect(res.body.answers).to.be.deep.equals([...new Set(res.body.answers)]);
       expect(Object.getOwnPropertyNames(res.body)).to.contains("wording");
+      expect(res.body.goodAnswer).greaterThan(-1);
+      expect(res.body.goodAnswer).lessThan(res.body.answers.length);
     });
   }
 
