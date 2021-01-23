@@ -1,10 +1,14 @@
 /* eslint-disable no-unused-vars */
 import { queryPromise } from "../db/database.js";
-import { createGeneratorOfType } from "./question.js";
+import { createGeneratorOfType, NotEnoughDataError } from "./question.js";
+
+const MAX_QUESTION_TYPE = 10;
+const NUMBER_OF_ROUNDS_IN_DUEL = 5;
+const NUMBER_OF_QUESTIONS_IN_ROUND = 5;
+
 function create(req, res) {
   const username = req.body.auth_user;
   const players = req.body.players;
-  console.log(username, req.body);
 
   if (players.length !== 2) {
     return res.status(400).json({ message: "Exactly two players must be specified" });
@@ -21,13 +25,34 @@ function create(req, res) {
       if (!yes) {
         return res.status(404).json({ message: "Users not found" });
       }
-      createRounds();
+      createRounds()
+        .then((rounds) =>
+          createDuelInDatabase(players[0], players[1], rounds)
+            .then((id) => res.status(201).json({ id }))
+            .catch(sendLocalError500)
+        )
+
+        .catch(sendLocalError500);
     })
     .catch(sendLocalError500);
 }
 
 // eslint-disable-next-line no-unused-vars
-function fetch(req, res) {}
+function fetch(req, res) {
+  const username = req.body.auth_user;
+  const id = Number(req.params.id);
+
+  if (!id) {
+    return res.status(400).json({ message: "Missing or invalid duel ID" });
+  }
+
+  queryPromise("CALL getDuel(?,?);", [id, username]).then((sqlRes) => {
+    if (sqlRes[0].length === 0) {
+      return res.status(404).json({ message: "Duel not found" });
+    }
+    res.status(200).json({ sqlRes });
+  });
+}
 
 // eslint-disable-next-line no-unused-vars
 function fetchAll(req, res) {}
@@ -39,6 +64,9 @@ export default { create, fetch, fetchAll, play };
 
 // ***** INTERNAL FUNCTIONS *****
 
+/**
+ * while waiting for a global error handler
+ */
 function sendError500(res, error) {
   console.error(error);
   return res.status(500).json({ message: "Server side error" });
@@ -66,24 +94,83 @@ function doUsersExist(...users) {
   });
 }
 
-const MAX_QUESTION_TYPE = 10;
-function createRounds() {
+/**
+ * Create a new duel in database and returns its id
+ * @param {string} player1 The first player login
+ * @param {string} player2 The second player login
+ * @param {object} rounds The rounds of the duel
+ * @returns {Promise<number>} The id of the duel
+ */
+function createDuelInDatabase(player1, player2, rounds) {
   return new Promise((resolve, reject) => {
-    const rounds = [];
+    queryPromise("CALL createDuel(?,?,?)", [player1, player2, JSON.stringify(rounds)])
+      .then((res) => resolve(res[0][0].id))
+      .catch(reject);
   });
 }
 
 /**
- * Shuffle an array
- * @param {array} array
+ * Create all rounds of a duel
+ * @return {Promise<object[][]>}
  */
-function shuffleNthFirstIntegerArray() {
-  const types = Array(MAX_QUESTION_TYPE)
-    .fill(null)
-    .map((_, i) => i + 1);
+function createRounds() {
+  return new Promise((resolve, reject) => {
+    const types = createShuffledQuestionTypesArray();
+    const rounds = [];
+
+    (function createRoundsRecurcively() {
+      if (types.length === 0) {
+        reject(new NotEnoughDataError());
+      }
+
+      createRound(types.pop())
+        .then((round) => {
+          if (rounds.push(round) === NUMBER_OF_ROUNDS_IN_DUEL) {
+            resolve(rounds);
+          } else {
+            createRoundsRecurcively();
+          }
+        })
+        .catch((error) => {
+          if (NotEnoughDataError.isInstance(error)) {
+            createRoundsRecurcively();
+          } else {
+            reject(error);
+          }
+        });
+    })();
+  });
+}
+
+/**
+ * Create a round of a given question type
+ * @param {number} type The question type
+ * @returns {Promise<object[]>} The list of questions
+ */
+function createRound(type) {
+  return new Promise((resolve, reject) => {
+    const generateQuestion = createGeneratorOfType(type);
+    const questions = [...Array(NUMBER_OF_QUESTIONS_IN_ROUND)].map(generateQuestion);
+
+    Promise.all(questions)
+      .then((questions) => {
+        resolve(questions);
+      })
+      .catch(reject);
+  });
+}
+
+/**
+ * Create an array with all question types in a random order
+ * @returns {number[]}
+ */
+function createShuffledQuestionTypesArray() {
+  const types = [...Array(MAX_QUESTION_TYPE)].map((_, i) => i + 1);
 
   for (let i = types.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [types[i], types[j]] = [types[j], types[i]];
   }
+
+  return types;
 }

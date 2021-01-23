@@ -184,7 +184,7 @@ function formatQuestion(data) {
   };
 }
 
-class NotEnoughDataError extends Error {
+export class NotEnoughDataError extends Error {
   constructor() {
     super();
     this.message = "This type of question is currently not available";
