@@ -1,0 +1,32 @@
+#homepage {
+  header {
+    position: relative;
+    display: flex;
+    padding: 0.5rem 1rem;
+    align-items: center;
+
+    #header-background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url("../../images/bg_menu.png") no-repeat top;
+      background-size: cover;
+      filter: blur(1px);
+    }
+
+    .avatar {
+      margin-right: 1rem;
+    }
+
+    div:last-of-type {
+      z-index: 2;
+
+      h1 {
+        font-size: 1.5rem;
+        margin-bottom: 0.3rem;
+      }
+    }
+  }
+}

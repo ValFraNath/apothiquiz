@@ -26,7 +26,6 @@ class HomePage extends Component {
     axios
       .post("/api/v1/users/about", listOfUsers)
       .then((res) => {
-        console.log(res.data);
         this.setState({
           currentUser: res.data[currentUser.pseudo],
           usersData: res.data,
@@ -42,8 +41,9 @@ class HomePage extends Component {
     const cuLosses = currentUser?.losses ?? 0;
 
     return (
-      <main id="userhomepage">
+      <main id="homepage">
         <header>
+          <div id="header-background"></div>
           <Avatar
             size="150px"
             eyes={currentUser?.avatar.eyes ?? 0}
