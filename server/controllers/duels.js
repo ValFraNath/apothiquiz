@@ -326,6 +326,11 @@ function formatDuel(duel, username) {
   return { id: duel[0].du_id, currentRound, rounds: formattedRound };
 }
 
+/**
+ * Get all answers of a player for a duel
+ * @param {number} id The duel ID
+ * @param {string} username The player username
+ */
 function getDuelsResults(id, username) {
   return new Promise((resolve, reject) => {
     const sql = "SELECT re_answers FROM results WHERE us_login = ? AND du_id = ? ;";
@@ -335,6 +340,13 @@ function getDuelsResults(id, username) {
   });
 }
 
+/**
+ * Insert user anwers in the database
+ * @param {number} id The duel ID
+ * @param {string} username The player username
+ * @param {number[]} answers The answers sent
+ * @returns {Promise<object>} The updated duel
+ */
 function insertResultInDatabase(id, username, answers) {
   return new Promise((resolve, reject) => {
     getDuelsResults(id, username)
@@ -349,6 +361,12 @@ function insertResultInDatabase(id, username, answers) {
   });
 }
 
+/**
+ * Update the state of a duel
+ * @param {object} duel The duel
+ * @param {string} username The player username
+ * @returns {Promise<object>} The updated duel
+ */
 function updateDuelState(duel, username) {
   return new Promise((resolve, reject) => {
     const currentRound = duel.currentRound;
