@@ -6,6 +6,8 @@ import Avatar from "../Avatar";
 import Button from "../Buttons/ButtonDefault";
 import { Link } from "react-router-dom";
 import Plural from "../Plural";
+import FightPilette from "../../images/fight.png";
+import WaitPilette from "../../images/attente.png";
 
 class HomePage extends Component {
   constructor(props) {
@@ -69,11 +71,15 @@ class HomePage extends Component {
         <Button onClick={() => console.log("hey")}>Nouveau duel</Button>
 
         <section>
-          <h2>Ton tour</h2>
+          <h2>
+            <img src={FightPilette} alt="Pilette is fighting" /> Ton tour
+          </h2>
         </section>
 
         <section>
-          <h2>En attente</h2>
+          <h2>
+            <img src={WaitPilette} alt="Pilette is waiting" /> En attente
+          </h2>
         </section>
       </main>
     );
