@@ -135,7 +135,7 @@ const TopBar = ({ user }) => {
     <nav>
       {user ? <UserBadge pseudo={user} /> : <span></span>}
       <h1>
-        <Link to="/">Guacamole</Link>
+        <Link to={user ? "/homepage" : "/"}>Guacamole</Link>
       </h1>
       <OfflineBanner />
     </nav>
