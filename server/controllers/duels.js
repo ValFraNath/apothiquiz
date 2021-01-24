@@ -6,6 +6,9 @@ const MAX_QUESTION_TYPE = 10;
 const NUMBER_OF_ROUNDS_IN_DUEL = 5;
 const NUMBER_OF_QUESTIONS_IN_ROUND = 5;
 
+/**
+ * Create a new duel
+ */
 function create(req, res) {
   const username = req.body.auth_user;
   const players = req.body.players;
@@ -37,6 +40,9 @@ function create(req, res) {
     .catch(sendLocalError500);
 }
 
+/**
+ * Fetch a duel
+ */
 function fetch(req, res) {
   const sendLocalError500 = (error) => sendError500(res, error);
 
@@ -57,8 +63,16 @@ function fetch(req, res) {
     .catch(sendLocalError500);
 }
 
-// eslint-disable-next-line no-unused-vars
-function fetchAll(req, res) {}
+/**
+ * Fetch all duels of a user
+ */
+function fetchAll(req, res) {
+  const username = req.body.auth_user;
+
+  getAllDuels(username)
+    .then((duels) => res.status(200).json(duels))
+    .catch((error) => sendError500(res, error));
+}
 
 // eslint-disable-next-line no-unused-vars
 function play(req, res) {}
@@ -199,6 +213,36 @@ function getDuel(id, username) {
 }
 
 /**
+ * Fetch all duels of a user in database
+ * @param {string} username The user requesting duels
+ * @returns {object[]} The list of duels
+ */
+function getAllDuels(username) {
+  return new Promise((resolve, reject) => {
+    queryPromise("CALL getDuelsOf(?);", [username])
+      .then((res) => {
+        if (res[0].length === 0) {
+          resolve([]);
+        } else {
+          resolve(
+            Object.values(
+              res[0].reduce((duels, duel) => {
+                if (duels[duel.du_id]) {
+                  duels[duel.du_id] = formatDuel([duels[duel.du_id], duel], username);
+                } else {
+                  duels[duel.du_id] = duel;
+                }
+                return duels;
+              }, Object.create(null))
+            )
+          );
+        }
+      })
+      .catch(reject);
+  });
+}
+
+/**
  * Format the duel extracted from the database
  * @param {object} duel The duel extracted from db
  * @param {string} username The user requesting the duel
@@ -212,7 +256,7 @@ function formatDuel(duel, username) {
 
   const keepOnlyType = (question) => new Object({ type: question.type });
 
-  rounds.map((round, i) => {
+  const formattedRound = rounds.map((round, i) => {
     const roundNumber = i + 1;
 
     // Finished rounds
@@ -244,5 +288,5 @@ function formatDuel(duel, username) {
     }
   });
 
-  return { id: duel[0].du_id, currentRound, rounds };
+  return { id: duel[0].du_id, currentRound, formattedRound };
 }
