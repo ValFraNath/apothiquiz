@@ -10,7 +10,9 @@ class HomePage extends Component {
 
     axios
       .post("/api/v1/users/about", listOfUsers)
-      .then(res => console.info(res))
+      .then(res => {
+        console.log(res.data);
+      })
       .catch(err => console.error(err));
 
     return (
