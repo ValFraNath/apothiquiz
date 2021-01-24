@@ -3,7 +3,6 @@ import axios from "axios";
 
 import AuthService from "../../services/auth.service";
 import Avatar from "../Avatar";
-import Button from "../Buttons/ButtonDefault";
 import { Link } from "react-router-dom";
 import Plural from "../Plural";
 import FightPilette from "../../images/fight.png";
@@ -15,8 +14,8 @@ class HomePage extends Component {
     this.state = {
       currentUser: null,
       usersData: null,
-      toPlayChallenges: null,
-      pendingChallenges: null,
+      toPlayChallenges: [],
+      pendingChallenges: [],
     };
   }
 
@@ -35,7 +34,7 @@ class HomePage extends Component {
   }
 
   render() {
-    const { currentUser } = this.state;
+    const { currentUser, toPlayChallenges, pendingChallenges } = this.state;
 
     const cuWins = currentUser?.wins ?? 0;
     const cuLosses = currentUser?.losses ?? 0;
@@ -65,21 +64,35 @@ class HomePage extends Component {
           </div>
         </header>
 
-        <Link to="/train" className="btn">
-          Entraînement
-        </Link>
-        <Button onClick={() => console.log("hey")}>Nouveau duel</Button>
+        <div id="links">
+          <Link to="/train" className="btn">
+            Entraînement
+          </Link>
+          <Link to="/homepage" className="btn">
+            Nouveau duel
+          </Link>
+        </div>
 
         <section>
           <h2>
             <img src={FightPilette} alt="Pilette is fighting" /> Ton tour
           </h2>
+          {toPlayChallenges.length === 0 ? (
+            <p>Aucun défi à relever pour le moment.</p>
+          ) : (
+            <p>Liste des défis à jouer.</p>
+          )}
         </section>
 
         <section>
           <h2>
             <img src={WaitPilette} alt="Pilette is waiting" /> En attente
           </h2>
+          {pendingChallenges.length === 0 ? (
+            <p>Aucun défi à en attente pour le moment.</p>
+          ) : (
+            <p>Liste des défis en attente.</p>
+          )}
         </section>
       </main>
     );
