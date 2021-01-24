@@ -74,8 +74,45 @@ function fetchAll(req, res) {
     .catch((error) => sendError500(res, error));
 }
 
-// eslint-disable-next-line no-unused-vars
-function play(req, res) {}
+/**
+ * Play a duel round
+ */
+function play(req, res) {
+  const id = req.params.id;
+  const round = Number(req.params.round);
+  const username = req.body.auth_user;
+  const answers = req.body.answers || [];
+
+  getDuel(id, username).then((duel) => {
+    if (!duel) {
+      return res.status(404).json({ message: "Duel not found" });
+    }
+    if (duel.currentRound !== round) {
+      return res.status(400).json({ message: "Invalid duel round" });
+    }
+    if (duel.rounds[round - 1][0].userAnswer !== undefined) {
+      return res.status(400).json({ message: "You can only play a round once" });
+    }
+
+    if (answers.length !== duel.rounds[round - 1].length) {
+      return res.status(400).json({ message: "Incorrect number of answers" });
+    }
+
+    const sendLocalError500 = (error) => sendError500(res, error);
+
+    insertResultInDatabase(id, username, answers)
+      .then((newDuel) =>
+        updateDuelState(newDuel)
+          .then(() =>
+            getDuel(id, username)
+              .then((duel) => res.status(200).json(duel))
+              .catch(sendLocalError500)
+          )
+          .catch(sendLocalError500)
+      )
+      .catch(sendLocalError500);
+  });
+}
 
 export default { create, fetch, fetchAll, play };
 
@@ -251,6 +288,8 @@ function getAllDuels(username) {
 function formatDuel(duel, username) {
   const currentRound = duel[0].du_currentRound;
   const rounds = JSON.parse(duel[0].du_content);
+  console.log(duel.find((player) => player.us_login === username));
+  console.log(duel.find((player) => player.us_login !== username));
   const userAnswers = JSON.parse(duel.find((player) => player.us_login === username).re_answers);
   const opponentAnswers = JSON.parse(duel.find((player) => player.us_login !== username).re_answers);
 
@@ -288,5 +327,46 @@ function formatDuel(duel, username) {
     }
   });
 
-  return { id: duel[0].du_id, currentRound, formattedRound };
+  return { id: duel[0].du_id, currentRound, rounds: formattedRound };
+}
+
+function getDuelsResults(id, username) {
+  return new Promise((resolve, reject) => {
+    const sql = "SELECT re_answers FROM results WHERE us_login = ? AND du_id = ? ;";
+    queryPromise(sql, [username, id])
+      .then((res) => resolve(JSON.parse(res[0].re_answers)))
+      .catch(reject);
+  });
+}
+
+function insertResultInDatabase(id, username, answers) {
+  return new Promise((resolve, reject) => {
+    getDuelsResults(id, username)
+      .then((previousAnswers) => {
+        const updatedAnswers = JSON.stringify([...previousAnswers, answers]);
+        const sql = "UPDATE results SET re_answers = ? WHERE us_login = ? AND du_id = ? ; CALL getDuel(?,?);";
+        queryPromise(sql, [updatedAnswers, username, id, id, username])
+          .then((res) => resolve(formatDuel(res[1], username)))
+          .catch(reject);
+      })
+      .catch(reject);
+  });
+}
+
+function updateDuelState(duel) {
+  return new Promise((resolve, reject) => {
+    const currentRound = duel.currentRound;
+
+    if (duel.rounds[currentRound - 1][0].opponentAnswer) {
+      let sql = "UPDATE duel SET du_currentRound = ? WHERE du_id = ? ;";
+      // if (currentRound === duel.rounds.length - 1) {
+      //   sql += "UPDATE duel SET du_isProgres = false WHERE du_id = ? ;";
+      // }
+      queryPromise(sql, [currentRound + 1, duel.id, duel.id])
+        .then(() => resolve())
+        .catch(reject);
+    } else {
+      resolve();
+    }
+  });
 }
