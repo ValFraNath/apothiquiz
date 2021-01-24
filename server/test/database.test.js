@@ -186,12 +186,49 @@ describe("Procedures Molecule data", () => {
 });
 
 describe("Procedure duels", () => {
+  const duelIds = [];
   before("Clear duels and results", (done) => {
     forceTruncateTables("results", "duel", "user").then(() => insertData("users.sql").then(done));
   });
 
   it("Create a duel", async () => {
-    const res = await queryPromise("CALL createDuel(?,?,?);", ["fpoguet", "nhoun", JSON.stringify(["questions"])]);
-    console.log(res);
+    let res = await queryPromise("CALL createDuel(?,?,?);", ["fpoguet", "nhoun", JSON.stringify(["questions"])]);
+    expect(res[0][0]).to.haveOwnProperty("id");
+    const firstID = res[0][0].id;
+    res = await queryPromise("CALL createDuel(?,?,?);", ["fpoguet", "vperigno", JSON.stringify(["questions"])]);
+    expect(res[0][0]).to.haveOwnProperty("id");
+    expect(res[0][0].id).to.be.not.equals(firstID);
+    duelIds.push(firstID, res[0][0].id);
+  });
+
+  it("Get a duel", async () => {
+    const res = await queryPromise("CALL getDuel(?,?);", [duelIds[0], "fpoguet"]);
+    const duel = res[0];
+    expect(duel).has.length(2);
+    expect(duel.find((p) => p.us_login === "fpoguet")).not.undefined;
+    expect(duel.find((p) => p.us_login === "nhoun")).not.undefined;
+    expect(duel.find((p) => p.us_login === "vperigno")).undefined;
+
+    delete duel[0].us_login;
+    delete duel[1].us_login;
+
+    expect(duel[0]).to.be.deep.equals(duel[1]);
+    expect(duel[0].du_currentRound).equals(1);
+    expect(Boolean(duel[0].du_inProgress)).to.be.true;
+  });
+
+  it("Get a noexistent duel", async () => {
+    const res = await queryPromise("CALL getDuel(?,?);", [-1, "fpoguet"]);
+    expect(res[0]).to.have.length(0);
+  });
+
+  it("Get a duel of others players", async () => {
+    const res = await queryPromise("CALL getDuel(?,?);", [duelIds[0], "vperigno"]);
+    expect(res[0]).to.have.length(0);
+  });
+
+  it("Get a duel with invalid user", async () => {
+    const res = await queryPromise("CALL getDuel(?,?);", [duelIds[0], "noexist"]);
+    expect(res[0]).to.have.length(0);
   });
 });

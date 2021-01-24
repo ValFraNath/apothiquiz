@@ -10,7 +10,7 @@ BEGIN
     SET @id = ( SELECT IFNULL(MAX(du_id),0)+1 
             FROM duel); 
             
-    INSERT INTO duel VALUES (@id,content,1); 
+    INSERT INTO duel VALUES (@id,content,1,true); 
 
     INSERT INTO results VALUES (player1,@id,"[]"); 
     INSERT INTO results VALUES (player2,@id,"[]"); 
