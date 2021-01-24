@@ -236,6 +236,17 @@ export default User;
 
 /* ---------- Handle multiple users ---------- */
 
+/**
+ * @api {post} /users/about Get data of several users
+ * @apiName GetUsersData
+ * @apiGroup Users
+ *
+ * @apiParam {array} listOfUsers  Pseudo of several users
+ *
+ * @apiSuccess (200) {array} users  Liste of users required
+ *
+ * @apiUse ErrorServer
+ */
 User.severalGetInfos = function (req, res) {
   const listOfUsers = req.body;
   if (!Array.isArray(listOfUsers) || listOfUsers.length === 0) {
