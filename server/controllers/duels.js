@@ -102,12 +102,8 @@ function play(req, res) {
 
     insertResultInDatabase(id, username, answers)
       .then((newDuel) =>
-        updateDuelState(newDuel)
-          .then(() =>
-            getDuel(id, username)
-              .then((duel) => res.status(200).json(duel))
-              .catch(sendLocalError500)
-          )
+        updateDuelState(newDuel, username)
+          .then((duel) => res.status(200).json(duel))
           .catch(sendLocalError500)
       )
       .catch(sendLocalError500);
@@ -288,24 +284,28 @@ function getAllDuels(username) {
 function formatDuel(duel, username) {
   const currentRound = duel[0].du_currentRound;
   const rounds = JSON.parse(duel[0].du_content);
-  console.log(duel.find((player) => player.us_login === username));
-  console.log(duel.find((player) => player.us_login !== username));
+
   const userAnswers = JSON.parse(duel.find((player) => player.us_login === username).re_answers);
   const opponentAnswers = JSON.parse(duel.find((player) => player.us_login !== username).re_answers);
 
   const keepOnlyType = (question) => new Object({ type: question.type });
+  const withQuestionOnly = (question) => {
+    const { type, subject, answers, wording } = question;
+    return { type, subject, answers, wording };
+  };
 
   const formattedRound = rounds.map((round, i) => {
     const roundNumber = i + 1;
 
+    const addPlayersAnswers = (question, j) => {
+      const userAnswer = Number(userAnswers[i][j]);
+      const opponentAnswer = opponentAnswers.length > i ? Number(opponentAnswers[i][j]) : undefined;
+      return Object.assign(question, { userAnswer, opponentAnswer });
+    };
+
     // Finished rounds
     if (roundNumber < currentRound) {
-      const questionWithAnswers = round.map((question, j) => {
-        const userAnswer = Number(userAnswers[i][j]);
-        const opponentAnswer = Number(opponentAnswers[i][j]);
-        return Object.assign(question, { userAnswer, opponentAnswer });
-      });
-      return questionWithAnswers;
+      return round.map(addPlayersAnswers);
     }
 
     // Rounds not started
@@ -316,13 +316,9 @@ function formatDuel(duel, username) {
     // Current round
     if (roundNumber === currentRound) {
       if (userAnswers.length === currentRound) {
-        const questionWithUserAnswers = round.map((question, j) => {
-          const userAnswer = Number(userAnswers[i][j]);
-          return Object.assign(question, { userAnswer });
-        });
-        return questionWithUserAnswers;
+        return round.map(addPlayersAnswers);
       } else {
-        return round.map(keepOnlyType);
+        return round.map(withQuestionOnly);
       }
     }
   });
@@ -353,20 +349,26 @@ function insertResultInDatabase(id, username, answers) {
   });
 }
 
-function updateDuelState(duel) {
+function updateDuelState(duel, username) {
   return new Promise((resolve, reject) => {
     const currentRound = duel.currentRound;
-
-    if (duel.rounds[currentRound - 1][0].opponentAnswer) {
-      let sql = "UPDATE duel SET du_currentRound = ? WHERE du_id = ? ;";
+    let sql = "";
+    if (duel.rounds[currentRound - 1][0].opponentAnswer !== undefined) {
+      sql = "UPDATE duel SET du_currentRound = :round WHERE du_id = :id ;";
       // if (currentRound === duel.rounds.length - 1) {
-      //   sql += "UPDATE duel SET du_isProgres = false WHERE du_id = ? ;";
+      //   sql += "UPDATE duel SET du_inProgress = false WHERE du_id = :id ;";
       // }
-      queryPromise(sql, [currentRound + 1, duel.id, duel.id])
-        .then(() => resolve())
-        .catch(reject);
-    } else {
-      resolve();
     }
+    sql += "CALL getDuel(:id,:username);";
+    queryPromise(sql, { id: duel.id, username, round: currentRound + 1 })
+      .then((res) => {
+        resolve(
+          formatDuel(
+            res.find((e) => e instanceof Array),
+            username
+          )
+        );
+      })
+      .catch(reject);
   });
 }

@@ -132,4 +132,35 @@ export async function queryPromise(sql, values = []) {
   });
 }
 
+/**
+ * Custom query format
+ * If values is an array -> all "?" are replaced by values in the same order
+ * If values is an object -> values replace identifiers in the format :id
+ * @param {string} query The sql query
+ * @param {object|string[]} values The escaped values
+ * @returns {string} The fully escaped query
+ */
+Database.connection.config.queryFormat = function (query, values) {
+  if (!values) {
+    return query;
+  }
+
+  if (values instanceof Array) {
+    while (query.includes("?")) {
+      query = query.replace("?", this.escape(values.shift()));
+    }
+    return query;
+  }
+
+  return query.replace(
+    /:(\w+)/g,
+    function (identifier, key) {
+      if (Object.getOwnPropertyNames(values).includes(key)) {
+        return this.escape(values[key]);
+      }
+      return identifier;
+    }.bind(this)
+  );
+};
+
 export default Database;
