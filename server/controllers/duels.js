@@ -37,8 +37,9 @@ function create(req, res) {
     .catch(sendLocalError500);
 }
 
-// eslint-disable-next-line no-unused-vars
 function fetch(req, res) {
+  const sendLocalError500 = (error) => sendError500(res, error);
+
   const username = req.body.auth_user;
   const id = Number(req.params.id);
 
@@ -46,12 +47,14 @@ function fetch(req, res) {
     return res.status(400).json({ message: "Missing or invalid duel ID" });
   }
 
-  queryPromise("CALL getDuel(?,?);", [id, username]).then((sqlRes) => {
-    if (sqlRes[0].length === 0) {
-      return res.status(404).json({ message: "Duel not found" });
-    }
-    res.status(200).json({ sqlRes });
-  });
+  getDuel(id, username)
+    .then((duel) => {
+      if (!duel) {
+        return res.status(404).json({ message: "Duel not found" });
+      }
+      res.status(200).json(duel);
+    })
+    .catch(sendLocalError500);
 }
 
 // eslint-disable-next-line no-unused-vars
@@ -173,4 +176,73 @@ function createShuffledQuestionTypesArray() {
   }
 
   return types;
+}
+
+/**
+ * Fetch a duel in database
+ * @param {number} id The duel ID
+ * @param {string} username The user requesting the duel
+ * @returns {Promise<object>}
+ */
+function getDuel(id, username) {
+  return new Promise((resolve, reject) => {
+    queryPromise("CALL getDuel(?,?);", [id, username])
+      .then((res) => {
+        if (res[0].length === 0) {
+          resolve(null);
+        } else {
+          resolve(formatDuel(res[0], username));
+        }
+      })
+      .catch(reject);
+  });
+}
+
+/**
+ * Format the duel extracted from the database
+ * @param {object} duel The duel extracted from db
+ * @param {string} username The user requesting the duel
+ * @returns {{id : number, currentRound : number, rounds : object[][]}} The formatted duel
+ */
+function formatDuel(duel, username) {
+  const currentRound = duel[0].du_currentRound;
+  const rounds = JSON.parse(duel[0].du_content);
+  const userAnswers = JSON.parse(duel.find((player) => player.us_login === username).re_answers);
+  const opponentAnswers = JSON.parse(duel.find((player) => player.us_login !== username).re_answers);
+
+  const keepOnlyType = (question) => new Object({ type: question.type });
+
+  rounds.map((round, i) => {
+    const roundNumber = i + 1;
+
+    // Finished rounds
+    if (roundNumber < currentRound) {
+      const questionWithAnswers = round.map((question, j) => {
+        const userAnswer = Number(userAnswers[i][j]);
+        const opponentAnswer = Number(opponentAnswers[i][j]);
+        return Object.assign(question, { userAnswer, opponentAnswer });
+      });
+      return questionWithAnswers;
+    }
+
+    // Rounds not started
+    if (roundNumber > currentRound) {
+      return round.map(keepOnlyType);
+    }
+
+    // Current round
+    if (roundNumber === currentRound) {
+      if (userAnswers.length === currentRound) {
+        const questionWithUserAnswers = round.map((question, j) => {
+          const userAnswer = Number(userAnswers[i][j]);
+          return Object.assign(question, { userAnswer });
+        });
+        return questionWithUserAnswers;
+      } else {
+        return round.map(keepOnlyType);
+      }
+    }
+  });
+
+  return { id: duel[0].du_id, currentRound, rounds };
 }
