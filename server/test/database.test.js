@@ -70,7 +70,7 @@ describe("Check the database structure", function () {
     },
     {
       name: "duel",
-      fields: ["du_id", "du_content", "du_currentRound"],
+      fields: ["du_id", "du_content", "du_currentRound", "du_inProgress"],
     },
     {
       name: "results",
@@ -126,7 +126,7 @@ describe("Check the database structure", function () {
   }
 });
 
-describe("Procedures", () => {
+describe("Procedures Molecule data", () => {
   before("Insert data", (done) => {
     forceTruncateTables("molecule", "property", "property_value", "molecule_property", "class", "system").then(() =>
       insertData("molecules.sql").then(() => done())
@@ -182,5 +182,16 @@ describe("Procedures", () => {
 
     invalid = (await queryPromise("CALL getPropertyValuesOf(?,?)", ["ENOET", "side_effects"]))[0].map((e) => e.value);
     expect(invalid).to.be.deep.equalInAnyOrder([]);
+  });
+});
+
+describe("Procedure duels", () => {
+  before("Clear duels and results", (done) => {
+    forceTruncateTables("results", "duel", "user").then(() => insertData("users.sql").then(done));
+  });
+
+  it("Create a duel", async () => {
+    const res = await queryPromise("CALL createDuel(?,?,?);", ["fpoguet", "nhoun", JSON.stringify(["questions"])]);
+    console.log(res);
   });
 });
