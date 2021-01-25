@@ -197,16 +197,13 @@ async function getUserInformations(pseudo) {
     queryPromise(
       "SELECT \
         us_login AS pseudo, \
-        us_wins AS wins,    \
-        us_losts AS losses, \
+        us_victories AS victories,    \
+        us_defeats AS defeats, \
         us_avatar AS avatar \
       FROM user             \
       WHERE `us_login` = ?",
       [pseudo]
     )
-      .catch((error) => {
-        reject("Error", error);
-      })
       .then((res) => {
         if (res.length !== 1) {
           reject("User not found");
@@ -217,8 +214,8 @@ async function getUserInformations(pseudo) {
         try {
           result = {
             pseudo: res[0].pseudo,
-            wins: Number(res[0].wins),
-            losses: Number(res[0].losses),
+            wins: Number(res[0].victories),
+            losses: Number(res[0].defeats),
             avatar: JSON.parse(res[0].avatar),
           };
         } catch (e) {
@@ -228,6 +225,9 @@ async function getUserInformations(pseudo) {
         }
 
         resolve(result);
+      })
+      .catch((error) => {
+        reject("Error", error);
       });
   });
 }

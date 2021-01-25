@@ -68,7 +68,7 @@ describe("Check the database structure", function () {
     },
     {
       name: "user",
-      fields: ["us_login", "us_wins", "us_losts", "us_avatar"],
+      fields: ["us_login", "us_victories", "us_defeats", "us_avatar"],
     },
     {
       name: "duel",
@@ -187,7 +187,7 @@ describe("Procedures Molecule data", () => {
   });
 });
 
-describe("Procedure duels", () => {
+describe("Procedures duels", () => {
   const duelIds = [];
 
   before("Clear duels, results & users", (done) => {
@@ -250,5 +250,40 @@ describe("Procedure duels", () => {
   it("Get all duels of an invalid user ", async () => {
     const res = await queryPromise("CALL getDuelsOf(?);", ["nobody"]);
     expect(res[0]).to.have.length(0);
+  });
+});
+
+describe("Procedures users statistics", () => {
+  before("Clear and insert users", (done) => {
+    forceTruncateTables("user").then(() => insertData("users.sql").then(done));
+  });
+
+  it("Default values is 0", async () => {
+    const res = await queryPromise("SELECT us_defeats, us_victories FROM user");
+
+    res.forEach((user) => {
+      expect(user.us_victories).equals(0);
+      expect(user.us_defeats).equals(0);
+    });
+  });
+
+  it("Increment victories", async () => {
+    for (let i = 0; i < 5; ++i) {
+      const res = await queryPromise(
+        "CALL incrementUserVictories(?); SELECT us_victories FROM user WHERE us_login = ?",
+        ["fpoguet", "fpoguet"]
+      );
+      expect(res[1][0].us_victories).equals(i + 1);
+    }
+  });
+
+  it("Increment defeats", async () => {
+    for (let i = 0; i < 5; ++i) {
+      const res = await queryPromise("CALL incrementUserDefeats(?); SELECT us_defeats FROM user WHERE us_login = ?", [
+        "fpoguet",
+        "fpoguet",
+      ]);
+      expect(res[1][0].us_defeats).equals(i + 1);
+    }
   });
 });
