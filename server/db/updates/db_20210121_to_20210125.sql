@@ -41,5 +41,5 @@ CREATE PROCEDURE `getDuelsOf`(IN `player` VARCHAR(32))
 
 
 UPDATE `server_informations`
-    SET `value` = "2021-01-24" WHERE `key` = "api_version";
+    SET `value` = "2021-01-25" WHERE `key` = "api_version";
     
