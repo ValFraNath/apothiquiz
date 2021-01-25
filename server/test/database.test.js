@@ -1,10 +1,12 @@
 import chai from "chai";
+import equalInAnyOrder from "deep-equal-in-any-order";
 
 import assert from "assert";
 import db, { queryPromise } from "../db/database.js";
 import { insertData, forceTruncateTables } from "./index.test.js";
 
 const { expect } = chai;
+chai.use(equalInAnyOrder);
 
 describe("Create and delete table", function () {
   it("Create table", function (done) {
@@ -187,7 +189,8 @@ describe("Procedures Molecule data", () => {
 
 describe("Procedure duels", () => {
   const duelIds = [];
-  before("Clear duels and results", (done) => {
+
+  before("Clear duels, results & users", (done) => {
     forceTruncateTables("results", "duel", "user").then(() => insertData("users.sql").then(done));
   });
 
@@ -229,6 +232,23 @@ describe("Procedure duels", () => {
 
   it("Get a duel with invalid user", async () => {
     const res = await queryPromise("CALL getDuel(?,?);", [duelIds[0], "noexist"]);
+    expect(res[0]).to.have.length(0);
+  });
+
+  it("Get all duels of a user", async () => {
+    const res = await queryPromise("CALL getDuelsOf(?);", ["fpoguet"]);
+    expect(res[0]).to.have.length(4);
+    expect(res[0].map((e) => e.du_id)).deep.equalInAnyOrder([duelIds[0], duelIds[0], duelIds[1], duelIds[1]]);
+  });
+
+  it("Get all duels of a user (bis)", async () => {
+    const res = await queryPromise("CALL getDuelsOf(?);", ["nhoun"]);
+    expect(res[0]).to.have.length(2);
+    expect(res[0].map((e) => e.du_id)).deep.equalInAnyOrder([duelIds[0], duelIds[0]]);
+  });
+
+  it("Get all duels of an invalid user ", async () => {
+    const res = await queryPromise("CALL getDuelsOf(?);", ["nobody"]);
     expect(res[0]).to.have.length(0);
   });
 });
