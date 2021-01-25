@@ -65,8 +65,8 @@ function queryCAS(login, pass) {
  * @apiDefine GetUserSuccess
  *
  * @apiSuccess {string} pseudo            ENT login
- * @apiSuccess {number} wins              Number of wins
- * @apiSuccess {number} losses            Number of losses
+ * @apiSuccess {number} victories         Number of victories
+ * @apiSuccess {number} defeats           Number of defeats
  * @apiSuccess {Object} avatar            Avatar object
  * @apiSuccess {string} avatar.colorBG    Hex background color
  * @apiSuccess {string} avatar.colorBody  Hex Body colod
