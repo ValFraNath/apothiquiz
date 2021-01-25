@@ -146,7 +146,8 @@ Database.connection.config.queryFormat = function (query, values) {
   }
 
   if (values instanceof Array) {
-    while (query.includes("?")) {
+    values = values.slice();
+    while (query.includes("?") && values.length > 0) {
       query = query.replace("?", this.escape(values.shift()));
     }
     return query;
