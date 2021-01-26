@@ -2,16 +2,16 @@
 import { queryPromise } from "../db/database.js";
 import { createGeneratorOfType, NotEnoughDataError } from "./question.js";
 
-const MAX_QUESTION_TYPE = 10;
-const NUMBER_OF_ROUNDS_IN_DUEL = 5;
-const NUMBER_OF_QUESTIONS_IN_ROUND = 5;
+export const MAX_QUESTION_TYPE = 10;
+export const NUMBER_OF_ROUNDS_IN_DUEL = 5;
+export const NUMBER_OF_QUESTIONS_IN_ROUND = 5;
 
 /**
  * Create a new duel
  */
 function create(req, res) {
   const username = req.body.auth_user;
-  const players = req.body.players;
+  const players = [...new Set(req.body.players)];
 
   if (players.length !== 2) {
     return res.status(400).json({ message: "Exactly two players must be specified" });
@@ -87,6 +87,11 @@ function play(req, res) {
     if (!duel) {
       return res.status(404).json({ message: "Duel not found" });
     }
+
+    if (!duel.inProgress) {
+      return res.status(400).json({ message: "This duel is finished" });
+    }
+
     if (duel.currentRound !== round) {
       return res.status(400).json({ message: "Invalid duel round" });
     }
@@ -103,15 +108,24 @@ function play(req, res) {
     insertResultInDatabase(id, username, answers)
       .then((newDuel) =>
         updateDuelState(newDuel, username)
-          .then((duel) =>
-            udpatePlayersStats(duel)
-              .then(() => res.status(200).json(duel))
-              .catch(sendLocalError500)
-          )
+          .then((duel) => res.status(200).json(duel))
           .catch(sendLocalError500)
       )
       .catch(sendLocalError500);
   });
+}
+
+let mockedDuelsRounds;
+/**
+ * Function to control the generation of random rounds by passing a predefined set of rounds.
+ * Use only for testing purposes.
+ * @param {object} fakeDuelsRounds The predefined set of rounds
+ */
+export function _initMockedDuelRounds(fakeDuelsRounds) {
+  if (process.env.NODE_ENV !== "test") {
+    throw "function reserved for tests";
+  }
+  mockedDuelsRounds = fakeDuelsRounds;
 }
 
 export default { create, fetch, fetchAll, play };
@@ -165,10 +179,14 @@ function createDuelInDatabase(player1, player2, rounds) {
 
 /**
  * Create all rounds of a duel
+ * This method can be mocked : @see _initMockedDuelRounds
  * @return {Promise<object[][]>}
  */
 function createRounds() {
   return new Promise((resolve, reject) => {
+    if (mockedDuelsRounds) {
+      resolve(mockedDuelsRounds);
+    }
     const types = createShuffledQuestionTypesArray();
     const rounds = [];
 
@@ -288,6 +306,7 @@ function getAllDuels(username) {
 function formatDuel(duel, username) {
   const currentRound = duel[0].du_currentRound;
   const rounds = JSON.parse(duel[0].du_content);
+  const inProgress = duel[0].du_inProgress;
 
   const userAnswers = JSON.parse(duel.find((player) => player.us_login === username).re_answers);
   const opponentAnswers = JSON.parse(duel.find((player) => player.us_login !== username).re_answers);
@@ -329,7 +348,13 @@ function formatDuel(duel, username) {
     }
   });
 
-  return { id: duel[0].du_id, opponent, currentRound, rounds: formattedRound };
+  const formattedDuel = { id: duel[0].du_id, opponent, currentRound, inProgress, rounds: formattedRound };
+
+  const scores = computeScores(formattedDuel);
+  formattedDuel.userScore = scores.user;
+  formattedDuel.opponentScore = scores.opponent;
+
+  return formattedDuel;
 }
 
 /**
@@ -358,8 +383,9 @@ function insertResultInDatabase(id, username, answers) {
     getDuelsResults(id, username)
       .then((previousAnswers) => {
         const updatedAnswers = JSON.stringify([...previousAnswers, answers]);
-        const sql = "UPDATE results SET re_answers = ? WHERE us_login = ? AND du_id = ? ; CALL getDuel(?,?);";
-        queryPromise(sql, [updatedAnswers, username, id, id, username])
+        const sql =
+          "UPDATE results SET re_answers = :answers WHERE us_login = :login AND du_id = :id ; CALL getDuel(:id,:login);";
+        queryPromise(sql, { answers: updatedAnswers, login: username, id })
           .then((res) => resolve(formatDuel(res[1], username)))
           .catch(reject);
       })
@@ -377,14 +403,28 @@ function updateDuelState(duel, username) {
   return new Promise((resolve, reject) => {
     const currentRound = duel.currentRound;
     let sql = "";
+    let winner, looser;
     if (duel.rounds[currentRound - 1][0].opponentAnswer !== undefined) {
-      sql = "UPDATE duel SET du_currentRound = :round WHERE du_id = :id ;";
-      if (currentRound === duel.rounds.length - 1) {
+      if (currentRound === duel.rounds.length) {
         sql += "UPDATE duel SET du_inProgress = false WHERE du_id = :id ;";
+        const scores = computeScores(duel);
+        if (scores.user !== scores.opponent) {
+          if (scores.user > scores.opponent) {
+            winner = username;
+            looser = duel.opponent;
+          } else {
+            winner = duel.opponent;
+            looser = username;
+          }
+          sql += `CALL incrementUserVictories(:winner);`;
+          sql += `CALL incrementUserDefeats(:looser);`;
+        }
+      } else {
+        sql = "UPDATE duel SET du_currentRound = :round WHERE du_id = :id ;";
       }
     }
     sql += "CALL getDuel(:id,:username);";
-    queryPromise(sql, { id: duel.id, username, round: currentRound + 1 })
+    queryPromise(sql, { id: duel.id, username, round: currentRound + 1, winner, looser })
       .then((res) => {
         resolve(
           formatDuel(
@@ -397,21 +437,22 @@ function updateDuelState(duel, username) {
   });
 }
 
-function udpatePlayersStats(duel) {
-  return new Promise((resolve, reject) => {
-    const userIsWinner = isUserWinner(duel);
-    if (userIsWinner === 0) {
-      resolve();
-      return;
-    }
-  });
-}
-
-function isUserWinner(duel) {
-  const scores = ["userAnswer", "opponentAnswer"].map((user) =>
-    duel.rounds.reduce((score, round) => {
-      return score + round.reduce((score, question) => score + Number(question[user] === question.goodAnswer), 0);
-    }, 0)
+/**
+ * Calculate the current score of the two players in a duel
+ * @param {object} duel
+ * @returns {{user : number, opponent : number}} The two players scores
+ */
+function computeScores(duel) {
+  const end = duel.inProgress ? duel.currentRound - 1 : Infinity;
+  return duel.rounds.slice(0, end).reduce(
+    (scores, round) => {
+      scores.user += round.reduce((score, question) => score + Number(question.userAnswer === question.goodAnswer), 0);
+      scores.opponent += round.reduce(
+        (score, question) => score + Number(question.opponentAnswer === question.goodAnswer),
+        0
+      );
+      return scores;
+    },
+    { user: 0, opponent: 0 }
   );
-  return scores[0] - scores[1];
 }
