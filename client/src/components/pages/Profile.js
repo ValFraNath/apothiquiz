@@ -23,7 +23,7 @@ export default class Profile extends Component {
 
   componentDidMount() {
     axios
-      .get(`/api/v1/user/me`)
+      .get(`/api/v1/users/me`)
       .then((res) => {
         const avatar = res.data.avatar;
         this.setState({

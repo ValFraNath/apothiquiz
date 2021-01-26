@@ -3,6 +3,7 @@ import axios from "axios";
 import PropTypes from "proptypes";
 import { ArrowRightIcon, CheckCircledIcon, CrossCircledIcon, ExitIcon } from "@modulz/radix-icons";
 
+import Question from "../quizz/Question";
 import Timer from "../quizz/Timer";
 import Answers from "../quizz/Answers";
 import Message from "../quizz/Message";
@@ -109,10 +110,7 @@ class PlayView extends Component {
           </div>
         </div>
 
-        <div id="quiz-question">
-          <h2>Question {questionNum}</h2>
-          <h1>{question.wording}</h1>
-        </div>
+        <Question numero={questionNum} text={question.wording} />
 
         {inProgress ? (
           <Timer inProgress={inProgress} duration={timer} updateParent={this.updateTimer} />

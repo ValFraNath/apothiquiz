@@ -214,8 +214,8 @@ async function getUserInformations(pseudo) {
         try {
           result = {
             pseudo: res[0].pseudo,
-            wins: Number(res[0].victories),
-            losses: Number(res[0].defeats),
+            victories: Number(res[0].victories),
+            defeats: Number(res[0].defeats),
             avatar: JSON.parse(res[0].avatar),
           };
         } catch (e) {

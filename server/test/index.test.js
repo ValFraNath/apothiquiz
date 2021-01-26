@@ -1,8 +1,12 @@
 import fs from "fs/promises";
 import path from "path";
+import chai from "chai";
+import chaiHttp from "chai-http";
 
 import app from "../index.js";
 import { queryPromise } from "../db/database.js";
+
+chai.use(chaiHttp);
 
 /**
  * Wait until the server and the database are ready to run tests
@@ -37,5 +41,28 @@ export function insertData(filename) {
     fs.readFile(path.resolve("test", "required_data", filename), { encoding: "utf8" })
       .then((script) => queryPromise(script).then(() => resolve()))
       .catch(reject);
+  });
+}
+
+/**
+ * Make a request to the api
+ * @param {string} endpoint The endpoint
+ * @param {{body? : object, token? : string, method? : string}} param1 The request option
+ * @returns {Promise} The request sql response
+ */
+export function requestAPI(endpoint, { body = {}, token = "", method = "get" } = {}) {
+  return new Promise((resolve, reject) => {
+    chai
+      .request(app)
+      // eslint-disable-next-line no-unexpected-multiline
+      [method]("/api/v1/" + endpoint)
+      .set("Authorization", token ? "Bearer " + token : "")
+      .send(body)
+      .end(async (err, res) => {
+        if (err) {
+          reject(err);
+        }
+        resolve(res);
+      });
   });
 }
