@@ -304,7 +304,7 @@ function doUsersExist(...users) {
 }
 
 /**
- * Create a new duel in database and returns its id
+ * Create a new duel in database and return its id
  * @param {string} player1 The first player login
  * @param {string} player2 The second player login
  * @param {object} rounds The rounds of the duel
