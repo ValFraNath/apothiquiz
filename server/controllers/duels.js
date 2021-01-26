@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { queryPromise } from "../db/database.js";
 import { createGeneratorOfType, NotEnoughDataError } from "./question.js";
 
@@ -11,26 +10,22 @@ export const NUMBER_OF_QUESTIONS_IN_ROUND = 5;
  */
 function create(req, res) {
   const username = req.body.auth_user;
-  const players = [...new Set(req.body.players)];
+  const opponent = req.body.opponent;
 
-  if (players.length !== 2) {
-    return res.status(400).json({ message: "Exactly two players must be specified" });
-  }
-
-  if (!players.includes(username)) {
-    return res.status(403).json({ message: "You cannot create a duel for other players" });
+  if (!opponent) {
+    return res.status(400).json({ message: "Missing opponent" });
   }
 
   const sendLocalError500 = (error) => sendError500(res, error);
 
-  doUsersExist(...players)
+  doUsersExist(username, opponent)
     .then((yes) => {
       if (!yes) {
         return res.status(404).json({ message: "Users not found" });
       }
       createRounds()
         .then((rounds) =>
-          createDuelInDatabase(players[0], players[1], rounds)
+          createDuelInDatabase(username, opponent, rounds)
             .then((id) => res.status(201).json({ id }))
             .catch(sendLocalError500)
         )
@@ -78,10 +73,14 @@ function fetchAll(req, res) {
  * Play a duel round
  */
 function play(req, res) {
-  const id = req.params.id;
+  const id = Number(req.params.id);
   const round = Number(req.params.round);
   const username = req.body.auth_user;
   const answers = req.body.answers || [];
+
+  if (!id) {
+    return res.status(400).json({ message: "Invalid or missing duel id" });
+  }
 
   getDuel(id, username).then((duel) => {
     if (!duel) {

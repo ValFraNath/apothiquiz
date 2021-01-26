@@ -38,7 +38,7 @@ describe("Duels", () => {
       const error = await requestAPI("duel/new", {
         token: tokens.fpoguet,
         method: "post",
-        body: { players: ["fpoguet", "nhoun"] },
+        body: { opponent: "nhoun" },
       });
       expect(error.status).equals(422);
       expect(error.body.code).equals("NED");
@@ -64,7 +64,7 @@ describe("Duels", () => {
       it("Can't create without be logged", async () => {
         const error = await requestAPI("duel/new", {
           method: "post",
-          body: { players: ["fpoguet", "nhoun"] },
+          body: { opponent: "nhoun" },
         });
 
         expect(error.status).equals(401);
@@ -79,50 +79,14 @@ describe("Duels", () => {
         expect(error.status).equals(400);
       });
 
-      it("Can't create without exactly 2 players", async () => {
-        let error = await requestAPI("duel/new", {
-          token: tokens.fpoguet,
-          method: "post",
-          body: { players: ["fpoguet", "nhoun", "vperigno"] },
-        });
-
-        expect(error.status).equals(400);
-
-        error = await requestAPI("duel/new", {
-          token: tokens.fpoguet,
-          method: "post",
-          body: { players: ["vperigno"] },
-        });
-
-        expect(error.status).equals(400);
-
-        error = await requestAPI("duel/new", {
-          token: tokens.fpoguet,
-          method: "post",
-          body: { players: ["vperigno", "vperigno"] },
-        });
-
-        expect(error.status).equals(400);
-      });
-
       it("Can't create with invalid users", async () => {
         const error = await requestAPI("duel/new", {
           token: tokens.fpoguet,
           method: "post",
-          body: { players: ["fpoguet", "b"] },
+          body: { opponent: "b" },
         });
 
         expect(error.status).equals(404);
-      });
-
-      it("Can't create for other users", async () => {
-        const error = await requestAPI("duel/new", {
-          token: tokens.fpoguet,
-          method: "post",
-          body: { players: ["nhoun", "vperigno"] },
-        });
-
-        expect(error.status).equals(403);
       });
     });
 
@@ -132,7 +96,7 @@ describe("Duels", () => {
         const res = await requestAPI("duel/new", {
           token: tokens.fpoguet,
           method: "post",
-          body: { players: ["fpoguet", "vperigno"] },
+          body: { opponent: "vperigno" },
         });
         expect(res.status).equals(201);
         expect(res.body).haveOwnProperty("id");
@@ -176,7 +140,7 @@ describe("Duels", () => {
             await requestAPI("duel/new", {
               token: tokens.fpoguet,
               method: "post",
-              body: { players: ["fpoguet", "nhoun"] },
+              body: { opponent: "nhoun" },
             })
           ).body.id
         );
@@ -188,7 +152,7 @@ describe("Duels", () => {
             await requestAPI("duel/new", {
               token: tokens.fpoguet,
               method: "post",
-              body: { players: ["fpoguet", "vperigno"] },
+              body: { opponent: "vperigno" },
             })
           ).body.id
         );
