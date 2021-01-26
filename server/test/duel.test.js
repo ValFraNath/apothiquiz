@@ -70,7 +70,7 @@ describe("Duels", () => {
         expect(error.status).equals(401);
       });
 
-      it("Can't create without players", async () => {
+      it("Can't create without opponent", async () => {
         const error = await requestAPI("duel/new", {
           token: tokens.fpoguet,
           method: "post",
@@ -79,7 +79,7 @@ describe("Duels", () => {
         expect(error.status).equals(400);
       });
 
-      it("Can't create with invalid users", async () => {
+      it("Can't create with invalid opponent", async () => {
         const error = await requestAPI("duel/new", {
           token: tokens.fpoguet,
           method: "post",
@@ -104,7 +104,7 @@ describe("Duels", () => {
         duel = (await requestAPI(`duel/${res.body.id}`, { token: tokens.vperigno })).body;
       });
 
-      it("Good number of round & questions", (done) => {
+      it("Good number of rounds & questions", (done) => {
         expect(duel.rounds).to.have.length(NUMBER_OF_ROUNDS_IN_DUEL);
         duel.rounds.forEach((round) => expect(round).to.have.length(NUMBER_OF_QUESTIONS_IN_ROUND));
         done();

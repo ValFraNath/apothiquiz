@@ -56,6 +56,11 @@ const generatorInfosByType = {
 };
 
 /**
+ * @apiDefine NotEnoughDataError
+ * @apiError  (422) NotEnoughData There is not enough data to generate questions
+ */
+
+/**
  * @api {get} /question/:type Get a random question
  * @apiName GetRandomQuestion
  * @apiGroup Question
@@ -69,7 +74,7 @@ const generatorInfosByType = {
  * @apiSuccess (200) {Array[String]}  question.answers    All answers possible
  * @apiSuccess (200) {String}         question.wording    The question wording
  *
- * @apiError   (422) NotEnoughData  There is not enough data to generate the question
+ * @apiUse     NotEnoughDataError
  * @apiError   (404) NotFound Incorrect type of question
  * @apiUse     ErrorBadRequest
  */

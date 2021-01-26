@@ -4,9 +4,29 @@ import { createGeneratorOfType, NotEnoughDataError } from "./question.js";
 export const MAX_QUESTION_TYPE = 10;
 export const NUMBER_OF_ROUNDS_IN_DUEL = 5;
 export const NUMBER_OF_QUESTIONS_IN_ROUND = 5;
-
 /**
- * Create a new duel
+ *
+ * @api {post} /duel/new Create a new duel
+ * @apiName CreateNewDuel
+ * @apiGroup Duel
+ * @apiPermission LoggedIn
+ * @apiUse ErrorServer
+ *
+ * @apiParam  {string} opponent The user you are challenging
+ *
+ * @apiParamExample  {string} Request-Example:
+ * {
+ *     "opponent" : "nhoun"
+ * }
+ *
+ * @apiSuccessExample {number} Success-Response:
+ * {
+ *     "id" : 42
+ * }
+ * @apiSuccess (201) {number} id The created duel ID
+ * @apiError (404) OpponentNotFound The specified opponent does not exist
+ * @apiUse NotEnoughDataError
+ *
  */
 function create(req, res) {
   const username = req.body.auth_user;
@@ -21,7 +41,7 @@ function create(req, res) {
   doUsersExist(username, opponent)
     .then((yes) => {
       if (!yes) {
-        return res.status(404).json({ message: "Users not found" });
+        return res.status(404).json({ message: "Opponent not found" });
       }
       createRounds()
         .then((rounds) =>
@@ -36,7 +56,95 @@ function create(req, res) {
 }
 
 /**
- * Fetch a duel
+ *
+ * @api {get} /duel/:id Get a duel by its ID
+ * @apiName GetDuel
+ * @apiGroup Duel
+ *
+ * @apiParam  {number} id The duel ID
+ *
+ * @apiSuccess {object}   id                  The duel id
+ * @apiSuccess {string}   opponent            The opponent username
+ * @apiSuccess {number}   userScore           The current score of the user
+ * @apiSuccess {number}   opponentScore       The current score of the opponent
+ * @apiSuccess {boolean}  inProgress          `true` if the duel is not finished yet
+ * @apiSuccess {number}   currentRound        The number of the current round
+ *
+ * @apiSuccess {array[]}  rounds                      The list of rounds
+ * @apiSuccess {object[]} rounds.round                The list of questions
+ * @apiSuccess {number}   rounds.round.type           The type of the question
+ * @apiSuccess {string}   rounds.round.title          The title of this type of question
+ * @apiSuccess {string}   rounds.round.subject        The question subject - *if the round is the current, or finished*
+ * @apiSuccess {string}   rounds.round.wording        The wording of the question - *if the round is the current, or finished*
+ * @apiSuccess {string[]} rounds.round.answers        The list of answers - *if the round is the current, or finished*
+ * @apiSuccess {number}   rounds.round.goodAnswer     Index of the good answer - *if the round is played by the user*
+ * @apiSuccess {number}   rounds.round.userAnswer     Index of the user answer - *if the round is played by the user*
+ * @apiSuccess {number}   rounds.round.opponentAnswer Index of the opponent answer - *if the round is played by the user & the opponent*
+ * 
+ *
+ * @apiSuccessExample {object} Success-Response:
+ * {
+ *      "id" : 42,
+ *      "inProgress" : true,
+ *      "currentRound" : 2,
+ *      "opponent" : "jjgoldman",
+ *      "userScore" : 3,
+ *      "opponentScore" : 6,
+ *      "rounds" : [
+                    [
+                      {
+                        "type": 3,
+                        "title" : "1 système - 4 molécules",
+                        "subject": "ANTIBIOTIQUE",
+                        "wording": "Quelle molécule appartient au système 'ANTIBIOTIQUE' ?"
+                        "answers": ["TELBIVUDINE", "PYRAZINAMIDE", "RITONAVIR", "TINIDAZOLE"],
+                        "goodAnswer": 1,
+                        "userAnswer" : 0,
+                        "opponentAnswer" : 1
+                      },
+                      {
+                        "type": 3,
+                        "title" : "1 système - 4 molécules",
+                        "subject": "ANTIVIRAL",
+                        "wording": "Quelle molécule appartient au système 'ANTIVIRAL' ?"
+                        "answers": ["CEFIXIME", "SPIRAMYCINE", "RILPIVIRINE", "ALBENDAZOLE"],
+                        "goodAnswer": 2,
+                        "userAnswer" : 1,
+                        "opponentAnswer" : 3
+                      },
+                      ...
+                    ],
+                    [
+                      {
+                        "type": 2,
+                        "title" : "1 molécule - 4 classes"
+                        "subject": "ZANAMIVIR",
+                        "wording": "À quelle classe appartient la molécule 'ZANAMIVIR' ?"
+                        "answers": [
+                          "INHIBITEURS DE NEURAMINISASE", 
+                          "INHIBITEUR POLYMERASE NS5B", 
+                          "PHENICOLES", 
+                          "OXAZOLIDINONES"
+                        ],
+                        "goodAnswer": 0,
+                        "userAnswer" : 0,
+                      },...
+                    ],
+                    [
+                      {
+                        "type" : 4,
+                        "title" : "1 molécule - 4 systèmes"
+                      },
+                      ...
+                    ]
+                    ...
+                  ]
+
+ * }
+ *
+ * @apiError (404) NotFound The duel does not exist
+ * @apiUse ErrorServer
+ *
  */
 function fetch(req, res) {
   const sendLocalError500 = (error) => sendError500(res, error);
@@ -59,7 +167,15 @@ function fetch(req, res) {
 }
 
 /**
- * Fetch all duels of a user
+ *
+ * @api {get} /duel Get all duels of the logged user
+ * @apiName GetAllDuels
+ * @apiGroup Duel
+ *
+ * @apiSuccess (200) {object[]} . All duels in an array
+ *
+ * @apiPermission LoggedIn
+ * @apiUse ErrorServer
  */
 function fetchAll(req, res) {
   const username = req.body.auth_user;
@@ -70,7 +186,30 @@ function fetchAll(req, res) {
 }
 
 /**
- * Play a duel round
+ *
+ * @api {post} /duel/:id/:round Play a round of a duel
+ * @apiName PlayDuelRound
+ * @apiGroup Duel
+ *
+ * @apiParam  {number} id The duel ID
+ * @apiParam  {number} round The round number
+ * @apiParam  {number[]} answers The user answers
+ *
+ * @apiSuccess (200) {object} duel The updated duel
+ *
+ * @apiParamExample  {type} Request-Example:
+ * {
+ *     "answers" : [1,3,0,0,2]
+ * }
+ *
+ * @apiUse ErrorServer
+ * @apiError (404) NotFound Duel does not exist
+ * @apiError (400) InvalidRound The round is invalid
+ * @apiError (400) FinishedDuel The duel is finished
+ * @apiError (400) AlreadyPlayed The user has already played this round
+ * @apiError (400) InvalidAnswers The user answers are invalid
+ *
+ *
  */
 function play(req, res) {
   const id = Number(req.params.id);
@@ -181,7 +320,7 @@ function createDuelInDatabase(player1, player2, rounds) {
 
 /**
  * Create all rounds of a duel
- * This method can be mocked : @see _initMockedDuelRounds
+ * This function can be mocked : @see _initMockedDuelRounds
  * @return {Promise<object[][]>}
  */
 function createRounds() {
@@ -253,7 +392,7 @@ function createShuffledQuestionTypesArray() {
  * Fetch a duel in database
  * @param {number} id The duel ID
  * @param {string} username The user requesting the duel
- * @returns {Promise<object>}
+ * @returns {Promise<object>} The formatted duel
  */
 function getDuel(id, username) {
   return new Promise((resolve, reject) => {
@@ -272,7 +411,7 @@ function getDuel(id, username) {
 /**
  * Fetch all duels of a user in database
  * @param {string} username The user requesting duels
- * @returns {object[]} The list of duels
+ * @returns {object[]} The list of formatted duels
  */
 function getAllDuels(username) {
   return new Promise((resolve, reject) => {
@@ -363,6 +502,7 @@ function formatDuel(duel, username) {
  * Get all answers of a player for a duel
  * @param {number} id The duel ID
  * @param {string} username The player username
+ * @returns {Promise<number[]>} The user answers
  */
 function getDuelsResults(id, username) {
   return new Promise((resolve, reject) => {
