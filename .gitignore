@@ -4,4 +4,3 @@ wiki
 server/.env
 rapport-guacamole/
 .eslintcache
-api-docs*
