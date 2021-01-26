@@ -168,6 +168,16 @@ describe("Duels", () => {
         expect(duel.currentRound).equals(1);
         expect(duel.opponent).equals("nhoun");
         expect(duel.rounds).to.have.length(NUMBER_OF_ROUNDS_IN_DUEL);
+        duel.rounds.forEach((round, i) =>
+          round.forEach((question) => {
+            expectHaveProperties(question, "title", "type");
+            if (i === 0) {
+              expectHaveProperties(question, "wording", "subject");
+            } else {
+              expectNotHaveProperties(question, "wording", "subject");
+            }
+          })
+        );
         duel.rounds.forEach((round) => expect(round).to.have.length(NUMBER_OF_QUESTIONS_IN_ROUND));
       });
 
@@ -176,6 +186,17 @@ describe("Duels", () => {
         expect(duel.currentRound).equals(1);
         expect(duel.opponent).equals("fpoguet");
         expect(duel.rounds).to.have.length(NUMBER_OF_ROUNDS_IN_DUEL);
+
+        duel.rounds.forEach((round, i) =>
+          round.forEach((question) => {
+            expectHaveProperties(question, "title", "type");
+            if (i === 0) {
+              expectHaveProperties(question, "wording", "subject");
+            } else {
+              expectNotHaveProperties(question, "wording", "subject");
+            }
+          })
+        );
         duel.rounds.forEach((round) => expect(round).to.have.length(NUMBER_OF_QUESTIONS_IN_ROUND));
       });
 
@@ -197,7 +218,7 @@ describe("Duels", () => {
       for (let i = 1; i <= NUMBER_OF_ROUNDS_IN_DUEL; ++i) {
         describe("Play : turn " + i, () => {
           it("Play : fpoguet", async () => {
-            let duel = (
+            const duel = (
               await requestAPI(`duel/${ids[0]}/${i}`, {
                 token: tokens.fpoguet,
                 method: "post",
@@ -212,6 +233,44 @@ describe("Duels", () => {
               expect(duel.userScore).equals(4);
               expect(duel.opponentScore).equals(2);
             }
+          });
+
+          it("Get duel : fpoguet", async () => {
+            const duel = (
+              await requestAPI(`duel/${ids[0]}`, {
+                token: tokens.fpoguet,
+              })
+            ).body;
+
+            duel.rounds.slice(0, i).forEach((round, i) =>
+              round.forEach((question) => {
+                expectHaveProperties(question, "title", "type", "subject", "answers", "userAnswer", "goodAnswer");
+                if (i === duel.currentRound - 1) {
+                  expectNotHaveProperties(question, "opponentAnswer");
+                } else {
+                  expectHaveProperties(question, "opponentAnswer");
+                }
+              })
+            );
+          });
+
+          it("Get duel : nhoun", async () => {
+            const duel = (
+              await requestAPI(`duel/${ids[0]}`, {
+                token: tokens.nhoun,
+              })
+            ).body;
+
+            duel.rounds.slice(0, i).forEach((round, i) =>
+              round.forEach((question) => {
+                expectHaveProperties(question, "title", "type", "subject", "answers");
+                if (i === duel.currentRound - 1) {
+                  expectNotHaveProperties(question, "userAnswer", "goodAnswer", "opponentAnswer");
+                } else {
+                  expectHaveProperties(question, "userAnswer", "goodAnswer", "opponentAnswer");
+                }
+              })
+            );
           });
 
           it("Play invalid round", async () => {
@@ -256,6 +315,51 @@ describe("Duels", () => {
               expect(duel.currentRound).equals(i + 1);
               expect(Boolean(duel.inProgress)).to.be.true;
             }
+          });
+
+          it("Get duel after : nhoun", async () => {
+            const duel = (
+              await requestAPI(`duel/${ids[0]}`, {
+                token: tokens.nhoun,
+              })
+            ).body;
+
+            duel.rounds.slice(0, i).forEach((round) =>
+              round.forEach((question) => {
+                expectHaveProperties(
+                  question,
+                  "opponentAnswer",
+                  "title",
+                  "type",
+                  "subject",
+                  "answers",
+                  "userAnswer",
+                  "goodAnswer"
+                );
+              })
+            );
+          });
+          it("Get duel after : fpoguet", async () => {
+            const duel = (
+              await requestAPI(`duel/${ids[0]}`, {
+                token: tokens.fpoguet,
+              })
+            ).body;
+
+            duel.rounds.slice(0, i).forEach((round) =>
+              round.forEach((question) => {
+                expectHaveProperties(
+                  question,
+                  "opponentAnswer",
+                  "title",
+                  "type",
+                  "subject",
+                  "answers",
+                  "userAnswer",
+                  "goodAnswer"
+                );
+              })
+            );
           });
         });
       }
@@ -314,3 +418,10 @@ describe("Duels", () => {
     });
   });
 });
+
+function expectHaveProperties(o, ...properties) {
+  properties.forEach((property) => expect(o).to.haveOwnProperty(property));
+}
+function expectNotHaveProperties(o, ...properties) {
+  properties.forEach((property) => expect(o).to.not.haveOwnProperty(property));
+}

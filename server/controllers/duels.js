@@ -36,6 +36,10 @@ function create(req, res) {
     return res.status(400).json({ message: "Missing opponent" });
   }
 
+  if (username === opponent) {
+    return res.status(400).json({ message: "You can't challenge yourself" });
+  }
+
   const sendLocalError500 = (error) => sendError500(res, error);
 
   doUsersExist(username, opponent)
@@ -454,10 +458,10 @@ function formatDuel(duel, username) {
 
   const opponent = duel.find((player) => player.us_login !== username).us_login;
 
-  const keepOnlyType = (question) => new Object({ type: question.type });
+  const keepOnlyType = (question) => new Object({ type: question.type, title: question.title });
   const withQuestionOnly = (question) => {
-    const { type, subject, answers, wording } = question;
-    return { type, subject, answers, wording };
+    const { type, subject, answers, wording, title } = question;
+    return { type, title, subject, answers, wording };
   };
 
   const formattedRound = rounds.map((round, i) => {
