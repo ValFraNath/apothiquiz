@@ -79,7 +79,7 @@ function create(req, res) {
  * @apiSuccess {string[]} rounds.round.answers        The list of answers - *if the round is the current, or finished*
  * @apiSuccess {number}   rounds.round.goodAnswer     Index of the good answer - *if the round is played by the user*
  * @apiSuccess {number}   rounds.round.userAnswer     Index of the user answer - *if the round is played by the user*
- * @apiSuccess {number}   rounds.round.opponentAnswer Index of the opponent answer - *if the round is played by the user & the opponent*
+ * @apiSuccess {number}   rounds.round.opponentAnswer Index of the opponent's answer - *if the round is played by the user & the opponent*
  * 
  *
  * @apiSuccessExample {object} Success-Response:
