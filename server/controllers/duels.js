@@ -215,7 +215,7 @@ function play(req, res) {
   const id = Number(req.params.id);
   const round = Number(req.params.round);
   const username = req.body.auth_user;
-  const answers = req.body.answers ?? [];
+  const answers = req.body.answers || [];
 
   if (!id) {
     return res.status(400).json({ message: "Invalid or missing duel id" });
