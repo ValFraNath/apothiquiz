@@ -26,7 +26,7 @@ class UserBadge extends Component {
   componentDidMount() {
     // TODO? Use global state?
     axios
-      .get(`/api/v1/user/me`)
+      .get(`/api/v1/users/me`)
       .then((res) => {
         const avatar = res.data.avatar;
         this.setState({

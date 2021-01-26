@@ -7,53 +7,68 @@ const generatorInfosByType = {
     createFilename: () => filenameRandomLevel("question_CM", 2),
     before: "",
     createWording: (subject) => `Quelle molécule appartient à la classe '${subject}' ?`,
+    title: "1 classe - 4 molécules",
   },
   2: {
     createFilename: () => filenameRandomLevel("question_MC", 2),
     before: "",
     createWording: (subject) => `À quelle classe appartient la molécule '${subject}' ?`,
+    title: "1 molecule - 4 classes",
   },
   3: {
     createFilename: () => filenameRandomLevel("question_SM", 2),
     before: "",
     createWording: (subject) => `Quelle molécule appartient au système '${subject}' ?`,
+    title: "1 système - 4 molécules",
   },
   4: {
     createFilename: () => filenameRandomLevel("question_MS", 2),
     before: "",
     createWording: (subject) => `À quel système appartient la molécule '${subject}' ?`,
+    title: "1 molecule - 4 systèmes",
   },
   5: {
     createFilename: () => "question_PM.sql",
     before: "SET @property = 'indications';",
     createWording: (subject) => `Quelle molécule a comme indication '${subject}' ?`,
+    title: "1 indication - 4 molecules",
   },
   6: {
     createFilename: () => "question_PM.sql",
     before: "SET @property = 'side_effects';",
     createWording: (subject) => `Quelle molécule a comme effet indésirable '${subject}' ?`,
+    title: "1 effet indésirable - 4 molecules",
   },
   7: {
     createFilename: () => "question_PM.sql",
     before: "SET @property = 'interactions';",
     createWording: (subject) => `Quelle molécule a comme intéraction '${subject}' ?`,
+    title: "1 intéraction - 4 molecules",
   },
   8: {
     createFilename: () => "question_MP.sql",
     before: "SET @property = 'indications';",
     createWording: (subject) => `Quelle indication a la molécule '${subject}' ?`,
+    title: "1 molécule - 4 indications",
   },
   9: {
     createFilename: () => "question_MP.sql",
     before: "SET @property = 'side_effects';",
     createWording: (subject) => `Quel effet indésirable a la molécule '${subject}' ?`,
+    title: "1 molécule - 4 effets indésirables",
   },
   10: {
     createFilename: () => "question_MP.sql",
     before: "SET @property = 'interactions';",
     createWording: (subject) => `Quelle intéraction a la molécule '${subject}' ?`,
+    title: "1 molécule - 4 intéractions",
   },
 };
+
+/**
+ * @apiDefine NotEnoughDataError
+ * @apiError  (422) NotEnoughData There is not enough data to generate questions
+ */
 
 /**
  * @api {get} /question/:type Get a random question
@@ -69,7 +84,7 @@ const generatorInfosByType = {
  * @apiSuccess (200) {Array[String]}  question.answers    All answers possible
  * @apiSuccess (200) {String}         question.wording    The question wording
  *
- * @apiError   (422) NotEnoughData  There is not enough data to generate the question
+ * @apiUse     NotEnoughDataError
  * @apiError   (404) NotFound Incorrect type of question
  * @apiUse     ErrorBadRequest
  */
@@ -83,8 +98,8 @@ async function generateQuestion(req, res) {
   }
 
   generateQuestion()
-    .then(({ type, subject, goodAnswer, answers, wording }) => {
-      res.status(200).json({ type, subject, goodAnswer, answers, wording });
+    .then(({ type, title, subject, goodAnswer, answers, wording }) => {
+      res.status(200).json({ type, title, subject, goodAnswer, answers, wording });
     })
     .catch((error) => {
       if (NotEnoughDataError.isInstance(error)) {
@@ -147,7 +162,7 @@ function filenameRandomLevel(filenamePrefix, maxLevel) {
  * @param {number} type The question type
  * @returns {function():Promise}
  */
-function createGeneratorOfType(type) {
+export function createGeneratorOfType(type) {
   const typeInfos = generatorInfosByType[type];
   if (!typeInfos) {
     return null;
@@ -157,8 +172,13 @@ function createGeneratorOfType(type) {
     return new Promise((resolve, reject) => {
       const filename = typeInfos.createFilename();
       const before = typeInfos.before;
+
       queryQuestion(filename, type, before)
-        .then((question) => resolve(Object.assign(question, { wording: typeInfos.createWording(question.subject) })))
+        .then((question) =>
+          resolve(
+            Object.assign(question, { wording: typeInfos.createWording(question.subject), title: typeInfos.title })
+          )
+        )
         .catch(reject);
     });
   };
@@ -184,7 +204,7 @@ function formatQuestion(data) {
   };
 }
 
-class NotEnoughDataError extends Error {
+export class NotEnoughDataError extends Error {
   constructor() {
     super();
     this.message = "This type of question is currently not available";
