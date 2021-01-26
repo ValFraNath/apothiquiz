@@ -13,15 +13,40 @@ class HomePage extends Component {
     super(props);
     this.state = {
       currentUser: null,
-      usersData: null,
+      usersData: [],
       toPlayChallenges: [],
       pendingChallenges: [],
     };
   }
 
   componentDidMount() {
+    axios
+      .get("/api/v1/duels/")
+      .then((res) => {
+        const toPlay = [],
+          pending = [];
+        res.data.forEach((val) => {
+          if (!val.inProgress) return;
+          if (val.rounds[val.currentRound - 1][0].userAnswer !== undefined) {
+            pending.push(val);
+          } else {
+            toPlay.push(val);
+          }
+        });
+        this.setState({
+          toPlayChallenges: toPlay,
+          pendingChallenges: pending,
+        });
+
+        const listOfUsers = [...toPlay.map((value) => value.opponent), ...pending.map((value) => value.opponent)];
+        this.getUsersData(listOfUsers);
+      })
+      .catch((err) => console.error(err));
+  }
+
+  getUsersData(otherUsers) {
     const currentUser = AuthService.getCurrentUser();
-    const listOfUsers = [currentUser.pseudo];
+    const listOfUsers = [currentUser.pseudo, ...otherUsers];
     axios
       .post("/api/v1/users/", listOfUsers)
       .then((res) => {
@@ -34,8 +59,7 @@ class HomePage extends Component {
   }
 
   render() {
-    const { currentUser, toPlayChallenges, pendingChallenges } = this.state;
-
+    const { currentUser, usersData, toPlayChallenges, pendingChallenges } = this.state;
     const cuWins = currentUser?.wins ?? 0;
     const cuLosses = currentUser?.losses ?? 0;
 
@@ -80,7 +104,25 @@ class HomePage extends Component {
           {toPlayChallenges.length === 0 ? (
             <p>Aucun défi à relever pour le moment.</p>
           ) : (
-            <p>Liste des défis à jouer.</p>
+            <>
+              {toPlayChallenges.map((value, index) => (
+                <article key={index}>
+                  <Avatar
+                    size="75px"
+                    eyes={usersData[value.opponent]?.avatar.eyes ?? 0}
+                    hands={usersData[value.opponent]?.avatar.hands ?? 0}
+                    hat={usersData[value.opponent]?.avatar.hat ?? 0}
+                    mouth={usersData[value.opponent]?.avatar.mouth ?? 0}
+                    colorBG={usersData[value.opponent]?.avatar.colorBG ?? "#d3d3d3"}
+                    colorBody={usersData[value.opponent]?.avatar.colorBody ?? "#0c04fc"}
+                  />
+                  <div>
+                    <h3>{value.opponent}</h3>
+                    <p>Vous pouvez jouer le round {value.currentRound}</p>
+                  </div>
+                </article>
+              ))}
+            </>
           )}
         </section>
 
@@ -91,7 +133,25 @@ class HomePage extends Component {
           {pendingChallenges.length === 0 ? (
             <p>Aucun défi à en attente pour le moment.</p>
           ) : (
-            <p>Liste des défis en attente.</p>
+            <>
+              {pendingChallenges.map((value, index) => (
+                <article key={index}>
+                  <div>
+                    <h3>{value.opponent}</h3>
+                    <p>En train de jouer le round {value.currentRound}</p>
+                  </div>
+                  <Avatar
+                    size="75px"
+                    eyes={usersData[value.opponent]?.avatar.eyes ?? 0}
+                    hands={usersData[value.opponent]?.avatar.hands ?? 0}
+                    hat={usersData[value.opponent]?.avatar.hat ?? 0}
+                    mouth={usersData[value.opponent]?.avatar.mouth ?? 0}
+                    colorBG={usersData[value.opponent]?.avatar.colorBG ?? "#d3d3d3"}
+                    colorBody={usersData[value.opponent]?.avatar.colorBody ?? "#0c04fc"}
+                  />
+                </article>
+              ))}
+            </>
           )}
         </section>
       </main>

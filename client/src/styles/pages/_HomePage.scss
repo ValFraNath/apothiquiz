@@ -65,5 +65,38 @@
         height: 3rem;
       }
     }
+
+    article {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1.2rem;
+
+      &:last-of-type {
+        margin-bottom: 0;
+      }
+
+      div {
+        &:first-of-type {
+          margin-right: 0.8rem;
+        }
+      }
+
+      h3 {
+        font-size: 1.2rem;
+        margin-bottom: 0.3rem;
+      }
+    }
+
+    &:last-of-type {
+      article {
+        justify-content: flex-end;
+
+        & > div {
+          &:first-of-type {
+            text-align: right;
+          }
+        }
+      }
+    }
   }
 }
