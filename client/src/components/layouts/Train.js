@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
-import PropTypes from "proptypes";
+import PropTypes from "prop-types";
 import { ArrowRightIcon, CheckCircledIcon, CrossCircledIcon, ExitIcon } from "@modulz/radix-icons";
 
 import Question from "../quizz/Question";
