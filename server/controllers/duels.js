@@ -74,7 +74,7 @@ function create(req, res) {
  * @apiSuccess {object[]} rounds.round                The list of questions
  * @apiSuccess {number}   rounds.round.type           The type of the question
  * @apiSuccess {string}   rounds.round.title          The title of this type of question
- * @apiSuccess {string}   rounds.round.subject        The question subject - *if the round is the current, or finished*
+ * @apiSuccess {string}   rounds.round.subject        The question subject - *if the round is the current one, or finished*
  * @apiSuccess {string}   rounds.round.wording        The wording of the question - *if the round is the current, or finished*
  * @apiSuccess {string[]} rounds.round.answers        The list of answers - *if the round is the current, or finished*
  * @apiSuccess {number}   rounds.round.goodAnswer     Index of the good answer - *if the round is played by the user*
