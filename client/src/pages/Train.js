@@ -3,13 +3,13 @@ import axios from "axios";
 import PropTypes from "prop-types";
 import { ArrowRightIcon, CheckCircledIcon, CrossCircledIcon, ExitIcon } from "@modulz/radix-icons";
 
-import Question from "../quizz/Question";
-import Timer from "../quizz/Timer";
-import Answers from "../quizz/Answers";
-import Message from "../quizz/Message";
-import InformationPilette from "../../images/information_crop.png";
-import ButtonDefault from "../Buttons/ButtonDefault";
-import ButtonCircle from "../Buttons/ButtonCircle";
+import Question from "../components/quiz/Question";
+import Timer from "../components/quiz/Timer";
+import Answers from "../components/quiz/Answers";
+import Message from "../components/quiz/Message";
+import InformationPilette from "../images/information_crop.png";
+import ButtonDefault from "../components/buttons/ButtonDefault";
+import ButtonCircle from "../components/buttons/ButtonCircle";
 
 /* ---------- Introduction view ---------- */
 

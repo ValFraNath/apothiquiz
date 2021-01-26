@@ -2,7 +2,7 @@ import React from "react";
 import { mount } from "enzyme";
 import { expect } from "chai";
 
-import Train from "../components/layouts/Train";
+import Train from "../pages/Train";
 
 describe("Train component", () => {
   let wrapper;

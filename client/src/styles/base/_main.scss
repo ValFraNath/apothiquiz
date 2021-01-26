@@ -5,6 +5,17 @@ body {
   width: 100%;
 }
 
+/**
+ * Main contain the content of each page
+ */
+main {
+  padding: 0;
+  margin: 0;
+  min-height: calc(100% - 50px);
+  background-color: $bg;
+  box-sizing: border-box;
+}
+
 b {
   font-weight: bold;
 }

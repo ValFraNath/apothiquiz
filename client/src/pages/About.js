@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import axios from "axios";
 import GitInfo from "react-git-info/macro";
 
-import Message from "../quizz/Message";
-import Button from "../Buttons/ButtonDefault";
+import Message from "../components/quiz/Message";
+import Button from "../components/buttons/ButtonDefault";
 
 export default class About extends Component {
   constructor(props) {

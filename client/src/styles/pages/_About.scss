@@ -6,15 +6,17 @@ main#informations {
   padding: 10px;
 
   p {
-    text-align: center;
     margin: 1rem auto;
+    text-align: center;
+    line-height: 1.1;
   }
 
   #credits {
     margin-top: auto;
+  }
 
-    ol {
-      margin-top: 1rem;
-    }
+  #credits,
+  #app-version {
+    font-size: 0.9rem;
   }
 }

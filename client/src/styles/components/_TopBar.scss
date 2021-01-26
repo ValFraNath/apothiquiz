@@ -7,45 +7,41 @@ nav {
   background-color: $top-bar-bg;
 
   grid-template-columns: 30% 40% 30%;
-}
 
-nav > * {
-  display: inline-block;
-  margin: auto;
-  color: $top-bar-fg;
-  @include not-selectable;
+  > * {
+    display: inline-block;
+    margin: auto;
+    color: $top-bar-fg;
+    @include not-selectable;
 
-  &:first-child {
-    margin-left: 5px;
+    &:first-child {
+      margin-left: 5px;
+    }
+
+    &:last-child {
+      margin-right: 5px;
+    }
   }
-
-  &:last-child {
-    margin-right: 5px;
-  }
-}
-
-nav a {
-  text-decoration: none;
-}
-
-nav h1 {
-  text-align: center;
 
   a {
+    text-decoration: none;
+  }
+
+  h1 a {
     text-align: center;
     text-transform: uppercase;
-    height: 16px;
     font-weight: bolder;
     padding: 10px 15px;
     border-radius: 10px;
     background-color: gray;
 
-    &:visited {
+    &:visited,
+    &:link {
       color: $top-bar-fg;
     }
   }
-}
 
-nav #offlineBanner div {
-  margin-left: auto;
+  #offlineBanner div {
+    margin-left: auto;
+  }
 }

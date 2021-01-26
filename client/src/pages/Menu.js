@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-import InstallApp from "../system/InstallApp";
+import InstallApp from "../components/system/InstallApp";
 
 const Menu = ({ installPromptEvent, user }) => {
   return (
