@@ -4,6 +4,10 @@ $timer-size: 100px;
 #quiz {
   padding: 1rem 0.8rem;
 
+  @media screen and (min-width: $desktop-size) {
+    padding: 1.2rem;
+  }
+
   &.quiz-intro {
     padding: 1rem 0;
 
