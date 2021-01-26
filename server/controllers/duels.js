@@ -68,7 +68,7 @@ function create(req, res) {
  * @apiSuccess {number}   userScore           The current score of the user
  * @apiSuccess {number}   opponentScore       The current score of the opponent
  * @apiSuccess {boolean}  inProgress          `true` if the duel is not finished yet
- * @apiSuccess {number}   currentRound        The number of the current round
+ * @apiSuccess {number}   currentRound        Current round number
  *
  * @apiSuccess {array[]}  rounds                      The list of rounds
  * @apiSuccess {object[]} rounds.round                The list of questions
