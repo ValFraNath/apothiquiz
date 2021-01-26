@@ -9,7 +9,6 @@ const AnswerBtn = ({ value, isRight, showResult, onClick }) => {
 
   return (
     <button
-      id="quiz-answer"
       className={classBtn}
       onClick={() => {
         if (showResult) return;
