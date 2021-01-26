@@ -75,15 +75,38 @@
         margin-bottom: 0;
       }
 
-      div {
+      & > div {
         &:first-of-type {
           margin-right: 0.8rem;
         }
       }
 
-      h3 {
-        font-size: 1.2rem;
-        margin-bottom: 0.3rem;
+      .challenges-text {
+        background: #eaeaea;
+        padding: 0.8rem 1rem;
+        border-radius: 7px;
+        flex-grow: 1;
+
+        h3 {
+          font-size: 1.2rem;
+          margin-bottom: 0.3rem;
+        }
+      }
+    }
+
+    &:first-of-type {
+      .challenges-text {
+        display: flex;
+        align-items: center;
+
+        div {
+          margin-right: 0.5rem;
+        }
+
+        svg {
+          width: 1.5rem;
+          height: auto;
+        }
       }
     }
 
@@ -98,5 +121,9 @@
         }
       }
     }
+  }
+
+  .avatar {
+    flex-shrink: 0;
   }
 }

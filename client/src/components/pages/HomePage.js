@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
+import { ChevronRightIcon } from "@modulz/radix-icons";
 
 import AuthService from "../../services/auth.service";
 import Avatar from "../Avatar";
@@ -68,7 +69,7 @@ class HomePage extends Component {
         <header>
           <div id="header-background"></div>
           <Avatar
-            size="150px"
+            size="125px"
             eyes={currentUser?.avatar.eyes ?? 0}
             hands={currentUser?.avatar.hands ?? 0}
             hat={currentUser?.avatar.hat ?? 0}
@@ -116,9 +117,12 @@ class HomePage extends Component {
                     colorBG={usersData[value.opponent]?.avatar.colorBG ?? "#d3d3d3"}
                     colorBody={usersData[value.opponent]?.avatar.colorBody ?? "#0c04fc"}
                   />
-                  <div>
-                    <h3>{value.opponent}</h3>
-                    <p>Vous pouvez jouer le round {value.currentRound}</p>
+                  <div className="challenges-text">
+                    <div>
+                      <h3>{value.opponent}</h3>
+                      <p>Vous pouvez jouer le round {value.currentRound}</p>
+                    </div>
+                    <ChevronRightIcon />
                   </div>
                 </article>
               ))}
@@ -136,7 +140,7 @@ class HomePage extends Component {
             <>
               {pendingChallenges.map((value, index) => (
                 <article key={index}>
-                  <div>
+                  <div className="challenges-text">
                     <h3>{value.opponent}</h3>
                     <p>En train de jouer le round {value.currentRound}</p>
                   </div>
