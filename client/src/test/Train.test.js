@@ -19,7 +19,16 @@ describe("Train component", () => {
   });
 
   it("should display the game correctly", () => {
-    wrapper.setState({ gameState: Train.STATE_PLAY });
+    wrapper.setState({
+      gameState: Train.STATE_PLAY,
+      question: {
+        answers: ["IMIPENEME", "PRAZIQUANTEL", "OXYTETRACYCLINE", "MARAVIROC"],
+        goodAnswer: 2,
+        subject: "Décoloration dents",
+        type: 6,
+        wording: "Quelle molécule a comme effet indésirable 'Décoloration dents' ?",
+      },
+    });
 
     expect(wrapper.find("#quiz-topbar")).to.have.lengthOf(1);
     expect(wrapper.find("#quiz-question")).to.have.lengthOf(1);
