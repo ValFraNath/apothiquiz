@@ -12,6 +12,8 @@ apiRouter.get("/status", ApiController.status);
 
 apiRouter.get("/question/:type", QuestionController.generateQuestion);
 
+apiRouter.post("/users/", auth, UserController.severalGetInfos);
+
 apiRouter.post("/users/login", UserController.login);
 
 apiRouter.get("/users/:pseudo", auth, UserController.getInfos);
@@ -25,7 +27,5 @@ apiRouter.get("/duels/", auth, DuelController.fetchAll);
 apiRouter.get("/duels/:id", auth, DuelController.fetch);
 
 apiRouter.post("/duels/:id/:round", auth, DuelController.play);
-
-apiRouter.post("/users/about", auth, UserController.severalGetInfos);
 
 export default apiRouter;

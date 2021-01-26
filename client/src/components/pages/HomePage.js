@@ -23,7 +23,7 @@ class HomePage extends Component {
     const currentUser = AuthService.getCurrentUser();
     const listOfUsers = [currentUser.pseudo];
     axios
-      .post("/api/v1/users/about", listOfUsers)
+      .post("/api/v1/users/", listOfUsers)
       .then((res) => {
         this.setState({
           currentUser: res.data[currentUser.pseudo],

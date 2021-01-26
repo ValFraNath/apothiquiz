@@ -239,7 +239,7 @@ export default User;
 /**
  * @api {post} /users/about Get data of several users
  * @apiName GetUsersData
- * @apiGroup Users
+ * @apiGroup User
  *
  * @apiParam {array} listOfUsers  Pseudo of several users
  *
@@ -255,7 +255,10 @@ User.severalGetInfos = function (req, res) {
   }
 
   const sqlWhere = listOfUsers.map(() => "us_login = ?");
-  const sql = `SELECT us_login AS pseudo, us_wins AS wins, us_losts AS losses, us_avatar AS avatar
+  const sql = `SELECT us_login AS pseudo,
+                      us_victories AS victories,
+                      us_defeats AS defeats,
+                      us_avatar AS avatar
                FROM user
                WHERE ${sqlWhere.join(" OR ")}`;
 
@@ -266,8 +269,8 @@ User.severalGetInfos = function (req, res) {
         for (let value of sqlRes) {
           usersData[value.pseudo] = {
             pseudo: value.pseudo,
-            wins: Number(value.wins),
-            losses: Number(value.losses),
+            victories: Number(value.victories),
+            defeats: Number(value.defeats),
             avatar: JSON.parse(value.avatar),
           };
         }
