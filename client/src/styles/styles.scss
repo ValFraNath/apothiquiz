@@ -1,7 +1,18 @@
 // Keep this order for these base imports
-@import "base/reset", "base/variables", "base/mixins", "base/main", "base/shared";
+@import "base/reset";
+@import "base/variables";
+@import "base/mixins";
+@import "base/main";
+@import "base/shared";
 
-@import "components/Avatar", "components/buttons", "components/ChooseAvatar", "components/quiz", "components/TopBar",
-  "components/userBadge";
+@import "components/Avatar";
+@import "components/buttons";
+@import "components/ChooseAvatar";
+@import "components/quiz";
+@import "components/TopBar";
+@import "components/userBadge";
 
-@import "pages/Menu", "pages/About", "pages/Profile", "pages/Login";
+@import "pages/Menu";
+@import "pages/About";
+@import "pages/Profile";
+@import "pages/Login";
