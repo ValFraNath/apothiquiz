@@ -4,6 +4,7 @@ import bodyParser from "body-parser";
 
 import apiRouter from "./routes/api.route.js";
 import reactRouter from "./routes/react.route.js";
+import RequestSyntaxErrorHandler from "./middlewares/error.middleware.js";
 import db from "./db/database.js";
 
 dotenv.config();
@@ -22,6 +23,7 @@ app.use(bodyParser.json());
 app.use(express.static("../client/build/"));
 app.use("/api/v1/", apiRouter);
 app.use("/", reactRouter);
+app.use(RequestSyntaxErrorHandler);
 
 db.connection.on("database_ready", function () {
   app.listen(PORT, () => {

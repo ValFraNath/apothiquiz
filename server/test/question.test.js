@@ -1,9 +1,8 @@
 import chai from "chai";
 import chaiHttp from "chai-http";
 
-import app from "../index.js";
 import { queryPromise } from "../db/database.js";
-import { forceTruncateTables, insertData } from "./index.test.js";
+import { forceTruncateTables, insertData, requestAPI } from "./index.test.js";
 
 chai.use(chaiHttp);
 const { expect } = chai;
@@ -192,23 +191,4 @@ function doesHavePropertyValue(dci, property, value) {
       .then((res) => resolve(res[0].map((e) => e.value).includes(value)))
       .catch(reject)
   );
-}
-
-/**
- * Make a request to the api
- * @param {string} endpoint The endpoint
- * @returns {Promise}
- */
-function requestAPI(endpoint) {
-  return new Promise((resolve, reject) => {
-    chai
-      .request(app)
-      .get("/api/v1/" + endpoint)
-      .end(async (err, res) => {
-        if (err) {
-          reject(err);
-        }
-        resolve(res);
-      });
-  });
 }
