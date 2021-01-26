@@ -192,7 +192,7 @@ export function createGeneratorOfType(type) {
 function formatQuestion(data) {
   const badAnswers = data.map((e) => e.bad_answer);
   const goodAnswer = data[0].good_answer;
-  const randomIndex = Math.floor(Math.random() * data.length);
+  const randomIndex = Math.floor(Math.random() * data.length + 1);
 
   const answers = badAnswers.slice();
   answers.splice(randomIndex, 0, goodAnswer);
