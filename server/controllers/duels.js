@@ -16,7 +16,7 @@ export const NUMBER_OF_QUESTIONS_IN_ROUND = 5;
  *
  * @apiParamExample  {string} Request-Example:
  * {
- *     "opponent" : "nhoun"
+ *     "opponent": "nhoun"
  * }
  *
  * @apiSuccessExample {number} Success-Response:
