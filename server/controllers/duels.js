@@ -136,6 +136,9 @@ export default { create, fetch, fetchAll, play };
  * while waiting for a global error handler
  */
 function sendError500(res, error) {
+  if (NotEnoughDataError.isInstance(error)) {
+    return res.status(422).json({ message: error.message, code: error.code });
+  }
   console.error(error);
   return res.status(500).json({ message: "Server side error" });
 }
