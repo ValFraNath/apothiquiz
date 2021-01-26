@@ -157,6 +157,9 @@ $timer-size: 100px;
 
   #quiz-question {
     position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 4.4rem;
     padding: 2.9rem 1.2rem 2.1rem 1.2rem;
     margin-bottom: 1.2em;
     box-shadow: 0 0 12px 4px rgba(0, 0, 0, 0.1);
@@ -180,6 +183,7 @@ $timer-size: 100px;
     }
 
     @media screen and (max-width: $little-smartphone) {
+      min-height: auto;
       padding: 2.5rem 1rem 1.8rem 1rem;
       margin-bottom: 1rem;
 
@@ -193,6 +197,7 @@ $timer-size: 100px;
     }
 
     @media screen and (min-width: $desktop-size) {
+      min-height: 2.9rem;
       padding: 2.9rem 1.5rem 2.1rem 1.5rem;
       margin-bottom: 1.8rem;
     }
