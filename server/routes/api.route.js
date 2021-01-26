@@ -12,18 +12,18 @@ apiRouter.get("/status", ApiController.status);
 
 apiRouter.get("/question/:type", QuestionController.generateQuestion);
 
-apiRouter.post("/user/login", UserController.login);
+apiRouter.post("/users/login", UserController.login);
 
-apiRouter.get("/user/:pseudo", auth, UserController.getInfos);
+apiRouter.get("/users/:pseudo", auth, UserController.getInfos);
 
-apiRouter.patch("/user/:pseudo", auth, UserController.saveInfos);
+apiRouter.patch("/users/:pseudo", auth, UserController.saveInfos);
 
-apiRouter.post("/duel/new", auth, DuelController.create);
+apiRouter.post("/duels/new", auth, DuelController.create);
 
-apiRouter.get("/duel/", auth, DuelController.fetchAll);
+apiRouter.get("/duels/", auth, DuelController.fetchAll);
 
-apiRouter.get("/duel/:id", auth, DuelController.fetch);
+apiRouter.get("/duels/:id", auth, DuelController.fetch);
 
-apiRouter.post("/duel/:id/:round", auth, DuelController.play);
+apiRouter.post("/duels/:id/:round", auth, DuelController.play);
 
 export default apiRouter;

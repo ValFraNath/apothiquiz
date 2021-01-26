@@ -16,7 +16,7 @@ describe("User test", function () {
     it("Good user", function (done) {
       chai
         .request(app)
-        .post("/api/v1/user/login")
+        .post("/api/v1/users/login")
         .send({
           userPseudo: "fpoguet",
           userPassword: "1234",
@@ -42,7 +42,7 @@ describe("User test", function () {
     it("User does not exist", function (done) {
       chai
         .request(app)
-        .post("/api/v1/user/login")
+        .post("/api/v1/users/login")
         .send({
           userPseudo: "noexist",
           userPassword: "1234",
@@ -59,7 +59,7 @@ describe("User test", function () {
     it("Wrong password", function (done) {
       chai
         .request(app)
-        .post("/api/v1/user/login")
+        .post("/api/v1/users/login")
         .send({
           userPseudo: "vperigno",
           userPassword: "134",
@@ -76,7 +76,7 @@ describe("User test", function () {
     it("Wrong body format", function (done) {
       chai
         .request(app)
-        .post("/api/v1/user/login")
+        .post("/api/v1/users/login")
         .send({
           pseudo: "vperigno",
           password: "134",
@@ -97,7 +97,7 @@ describe("User test", function () {
       // Authenticate
       chai
         .request(app)
-        .post("/api/v1/user/login")
+        .post("/api/v1/users/login")
         .send({
           userPseudo: "fpoguet",
           userPassword: "1234",
@@ -120,7 +120,7 @@ describe("User test", function () {
     it("Existing user", function (done) {
       chai
         .request(app)
-        .get("/api/v1/user/vperigno")
+        .get("/api/v1/users/vperigno")
         .set("Authorization", token)
         .end((err, res) => {
           if (err) {
@@ -140,7 +140,7 @@ describe("User test", function () {
     it("User does not exist", function (done) {
       chai
         .request(app)
-        .get("/api/v1/user/no-i-do-not-exist")
+        .get("/api/v1/users/no-i-do-not-exist")
         .set("Authorization", token)
         .end((err, res) => {
           if (err) {
@@ -155,7 +155,7 @@ describe("User test", function () {
     it("Not logged in", function (done) {
       chai
         .request(app)
-        .get("/api/v1/user/fpoguet")
+        .get("/api/v1/users/fpoguet")
         // No Authorization header
         .end((err, res) => {
           if (err) {
@@ -169,7 +169,7 @@ describe("User test", function () {
     it("Get my informations", function (done) {
       chai
         .request(app)
-        .get("/api/v1/user/me")
+        .get("/api/v1/users/me")
         .set("Authorization", token)
         .end((err, res) => {
           if (err) {
@@ -194,7 +194,7 @@ describe("User test", function () {
       // Authenticate
       chai
         .request(app)
-        .post("/api/v1/user/login")
+        .post("/api/v1/users/login")
         .send({
           userPseudo: "fpoguet",
           userPassword: "1234",
@@ -217,7 +217,7 @@ describe("User test", function () {
     it("Update nothing", function (done) {
       chai
         .request(app)
-        .patch("/api/v1/user/me")
+        .patch("/api/v1/users/me")
         .send({ pseudo: "fpoguet" })
         .set("Authorization", token)
         .end((err, res) => {
@@ -232,7 +232,7 @@ describe("User test", function () {
     it("Update bad avatar (not object)", function (done) {
       chai
         .request(app)
-        .patch("/api/v1/user/fpoguet")
+        .patch("/api/v1/users/fpoguet")
         .send({ avatar: "this-is-not-an-avatar" })
         .set("Authorization", token)
         .end((err, res) => {
@@ -248,7 +248,7 @@ describe("User test", function () {
     it("Update bad avatar (missing field)", function (done) {
       chai
         .request(app)
-        .patch("/api/v1/user/fpoguet")
+        .patch("/api/v1/users/fpoguet")
         .send({ avatar: { colorBG: "#ffffff", colorBody: "#dedede", eyes: 0, hands: 0, hat: 0 } }) // missing an information
         .set("Authorization", token)
         .end((err, res) => {
@@ -264,7 +264,7 @@ describe("User test", function () {
     it("Update bad avatar (integer is not an integer)", function (done) {
       chai
         .request(app)
-        .patch("/api/v1/user/fpoguet")
+        .patch("/api/v1/users/fpoguet")
         .send({
           avatar: { colorBG: "#ffffff", colorBody: "#dedede", eyes: 0, hands: 0, hat: 0, mouth: "this-is-not-an-int" },
         }) // missing an information
@@ -282,7 +282,7 @@ describe("User test", function () {
     it("Update bad avatar (integer is not an integer but a string with an integer inside)", function (done) {
       chai
         .request(app)
-        .patch("/api/v1/user/fpoguet")
+        .patch("/api/v1/users/fpoguet")
         .send({
           avatar: { colorBG: "#ffffff", colorBody: "#dedede", eyes: 0, hands: 0, hat: 0, mouth: "0" },
         }) // missing an information
@@ -300,7 +300,7 @@ describe("User test", function () {
     it("Update bad avatar (color is not a color)", function (done) {
       chai
         .request(app)
-        .patch("/api/v1/user/fpoguet")
+        .patch("/api/v1/users/fpoguet")
         .send({
           avatar: { colorBG: "#ffffff", colorBody: "#camion", eyes: 0, hands: 0, hat: 0, mouth: 0 },
         }) // missing an information
@@ -318,7 +318,7 @@ describe("User test", function () {
     it("Update my avatar with /pseudo route", function (done) {
       chai
         .request(app)
-        .patch("/api/v1/user/fpoguet")
+        .patch("/api/v1/users/fpoguet")
         .send({ avatar: { colorBG: "#ffffff", colorBody: "#dedede", eyes: 0, hands: 0, hat: 0, mouth: 0 } })
         .set("Authorization", token)
         .end((err, res) => {
@@ -346,7 +346,7 @@ describe("User test", function () {
     it("Update my avatar with /me route", function (done) {
       chai
         .request(app)
-        .patch("/api/v1/user/me")
+        .patch("/api/v1/users/me")
         .send({ avatar: { colorBG: "#158233", colorBody: "#9F7F53", eyes: 0, hands: 0, hat: 0, mouth: 0 } })
         .set("Authorization", token)
         .end((err, res) => {
@@ -374,7 +374,7 @@ describe("User test", function () {
     it("Informations has been updated", function (done) {
       chai
         .request(app)
-        .get("/api/v1/user/me")
+        .get("/api/v1/users/me")
         .set("Authorization", token)
         .end((err, res) => {
           if (err) {

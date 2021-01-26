@@ -7,7 +7,7 @@ const LOCAL_STORAGE_KEY = "user_informations";
 AuthService.login = async function (pseudo, password) {
   return new Promise((resolve, reject) => {
     axios
-      .post("/api/v1/user/login", {
+      .post("/api/v1/users/login", {
         userPseudo: pseudo,
         userPassword: password,
       })

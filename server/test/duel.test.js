@@ -19,7 +19,7 @@ describe("Duels", () => {
   before("Get users tokens", (done) => {
     Promise.all(
       ["vperigno", "nhoun", "fpoguet"].map((user) =>
-        requestAPI("user/login", { body: { userPseudo: user, userPassword: "1234" }, method: "post" })
+        requestAPI("users/login", { body: { userPseudo: user, userPassword: "1234" }, method: "post" })
       )
     ).then((res) => {
       tokens = res.reduce((tokens, res) => {
@@ -35,7 +35,7 @@ describe("Duels", () => {
       forceTruncateTables("molecule").then(done);
     });
     it("Not enough data", async () => {
-      const error = await requestAPI("duel/new", {
+      const error = await requestAPI("duels/new", {
         token: tokens.fpoguet,
         method: "post",
         body: { opponent: "nhoun" },
@@ -62,7 +62,7 @@ describe("Duels", () => {
 
     describe("Error cases", () => {
       it("Can't create without be logged", async () => {
-        const error = await requestAPI("duel/new", {
+        const error = await requestAPI("duels/new", {
           method: "post",
           body: { opponent: "nhoun" },
         });
@@ -71,7 +71,7 @@ describe("Duels", () => {
       });
 
       it("Can't create without opponent", async () => {
-        const error = await requestAPI("duel/new", {
+        const error = await requestAPI("duels/new", {
           token: tokens.fpoguet,
           method: "post",
         });
@@ -80,7 +80,7 @@ describe("Duels", () => {
       });
 
       it("Can't create with invalid opponent", async () => {
-        const error = await requestAPI("duel/new", {
+        const error = await requestAPI("duels/new", {
           token: tokens.fpoguet,
           method: "post",
           body: { opponent: "b" },
@@ -93,7 +93,7 @@ describe("Duels", () => {
     describe("Well formed duel", () => {
       let duel;
       it("Can create", async () => {
-        const res = await requestAPI("duel/new", {
+        const res = await requestAPI("duels/new", {
           token: tokens.fpoguet,
           method: "post",
           body: { opponent: "vperigno" },
@@ -101,7 +101,7 @@ describe("Duels", () => {
         expect(res.status).equals(201);
         expect(res.body).haveOwnProperty("id");
 
-        duel = (await requestAPI(`duel/${res.body.id}`, { token: tokens.vperigno })).body;
+        duel = (await requestAPI(`duels/${res.body.id}`, { token: tokens.vperigno })).body;
       });
 
       it("Good number of rounds & questions", (done) => {
@@ -137,7 +137,7 @@ describe("Duels", () => {
       before("Create against nath", async () => {
         ids.push(
           (
-            await requestAPI("duel/new", {
+            await requestAPI("duels/new", {
               token: tokens.fpoguet,
               method: "post",
               body: { opponent: "nhoun" },
@@ -149,7 +149,7 @@ describe("Duels", () => {
       before("Create against val", async () => {
         ids.push(
           (
-            await requestAPI("duel/new", {
+            await requestAPI("duels/new", {
               token: tokens.fpoguet,
               method: "post",
               body: { opponent: "vperigno" },
@@ -164,7 +164,7 @@ describe("Duels", () => {
       });
 
       it("Get by creator", async () => {
-        const duel = (await requestAPI("duel/" + ids[0], { token: tokens.fpoguet })).body;
+        const duel = (await requestAPI("duels/" + ids[0], { token: tokens.fpoguet })).body;
         expect(duel.currentRound).equals(1);
         expect(duel.opponent).equals("nhoun");
         expect(duel.rounds).to.have.length(NUMBER_OF_ROUNDS_IN_DUEL);
@@ -182,7 +182,7 @@ describe("Duels", () => {
       });
 
       it("Get by opponent", async () => {
-        const duel = (await requestAPI("duel/" + ids[0], { token: tokens.nhoun })).body;
+        const duel = (await requestAPI("duels/" + ids[0], { token: tokens.nhoun })).body;
         expect(duel.currentRound).equals(1);
         expect(duel.opponent).equals("fpoguet");
         expect(duel.rounds).to.have.length(NUMBER_OF_ROUNDS_IN_DUEL);
@@ -201,17 +201,17 @@ describe("Duels", () => {
       });
 
       it("Get by other user", async () => {
-        const res = await requestAPI("duel/" + ids[0], { token: tokens.vperigno });
+        const res = await requestAPI("duels/" + ids[0], { token: tokens.vperigno });
         expect(res.status).to.be.equals(404);
       });
 
       it("Get all duel : fpoguet", async () => {
-        const duels = (await requestAPI("duel/", { token: tokens.fpoguet })).body;
+        const duels = (await requestAPI("duels/", { token: tokens.fpoguet })).body;
         expect(duels).to.have.length(2);
       });
 
       it("Get all duel : vperigno", async () => {
-        const duels = (await requestAPI("duel/", { token: tokens.vperigno })).body;
+        const duels = (await requestAPI("duels/", { token: tokens.vperigno })).body;
         expect(duels).to.have.length(1);
       });
 
@@ -219,7 +219,7 @@ describe("Duels", () => {
         describe("Play : turn " + i, () => {
           it("Play : fpoguet", async () => {
             const duel = (
-              await requestAPI(`duel/${ids[0]}/${i}`, {
+              await requestAPI(`duels/${ids[0]}/${i}`, {
                 token: tokens.fpoguet,
                 method: "post",
                 body: { answers: [1, 3, 2, 0, 0] },
@@ -237,7 +237,7 @@ describe("Duels", () => {
 
           it("Get duel : fpoguet", async () => {
             const duel = (
-              await requestAPI(`duel/${ids[0]}`, {
+              await requestAPI(`duels/${ids[0]}`, {
                 token: tokens.fpoguet,
               })
             ).body;
@@ -256,7 +256,7 @@ describe("Duels", () => {
 
           it("Get duel : nhoun", async () => {
             const duel = (
-              await requestAPI(`duel/${ids[0]}`, {
+              await requestAPI(`duels/${ids[0]}`, {
                 token: tokens.nhoun,
               })
             ).body;
@@ -274,7 +274,7 @@ describe("Duels", () => {
           });
 
           it("Play invalid round", async () => {
-            const error = await requestAPI(`duel/${ids[0]}/${i + 2}`, {
+            const error = await requestAPI(`duels/${ids[0]}/${i + 2}`, {
               token: tokens.fpoguet,
               method: "post",
               body: { answers: [1, 3, 2, 0, 0] },
@@ -284,7 +284,7 @@ describe("Duels", () => {
           });
 
           it("Play invalid player", async () => {
-            const error = await requestAPI(`duel/${ids[0]}/${i}`, {
+            const error = await requestAPI(`duels/${ids[0]}/${i}`, {
               token: tokens.vperigno,
               method: "post",
               body: { answers: [2, 0, 2, 0, 1] },
@@ -294,7 +294,7 @@ describe("Duels", () => {
           });
 
           it("Play same round twice", async () => {
-            const error = await requestAPI(`duel/${ids[0]}/${i}`, {
+            const error = await requestAPI(`duels/${ids[0]}/${i}`, {
               token: tokens.fpoguet,
               method: "post",
               body: { answers: [2, 0, 2, 0, 1] },
@@ -304,7 +304,7 @@ describe("Duels", () => {
           });
           it("Play : nhoun", async () => {
             const duel = (
-              await requestAPI(`duel/${ids[0]}/${i}`, {
+              await requestAPI(`duels/${ids[0]}/${i}`, {
                 token: tokens.nhoun,
                 method: "post",
                 body: { answers: [2, 3, 1, 3, 0] },
@@ -319,7 +319,7 @@ describe("Duels", () => {
 
           it("Get duel after : nhoun", async () => {
             const duel = (
-              await requestAPI(`duel/${ids[0]}`, {
+              await requestAPI(`duels/${ids[0]}`, {
                 token: tokens.nhoun,
               })
             ).body;
@@ -341,7 +341,7 @@ describe("Duels", () => {
           });
           it("Get duel after : fpoguet", async () => {
             const duel = (
-              await requestAPI(`duel/${ids[0]}`, {
+              await requestAPI(`duels/${ids[0]}`, {
                 token: tokens.fpoguet,
               })
             ).body;
@@ -367,7 +367,7 @@ describe("Duels", () => {
       describe("Finished duel", () => {
         it("Good results", async () => {
           const duel = (
-            await requestAPI(`duel/${ids[0]}`, {
+            await requestAPI(`duels/${ids[0]}`, {
               token: tokens.fpoguet,
               method: "get",
             })
@@ -379,18 +379,18 @@ describe("Duels", () => {
         });
 
         it("Users stats updated", async () => {
-          const fpoguet = (await requestAPI("user/fpoguet", { token: tokens.fpoguet })).body;
+          const fpoguet = (await requestAPI("users/fpoguet", { token: tokens.fpoguet })).body;
           expect(fpoguet.victories).equals(1);
           expect(fpoguet.defeats).equals(0);
 
-          const nhoun = (await requestAPI("user/nhoun", { token: tokens.nhoun })).body;
+          const nhoun = (await requestAPI("users/nhoun", { token: tokens.nhoun })).body;
           expect(nhoun.victories).equals(0);
           expect(nhoun.defeats).equals(1);
         });
 
         it("The answers are those expected", async () => {
           const duel = (
-            await requestAPI(`duel/${ids[0]}`, {
+            await requestAPI(`duels/${ids[0]}`, {
               token: tokens.nhoun,
               method: "get",
             })
@@ -406,7 +406,7 @@ describe("Duels", () => {
         });
 
         it("Can't play to a finished duel", async () => {
-          const duel = await requestAPI(`duel/${ids[0]}/5`, {
+          const duel = await requestAPI(`duels/${ids[0]}/5`, {
             token: tokens.nhoun,
             method: "post",
             body: { answers: [2, 3, 1, 3, 0] },

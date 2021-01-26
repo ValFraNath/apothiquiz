@@ -92,7 +92,7 @@ class ChooseAvatar extends Component {
     this.setState({ avatarChooserState: "saving" });
 
     axios
-      .patch(`/api/v1/user/me`, {
+      .patch(`/api/v1/users/me`, {
         avatar: {
           eyes: this.props.choiceEyes,
           hands: this.props.choiceHands,
