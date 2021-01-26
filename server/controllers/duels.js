@@ -64,7 +64,7 @@ function create(req, res) {
  * @apiParam  {number} id The duel ID
  *
  * @apiSuccess {object}   id                  The duel id
- * @apiSuccess {string}   opponent            The opponent username
+ * @apiSuccess {string}   opponent            The opponent's username
  * @apiSuccess {number}   userScore           The current score of the user
  * @apiSuccess {number}   opponentScore       The current score of the opponent
  * @apiSuccess {boolean}  inProgress          `true` if the duel is not finished yet
