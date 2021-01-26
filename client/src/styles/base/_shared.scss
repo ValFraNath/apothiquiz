@@ -1,3 +1,15 @@
 .error {
   color: red;
 }
+
+b {
+  font-weight: bold;
+}
+
+p {
+  color: $text-color;
+}
+
+summary {
+  cursor: pointer;
+}

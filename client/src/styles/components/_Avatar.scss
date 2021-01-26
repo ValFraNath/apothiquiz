@@ -2,14 +2,18 @@
   overflow: hidden;
   position: relative;
 
+  pointer-events: none;
+  @include not-selectable;
+
   .avatar-inside {
-    width: 90%;
-    height: 90%;
-    top: calc(5% - 2px);
-    left: calc(5% - 2px);
+    $border-width: 2px;
+
+    width: calc(100% - 2px - 2 * #{$border-width});
+    height: calc(100% - 2px - 2 * #{$border-width});
+    top: 1px;
+    left: 1px;
     position: relative;
-    margin: 0;
-    border: 2px solid black;
+    border: $border-width solid black;
     border-radius: 50%;
 
     svg,
@@ -18,9 +22,6 @@
       width: 100%;
       position: absolute;
       margin-top: calc(-100% * var(--x));
-
-      pointer-events: none;
-      @include not-selectable;
     }
 
     img[data-choice="1"] {

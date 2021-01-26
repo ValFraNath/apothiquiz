@@ -5,18 +5,20 @@ main#informations {
   align-items: stretch;
   padding: 10px;
 
+  text-align: center;
+  line-height: 1.1;
+
   p {
     margin: 1rem auto;
-    text-align: center;
-    line-height: 1.1;
-  }
-
-  #credits {
-    margin-top: auto;
   }
 
   #credits,
   #app-version {
+    margin: 0.5rem auto;
     font-size: 0.9rem;
+  }
+
+  #credits {
+    margin-top: auto;
   }
 }

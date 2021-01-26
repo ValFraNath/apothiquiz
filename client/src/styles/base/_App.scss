@@ -1,5 +1,6 @@
 html,
-body {
+body,
+#root {
   font-family: sans-serif;
   height: 100%;
   width: 100%;
@@ -14,31 +15,6 @@ main {
   min-height: calc(100% - 50px);
   background-color: $bg;
   box-sizing: border-box;
-}
-
-b {
-  font-weight: bold;
-}
-
-#root {
-  height: 100%;
-  width: 100%;
-}
-
-svg {
-  vertical-align: top;
-}
-
-h1 {
-  color: #252525;
-}
-
-p {
-  color: #4a4a4a;
-}
-
-summary {
-  cursor: pointer;
 }
 
 @media only screen and (min-device-width: $desktop-size) {

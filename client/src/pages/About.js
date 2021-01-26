@@ -68,23 +68,21 @@ export default class About extends Component {
           />
         )}
 
-        <p id="credits">
-          <ol>
-            <li>Réalisé par Nathanaël Houn, François Poguet et Valentin Perignon.</li>
-            <li>Supervisé par Anne-Laure Claire, Frédéric Dadeau, et Marc Pudlo.</li>
-            <li>Graphismes par Roxane Herbstmeyer.</li>
-            <li>
-              Icônes par{" "}
-              <a href="https://icons.modulz.app/" target="_blank" rel="noreferrer">
-                Modulz
-              </a>
-              .
-            </li>
-          </ol>
-        </p>
+        <ol id="credits">
+          <li>Réalisé par Nathanaël Houn, François Poguet et Valentin Perignon.</li>
+          <li>Supervisé par Anne-Laure Claire, Frédéric Dadeau, et Marc Pudlo.</li>
+          <li>Graphismes par Roxane Herbstmeyer.</li>
+          <li>
+            Icônes par{" "}
+            <a href="https://icons.modulz.app/" target="_blank" rel="noreferrer">
+              Modulz
+            </a>
+            .
+          </li>
+        </ol>
 
-        <p id="app-version">
-          <table>
+        <table id="app-version">
+          <tbody>
             <tr>
               <td>Date de version : </td>
               <td>
@@ -95,8 +93,8 @@ export default class About extends Component {
               <td>Hash de version : </td>
               <td>{gitInfo.commit.shortHash}</td>
             </tr>
-          </table>
-        </p>
+          </tbody>
+        </table>
       </main>
     );
   }
