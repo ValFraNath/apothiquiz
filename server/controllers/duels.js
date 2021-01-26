@@ -75,8 +75,8 @@ function create(req, res) {
  * @apiSuccess {number}   rounds.round.type           The type of the question
  * @apiSuccess {string}   rounds.round.title          The title of this type of question
  * @apiSuccess {string}   rounds.round.subject        The question subject - *if the round is the current one, or finished*
- * @apiSuccess {string}   rounds.round.wording        The wording of the question - *if the round is the current, or finished*
- * @apiSuccess {string[]} rounds.round.answers        The list of answers - *if the round is the current, or finished*
+ * @apiSuccess {string}   rounds.round.wording        The wording of the question - *if the round is the current one, or finished*
+ * @apiSuccess {string[]} rounds.round.answers        The list of answers - *if the round is the current one, or finished*
  * @apiSuccess {number}   rounds.round.goodAnswer     Index of the good answer - *if the round is played by the user*
  * @apiSuccess {number}   rounds.round.userAnswer     Index of the user answer - *if the round is played by the user*
  * @apiSuccess {number}   rounds.round.opponentAnswer Index of the opponent's answer - *if the round is played by the user & the opponent*
@@ -150,13 +150,13 @@ function fetch(req, res) {
   const sendLocalError500 = (error) => sendError500(res, error);
 
   const username = req.body.auth_user;
-  const id = Number(req.params.id);
+  const duelID = Number(req.params.id);
 
-  if (!id) {
+  if (!duelID) {
     return res.status(400).json({ message: "Missing or invalid duel ID" });
   }
 
-  getDuel(id, username)
+  getDuel(duelID, username)
     .then((duel) => {
       if (!duel) {
         return res.status(404).json({ message: "Duel not found" });
@@ -331,7 +331,7 @@ function createRounds() {
     const types = createShuffledQuestionTypesArray();
     const rounds = [];
 
-    (function createRoundsRecurcively() {
+    (function createRoundsRecursively() {
       if (types.length === 0) {
         reject(new NotEnoughDataError());
       }
@@ -341,12 +341,12 @@ function createRounds() {
           if (rounds.push(round) === NUMBER_OF_ROUNDS_IN_DUEL) {
             resolve(rounds);
           } else {
-            createRoundsRecurcively();
+            createRoundsRecursively();
           }
         })
         .catch((error) => {
           if (NotEnoughDataError.isInstance(error)) {
-            createRoundsRecurcively();
+            createRoundsRecursively();
           } else {
             reject(error);
           }
@@ -483,9 +483,8 @@ function formatDuel(duel, username) {
     if (roundNumber === currentRound) {
       if (userAnswers.length === currentRound) {
         return round.map(addPlayersAnswers);
-      } else {
-        return round.map(withQuestionOnly);
       }
+      return round.map(withQuestionOnly);
     }
   });
 
