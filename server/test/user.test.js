@@ -130,8 +130,8 @@ describe("User test", function () {
 
           expect(Object.keys(res.body)).to.contains("pseudo");
           expect(res.body.pseudo).to.be.equal("vperigno");
-          expect(Object.keys(res.body)).to.contains("losses");
-          expect(Object.keys(res.body)).to.contains("wins");
+          expect(Object.keys(res.body)).to.contains("defeats");
+          expect(Object.keys(res.body)).to.contains("victories");
           expect(Object.keys(res.body)).to.contains("avatar");
           done();
         });
@@ -179,8 +179,8 @@ describe("User test", function () {
 
           expect(Object.keys(res.body)).to.contains("pseudo");
           expect(res.body.pseudo).to.be.equal("fpoguet");
-          expect(Object.keys(res.body)).to.contains("losses");
-          expect(Object.keys(res.body)).to.contains("wins");
+          expect(Object.keys(res.body)).to.contains("defeats");
+          expect(Object.keys(res.body)).to.contains("victories");
           expect(Object.keys(res.body)).to.contains("avatar");
           done();
         });
@@ -328,8 +328,8 @@ describe("User test", function () {
           expect(res.status, res.error).to.be.equal(200);
           expect(Object.keys(res.body)).to.contains("pseudo");
           expect(res.body.pseudo).to.be.equal("fpoguet");
-          expect(Object.keys(res.body)).to.contains("losses");
-          expect(Object.keys(res.body)).to.contains("wins");
+          expect(Object.keys(res.body)).to.contains("defeats");
+          expect(Object.keys(res.body)).to.contains("victories");
           expect(Object.keys(res.body)).to.contains("avatar");
           expect(res.body.avatar).to.be.deep.equal({
             colorBG: "#ffffff",
@@ -356,8 +356,8 @@ describe("User test", function () {
           expect(res.status, res.error).to.be.equal(200);
           expect(Object.keys(res.body)).to.contains("pseudo");
           expect(res.body.pseudo).to.be.equal("fpoguet");
-          expect(Object.keys(res.body)).to.contains("losses");
-          expect(Object.keys(res.body)).to.contains("wins");
+          expect(Object.keys(res.body)).to.contains("defeats");
+          expect(Object.keys(res.body)).to.contains("victories");
           expect(Object.keys(res.body)).to.contains("avatar");
           expect(res.body.avatar).to.be.deep.equal({
             colorBG: "#158233",
@@ -384,8 +384,8 @@ describe("User test", function () {
 
           expect(Object.keys(res.body)).to.contains("pseudo");
           expect(res.body.pseudo).to.be.equal("fpoguet");
-          expect(Object.keys(res.body)).to.contains("losses");
-          expect(Object.keys(res.body)).to.contains("wins");
+          expect(Object.keys(res.body)).to.contains("defeats");
+          expect(Object.keys(res.body)).to.contains("victories");
           expect(Object.keys(res.body)).to.contains("avatar");
           expect(res.body.avatar).to.be.deep.equal({
             colorBG: "#158233",
