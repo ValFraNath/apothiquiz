@@ -10,7 +10,7 @@ const Question = ({ numero, text }) => {
   );
 };
 
-Question.protoTypes = {
+Question.propTypes = {
   numero: PropTypes.number.isRequired,
   text: PropTypes.string.isRequired,
 };
