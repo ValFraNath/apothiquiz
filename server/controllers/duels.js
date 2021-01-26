@@ -16,7 +16,7 @@ export const NUMBER_OF_QUESTIONS_IN_ROUND = 5;
  *
  * @apiParamExample  {string} Request-Example:
  * {
- *     "opponent" : "nhoun"
+ *     "opponent": "nhoun"
  * }
  *
  * @apiSuccessExample {number} Success-Response:
@@ -215,7 +215,7 @@ function play(req, res) {
   const id = Number(req.params.id);
   const round = Number(req.params.round);
   const username = req.body.auth_user;
-  const answers = req.body.answers || [];
+  const answers = req.body.answers ?? [];
 
   if (!id) {
     return res.status(400).json({ message: "Invalid or missing duel id" });
@@ -304,7 +304,7 @@ function doUsersExist(...users) {
 }
 
 /**
- * Create a new duel in database and returns its id
+ * Create a new duel in database and return its id
  * @param {string} player1 The first player login
  * @param {string} player2 The second player login
  * @param {object} rounds The rounds of the duel
