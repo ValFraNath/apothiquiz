@@ -45,3 +45,14 @@ nav {
     margin-left: auto;
   }
 }
+
+#userBadge {
+  display: flex;
+
+  > span {
+    text-align: center;
+    vertical-align: center;
+    align-self: center;
+    margin: 5px;
+  }
+}
