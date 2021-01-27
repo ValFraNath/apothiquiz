@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import axios from "axios";
 import { ChevronRightIcon } from "@modulz/radix-icons";
-
 import AuthService from "../services/auth.service";
+
 import Avatar from "../components/Avatar";
 import { Link } from "react-router-dom";
 import Plural from "../components/Plural";
@@ -96,14 +96,14 @@ class HomePage extends Component {
           <Link to="/train" className="btn">
             Entraînement
           </Link>
-          <Link to="/homepage" className="btn">
+          <Link to="/homepage" className="btn" onClick={() => alert("Travail en cours.")}>
             Nouveau duel
           </Link>
         </div>
 
         <section>
           <h2>
-            <img src={FightPilette} alt="Pilette is fighting" /> Ton tour
+            <img src={FightPilette} alt="Pilette est prête à affronter ses adversaires" /> Ton tour
           </h2>
           {toPlayChallenges.length === 0 ? (
             <p>Aucun défi à relever pour le moment.</p>
