@@ -70,7 +70,7 @@ export default class About extends Component {
 
         <ol id="credits">
           <li>Réalisé par Nathanaël Houn, François Poguet et Valentin Perignon.</li>
-          <li>Supervisé par Anne-Laure Claire, Frédéric Dadeau, et Marc Pudlo.</li>
+          <li>Supervisé par Anne-Laure Clairet, Frédéric Dadeau, et Marc Pudlo.</li>
           <li>Graphismes par Roxane Herbstmeyer.</li>
           <li>
             Icônes par{" "}
