@@ -30,7 +30,9 @@ self.addEventListener("install", (e) => {
 self.addEventListener("activate", (e) => {
   e.waitUntil(
     caches.keys().then((keyList) => {
-      return Promise.all(keyList.filter((key) => key !== cacheName).map((key) => caches.delete(key)));
+      return Promise.all(
+        keyList.filter((key) => key !== cacheName).map((key) => caches.delete(key))
+      );
     })
   );
 });
@@ -43,7 +45,10 @@ self.addEventListener("activate", (e) => {
  */
 self.addEventListener("fetch", (e) => {
   const currentLocation = self.location.origin;
-  if (!e.request.url.startsWith("http") || new RegExp(`^${currentLocation}/api/v[1-9][0-9]*/`).test(e.request.url)) {
+  if (
+    !e.request.url.startsWith("http") ||
+    new RegExp(`^${currentLocation}/api/v[1-9][0-9]*/`).test(e.request.url)
+  ) {
     return;
   }
 

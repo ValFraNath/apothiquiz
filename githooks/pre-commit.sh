@@ -14,4 +14,5 @@ if [ "$(git diff --name-only HEAD | grep "^client/")" != "" ]; then
     npm run test -- --watchAll=false || exit 1
 fi
 
+cd "$(git rev-parse --show-toplevel)" || exit 1
 exit 0

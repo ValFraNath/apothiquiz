@@ -316,7 +316,11 @@ function doUsersExist(...users) {
  */
 function createDuelInDatabase(player1, player2, rounds) {
   return new Promise((resolve, reject) => {
-    queryPromise("CALL createDuel(:player1,:player2,:content)", { player1, player2, content: JSON.stringify(rounds) })
+    queryPromise("CALL createDuel(:player1,:player2,:content)", {
+      player1,
+      player2,
+      content: JSON.stringify(rounds),
+    })
       .then((res) => resolve(res[0][0].id))
       .catch((error) => {
         logError(error, "Can't create duel");
@@ -463,7 +467,9 @@ function formatDuel(duel, username) {
   const inProgress = duel[0].du_inProgress;
 
   const userAnswers = JSON.parse(duel.find((player) => player.us_login === username).re_answers);
-  const opponentAnswers = JSON.parse(duel.find((player) => player.us_login !== username).re_answers);
+  const opponentAnswers = JSON.parse(
+    duel.find((player) => player.us_login !== username).re_answers
+  );
 
   const opponent = duel.find((player) => player.us_login !== username).us_login;
 
@@ -501,7 +507,13 @@ function formatDuel(duel, username) {
     }
   });
 
-  const formattedDuel = { id: duel[0].du_id, opponent, currentRound, inProgress, rounds: formattedRound };
+  const formattedDuel = {
+    id: duel[0].du_id,
+    opponent,
+    currentRound,
+    inProgress,
+    rounds: formattedRound,
+  };
 
   const scores = computeScores(formattedDuel);
   formattedDuel.userScore = scores.user;
@@ -609,7 +621,10 @@ function computeScores(duel) {
   const end = duel.inProgress ? duel.currentRound - 1 : Infinity;
   return duel.rounds.slice(0, end).reduce(
     (scores, round) => {
-      scores.user += round.reduce((score, question) => score + Number(question.userAnswer === question.goodAnswer), 0);
+      scores.user += round.reduce(
+        (score, question) => score + Number(question.userAnswer === question.goodAnswer),
+        0
+      );
       scores.opponent += round.reduce(
         (score, question) => score + Number(question.opponentAnswer === question.goodAnswer),
         0

@@ -9,7 +9,14 @@ const __dirname = path.resolve();
 dotenv.config();
 
 // Be sure to add a new version at the end of this array (it must be sorted)
-const versions = ["2021-01-08", "2021-01-14", "2021-01-16", "2021-01-21", "2021-01-25", "2021-01-26"];
+const versions = [
+  "2021-01-08",
+  "2021-01-14",
+  "2021-01-16",
+  "2021-01-21",
+  "2021-01-25",
+  "2021-01-26",
+];
 
 /**
  * Get the current API version

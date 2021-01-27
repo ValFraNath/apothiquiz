@@ -2,7 +2,14 @@ export const expectations = {
   molecules: {
     number_of_molecule: 141,
     systems: {
-      all: ["ANTIINFECTIEUX", "ANTIPARASITAIRE", "ANTIBIOTIQUE", "ANTIVIRAL", "ANTIRIEN", "TRESNULLE"],
+      all: [
+        "ANTIINFECTIEUX",
+        "ANTIPARASITAIRE",
+        "ANTIBIOTIQUE",
+        "ANTIVIRAL",
+        "ANTIRIEN",
+        "TRESNULLE",
+      ],
       nodes: [
         {
           name: "ANTIINFECTIEUX",
@@ -70,7 +77,10 @@ export const expectations = {
       nodes: [
         {
           name: "camion",
-          parents: ["INTI (INHIBITEURS NUCLEOSIDIQUES TRANSCRIPTASE INVERSE)", "ANALOGUES NUCLEOSIDIQUES"],
+          parents: [
+            "INTI (INHIBITEURS NUCLEOSIDIQUES TRANSCRIPTASE INVERSE)",
+            "ANALOGUES NUCLEOSIDIQUES",
+          ],
         },
         {
           name: "CEPHALOSPORINE DE 1ERE GENERATION",

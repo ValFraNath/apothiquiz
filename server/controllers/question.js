@@ -192,7 +192,10 @@ export function createGeneratorOfType(type) {
       queryQuestion(filename, type, before)
         .then((question) =>
           resolve(
-            Object.assign(question, { wording: typeInfos.createWording(question.subject), title: typeInfos.title })
+            Object.assign(question, {
+              wording: typeInfos.createWording(question.subject),
+              title: typeInfos.title,
+            })
           )
         )
         .catch((error) => {
