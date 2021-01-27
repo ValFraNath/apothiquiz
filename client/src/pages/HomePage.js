@@ -73,12 +73,12 @@ class HomePage extends Component {
           <div id="header-background"></div>
           <Avatar
             size="125px"
-            eyes={currentUser?.avatar.eyes ?? 0}
-            hands={currentUser?.avatar.hands ?? 0}
-            hat={currentUser?.avatar.hat ?? 0}
-            mouth={currentUser?.avatar.mouth ?? 0}
-            colorBG={currentUser?.avatar.colorBG ?? "#d3d3d3"}
-            colorBody={currentUser?.avatar.colorBody ?? "#0c04fc"}
+            eyes={currentUser?.avatar.eyes}
+            hands={currentUser?.avatar.hands}
+            hat={currentUser?.avatar.hat}
+            mouth={currentUser?.avatar.mouth}
+            colorBG={currentUser?.avatar.colorBG}
+            colorBody={currentUser?.avatar.colorBody}
           />
 
           <div>
@@ -113,12 +113,12 @@ class HomePage extends Component {
                 <article key={index}>
                   <Avatar
                     size="75px"
-                    eyes={usersData[value.opponent]?.avatar.eyes ?? 0}
-                    hands={usersData[value.opponent]?.avatar.hands ?? 0}
-                    hat={usersData[value.opponent]?.avatar.hat ?? 0}
-                    mouth={usersData[value.opponent]?.avatar.mouth ?? 0}
-                    colorBG={usersData[value.opponent]?.avatar.colorBG ?? "#d3d3d3"}
-                    colorBody={usersData[value.opponent]?.avatar.colorBody ?? "#0c04fc"}
+                    eyes={usersData[value.opponent]?.avatar.eyes}
+                    hands={usersData[value.opponent]?.avatar.hands}
+                    hat={usersData[value.opponent]?.avatar.hat}
+                    mouth={usersData[value.opponent]?.avatar.mouth}
+                    colorBG={usersData[value.opponent]?.avatar.colorBG}
+                    colorBody={usersData[value.opponent]?.avatar.colorBody}
                   />
                   <div className="challenges-text">
                     <div>
@@ -135,7 +135,7 @@ class HomePage extends Component {
 
         <section>
           <h2>
-            <img src={WaitPilette} alt="Pilette is waiting" /> En attente de l'adversaire
+            <img src={WaitPilette} alt="Pilette is waiting" /> En attente
           </h2>
           {pendingChallenges.length === 0 ? (
             <p>Aucun défi à en attente pour le moment.</p>
