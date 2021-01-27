@@ -39,7 +39,10 @@ class HomePage extends Component {
           pendingChallenges: pending,
         });
 
-        const listOfUsers = [...toPlay.map((value) => value.opponent), ...pending.map((value) => value.opponent)];
+        const listOfUsers = [
+          ...toPlay.map((value) => value.opponent),
+          ...pending.map((value) => value.opponent),
+        ];
         this.getUsersData(listOfUsers);
       })
       .catch((err) => console.error(err));
