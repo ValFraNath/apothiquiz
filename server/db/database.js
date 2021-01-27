@@ -2,7 +2,7 @@ import mysql from "mysql";
 import dotenv from "dotenv";
 import fs from "fs";
 import path from "path";
-import { logError } from "../modules/ErrorLogger.js";
+import { logError } from "../global/ErrorLogger.js";
 
 const __dirname = path.resolve();
 

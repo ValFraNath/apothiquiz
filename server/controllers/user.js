@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 
 import { queryPromise } from "../db/database.js";
-import HttpResponseWrapper from "../modules/HttpResponseWrapper.js";
+import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
 
 dotenv.config();
 

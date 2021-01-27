@@ -1,6 +1,6 @@
 import { queryPromise } from "../db/database.js";
-import { logError } from "../modules/ErrorLogger.js";
-import HttpResponseWrapper from "../modules/HttpResponseWrapper.js";
+import { logError } from "../global/ErrorLogger.js";
+import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
 import { createGeneratorOfType, NotEnoughDataError } from "./question.js";
 
 export const MAX_QUESTION_TYPE = 10;

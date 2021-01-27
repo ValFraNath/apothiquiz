@@ -1,7 +1,7 @@
 import fs from "fs/promises";
 import path from "path";
 import { queryPromise } from "../db/database.js";
-import HttpResponseWrapper from "../modules/HttpResponseWrapper.js";
+import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
 
 const generatorInfosByType = {
   1: {
@@ -116,7 +116,7 @@ export default { generateQuestion };
 
 // ***** Internal functions *****
 
-const scriptsFolderPath = path.resolve("modules", "question_generator_scripts");
+const scriptsFolderPath = path.resolve("global", "question_generator_scripts");
 
 /**
  * Create a question by requesting database with a given script

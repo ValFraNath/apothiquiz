@@ -16,7 +16,7 @@ export default class HttpResponseWrapper {
    */
   sendServerError(error) {
     logError(error);
-    return this.original.status(500).json({ message: "Server side error" });
+    return this.sendResponse(500, { message: "Server side error" });
   }
 
   sendUsageError(status, message, code) {

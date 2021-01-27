@@ -1,5 +1,5 @@
 import db from "../db/database.js";
-import HttpResponseWrapper from "../modules/HttpResponseWrapper.js";
+import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
 
 /**
  * @apiDefine AccessLoggedIn Logged user access only

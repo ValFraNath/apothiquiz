@@ -4,11 +4,11 @@ import mocha from "mocha";
 import fs from "fs";
 import deepEqualAnyOrder from "deep-equal-in-any-order";
 
-import { parseCSV } from "../../modules/data_importer/csv_parser/Parser.js";
+import { parseCSV } from "../../global/data_importer/csv_parser/Parser.js";
 import { expectations } from "./expectations.js";
 // eslint-disable-next-line no-unused-vars
-import { ClassificationNode } from "../../modules/data_importer/csv_parser/MoleculesClassification.js";
-import { HeaderErrors } from "../../modules/data_importer/csv_parser/HeaderChecker.js";
+import { ClassificationNode } from "../../global/data_importer/csv_parser/MoleculesClassification.js";
+import { HeaderErrors } from "../../global/data_importer/csv_parser/HeaderChecker.js";
 
 chai.use(deepEqualAnyOrder);
 const { before } = mocha;

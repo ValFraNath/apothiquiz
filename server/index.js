@@ -6,7 +6,7 @@ import apiRouter from "./routes/api.route.js";
 import reactRouter from "./routes/react.route.js";
 import RequestSyntaxErrorHandler from "./middlewares/error.middleware.js";
 import db from "./db/database.js";
-import { logError } from "./modules/ErrorLogger.js";
+import { logError } from "./global/ErrorLogger.js";
 
 dotenv.config();
 
