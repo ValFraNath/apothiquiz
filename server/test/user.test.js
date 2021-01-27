@@ -3,7 +3,7 @@ import chaiHttp from "chai-http";
 import jwt from "jsonwebtoken";
 
 import app from "../index.js";
-import { forceTruncateTables, insertData } from "./index.test.js";
+import { forceTruncateTables, insertData, requestAPI } from "./index.test.js";
 
 chai.use(chaiHttp);
 const expect = chai.expect;
@@ -93,93 +93,69 @@ describe("User test", function () {
 
   describe("Get data from several users", function () {
     let token;
-    before(function (done) {
+    before(async function () {
       // Authenticate
-      chai
-        .request(app)
-        .post("/api/v1/users/login")
-        .send({
+      const res = await requestAPI("users/login", {
+        body: {
           userPseudo: "fpoguet",
           userPassword: "1234",
-        })
-        .end((err, res) => {
-          if (err) {
-            throw err;
-          }
+        },
+        method: "post",
+      });
+      expect(res.status).to.be.equal(200);
 
-          expect(res.status, res.error).to.be.equal(200);
-
-          expect(Object.keys(res.body)).to.contains("pseudo");
-          expect(Object.keys(res.body)).to.contains("token");
-          token = "Bearer " + res.body.token;
-
-          done();
-        });
+      expect(Object.keys(res.body)).to.contains("pseudo");
+      expect(Object.keys(res.body)).to.contains("token");
+      token = res.body.token;
     });
 
-    it("All users exist", function (done) {
-      chai
-        .request(app)
-        .post("/api/v1/users/")
-        .send(["nhoun", "fpoguet"])
-        .set("Authorization", token)
-        .end((err, res) => {
-          if (err) {
-            throw err;
-          }
-          expect(res.status, res.error).to.be.equal(200);
+    it("All users exist", async function () {
+      const res = await requestAPI("users", {
+        token: token,
+        body: ["nhoun", "fpoguet"],
+        method: "post",
+      });
 
-          expect(Object.keys(res.body)).to.have.lengthOf(2);
-          expect(Object.keys(res.body)).to.contains("nhoun");
-          expect(Object.keys(res.body)).to.contains("fpoguet");
+      expect(res.status, res.error).to.be.equal(200);
 
-          const firstUser = res.body["nhoun"];
-          expect(Object.keys(firstUser)).to.contains("pseudo");
-          expect(firstUser.pseudo).to.be.equal("nhoun");
-          expect(Object.keys(firstUser)).to.contains("defeats");
-          expect(Object.keys(firstUser)).to.contains("victories");
-          expect(Object.keys(firstUser)).to.contains("avatar");
-          done();
-        });
+      expect(Object.keys(res.body)).to.have.lengthOf(2);
+      expect(Object.keys(res.body)).to.contains("nhoun");
+      expect(Object.keys(res.body)).to.contains("fpoguet");
+
+      const firstUser = res.body["nhoun"];
+      expect(Object.keys(firstUser)).to.contains("pseudo");
+      expect(firstUser.pseudo).to.be.equal("nhoun");
+      expect(Object.keys(firstUser)).to.contains("defeats");
+      expect(Object.keys(firstUser)).to.contains("victories");
+      expect(Object.keys(firstUser)).to.contains("avatar");
     });
 
-    it("Some users do not exist", function (done) {
-      chai
-        .request(app)
-        .post("/api/v1/users/")
-        .send(["nhoun", "azerty"])
-        .set("Authorization", token)
-        .end((err, res) => {
-          if (err) {
-            throw err;
-          }
-          expect(res.status, res.error).to.be.equal(200);
+    it("Some users do not exist", async function () {
+      const res = await requestAPI("users", {
+        token: token,
+        body: ["nhoun", "azerty"],
+        method: "post",
+      });
 
-          expect(Object.keys(res.body)).to.have.lengthOf(1);
-          expect(Object.keys(res.body)).to.contains("nhoun");
+      expect(res.status, res.error).to.be.equal(200);
 
-          const firstUser = res.body["nhoun"];
-          expect(Object.keys(firstUser)).to.contains("pseudo");
-          expect(firstUser.pseudo).to.be.equal("nhoun");
-          expect(Object.keys(firstUser)).to.contains("defeats");
-          expect(Object.keys(firstUser)).to.contains("victories");
-          expect(Object.keys(firstUser)).to.contains("avatar");
-          done();
-        });
+      expect(Object.keys(res.body)).to.have.lengthOf(1);
+      expect(Object.keys(res.body)).to.contains("nhoun");
+
+      const firstUser = res.body["nhoun"];
+      expect(Object.keys(firstUser)).to.contains("pseudo");
+      expect(firstUser.pseudo).to.be.equal("nhoun");
+      expect(Object.keys(firstUser)).to.contains("defeats");
+      expect(Object.keys(firstUser)).to.contains("victories");
+      expect(Object.keys(firstUser)).to.contains("avatar");
     });
 
-    it("Not logged in", function (done) {
-      chai
-        .request(app)
-        .get("/api/v1/users/fpoguet")
-        // No Authorization header
-        .end((err, res) => {
-          if (err) {
-            throw err;
-          }
-          expect(res.status, res.error).to.be.equal(401);
-          done();
-        });
+    it("Not logged in", async function () {
+      const err = await requestAPI("users", {
+        body: ["nhoun", "fpoguet"],
+        method: "post",
+      });
+      expect(err.status).to.be.equal(401);
     });
   });
 
