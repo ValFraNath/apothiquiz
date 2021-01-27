@@ -116,7 +116,7 @@ User.severalGetInfos = function (req, res) {
           };
         }
       } catch (e) {
-        res.status(500).json({ error: e });
+        res.status(500).json({ message: e });
       }
       res.status(200).json(usersData);
     })
