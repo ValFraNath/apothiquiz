@@ -1,5 +1,5 @@
 import React from "react";
-import PropTypes from "proptypes";
+import PropTypes from "prop-types";
 
 import ImageEyes from "../images/avatar/eyes.png";
 import ImageHands from "../images/avatar/hands.png";

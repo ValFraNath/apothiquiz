@@ -2,17 +2,17 @@ import React, { Component } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import * as serviceWorker from "./serviceWorker";
 import { ReloadIcon } from "@modulz/radix-icons";
+import axios from "axios";
 
 import "./styles/styles.scss";
 import ProtectedRoute from "./components/ProtectedRoute";
 import TopBar from "./components/system/TopBar";
-import Menu from "./components/pages/Menu";
-import About from "./components/pages/About";
-import Train from "./components/layouts/Train";
-import Login from "./components/pages/Login";
+import Menu from "./pages/Menu";
+import About from "./pages/About";
+import Train from "./pages/Train";
+import Login from "./pages/Login";
+import Profile from "./pages/Profile";
 import AuthService from "./services/auth.service";
-import axios from "axios";
-import Profile from "./components/pages/Profile";
 
 /**
  * Set up the authorization header in all request if the user is logged in

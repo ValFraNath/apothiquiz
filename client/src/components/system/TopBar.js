@@ -1,5 +1,5 @@
 import React, { Component, useState, useEffect } from "react";
-import PropTypes from "proptypes";
+import PropTypes from "prop-types";
 import axios from "axios";
 import { Link } from "react-router-dom";
 // import { CaretLeftIcon } from "@modulz/radix-icons";
