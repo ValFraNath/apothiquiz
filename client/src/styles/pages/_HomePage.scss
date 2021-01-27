@@ -80,10 +80,8 @@
         margin-bottom: 0;
       }
 
-      & > div {
-        &:first-of-type {
-          margin-right: 0.8rem;
-        }
+      & > div:first-of-type {
+        margin-right: 0.8rem;
       }
 
       .challenges-text {
