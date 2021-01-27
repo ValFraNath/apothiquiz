@@ -1,4 +1,4 @@
-import db from "../db/database.js";
+import { getSystemInformation } from "../db/database.js";
 import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
 
 /**
@@ -33,12 +33,13 @@ import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
  */
 function status(req, _res) {
   const res = new HttpResponseWrapper(_res);
-  db.getSystemInformation("api_version")
+  getSystemInformation("api_version")
     .then((version) => {
       const response = {
         status: "connected",
         api_version: version,
       };
+
       res.sendResponse(200, response);
     })
     .catch(res.sendServerError);

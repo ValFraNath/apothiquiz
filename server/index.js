@@ -5,7 +5,7 @@ import bodyParser from "body-parser";
 import apiRouter from "./routes/api.route.js";
 import reactRouter from "./routes/react.route.js";
 import RequestSyntaxErrorHandler from "./middlewares/error.middleware.js";
-import db from "./db/database.js";
+import Database from "./db/database.js";
 import { logError } from "./global/ErrorLogger.js";
 
 dotenv.config();
@@ -26,14 +26,14 @@ app.use("/api/v1/", apiRouter);
 app.use("/", reactRouter);
 app.use(RequestSyntaxErrorHandler);
 
-db.connection.on("database_ready", function () {
-  app.listen(PORT, () => {
-    app.isReady = true;
-    console.log(`Server is running on port ${PORT}.`);
-  });
-});
-
-db.connection.connect(db.connect);
+Database.connect()
+  .then(() => {
+    app.listen(PORT, () => {
+      app.isReady = true;
+      console.info(`Server is running on port ${PORT}.`);
+    });
+  })
+  .catch(() => process.exit(1));
 
 /**
  * Check every <interval> ms if the server is ready to use
@@ -42,7 +42,7 @@ db.connection.connect(db.connect);
  */
 app.waitReady = function (callback, interval = 100) {
   let int = setInterval(() => {
-    if (app.isReady && db.isReady) {
+    if (app.isReady) {
       callback();
       clearInterval(int);
     }
