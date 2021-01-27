@@ -12,7 +12,7 @@ import About from "./pages/About";
 import Train from "./pages/Train";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
-import HomePage from "./components/pages/HomePage";
+import HomePage from "./pages/HomePage";
 import AuthService from "./services/auth.service";
 
 /**
