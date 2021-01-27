@@ -28,7 +28,8 @@ User.login = function (req, res) {
     return;
   }
 
-  const sql = "SELECT COUNT(*) as found \
+  const sql =
+    "SELECT COUNT(*) as found \
                FROM user                \
                WHERE us_login = ?";
 
