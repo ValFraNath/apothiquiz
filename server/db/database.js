@@ -2,7 +2,7 @@ import mysql from "mysql";
 import dotenv from "dotenv";
 import fs from "fs";
 import path from "path";
-import ErrorLogger from "../modules/ErrorLogger.js";
+import { logError } from "../modules/ErrorLogger.js";
 
 const __dirname = path.resolve();
 
@@ -27,7 +27,7 @@ Database.isReady = false;
 
 Database.connect = async function (err) {
   if (err) {
-    ErrorLogger.log(err, "Can't connect to the database");
+    logError(err, "Can't connect to the database");
     return;
   }
   console.log("Connected to database!");
@@ -52,7 +52,7 @@ Database.create = async function () {
   await queryPromise(creationScript)
     .then(() => console.log("-> Database created!\n"))
     .catch((err) => {
-      ErrorLogger.log(err, "Can't create the database");
+      logError(err, "Can't create the database");
     });
 };
 
@@ -60,23 +60,23 @@ Database.create = async function () {
  * Get a system information from the database
  *
  * @param {String} key the name of the information
- * @return {Promise<Number|String>} The value of the information, or -1 if the information is not found
+ * @return {Promise<Number|Strin|nullg>} The value of the information, or null if the information is not found
  */
 Database.getSystemInformation = function (key) {
-  return new Promise(function (resolve) {
+  return new Promise(function (resolve, reject) {
     const sql = "SELECT value   \
        FROM server_informations \
        WHERE `key` = ? ;";
 
     queryPromise(sql, [key])
-      .then((res) => resolve(JSON.parse(JSON.stringify(res))[0].value))
-      .catch((err) => {
-        if (err.code === "ER_NO_SUCH_TABLE") {
-          resolve(-1);
+      .then((res) => {
+        if (res[0] && res[0].value) {
+          resolve(res[0].value);
         } else {
-          ErrorLogger.log(err, "Can't get server informations");
+          reject(new Error("Unable to find this information"));
         }
-      });
+      })
+      .catch(reject);
   });
 };
 
@@ -91,7 +91,7 @@ Database.update = async function (version = versions[0]) {
   }
 
   if (!versions.includes(version)) {
-    ErrorLogger.log(new Error("Invalid database version found"));
+    logError(new Error("Invalid database version found"));
   }
 
   for (let i = versions.indexOf(version) + 1; i < versions.length; ++i) {
@@ -111,7 +111,7 @@ Database.update = async function (version = versions[0]) {
     await queryPromise(updateQuery)
       .then(() => console.info("-> Database updated!\n"))
       .catch((err) => {
-        ErrorLogger.log(err, "Can't update the database");
+        logError(err, "Can't update the database");
       });
   }
 };

@@ -1,5 +1,6 @@
 import { queryPromise } from "../db/database.js";
-import ErrorLogger from "../modules/ErrorLogger.js";
+import { logError } from "../modules/ErrorLogger.js";
+import HttpResponseWrapper from "../modules/HttpResponseWrapper.js";
 import { createGeneratorOfType, NotEnoughDataError } from "./question.js";
 
 export const MAX_QUESTION_TYPE = 10;
@@ -29,35 +30,40 @@ export const NUMBER_OF_QUESTIONS_IN_ROUND = 5;
  * @apiUse NotEnoughDataError
  *
  */
-function create(req, res) {
+function create(req, _res) {
+  const res = new HttpResponseWrapper(_res);
+
   const username = req.body.auth_user;
   const opponent = req.body.opponent;
 
   if (!opponent) {
-    return res.status(400).json({ message: "Missing opponent" });
+    return res.sendUsageError(400, "Missing opponent");
   }
 
   if (username === opponent) {
-    return res.status(400).json({ message: "You can't challenge yourself" });
+    return res.sendUsageError(400, "You can't challenge yourself");
   }
-
-  const sendLocalError500 = (error) => sendError500(res, error);
 
   doUsersExist(username, opponent)
     .then((yes) => {
       if (!yes) {
-        return res.status(404).json({ message: "Opponent not found" });
+        return res.sendUsageError(404, "Opponent not found");
       }
       createRounds()
         .then((rounds) =>
           createDuelInDatabase(username, opponent, rounds)
-            .then((id) => res.status(201).json({ id }))
-            .catch(sendLocalError500)
+            .then((id) => res.sendResponse(201, { id }))
+            .catch(res.sendServerError)
         )
 
-        .catch(sendLocalError500);
+        .catch((error) => {
+          if (NotEnoughDataError.isInstance(error)) {
+            return res.sendUsageError(422, "Not enought data to generate the duel", error.code);
+          }
+          return res.sendServerError(error);
+        });
     })
-    .catch(sendLocalError500);
+    .catch(res.sendServerError);
 }
 
 /**
@@ -151,24 +157,24 @@ function create(req, res) {
  * @apiUse ErrorServer
  *
  */
-function fetch(req, res) {
-  const sendLocalError500 = (error) => sendError500(res, error);
+function fetch(req, _res) {
+  const res = new HttpResponseWrapper(_res);
 
   const username = req.body.auth_user;
   const duelID = Number(req.params.id);
 
   if (!duelID) {
-    return res.status(400).json({ message: "Missing or invalid duel ID" });
+    return res.sendUsageError(400, "Missing or invalid duel ID");
   }
 
   getDuel(duelID, username)
     .then((duel) => {
       if (!duel) {
-        return res.status(404).json({ message: "Duel not found" });
+        return res.sendUsageError(404, "Duel not found");
       }
-      res.status(200).json(duel);
+      res.sendResponse(200, duel);
     })
-    .catch(sendLocalError500);
+    .catch(res.sendServerError);
 }
 
 /**
@@ -182,12 +188,13 @@ function fetch(req, res) {
  * @apiPermission LoggedIn
  * @apiUse ErrorServer
  */
-function fetchAll(req, res) {
+function fetchAll(req, _res) {
+  const res = new HttpResponseWrapper(_res);
   const username = req.body.auth_user;
 
   getAllDuels(username)
-    .then((duels) => res.status(200).json(duels))
-    .catch((error) => sendError500(res, error));
+    .then((duels) => res.sendResponse(200, duels))
+    .catch(res.sendServerError);
 }
 
 /**
@@ -216,45 +223,44 @@ function fetchAll(req, res) {
  *
  *
  */
-function play(req, res) {
+function play(req, _res) {
+  const res = new HttpResponseWrapper(_res);
   const id = Number(req.params.id);
   const round = Number(req.params.round);
   const username = req.body.auth_user;
   const answers = req.body.answers || [];
 
   if (!id) {
-    return res.status(400).json({ message: "Invalid or missing duel id" });
+    return res.sendUsageError(400, "Invalid or missing duel id");
   }
 
   getDuel(id, username).then((duel) => {
     if (!duel) {
-      return res.status(404).json({ message: "Duel not found" });
+      return res.sendUsageError(404, "Duel not found");
     }
 
     if (!duel.inProgress) {
-      return res.status(400).json({ message: "This duel is finished" });
+      return res.sendUsageError(400, "This duel is finished");
     }
 
     if (duel.currentRound !== round) {
-      return res.status(400).json({ message: "Invalid duel round" });
+      return res.sendUsageError(400, "Invalid duel round");
     }
     if (duel.rounds[round - 1][0].userAnswer !== undefined) {
-      return res.status(400).json({ message: "You can only play a round once" });
+      return res.sendUsageError(400, "You can only play a round once");
     }
 
     if (answers.length !== duel.rounds[round - 1].length) {
-      return res.status(400).json({ message: "Incorrect number of answers" });
+      return res.sendUsageError(400, "Incorrect number of answers");
     }
-
-    const sendLocalError500 = (error) => sendError500(res, error);
 
     insertResultInDatabase(id, username, answers)
       .then((newDuel) =>
         updateDuelState(newDuel, username)
-          .then((duel) => res.status(200).json(duel))
-          .catch(sendLocalError500)
+          .then((duel) => res.sendResponse(200, duel))
+          .catch(res.sendServerError)
       )
-      .catch(sendLocalError500);
+      .catch(res.sendServerError);
   });
 }
 
@@ -266,7 +272,8 @@ let mockedDuelsRounds;
  */
 export function _initMockedDuelRounds(fakeDuelsRounds) {
   if (process.env.NODE_ENV !== "test") {
-    ErrorLogger.log(new Error("Function reserved for tests"));
+    logError(new Error("Function reserved for tests"));
+    return;
   }
   mockedDuelsRounds = fakeDuelsRounds;
 }
@@ -274,17 +281,6 @@ export function _initMockedDuelRounds(fakeDuelsRounds) {
 export default { create, fetch, fetchAll, play };
 
 // ***** INTERNAL FUNCTIONS *****
-
-/**
- * while waiting for a global error handler
- */
-function sendError500(res, error) {
-  if (NotEnoughDataError.isInstance(error)) {
-    return res.status(422).json({ message: error.message, code: error.code });
-  }
-  ErrorLogger.log(error);
-  return res.status(500).json({ message: "Server side error" });
-}
 
 /**
  * Check if all users in a list exist
@@ -326,7 +322,7 @@ function createDuelInDatabase(player1, player2, rounds) {
 /**
  * Create all rounds of a duel
  * This function can be mocked : @see _initMockedDuelRounds
- * @return {Promise<object[][]>}
+ * @return {Promise<object[][]|NotEnoughDataError>}
  */
 function createRounds() {
   return new Promise((resolve, reject) => {

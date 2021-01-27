@@ -1,4 +1,5 @@
 import db from "../db/database.js";
+import HttpResponseWrapper from "../modules/HttpResponseWrapper.js";
 
 /**
  * @apiDefine AccessLoggedIn Logged user access only
@@ -30,13 +31,17 @@ import db from "../db/database.js";
  * @apiSuccess (200) {String} status Connection status to the server
  * @apiSuccess (200) {String} db_version Database date-based version (AAAA-MM-DD)
  */
-async function status(req, res) {
-  let response = {
-    status: "connected",
-    api_version: await db.getSystemInformation("api_version"),
-  };
-
-  res.status(200).json(response);
+function status(req, _res) {
+  const res = new HttpResponseWrapper(_res);
+  db.getSystemInformation("api_version")
+    .then((version) => {
+      const response = {
+        status: "connected",
+        api_version: version,
+      };
+      res.sendResponse(200, response);
+    })
+    .catch(res.sendServerError);
 }
 
 export default { status };

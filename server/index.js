@@ -6,7 +6,7 @@ import apiRouter from "./routes/api.route.js";
 import reactRouter from "./routes/react.route.js";
 import RequestSyntaxErrorHandler from "./middlewares/error.middleware.js";
 import db from "./db/database.js";
-import ErrorLogger from "./modules/ErrorLogger.js";
+import { logError } from "./modules/ErrorLogger.js";
 
 dotenv.config();
 
@@ -15,7 +15,7 @@ const app = express();
 app.isReady = false;
 
 if (!process.env.TOKEN_PRIVATE_KEY) {
-  ErrorLogger.log(new Error("TOKEN_PRIVATE_KEY is not defined in .env. Please generate a random private key"));
+  logError(new Error("TOKEN_PRIVATE_KEY is not defined in .env. Please generate a random private key"));
   process.exit(1);
 }
 
