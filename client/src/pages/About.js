@@ -37,10 +37,12 @@ export default class About extends Component {
     return (
       <main id="informations">
         <p>
-          Guacamole est une application d'apprentissage réflexe à destination des étudiants en pharmacie de l'Université
-          de Franche-Comté.
+          Guacamole est une application d'apprentissage réflexe à destination des étudiants en
+          pharmacie de l'Université de Franche-Comté.
         </p>
-        <p>Elle est réalisée dans le cadre d'un projet tutoré de Licence 3 Informatique 2020-2021.</p>
+        <p>
+          Elle est réalisée dans le cadre d'un projet tutoré de Licence 3 Informatique 2020-2021.
+        </p>
         <p>
           <b>Application en développement actif</b>
         </p>
@@ -86,7 +88,9 @@ export default class About extends Component {
             <tr>
               <td>Date de version : </td>
               <td>
-                {process.env.NODE_ENV === "production" ? date.toLocaleString().split("GMT")[0] : process.env.NODE_ENV}
+                {process.env.NODE_ENV === "production"
+                  ? date.toLocaleString().split("GMT")[0]
+                  : process.env.NODE_ENV}
               </td>
             </tr>
             <tr>

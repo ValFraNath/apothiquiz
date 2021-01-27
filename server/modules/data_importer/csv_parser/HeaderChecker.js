@@ -77,7 +77,9 @@ export class HeaderErrors extends Error {
       HeaderErrors.BAD_COLUMNS_GROUP
     ] = `Les colonnes d'une même propriété sont mal regroupées : '${title}' (col. ${index})`;
 
-    messages[HeaderErrors.DUPLICATE_UNIQUE_COLUMN] = `Duplication de la colonne unique '${title}' (col. ${index})`;
+    messages[
+      HeaderErrors.DUPLICATE_UNIQUE_COLUMN
+    ] = `Duplication de la colonne unique '${title}' (col. ${index})`;
 
     messages[HeaderErrors.MISSING_COLUMN] = `Colonne manquante : '${title}'`;
 
@@ -182,7 +184,9 @@ function checkInvalidColumns(header, columnsSpecifications) {
  */
 function checkDuplicateUniqueColumns(header, columnsSpecifications) {
   const errors = [];
-  const uniqueColumnTitles = columnsSpecifications.filter((column) => column.isUnique()).map((column) => column.title);
+  const uniqueColumnTitles = columnsSpecifications
+    .filter((column) => column.isUnique())
+    .map((column) => column.title);
 
   let checkedColumns = [];
 

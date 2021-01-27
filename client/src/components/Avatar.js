@@ -19,9 +19,19 @@ const Avatar = function (props) {
     >
       <div className="avatar-inside" style={{ backgroundColor: props.colorBG }}>
         <img className="avatar-eyes" src={ImageEyes} data-choice={props.eyes} alt="Avatar eyes" />
-        <img className="avatar-hands" src={ImageHands} data-choice={props.hands} alt="Avatar hands" />
+        <img
+          className="avatar-hands"
+          src={ImageHands}
+          data-choice={props.hands}
+          alt="Avatar hands"
+        />
         <img className="avatar-hat" src={ImageHats} data-choice={props.hat} alt="Avatar hat" />
-        <img className="avatar-mouth" src={ImageMouthes} data-choice={props.mouth} alt="Avatar mouth" />
+        <img
+          className="avatar-mouth"
+          src={ImageMouthes}
+          data-choice={props.mouth}
+          alt="Avatar mouth"
+        />
         <img className="avatar-body-top" src={ImageBodyTop} alt="Avatar body" />
         <BodyBottom className="avatar-body-bottom" fill={props.colorBody} alt="Avatar body" />
       </div>

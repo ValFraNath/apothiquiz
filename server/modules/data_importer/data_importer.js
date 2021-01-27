@@ -81,7 +81,10 @@ function createClassificationNodeInserter(classification) {
   return function createSqlToInsertNodeAndChildren({ id, name, children }, higher, level) {
     return (
       insertNode(id, name, higher, level) +
-      children.reduce((sql, node) => sql + createSqlToInsertNodeAndChildren(node, id, level + 1), "")
+      children.reduce(
+        (sql, node) => sql + createSqlToInsertNodeAndChildren(node, id, level + 1),
+        ""
+      )
     );
   };
 }
@@ -98,7 +101,14 @@ function createSqlToInsertProperty(name, values) {
 
   return values.reduce((sql, value) => {
     const valueId = newIdForPropertyValue(id, value.id);
-    return sql + createSqlToInsertInto("property_value")("pv_id", "pv_name", "pv_property")(valueId, value.name, id);
+    return (
+      sql +
+      createSqlToInsertInto("property_value")("pv_id", "pv_name", "pv_property")(
+        valueId,
+        value.name,
+        id
+      )
+    );
   }, script);
 }
 
@@ -118,7 +128,10 @@ function newIdForPropertyValue(propertyId, valueId) {
  * @returns {string}
  */
 function createSqlToInsertAllMolecules(molecules) {
-  return molecules.reduce((sql, molecule) => sql + createSqlToInsertMolecule(new FormattedMolecule(molecule)), "");
+  return molecules.reduce(
+    (sql, molecule) => sql + createSqlToInsertMolecule(new FormattedMolecule(molecule)),
+    ""
+  );
 }
 
 /**
@@ -131,12 +144,29 @@ function createSqlToInsertMolecule(molecule) {
     throw Error("Molecule must be formatted to be inserted");
   }
 
-  const columns = ["mo_id", "mo_dci", "mo_skeletal_formula", "mo_ntr", "mo_difficulty", "mo_system", "mo_class"];
-  const values = ["id", "dci", "skeletal_formule", "ntr", "difficulty", "system", "class"].map((p) =>
-    molecule.getValue(p)
-  );
+  const columns = [
+    "mo_id",
+    "mo_dci",
+    "mo_skeletal_formula",
+    "mo_ntr",
+    "mo_difficulty",
+    "mo_system",
+    "mo_class",
+  ];
+  const values = [
+    "id",
+    "dci",
+    "skeletal_formule",
+    "ntr",
+    "difficulty",
+    "system",
+    "class",
+  ].map((p) => molecule.getValue(p));
 
-  return createSqlToInsertInto("molecule")(...columns)(...values) + createSqlToInsertMoleculeProperties(molecule);
+  return (
+    createSqlToInsertInto("molecule")(...columns)(...values) +
+    createSqlToInsertMoleculeProperties(molecule)
+  );
 }
 
 /**
@@ -152,7 +182,11 @@ function createSqlToInsertMoleculeProperties(molecule) {
       script +
       molecule.properties[property].reduce(
         (sql, value) =>
-          sql + insertIntoMoleculeProperty(molecule.id, newIdForPropertyValue(propertiesId[property], value)),
+          sql +
+          insertIntoMoleculeProperty(
+            molecule.id,
+            newIdForPropertyValue(propertiesId[property], value)
+          ),
         ""
       )
     );

@@ -22,8 +22,17 @@ const files = [
 for (let file of files) {
   describe("Data are well imported in database", function () {
     before("Import data", (done) => {
-      forceTruncateTables("molecule", "property", "property_value", "molecule_property", "class", "system").then(() =>
-        parseAndCreateSqlToInsertAllData(path.resolve("test", "data_importer", "files", file.name)).then((script) => {
+      forceTruncateTables(
+        "molecule",
+        "property",
+        "property_value",
+        "molecule_property",
+        "class",
+        "system"
+      ).then(() =>
+        parseAndCreateSqlToInsertAllData(
+          path.resolve("test", "data_importer", "files", file.name)
+        ).then((script) => {
           queryPromise(script).then(() => done());
         })
       );
@@ -130,7 +139,10 @@ async function getClassification(classification) {
                 RIGHT OUTER JOIN ${singular} as l3 ON l3.${prefix}_higher = l2.${prefix}_id) `;
   let res = await queryPromise(sql);
   return res.map((row) => {
-    return { name: row[singular], parents: [row["parent"], row["grand_parent"]].filter((v) => v !== null) };
+    return {
+      name: row[singular],
+      parents: [row["parent"], row["grand_parent"]].filter((v) => v !== null),
+    };
   });
 }
 
