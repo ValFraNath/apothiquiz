@@ -8,8 +8,8 @@ import Timer from "../components/quiz/Timer";
 import Answers from "../components/quiz/Answers";
 import Message from "../components/quiz/Message";
 import InformationPilette from "../images/information_crop.png";
-import ButtonDefault from "../components/buttons/ButtonDefault";
-import ButtonCircle from "../components/buttons/ButtonCircle";
+import ButtonDefault from "../components/Buttons/ButtonDefault";
+import ButtonCircle from "../components/Buttons/ButtonCircle";
 
 /* ---------- Introduction view ---------- */
 
