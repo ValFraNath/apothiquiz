@@ -13,7 +13,7 @@ Reflex-learning application for pharmacist students.
     Glowing-Octo-Guacamole doesn't mean anything, it's a temporary code name for our project.
   </summary>  
     We were searching a name at the beginning of the project, but weren't able to find one that sounded good. 
-    So we used the wonderful "random name" option of Github, and now were are Guacamolers!
+    So we used the wonderful "random name" option of Github, and now we are Guacamolers!
 </details>
 
 ## Deployment, coding convention and more
