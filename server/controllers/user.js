@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import { queryPromise } from "../db/database.js";
 import dotenv from "dotenv";
+import ErrorLogger from "../modules/ErrorLogger.js";
 dotenv.config();
 
 const User = {};
@@ -178,7 +179,7 @@ User.saveInfos = async function (req, res) {
       ])
         .then(() => res.status(200).json(infos))
         .catch((err) => {
-          console.error(err);
+          ErrorLogger.log(err);
           res.status(500).json({ message: "Server side error" });
         });
     })
@@ -218,8 +219,8 @@ async function getUserInformations(pseudo) {
             defeats: Number(res[0].defeats),
             avatar: JSON.parse(res[0].avatar),
           };
-        } catch (e) {
-          console.error(e);
+        } catch (err) {
+          ErrorLogger.log(err);
           reject("bad mysql response format");
           return;
         }

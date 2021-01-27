@@ -2,6 +2,7 @@ import mysql from "mysql";
 import dotenv from "dotenv";
 import fs from "fs";
 import path from "path";
+import ErrorLogger from "../modules/ErrorLogger.js";
 
 const __dirname = path.resolve();
 
@@ -26,8 +27,8 @@ Database.isReady = false;
 
 Database.connect = async function (err) {
   if (err) {
-    console.error("Can't connect to the database.");
-    throw err;
+    ErrorLogger.log(err, "Can't connect to the database");
+    return;
   }
   console.log("Connected to database!");
 
@@ -51,7 +52,7 @@ Database.create = async function () {
   await queryPromise(creationScript)
     .then(() => console.log("-> Database created!\n"))
     .catch((err) => {
-      throw err;
+      ErrorLogger.log(err, "Can't create the database");
     });
 };
 
@@ -73,7 +74,7 @@ Database.getSystemInformation = function (key) {
         if (err.code === "ER_NO_SUCH_TABLE") {
           resolve(-1);
         } else {
-          throw err;
+          ErrorLogger.log(err, "Can't get server informations");
         }
       });
   });
@@ -90,7 +91,7 @@ Database.update = async function (version = versions[0]) {
   }
 
   if (!versions.includes(version)) {
-    throw new Error("The database version doesn't exist in the versions array");
+    ErrorLogger.log(new Error("Invalid database version found"));
   }
 
   for (let i = versions.indexOf(version) + 1; i < versions.length; ++i) {
@@ -110,7 +111,7 @@ Database.update = async function (version = versions[0]) {
     await queryPromise(updateQuery)
       .then(() => console.info("-> Database updated!\n"))
       .catch((err) => {
-        throw err;
+        ErrorLogger.log(err, "Can't update the database");
       });
   }
 };

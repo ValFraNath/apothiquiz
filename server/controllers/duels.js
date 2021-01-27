@@ -1,4 +1,5 @@
 import { queryPromise } from "../db/database.js";
+import ErrorLogger from "../modules/ErrorLogger.js";
 import { createGeneratorOfType, NotEnoughDataError } from "./question.js";
 
 export const MAX_QUESTION_TYPE = 10;
@@ -265,7 +266,7 @@ let mockedDuelsRounds;
  */
 export function _initMockedDuelRounds(fakeDuelsRounds) {
   if (process.env.NODE_ENV !== "test") {
-    throw "function reserved for tests";
+    ErrorLogger.log(new Error("Function reserved for tests"));
   }
   mockedDuelsRounds = fakeDuelsRounds;
 }
@@ -281,7 +282,7 @@ function sendError500(res, error) {
   if (NotEnoughDataError.isInstance(error)) {
     return res.status(422).json({ message: error.message, code: error.code });
   }
-  console.error(error);
+  ErrorLogger.log(error);
   return res.status(500).json({ message: "Server side error" });
 }
 
