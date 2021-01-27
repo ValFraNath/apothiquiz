@@ -78,7 +78,7 @@ function queryCAS(login, pass) {
  */
 
 /**
- * @api {post} /users/about Get data of several users
+ * @api {post} /users/ Get data of several users
  * @apiName GetUsersData
  * @apiGroup User
  *
