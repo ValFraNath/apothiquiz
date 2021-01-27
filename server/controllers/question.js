@@ -1,6 +1,8 @@
 import fs from "fs/promises";
 import path from "path";
+
 import { queryPromise } from "../db/database.js";
+import { logError } from "../global/ErrorLogger.js";
 import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
 
 const generatorInfosByType = {
@@ -108,7 +110,7 @@ async function generateQuestion(req, _res) {
         res.sendUsageError(422, "Not enough data to generate this type of question", error.code);
         return;
       }
-      res.sendServerError(error);
+      res.sendServerError();
     });
 }
 
@@ -126,23 +128,37 @@ const scriptsFolderPath = path.resolve("global", "question_generator_scripts");
  * @return {Promise<object>} The question
  */
 async function queryQuestion(filename, type, before = "") {
-  return new Promise(function (resolve, reject) {
-    fs.readFile(path.resolve(scriptsFolderPath, filename), { encoding: "utf-8" }).then((script) => {
-      queryPromise(before + script)
-        .then((res) => {
-          const data = res.find((e) => e instanceof Array);
+  return new Promise((resolve, reject) => {
+    fs.readFile(path.resolve(scriptsFolderPath, filename), { encoding: "utf-8" })
+      .then((script) => {
+        queryPromise(before + script)
+          .then((res) => {
+            const data = res.find((e) => e instanceof Array);
 
-          if (data.length < 3) {
-            reject(new NotEnoughDataError());
-          }
-          const formattedQuestion = formatQuestion(data);
-          if (formattedQuestion.answers.includes(null)) {
-            reject(new NotEnoughDataError());
-          }
-          resolve(Object.assign(formattedQuestion, { type }));
-        })
-        .catch(reject);
-    });
+            if (data.length < 3) {
+              return reject(new NotEnoughDataError());
+            }
+            const formattedQuestion = formatQuestion(data);
+            if (formattedQuestion.answers.includes(null)) {
+              return reject(new NotEnoughDataError());
+            }
+            resolve(Object.assign(formattedQuestion, { type }));
+          })
+          .catch((error) => {
+            if (!NotEnoughDataError.isInstance(error)) {
+              logError(error, "Can't generate question");
+              return reject();
+            }
+            reject(error);
+          });
+      })
+      .catch((error) => {
+        if (!NotEnoughDataError.isInstance(error)) {
+          logError(error, `Can't read the script ${filename}`);
+          return reject();
+        }
+        reject(error);
+      });
   });
 }
 
@@ -179,7 +195,13 @@ export function createGeneratorOfType(type) {
             Object.assign(question, { wording: typeInfos.createWording(question.subject), title: typeInfos.title })
           )
         )
-        .catch(reject);
+        .catch((error) => {
+          if (!NotEnoughDataError.isInstance(error)) {
+            logError(error, "Can't create the question");
+            return reject();
+          }
+          reject(error);
+        });
     });
   };
 }

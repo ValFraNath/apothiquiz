@@ -1,4 +1,3 @@
-import { logError } from "./ErrorLogger.js";
 /**
  * Class wrapping the response object
  */
@@ -14,8 +13,7 @@ export default class HttpResponseWrapper {
    * Send the error
    * @param {Error|UsageError} error
    */
-  sendServerError(error) {
-    logError(error);
+  sendServerError() {
     return this.sendResponse(500, { message: "Server side error" });
   }
 
