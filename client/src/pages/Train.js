@@ -16,7 +16,7 @@ import ButtonCircle from "../components/buttons/ButtonCircle";
 const IntroductionView = ({ onClick }) => {
   return (
     <>
-      <img src={InformationPilette} alt="Pilette is thinking deeply" id="" />
+      <img src={InformationPilette} alt="Pilette se concentre avant l'entraînement" />
       <div>
         <h1>Mode entraînement</h1>
         <p id="about">Répondez à une série de questions aléatoire.</p>
