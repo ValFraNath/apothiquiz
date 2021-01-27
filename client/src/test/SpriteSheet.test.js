@@ -1,6 +1,7 @@
 import React from "react";
 import { shallow } from "enzyme";
 import { expect, assert } from "chai";
+
 import SpriteSheet from "../components/SpriteSheet";
 import spritesheet from "../images/connection_status.png";
 

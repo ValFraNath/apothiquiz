@@ -185,7 +185,12 @@ export const expectations = {
     },
     indications: ["Grippe", "Infection bacterienne", "VHB", "VIH", "Parkinson"],
     interactions: [],
-    side_effects: ["hypotension orthostatique", "Décoloration dents", "Hypoplasie email dentaire", "oesophagite"],
+    side_effects: [
+      "hypotension orthostatique",
+      "Décoloration dents",
+      "Hypoplasie email dentaire",
+      "oesophagite",
+    ],
     molecules: [
       {
         dci: "LYMECYCLINE",

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import PropTypes from "proptypes";
+import PropTypes from "prop-types";
 
 class SpriteSheet extends Component {
   constructor(props) {
@@ -51,7 +51,10 @@ class SpriteSheet extends Component {
   play = (onEachStep = null, onAnimationEnd) => {
     let int = setInterval(() => {
       const { currentFrame: frame, direction } = this.state;
-      if ((frame === this.props.steps - 1 && direction === 1) || (frame === 0 && direction === -1)) {
+      if (
+        (frame === this.props.steps - 1 && direction === 1) ||
+        (frame === 0 && direction === -1)
+      ) {
         clearInterval(int);
         this.setState({
           interval: null,
@@ -91,7 +94,9 @@ class SpriteSheet extends Component {
           height: `${this.props.frameHeight}px`,
           width: `${this.props.frameWidth}px`,
           backgroundImage: `url(${this.props.image})`,
-          backgroundSize: `${this.props.frameWidth * this.props.steps}px ${this.props.frameHeight}px`,
+          backgroundSize: `${this.props.frameWidth * this.props.steps}px ${
+            this.props.frameHeight
+          }px`,
           backgroundPositionX: `${-this.state.currentFrame * this.props.frameWidth}px`,
         }}
       />

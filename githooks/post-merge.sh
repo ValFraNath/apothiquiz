@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function changed() {
-    git diff --name-only HEAD@{1} HEAD | grep "^$1" >/dev/null 2>&1
+    git diff --name-only 'HEAD@{1}' HEAD | grep "^$1" >/dev/null 2>&1
 }
 
 cd "$(git rev-parse --show-toplevel)/server" || exit 1

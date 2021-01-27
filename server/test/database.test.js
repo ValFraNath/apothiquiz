@@ -18,7 +18,8 @@ describe("Create and delete table", function () {
   });
 
   it("Insert into", function (done) {
-    let sql = "INSERT INTO testBasicTable (number, string) VALUES (2, 'Viva el guacamole'), (-10, 'Y las tortillas')";
+    let sql =
+      "INSERT INTO testBasicTable (number, string) VALUES (2, 'Viva el guacamole'), (-10, 'Y las tortillas')";
     db.connection.query(sql, function (err) {
       if (err) throw err;
       done();
@@ -52,7 +53,15 @@ describe("Check the database structure", function () {
   let structure = [
     {
       name: "molecule",
-      fields: ["mo_id", "mo_dci", "mo_difficulty", "mo_skeletal_formula", "mo_ntr", "mo_class", "mo_system"],
+      fields: [
+        "mo_id",
+        "mo_dci",
+        "mo_difficulty",
+        "mo_skeletal_formula",
+        "mo_ntr",
+        "mo_class",
+        "mo_system",
+      ],
     },
     {
       name: "property_value",
@@ -130,16 +139,25 @@ describe("Check the database structure", function () {
 
 describe("Procedures Molecule data", () => {
   before("Insert data", (done) => {
-    forceTruncateTables("molecule", "property", "property_value", "molecule_property", "class", "system").then(() =>
-      insertData("molecules.sql").then(() => done())
-    );
+    forceTruncateTables(
+      "molecule",
+      "property",
+      "property_value",
+      "molecule_property",
+      "class",
+      "system"
+    ).then(() => insertData("molecules.sql").then(() => done()));
   });
 
   it("GetClassesOf", async () => {
-    let classes = (await queryPromise("CALL getClassesOf(?)", ["AMANTADINE"]))[0].map((e) => e.cl_name);
+    let classes = (await queryPromise("CALL getClassesOf(?)", ["AMANTADINE"]))[0].map(
+      (e) => e.cl_name
+    );
     expect(classes).to.be.deep.equals(["INHIBITEUR DE FUSION"]);
 
-    classes = (await queryPromise("CALL getClassesOf(?)", ["TENOFOVIR DISOPROXIL"]))[0].map((e) => e.cl_name);
+    classes = (await queryPromise("CALL getClassesOf(?)", ["TENOFOVIR DISOPROXIL"]))[0].map(
+      (e) => e.cl_name
+    );
     expect(classes).to.be.deep.equals([
       "camion",
       "INTI (INHIBITEURS NUCLEOSIDIQUES TRANSCRIPTASE INVERSE)",
@@ -151,7 +169,9 @@ describe("Procedures Molecule data", () => {
   });
 
   it("GetSystemsOf", async () => {
-    let systems = (await queryPromise("CALL getSystemsOf(?)", ["AMANTADINE"]))[0].map((e) => e.sy_name);
+    let systems = (await queryPromise("CALL getSystemsOf(?)", ["AMANTADINE"]))[0].map(
+      (e) => e.sy_name
+    );
     expect(systems).to.be.deep.equals(["ANTIVIRAL", "ANTIINFECTIEUX"]);
 
     systems = (await queryPromise("CALL getSystemsOf(?)", ["NEXISTPA"]))[0].map((e) => e.sy_name);
@@ -162,9 +182,9 @@ describe("Procedures Molecule data", () => {
   });
 
   it("GetPropertyValuesOf", async () => {
-    const indications = (await queryPromise("CALL getPropertyValuesOf(?,?)", ["AMANTADINE", "indications"]))[0].map(
-      (e) => e.value
-    );
+    const indications = (
+      await queryPromise("CALL getPropertyValuesOf(?,?)", ["AMANTADINE", "indications"])
+    )[0].map((e) => e.value);
     expect(indications).to.be.deep.equalInAnyOrder(["Grippe", "Parkinson"]);
 
     const interactions = (
@@ -175,14 +195,20 @@ describe("Procedures Molecule data", () => {
     const side_effects = (
       await queryPromise("CALL getPropertyValuesOf(?,?)", ["METHYLENECYCLINE", "side_effects"])
     )[0].map((e) => e.value);
-    expect(side_effects).to.be.deep.equalInAnyOrder(["Décoloration dents", "Hypoplasie email dentaire", "oesophagite"]);
+    expect(side_effects).to.be.deep.equalInAnyOrder([
+      "Décoloration dents",
+      "Hypoplasie email dentaire",
+      "oesophagite",
+    ]);
 
-    let invalid = (await queryPromise("CALL getPropertyValuesOf(?,?)", ["METHYLENECYCLINE", "colors"]))[0].map(
-      (e) => e.value
-    );
+    let invalid = (
+      await queryPromise("CALL getPropertyValuesOf(?,?)", ["METHYLENECYCLINE", "colors"])
+    )[0].map((e) => e.value);
     expect(invalid).to.be.deep.equalInAnyOrder([]);
 
-    invalid = (await queryPromise("CALL getPropertyValuesOf(?,?)", ["ENOET", "side_effects"]))[0].map((e) => e.value);
+    invalid = (
+      await queryPromise("CALL getPropertyValuesOf(?,?)", ["ENOET", "side_effects"])
+    )[0].map((e) => e.value);
     expect(invalid).to.be.deep.equalInAnyOrder([]);
   });
 });
@@ -195,10 +221,18 @@ describe("Procedures duels", () => {
   });
 
   it("Create a duel", async () => {
-    let res = await queryPromise("CALL createDuel(?,?,?);", ["fpoguet", "nhoun", JSON.stringify(["questions"])]);
+    let res = await queryPromise("CALL createDuel(?,?,?);", [
+      "fpoguet",
+      "nhoun",
+      JSON.stringify(["questions"]),
+    ]);
     expect(res[0][0]).to.haveOwnProperty("id");
     const firstID = res[0][0].id;
-    res = await queryPromise("CALL createDuel(?,?,?);", ["fpoguet", "vperigno", JSON.stringify(["questions"])]);
+    res = await queryPromise("CALL createDuel(?,?,?);", [
+      "fpoguet",
+      "vperigno",
+      JSON.stringify(["questions"]),
+    ]);
     expect(res[0][0]).to.haveOwnProperty("id");
     expect(res[0][0].id).to.be.not.equals(firstID);
     duelIds.push(firstID, res[0][0].id);
@@ -238,7 +272,12 @@ describe("Procedures duels", () => {
   it("Get all duels of a user", async () => {
     const res = await queryPromise("CALL getDuelsOf(?);", ["fpoguet"]);
     expect(res[0]).to.have.length(4);
-    expect(res[0].map((e) => e.du_id)).deep.equalInAnyOrder([duelIds[0], duelIds[0], duelIds[1], duelIds[1]]);
+    expect(res[0].map((e) => e.du_id)).deep.equalInAnyOrder([
+      duelIds[0],
+      duelIds[0],
+      duelIds[1],
+      duelIds[1],
+    ]);
   });
 
   it("Get all duels of a user (bis)", async () => {
@@ -279,10 +318,10 @@ describe("Procedures users statistics", () => {
 
   it("Increment defeats", async () => {
     for (let i = 0; i < 5; ++i) {
-      const res = await queryPromise("CALL incrementUserDefeats(?); SELECT us_defeats FROM user WHERE us_login = ?", [
-        "fpoguet",
-        "fpoguet",
-      ]);
+      const res = await queryPromise(
+        "CALL incrementUserDefeats(?); SELECT us_defeats FROM user WHERE us_login = ?",
+        ["fpoguet", "fpoguet"]
+      );
       expect(res[1][0].us_defeats).equals(i + 1);
     }
   });

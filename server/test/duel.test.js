@@ -5,7 +5,11 @@ import fs from "fs/promises";
 import path from "path";
 
 import { forceTruncateTables, insertData, requestAPI } from "./index.test.js";
-import { NUMBER_OF_QUESTIONS_IN_ROUND, NUMBER_OF_ROUNDS_IN_DUEL, _initMockedDuelRounds } from "../controllers/duels.js";
+import {
+  NUMBER_OF_QUESTIONS_IN_ROUND,
+  NUMBER_OF_ROUNDS_IN_DUEL,
+  _initMockedDuelRounds,
+} from "../controllers/duels.js";
 
 chai.use(chaiHttp);
 const { expect } = chai;
@@ -19,7 +23,10 @@ describe("Duels", () => {
   before("Get users tokens", (done) => {
     Promise.all(
       ["vperigno", "nhoun", "fpoguet"].map((user) =>
-        requestAPI("users/login", { body: { userPseudo: user, userPassword: "1234" }, method: "post" })
+        requestAPI("users/login", {
+          body: { userPseudo: user, userPassword: "1234" },
+          method: "post",
+        })
       )
     ).then((res) => {
       tokens = res.reduce((tokens, res) => {
@@ -128,10 +135,12 @@ describe("Duels", () => {
       });
 
       before("Use mocked rounds", (done) => {
-        fs.readFile(path.resolve("test", "mocks", "rounds.mock.json"), { encoding: "utf8" }).then((mock) => {
-          _initMockedDuelRounds(JSON.parse(mock));
-          done();
-        });
+        fs.readFile(path.resolve("test", "mocks", "rounds.mock.json"), { encoding: "utf8" }).then(
+          (mock) => {
+            _initMockedDuelRounds(JSON.parse(mock));
+            done();
+          }
+        );
       });
 
       before("Create against nath", async () => {
@@ -244,7 +253,15 @@ describe("Duels", () => {
 
             duel.rounds.slice(0, i).forEach((round, i) =>
               round.forEach((question) => {
-                expectHaveProperties(question, "title", "type", "subject", "answers", "userAnswer", "goodAnswer");
+                expectHaveProperties(
+                  question,
+                  "title",
+                  "type",
+                  "subject",
+                  "answers",
+                  "userAnswer",
+                  "goodAnswer"
+                );
                 if (i === duel.currentRound - 1) {
                   expectNotHaveProperties(question, "opponentAnswer");
                 } else {
@@ -401,7 +418,13 @@ describe("Duels", () => {
           });
 
           duel.rounds.forEach((round) => {
-            expect(round.map((question) => question.opponentAnswer)).to.be.deep.equal([1, 3, 2, 0, 0]);
+            expect(round.map((question) => question.opponentAnswer)).to.be.deep.equal([
+              1,
+              3,
+              2,
+              0,
+              0,
+            ]);
           });
         });
 

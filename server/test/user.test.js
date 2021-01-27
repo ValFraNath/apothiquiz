@@ -266,7 +266,14 @@ describe("User test", function () {
         .request(app)
         .patch("/api/v1/users/fpoguet")
         .send({
-          avatar: { colorBG: "#ffffff", colorBody: "#dedede", eyes: 0, hands: 0, hat: 0, mouth: "this-is-not-an-int" },
+          avatar: {
+            colorBG: "#ffffff",
+            colorBody: "#dedede",
+            eyes: 0,
+            hands: 0,
+            hat: 0,
+            mouth: "this-is-not-an-int",
+          },
         }) // missing an information
         .set("Authorization", token)
         .end((err, res) => {
@@ -284,7 +291,14 @@ describe("User test", function () {
         .request(app)
         .patch("/api/v1/users/fpoguet")
         .send({
-          avatar: { colorBG: "#ffffff", colorBody: "#dedede", eyes: 0, hands: 0, hat: 0, mouth: "0" },
+          avatar: {
+            colorBG: "#ffffff",
+            colorBody: "#dedede",
+            eyes: 0,
+            hands: 0,
+            hat: 0,
+            mouth: "0",
+          },
         }) // missing an information
         .set("Authorization", token)
         .end((err, res) => {
@@ -319,7 +333,9 @@ describe("User test", function () {
       chai
         .request(app)
         .patch("/api/v1/users/fpoguet")
-        .send({ avatar: { colorBG: "#ffffff", colorBody: "#dedede", eyes: 0, hands: 0, hat: 0, mouth: 0 } })
+        .send({
+          avatar: { colorBG: "#ffffff", colorBody: "#dedede", eyes: 0, hands: 0, hat: 0, mouth: 0 },
+        })
         .set("Authorization", token)
         .end((err, res) => {
           if (err) {
@@ -347,7 +363,9 @@ describe("User test", function () {
       chai
         .request(app)
         .patch("/api/v1/users/me")
-        .send({ avatar: { colorBG: "#158233", colorBody: "#9F7F53", eyes: 0, hands: 0, hat: 0, mouth: 0 } })
+        .send({
+          avatar: { colorBG: "#158233", colorBody: "#9F7F53", eyes: 0, hands: 0, hat: 0, mouth: 0 },
+        })
         .set("Authorization", token)
         .end((err, res) => {
           if (err) {

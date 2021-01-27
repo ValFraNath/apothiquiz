@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import PropTypes from "proptypes";
+import PropTypes from "prop-types";
 import axios from "axios";
 import { ArrowLeftIcon, ArrowRightIcon } from "@modulz/radix-icons";
 
@@ -185,7 +185,11 @@ class ChooseAvatar extends Component {
           Générer un avatar aléatoire
         </button>
 
-        <button onClick={this.handleSaveAvatar} className="btn" disabled={this.state.avatarChooserState === "saved"}>
+        <button
+          onClick={this.handleSaveAvatar}
+          className="btn"
+          disabled={this.state.avatarChooserState === "saved"}
+        >
           {this.state.avatarChooserState === "saved" && "Avatar sauvegardé"}
           {this.state.avatarChooserState === "saving" && "Sauvegarde en cours..."}
           {this.state.avatarChooserState === "not-saved" && "Sauvegarder l'avatar"}

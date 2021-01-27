@@ -9,9 +9,14 @@ const { expect } = chai;
 
 describe("Question generation with empty database", () => {
   before("Remove all data", (done) => {
-    forceTruncateTables("molecule", "class", "system", "property_value", "molecule_property", "property").then(() =>
-      done()
-    );
+    forceTruncateTables(
+      "molecule",
+      "class",
+      "system",
+      "property_value",
+      "molecule_property",
+      "property"
+    ).then(() => done());
   });
 
   for (let type = 1; type <= 10; ++type) {
@@ -27,9 +32,14 @@ describe("Question generation", function () {
   const questionTypes = [1, 2, 3, 5, 6, 7, 8, 9];
 
   before("Import data", (done) => {
-    forceTruncateTables("molecule", "class", "system", "property", "property_value", "molecule_property").then(() =>
-      insertData("molecules.sql").then(done)
-    );
+    forceTruncateTables(
+      "molecule",
+      "class",
+      "system",
+      "property",
+      "property_value",
+      "molecule_property"
+    ).then(() => insertData("molecules.sql").then(done));
   });
 
   for (let type of questionTypes) {
@@ -50,27 +60,39 @@ describe("Question generation", function () {
     const res = await requestAPI("question/1");
     const { answers, subject, goodAnswer } = res.body;
 
-    const answersBelongsToClass = await Promise.all(answers.map((value) => doesBelongToClass(value, subject)));
+    const answersBelongsToClass = await Promise.all(
+      answers.map((value) => doesBelongToClass(value, subject))
+    );
 
-    answersBelongsToClass.forEach((value, index) => expect(value).to.be.equals(index === Number(goodAnswer)));
+    answersBelongsToClass.forEach((value, index) =>
+      expect(value).to.be.equals(index === Number(goodAnswer))
+    );
   });
 
   it("Type 2 : Consistent values", async () => {
     const res = await requestAPI("question/2");
     const { answers, subject, goodAnswer } = res.body;
 
-    const answersContainingSubject = await Promise.all(answers.map((value) => doesBelongToClass(subject, value)));
+    const answersContainingSubject = await Promise.all(
+      answers.map((value) => doesBelongToClass(subject, value))
+    );
 
-    answersContainingSubject.forEach((value, index) => expect(value).to.be.equals(index === Number(goodAnswer)));
+    answersContainingSubject.forEach((value, index) =>
+      expect(value).to.be.equals(index === Number(goodAnswer))
+    );
   });
 
   it("Type 3 : Consistent value", async () => {
     const res = await requestAPI("question/3");
     const { answers, subject, goodAnswer } = res.body;
 
-    const answersBelongsToSystem = await Promise.all(answers.map((value) => doesBelongToSystem(value, subject)));
+    const answersBelongsToSystem = await Promise.all(
+      answers.map((value) => doesBelongToSystem(value, subject))
+    );
 
-    answersBelongsToSystem.forEach((value, index) => expect(value).to.be.equals(index === Number(goodAnswer)));
+    answersBelongsToSystem.forEach((value, index) =>
+      expect(value).to.be.equals(index === Number(goodAnswer))
+    );
   });
 
   it("Type 4 : not enough data", async () => {
@@ -87,7 +109,9 @@ describe("Question generation", function () {
       answers.map((value) => doesHavePropertyValue(value, "indications", subject))
     );
 
-    answersHavePropertyValue.forEach((value, index) => expect(value).to.be.equals(index === Number(goodAnswer)));
+    answersHavePropertyValue.forEach((value, index) =>
+      expect(value).to.be.equals(index === Number(goodAnswer))
+    );
   });
 
   it("Type 6 : Consistent values", async () => {
@@ -98,7 +122,9 @@ describe("Question generation", function () {
       answers.map((value) => doesHavePropertyValue(value, "side_effects", subject))
     );
 
-    answersHavePropertyValue.forEach((value, index) => expect(value).to.be.equals(index === Number(goodAnswer)));
+    answersHavePropertyValue.forEach((value, index) =>
+      expect(value).to.be.equals(index === Number(goodAnswer))
+    );
   });
 
   it("Type 7 : Consistent values", async () => {
@@ -109,7 +135,9 @@ describe("Question generation", function () {
       answers.map((value) => doesHavePropertyValue(value, "interactions", subject))
     );
 
-    answersHavePropertyValue.forEach((value, index) => expect(value).to.be.equals(index === Number(goodAnswer)));
+    answersHavePropertyValue.forEach((value, index) =>
+      expect(value).to.be.equals(index === Number(goodAnswer))
+    );
   });
 
   it("Type 8 : Consistent values", async () => {
@@ -120,7 +148,9 @@ describe("Question generation", function () {
       answers.map((value) => doesHavePropertyValue(subject, "indications", value))
     );
 
-    answersHavePropertyValue.forEach((value, index) => expect(value).to.be.equals(index === Number(goodAnswer)));
+    answersHavePropertyValue.forEach((value, index) =>
+      expect(value).to.be.equals(index === Number(goodAnswer))
+    );
   });
 
   it("Type 9 : Consistent values", async () => {
@@ -131,7 +161,9 @@ describe("Question generation", function () {
       answers.map((value) => doesHavePropertyValue(subject, "side_effects", value))
     );
 
-    answersHavePropertyValue.forEach((value, index) => expect(value).to.be.equals(index === Number(goodAnswer)));
+    answersHavePropertyValue.forEach((value, index) =>
+      expect(value).to.be.equals(index === Number(goodAnswer))
+    );
   });
 
   it("Type 10 : Not enough data", async () => {

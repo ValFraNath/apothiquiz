@@ -29,16 +29,23 @@ export function parseCSV(filepath) {
 
         const structure = new FileStructure(columnsHeader, ParserSpecifications.columns);
 
-        moleculesMatrix = removeInvalidMoleculeLines(moleculesMatrix, structure.getIndexesFor("dci")[0]);
+        moleculesMatrix = removeInvalidMoleculeLines(
+          moleculesMatrix,
+          structure.getIndexesFor("dci")[0]
+        );
 
         const data = Object.create(null);
 
-        const nonUniqueColumns = ParserSpecifications.columns.filter((column) => !column.isUnique());
+        const nonUniqueColumns = ParserSpecifications.columns.filter(
+          (column) => !column.isUnique()
+        );
 
         for (let column of nonUniqueColumns) {
           const creator = column.isHierarchical() ? Classification.create : Property.create;
 
-          data[column.property] = creator(extractColumns(moleculesMatrix, ...structure.getIndexesFor(column.property)));
+          data[column.property] = creator(
+            extractColumns(moleculesMatrix, ...structure.getIndexesFor(column.property))
+          );
         }
 
         data.molecules = MoleculeList.create(moleculesMatrix, structure, data);

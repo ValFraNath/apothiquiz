@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import axios from "axios";
 import GitInfo from "react-git-info/macro";
 
-import Message from "../quizz/Message";
-import Button from "../Buttons/ButtonDefault";
+import Message from "../components/quiz/Message";
+import Button from "../components/buttons/ButtonDefault";
 
 export default class About extends Component {
   constructor(props) {
@@ -37,10 +37,12 @@ export default class About extends Component {
     return (
       <main id="informations">
         <p>
-          Guacamole est une application d'apprentissage réflexe à destination des étudiants en pharmacie de l'Université
-          de Franche-Comté.
+          Guacamole est une application d'apprentissage réflexe à destination des étudiants en
+          pharmacie de l'Université de Franche-Comté.
         </p>
-        <p>Elle est réalisée dans le cadre d'un projet tutoré de Licence 3 Informatique 2020-2021.</p>
+        <p>
+          Elle est réalisée dans le cadre d'un projet tutoré de Licence 3 Informatique 2020-2021.
+        </p>
         <p>
           <b>Application en développement actif</b>
         </p>
@@ -68,35 +70,35 @@ export default class About extends Component {
           />
         )}
 
-        <p id="credits">
-          <ol>
-            <li>Réalisé par Nathanaël Houn, François Poguet et Valentin Perignon.</li>
-            <li>Supervisé par Anne-Laure Claire, Frédéric Dadeau, et Marc Pudlo.</li>
-            <li>Graphismes par Roxane Herbstmeyer.</li>
-            <li>
-              Icônes par{" "}
-              <a href="https://icons.modulz.app/" target="_blank" rel="noreferrer">
-                Modulz
-              </a>
-              .
-            </li>
-          </ol>
-        </p>
+        <ol id="credits">
+          <li>Réalisé par Nathanaël Houn, François Poguet et Valentin Perignon.</li>
+          <li>Supervisé par Anne-Laure Clairet, Frédéric Dadeau, et Marc Pudlo.</li>
+          <li>Graphismes par Roxane Herbstmeyer.</li>
+          <li>
+            Icônes par{" "}
+            <a href="https://icons.modulz.app/" target="_blank" rel="noreferrer">
+              Modulz
+            </a>
+            .
+          </li>
+        </ol>
 
-        <p id="app-version">
-          <table>
+        <table id="app-version">
+          <tbody>
             <tr>
               <td>Date de version : </td>
               <td>
-                {process.env.NODE_ENV === "production" ? date.toLocaleString().split("GMT")[0] : process.env.NODE_ENV}
+                {process.env.NODE_ENV === "production"
+                  ? date.toLocaleString().split("GMT")[0]
+                  : process.env.NODE_ENV}
               </td>
             </tr>
             <tr>
               <td>Hash de version : </td>
               <td>{gitInfo.commit.shortHash}</td>
             </tr>
-          </table>
-        </p>
+          </tbody>
+        </table>
       </main>
     );
   }

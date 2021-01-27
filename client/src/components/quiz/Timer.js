@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import PropTypes from "proptypes";
+import PropTypes from "prop-types";
 
 const Timer = ({ duration, updateParent }) => {
   const [initialTime] = useState(duration);

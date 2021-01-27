@@ -90,7 +90,9 @@ describe("Test if values are well imported", function () {
 
           expectNotContainsDuplication(ids, "Unique ids");
 
-          expect(expectedValues.all, "Values are same than expected").to.be.deep.equalInAnyOrder(names);
+          expect(expectedValues.all, "Values are same than expected").to.be.deep.equalInAnyOrder(
+            names
+          );
 
           for (let expectedNode of expectedValues.nodes) {
             let value = getClassificationValue(data[classification], expectedNode.name);
@@ -121,7 +123,9 @@ describe("Test if values are well imported", function () {
             "Unique ids"
           );
 
-          expect(expectedNames, "Same values").to.be.deep.equalInAnyOrder(values.map((v) => v.name));
+          expect(expectedNames, "Same values").to.be.deep.equalInAnyOrder(
+            values.map((v) => v.name)
+          );
 
           done();
         });
@@ -134,17 +138,22 @@ describe("Test if values are well imported", function () {
           expect(molecule, `| Molecule not found : ${expected.dci} |`).not.undefined;
 
           for (let classification of ["systems", "classes"]) {
-            const moleculeProperty = classification.replace("classes", "class").replace("systems", "system");
+            const moleculeProperty = classification
+              .replace("classes", "class")
+              .replace("systems", "system");
             if (expected[moleculeProperty] === null) {
               continue;
             }
             const value = getClassificationValue(data[classification], expected[moleculeProperty]);
-            expect(value, `| ${classification} not found : ${expected[moleculeProperty]} |`).not.undefined;
+            expect(value, `| ${classification} not found : ${expected[moleculeProperty]} |`).not
+              .undefined;
             expect(value.id, `| Invalid class |`).equals(molecule[moleculeProperty]);
           }
 
           for (let property of ["skeletal_formule", "ntr", "level_easy", "level_hard"]) {
-            expect(molecule[property], `| Invalid property ${property} |`).equals(expected[property]);
+            expect(molecule[property], `| Invalid property ${property} |`).equals(
+              expected[property]
+            );
           }
 
           for (let property of ["indications", "interactions", "side_effects"]) {
@@ -153,7 +162,9 @@ describe("Test if values are well imported", function () {
               expect(found, `| Invalid value '${value}' for property ${property} |`).not.undefined;
               return found.id;
             });
-            expect(molecule[property], `| Invalid property : ${property} |`).deep.equalInAnyOrder(expectedValues);
+            expect(molecule[property], `| Invalid property : ${property} |`).deep.equalInAnyOrder(
+              expectedValues
+            );
           }
 
           done();
@@ -199,7 +210,11 @@ describe("Tests for errors occurred while parsing an incorrectly formatted file"
     },
     {
       name: "several_errors.csv",
-      errors: [HeaderErrors.INVALID_COLUMN, HeaderErrors.INVALID_COLUMN, HeaderErrors.MISSING_COLUMN],
+      errors: [
+        HeaderErrors.INVALID_COLUMN,
+        HeaderErrors.INVALID_COLUMN,
+        HeaderErrors.MISSING_COLUMN,
+      ],
     },
     {
       name: "empty_column.csv",
@@ -231,7 +246,10 @@ describe("Tests for errors occurred while parsing an incorrectly formatted file"
  * @param {[]} array
  */
 function expectNotContainsDuplication(array, message = "") {
-  expect(array.length === [...new Set(array)].length, `| ${message} : Array do contains duplications |`).to.be.true;
+  expect(
+    array.length === [...new Set(array)].length,
+    `| ${message} : Array do contains duplications |`
+  ).to.be.true;
 }
 
 /**
