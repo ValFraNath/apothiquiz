@@ -91,6 +91,98 @@ describe("User test", function () {
     });
   });
 
+  describe("Get data from several users", function () {
+    let token;
+    before(function (done) {
+      // Authenticate
+      chai
+        .request(app)
+        .post("/api/v1/users/login")
+        .send({
+          userPseudo: "fpoguet",
+          userPassword: "1234",
+        })
+        .end((err, res) => {
+          if (err) {
+            throw err;
+          }
+
+          expect(res.status, res.error).to.be.equal(200);
+
+          expect(Object.keys(res.body)).to.contains("pseudo");
+          expect(Object.keys(res.body)).to.contains("token");
+          token = "Bearer " + res.body.token;
+
+          done();
+        });
+    });
+
+    it("All users exist", function (done) {
+      chai
+        .request(app)
+        .post("/api/v1/users/")
+        .send(["nhoun", "fpoguet"])
+        .set("Authorization", token)
+        .end((err, res) => {
+          if (err) {
+            throw err;
+          }
+          expect(res.status, res.error).to.be.equal(200);
+
+          expect(Object.keys(res.body)).to.have.lengthOf(2);
+          expect(Object.keys(res.body)).to.contains("nhoun");
+          expect(Object.keys(res.body)).to.contains("fpoguet");
+
+          const firstUser = res.body["nhoun"];
+          expect(Object.keys(firstUser)).to.contains("pseudo");
+          expect(firstUser.pseudo).to.be.equal("nhoun");
+          expect(Object.keys(firstUser)).to.contains("defeats");
+          expect(Object.keys(firstUser)).to.contains("victories");
+          expect(Object.keys(firstUser)).to.contains("avatar");
+          done();
+        });
+    });
+
+    it("Some users do not exist", function (done) {
+      chai
+        .request(app)
+        .post("/api/v1/users/")
+        .send(["nhoun", "azerty"])
+        .set("Authorization", token)
+        .end((err, res) => {
+          if (err) {
+            throw err;
+          }
+          expect(res.status, res.error).to.be.equal(200);
+
+          expect(Object.keys(res.body)).to.have.lengthOf(1);
+          expect(Object.keys(res.body)).to.contains("nhoun");
+
+          const firstUser = res.body["nhoun"];
+          expect(Object.keys(firstUser)).to.contains("pseudo");
+          expect(firstUser.pseudo).to.be.equal("nhoun");
+          expect(Object.keys(firstUser)).to.contains("defeats");
+          expect(Object.keys(firstUser)).to.contains("victories");
+          expect(Object.keys(firstUser)).to.contains("avatar");
+          done();
+        });
+    });
+
+    it("Not logged in", function (done) {
+      chai
+        .request(app)
+        .get("/api/v1/users/fpoguet")
+        // No Authorization header
+        .end((err, res) => {
+          if (err) {
+            throw err;
+          }
+          expect(res.status, res.error).to.be.equal(401);
+          done();
+        });
+    });
+  });
+
   describe("Get user informations", function () {
     let token;
     before(function (done) {
