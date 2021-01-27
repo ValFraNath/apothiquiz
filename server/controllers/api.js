@@ -3,8 +3,6 @@ import db from "../db/database.js";
 /**
  * @apiDefine AccessLoggedIn Logged user access only
  * The user has to be logged in the use this endpoint (see Authentication)
- *
- * @apiSampleRequest off
  */
 
 /**
