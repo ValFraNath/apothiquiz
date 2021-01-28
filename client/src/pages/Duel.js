@@ -48,6 +48,10 @@ class Duel extends Component {
     return this.getCurrentRound()[currentQuestionNum - 1];
   }
 
+  /**
+   * Update timer
+   * @param {int} value Timer value
+   */
   updateTimer = (value) => {
     let { inProgress, userAnswers } = this.state;
 
@@ -64,6 +68,10 @@ class Duel extends Component {
     });
   };
 
+  /**
+   * Handle click on an answer
+   * @param {string} value Answer value
+   */
   handleAnswerClick = (value) => {
     if (!this.state.inProgress) return;
 
@@ -78,6 +86,9 @@ class Duel extends Component {
     });
   };
 
+  /**
+   * Get next question or finish the duel
+   */
   nextQuestion = () => {
     const { currentQuestionNum } = this.state;
 
