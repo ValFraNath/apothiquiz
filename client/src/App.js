@@ -13,6 +13,7 @@ import Train from "./pages/Train";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 import HomePage from "./pages/HomePage";
+import DuelOverview from "./pages/DuelOverview";
 import AuthService from "./services/auth.service";
 
 /**
@@ -102,6 +103,7 @@ export default class App extends Component {
           <Route path="/login" exact component={Login} />
           <ProtectedRoute path="/profile" exact component={Profile} />
           <ProtectedRoute path="/homepage" exact component={HomePage} />
+          <ProtectedRoute path="/duel/:duelID" exact component={DuelOverview} />
         </Switch>
       </Router>
     );
