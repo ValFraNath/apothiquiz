@@ -55,8 +55,18 @@ const logsDir = path.resolve("logs");
  * @param  {...string} messages The messages to log
  */
 function logInFile(file, ...messages) {
+  try {
+    fs.mkdirSync(path.resolve("logs"));
+  } catch (e) {
+    if (e.code !== "EEXIST") {
+      throw e;
+    }
+  }
   messages.forEach((message) =>
-    fs.appendFileSync(path.resolve(logsDir, file), message + "\n", { encoding: "utf-8" })
+    fs.appendFileSync(path.resolve(logsDir, file), message + "\n", {
+      encoding: "utf-8",
+      flag: "as",
+    })
   );
 }
 
