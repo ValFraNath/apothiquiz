@@ -1,14 +1,9 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-// import axios from "axios";
-// import { ChevronRightIcon } from "@modulz/radix-icons";
-// import AuthService from "../services/auth.service";
+import axios from "axios";
+import AuthService from "../services/auth.service";
 
 import Avatar from "../components/Avatar";
-
-// import Plural from "../components/Plural";
-// import FightPilette from "../images/fight.png";
-// import WaitPilette from "../images/attente.png";
 
 const UserBadge = ({ user }) => {
   return (
@@ -33,154 +28,70 @@ class DuelOverview extends Component {
 
     this.state = {
       duelID: this.props.match.params.duelID,
-      currentUser: {
-        pseudo: "moi",
-        avatar: {
-          eyes: 2,
-          hands: 2,
-          hat: 2,
-          mouth: 2,
-          colorBG: "#48291A",
-          colorBody: "#fa1240",
-        },
-      },
-      opponent: {
-        pseudo: "fdadeau",
-        avatar: {
-          eyes: 1,
-          hands: 1,
-          hat: 1,
-          mouth: 1,
-          colorBG: "#fa1240",
-          colorBody: "#48291A",
-        },
-      },
-      rounds: [
-        [
-          {
-            type: 0,
-            title: "",
-            subject: "",
-            wording: "",
-            answers: ["", "", ""],
-            goodAnswer: 0,
-            userAnswer: 1,
-            opponentAnswer: 0,
-          },
-          {
-            type: 0,
-            title: "",
-            subject: "",
-            wording: "",
-            answers: ["", "", ""],
-            goodAnswer: 0,
-            userAnswer: 0,
-            opponentAnswer: 0,
-          },
-          {
-            type: 0,
-            title: "",
-            subject: "",
-            wording: "",
-            answers: ["", "", ""],
-            goodAnswer: 0,
-            userAnswer: 1,
-            opponentAnswer: 0,
-          },
-        ],
-        [
-          {
-            type: 0,
-            title: "",
-            subject: "",
-            wording: "",
-            answers: ["", "", ""],
-            goodAnswer: 0,
-            userAnswer: 1,
-          },
-          {
-            type: 0,
-            title: "",
-            subject: "",
-            wording: "",
-            answers: ["", "", ""],
-            goodAnswer: 0,
-            userAnswer: 1,
-          },
-          {
-            type: 0,
-            title: "",
-            subject: "",
-            wording: "",
-            answers: ["", "", ""],
-            goodAnswer: 0,
-            userAnswer: 0,
-          },
-        ],
-      ],
+      userScore: "-",
+      opponentScore: "-",
+      currentUser: {},
+      opponent: {},
+      rounds: [],
     };
   }
 
   componentDidMount() {
-    // axios
-    //   .get("/api/v1/duels/")
-    //   .then((res) => {
-    //     const toPlay = [],
-    //       pending = [];
-    //     res.data.forEach((val) => {
-    //       if (!val.inProgress) return;
-    //       if (val.rounds[val.currentRound - 1][0].userAnswer !== undefined) {
-    //         pending.push(val);
-    //       } else {
-    //         toPlay.push(val);
-    //       }
-    //     });
-    //     this.setState({
-    //       toPlayChallenges: toPlay,
-    //       pendingChallenges: pending,
-    //     });
-    //     const listOfUsers = [
-    //       ...toPlay.map((value) => value.opponent),
-    //       ...pending.map((value) => value.opponent),
-    //     ];
-    //     this.getUsersData(listOfUsers);
-    //   })
-    //   .catch((err) => console.error(err));
+    const duelID = this.state.duelID;
+
+    axios
+      .get(`/api/v1/duels/${duelID}`)
+      .then((res) => {
+        this.setState({
+          rounds: res.data.rounds,
+          userScore: res.data.userScore,
+          opponentScore: res.data.opponentScore,
+        });
+
+        // Will be replaced by cache later
+        const opponent = res.data.opponent;
+        const currentUser = AuthService.getCurrentUser();
+        axios
+          .post("/api/v1/users/", [currentUser.pseudo, opponent])
+          .then((res) => {
+            this.setState({
+              currentUser: res.data[currentUser.pseudo],
+              opponent: res.data[opponent],
+            });
+          })
+          .catch((err) => console.error(err));
+      })
+      .catch((err) => console.error(err));
   }
 
-  //   getUsersData(otherUsers) {
-  //     const currentUser = AuthService.getCurrentUser();
-  //     const listOfUsers = [currentUser.pseudo, ...otherUsers];
-  //     axios
-  //       .post("/api/v1/users/", listOfUsers)
-  //       .then((res) => {
-  //         this.setState({
-  //           currentUser: res.data[currentUser.pseudo],
-  //           usersData: res.data,
-  //         });
-  //       })
-  //       .catch((err) => console.error(err));
-  //   }
-
   render() {
-    const { currentUser, opponent, rounds } = this.state;
-    const isMyTurn = false;
+    const { currentUser, opponent, rounds: originalRounds } = this.state;
+    const rounds = originalRounds.filter((round) => round[0].subject !== undefined);
+
+    let currentUserCanPlay = false;
+    if (rounds.length >= 1) {
+      const lastRound = rounds[rounds.length - 1];
+      const lastQuestion = lastRound[lastRound.length - 1];
+      currentUserCanPlay = lastQuestion.userAnswer === undefined;
+    }
 
     return (
       <main id="duel-overview">
         <header>
           <UserBadge user={currentUser} />
-          <span>0 - 1</span>
+          <span>
+            {this.state.userScore} — {this.state.opponentScore}
+          </span>
           <UserBadge user={opponent} />
         </header>
 
         <Link
           to="#"
-          className="btn btn-fw"
+          className="btn"
           onClick={() => alert("Oups, tu as trouvé une fonctionnalité pas encore implémentée !")}
-          disabled={!isMyTurn}
+          disabled={!currentUserCanPlay}
         >
-          Jouer mon tour
+          Jouer le tour {currentUserCanPlay}
         </Link>
 
         {rounds.map((round, index) => {
@@ -200,6 +111,7 @@ class DuelOverview extends Component {
 
           return (
             <section key={index}>
+              <h3>Tour {index + 1}</h3>
               <div className="result">
                 <span>{currentUser?.pseudo ?? "Pseudo"}</span>
                 {userAnswers.map((isCorrect, index) => (

@@ -143,7 +143,7 @@ class HomePage extends Component {
             <>
               {pendingChallenges.map((value, index) => (
                 <article key={index}>
-                  <Link to={`/duel/${value.id}`}  className="challenges-text">
+                  <Link to={`/duel/${value.id}`} className="challenges-text">
                     <h3>{value.opponent}</h3>
                     <p>En train de jouer le round {value.currentRound}</p>
                   </Link>
