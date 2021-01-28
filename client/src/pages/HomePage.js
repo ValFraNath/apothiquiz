@@ -110,24 +110,26 @@ class HomePage extends Component {
           ) : (
             <>
               {toPlayChallenges.map((value, index) => (
-                <article key={index}>
-                  <Avatar
-                    size="75px"
-                    eyes={usersData[value.opponent]?.avatar.eyes}
-                    hands={usersData[value.opponent]?.avatar.hands}
-                    hat={usersData[value.opponent]?.avatar.hat}
-                    mouth={usersData[value.opponent]?.avatar.mouth}
-                    colorBG={usersData[value.opponent]?.avatar.colorBG}
-                    colorBody={usersData[value.opponent]?.avatar.colorBody}
-                  />
-                  <div className="challenges-text">
-                    <div>
-                      <h3>{value.opponent}</h3>
-                      <p>Vous pouvez jouer le round {value.currentRound}</p>
+                <Link to="/duel/1">
+                  <article key={index}>
+                    <Avatar
+                      size="75px"
+                      eyes={usersData[value.opponent]?.avatar.eyes}
+                      hands={usersData[value.opponent]?.avatar.hands}
+                      hat={usersData[value.opponent]?.avatar.hat}
+                      mouth={usersData[value.opponent]?.avatar.mouth}
+                      colorBG={usersData[value.opponent]?.avatar.colorBG}
+                      colorBody={usersData[value.opponent]?.avatar.colorBody}
+                    />
+                    <div className="challenges-text">
+                      <div>
+                        <h3>{value.opponent}</h3>
+                        <p>Vous pouvez jouer le round {value.currentRound}</p>
+                      </div>
+                      <ChevronRightIcon />
                     </div>
-                    <ChevronRightIcon />
-                  </div>
-                </article>
+                  </article>
+                </Link>
               ))}
             </>
           )}
