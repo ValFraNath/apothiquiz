@@ -26,7 +26,7 @@ export const currentAPIVersion = () => versions[versions.length - 1];
 
 export const connection = mysql.createConnection({
   host: process.env.DB_HOST || "localhost",
-  user: process.env.DB_UdER || "glowing-octo-guacamole",
+  user: process.env.DB_USER || "glowing-octo-guacamole",
   password: process.env.DB_PASSWORD || "p@ssword",
   database: process.env.DB_DATABASE || "glowingOctoGuacamole",
   multipleStatements: true,
