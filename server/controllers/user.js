@@ -72,7 +72,8 @@ function login(req, _res) {
  *
  * @apiUse ErrorServer
  */
-User.getAll = function (_, res) {
+function getAll(_, _res) {
+  const res = new HttpResponseWrapper(_res);
   const sql =
     "SELECT us_login AS pseudo, \
             us_victories AS victories, \
@@ -82,22 +83,18 @@ User.getAll = function (_, res) {
   queryPromise(sql)
     .then((sqlRes) => {
       const usersData = {};
-      try {
-        for (let value of sqlRes) {
-          usersData[value.pseudo] = {
-            pseudo: value.pseudo,
-            victories: Number(value.victories),
-            defeats: Number(value.defeats),
-            avatar: JSON.parse(value.avatar),
-          };
-        }
-      } catch (e) {
-        res.status(500).json({ message: e });
+      for (let value of sqlRes) {
+        usersData[value.pseudo] = {
+          pseudo: value.pseudo,
+          victories: Number(value.victories),
+          defeats: Number(value.defeats),
+          avatar: JSON.parse(value.avatar),
+        };
       }
-      res.status(200).json(usersData);
+      res.sendResponse(200, usersData);
     })
-    .catch((error) => res.status(500).json({ message: error }));
-};
+    .catch((error) => res.sendUsageError(error));
+}
 
 /**
  * @api {post} /users/ Get data of several users
@@ -241,7 +238,7 @@ function saveInfos(req, _res) {
     .catch(res.sendServerError);
 }
 
-export default { login, saveInfos, getInfos, severalGetInfos };
+export default { login, saveInfos, getInfos, getAll, severalGetInfos };
 
 // ***** INTERNAL FUNCTIONS *****
 
