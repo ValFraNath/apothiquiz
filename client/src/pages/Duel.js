@@ -16,6 +16,7 @@ class Duel extends Component {
       inProgress: true,
       lastClicked: "",
       timer: Duel.TIMER_DURATION,
+      userAnswers: [],
     };
   }
 
@@ -26,6 +27,10 @@ class Duel extends Component {
     axios
       .get(`/api/v1/duels/${duelId}`)
       .then((res) => {
+        if (res.data.inProgress === 0) {
+          document.location.replace("/homepage");
+          return;
+        }
         this.setState({
           duelData: res.data,
         });
@@ -33,35 +38,58 @@ class Duel extends Component {
       .catch((err) => console.error(err));
   }
 
+  getCurrentQuestion() {
+    const { duelData, currentQuestionNum } = this.state;
+    return duelData.rounds[duelData.currentRound - 1][currentQuestionNum - 1];
+  }
+
   updateTimer = (value) => {
-    let { inProgress } = this.state;
+    let { inProgress, userAnswers } = this.state;
 
     if (!inProgress) return false;
     if (value === 0) {
+      userAnswers.push(-1);
       inProgress = false;
     }
 
     this.setState({
       inProgress: inProgress,
       timer: value,
+      userAnswers: userAnswers,
     });
   };
 
   handleAnswerClick = (value) => {
     if (!this.state.inProgress) return;
+
+    const { userAnswers } = this.state;
+    const currentQuestion = this.getCurrentQuestion();
+    userAnswers.push(currentQuestion.answers.indexOf(value));
+
     this.setState({
       inProgress: false,
       lastClicked: value,
+      userAnswers: userAnswers,
     });
   };
 
   nextQuestion = () => {
     const { currentQuestionNum } = this.state;
+
+    const currentQuestion = this.getCurrentQuestion();
+    if (currentQuestionNum === currentQuestion.answers.length) {
+      console.log("fin");
+      return;
+    }
+
     this.setState({
       inProgress: true,
       currentQuestionNum: currentQuestionNum + 1,
+      timer: Duel.TIMER_DURATION,
     });
   };
+
+  validateDuel = () => {};
 
   render() {
     if (this.state.duelData === null) {
@@ -69,7 +97,7 @@ class Duel extends Component {
     }
 
     const { duelData, currentQuestionNum, inProgress, lastClicked, timer } = this.state;
-    const currentQuestion = duelData.rounds[duelData.currentRound - 1][currentQuestionNum - 1];
+    const currentQuestion = this.getCurrentQuestion();
 
     return (
       <main id="duel">
@@ -91,7 +119,7 @@ class Duel extends Component {
 
         <Answers
           inProgress={inProgress}
-          goodAnswerIndex={-1}
+          goodAnswerIndex={currentQuestion.goodAnswer}
           answers={currentQuestion.answers}
           lastClicked={lastClicked}
           onClick={this.handleAnswerClick}
