@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { Component } from "react";
 import AuthService from "../services/auth.service";
 
+import Avatar from "../components/Avatar";
 import ButtonFullWidth from "../components/buttons/ButtonFullWidth";
 
 class CreateDuel extends Component {
@@ -26,6 +27,12 @@ class CreateDuel extends Component {
       .catch((err) => console.error(err));
   }
 
+  chooseOpponent(name) {
+    this.setState({
+      opponent: name,
+    });
+  }
+
   render() {
     const { listOfUsers, opponent } = this.state;
     const currentUser = AuthService.getCurrentUser();
@@ -39,9 +46,24 @@ class CreateDuel extends Component {
         <section>
           <ul>
             {Object.keys(listOfUsers)
-              .filter((value) => value !== currentUser.pseudo)
-              .map((value, index) => (
-                <li key={index}>{value}</li>
+              .filter((user) => user !== currentUser.pseudo)
+              .map((user, index) => (
+                <li
+                  key={index}
+                  onClick={() => this.chooseOpponent(user)}
+                  className={opponent === user ? "selected" : ""}
+                >
+                  <Avatar
+                    size="50px"
+                    eyes={listOfUsers[user]?.avatar?.eyes}
+                    hands={listOfUsers[user]?.avatar?.hands}
+                    hat={listOfUsers[user]?.avatar?.hat}
+                    mouth={listOfUsers[user]?.avatar?.mouth}
+                    colorBG={listOfUsers[user]?.avatar?.colorBG}
+                    colorBody={listOfUsers[user]?.avatar?.colorBody}
+                  />
+                  {user}
+                </li>
               ))}
           </ul>
         </section>
