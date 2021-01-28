@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { Component } from "react";
+import AuthService from "../services/auth.service";
 
 import ButtonFullWidth from "../components/buttons/ButtonFullWidth";
 
@@ -26,18 +27,30 @@ class CreateDuel extends Component {
   }
 
   render() {
-    const { listOfUsers } = this.state;
+    const { listOfUsers, opponent } = this.state;
+    const currentUser = AuthService.getCurrentUser();
+
     return (
       <main id="create-duel">
-        <h1>Créer un nouveau duel</h1>
         <section>
+          <h1>Créer un nouveau duel</h1>
           <input type="text" placeholder="Rechercher un utilisateur"></input>
+        </section>
+        <section>
           <ul>
-            {Object.keys(listOfUsers).map((value) => (
-              <li>{value}</li>
-            ))}
+            {Object.keys(listOfUsers)
+              .filter((value) => value !== currentUser.pseudo)
+              .map((value, index) => (
+                <li key={index}>{value}</li>
+              ))}
           </ul>
-          <ButtonFullWidth onclick="Hey">Lancer le défi</ButtonFullWidth>
+        </section>
+        <section>
+          {opponent !== null ? (
+            <ButtonFullWidth onclick="Hey">Lancer le défi</ButtonFullWidth>
+          ) : (
+            <p>Veuillez choisir un adversaire</p>
+          )}
         </section>
       </main>
     );
