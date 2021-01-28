@@ -84,8 +84,21 @@
       align-items: center;
       margin-bottom: 1.2rem;
 
-      & > div:first-of-type {
+      &:last-of-type {
+        margin-bottom: 0;
+      }
+
+      & > *:first-of-type {
         margin-right: 0.8rem;
+      }
+
+      a {
+        text-decoration: none;
+
+        &,
+        &:visited {
+          color: initial;
+        }
       }
 
       .challenges-text {
@@ -109,9 +122,9 @@
     &:first-of-type {
       .challenges-text {
         display: flex;
-        align-items: center;
+        justify-content: space-between;
 
-        div {
+        a {
           margin-right: 0.5rem;
         }
 
@@ -127,7 +140,7 @@
       article {
         justify-content: flex-end;
 
-        & > div {
+        & > a {
           &:first-of-type {
             text-align: right;
           }

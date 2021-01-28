@@ -16,6 +16,7 @@ const Avatar = function ({
   mouth = 0,
   colorBG = "#d3d3d3",
   colorBody = "#0c04fc",
+  reversed = false,
 }) {
   return (
     <div
@@ -25,7 +26,10 @@ const Avatar = function ({
         height: size,
       }}
     >
-      <div className="avatar-inside" style={{ backgroundColor: colorBG }}>
+      <div
+        className="avatar-inside"
+        style={{ backgroundColor: colorBG, transform: reversed ? "rotateY(180deg)" : "" }}
+      >
         <img className="avatar-eyes" src={ImageEyes} data-choice={eyes} alt="Avatar eyes" />
         <img className="avatar-hands" src={ImageHands} data-choice={hands} alt="Avatar hands" />
         <img className="avatar-hat" src={ImageHats} data-choice={hat} alt="Avatar hat" />
@@ -45,6 +49,7 @@ Avatar.propTypes = {
   mouth: PropTypes.number,
   colorBody: PropTypes.string,
   colorBG: PropTypes.string,
+  reversed: PropTypes.bool,
 };
 
 export default Avatar;

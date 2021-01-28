@@ -18,6 +18,10 @@ reactRouter.get("/profile", goToReactIndex);
 
 reactRouter.get("/homepage", goToReactIndex);
 
+reactRouter.get("/duel/about/:id", goToReactIndex);
+
+reactRouter.get("/duel/:id", goToReactIndex);
+
 reactRouter.get("/createduel", goToReactIndex);
 
 export default reactRouter;

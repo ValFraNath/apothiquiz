@@ -95,6 +95,11 @@ class Duel extends Component {
     });
   };
 
+  /**
+   * Compute the class of answer indicators at the top of the page
+   * @param {int} index Index of the answer
+   * @param {object} question Question data
+   */
   computeClassTopBar(index, question) {
     const { userAnswers } = this.state;
     if (index >= userAnswers.length) {
@@ -103,6 +108,9 @@ class Duel extends Component {
     return question.goodAnswer === userAnswers[index] ? "good" : "bad";
   }
 
+  /**
+   *Sends user answers to the server
+   */
   validateDuel = () => {
     const { duelData, userAnswers } = this.state;
 
@@ -110,7 +118,7 @@ class Duel extends Component {
       .post(`/api/v1/duels/${duelData.id}/${duelData.currentRound}`, {
         answers: userAnswers,
       })
-      .then(() => console.log("super"))
+      .then(() => document.location.replace(`/duel/about/${duelData.currentRound}`))
       .catch((error) => console.error(error));
   };
 

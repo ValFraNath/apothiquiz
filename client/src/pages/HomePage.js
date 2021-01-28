@@ -110,7 +110,7 @@ class HomePage extends Component {
           ) : (
             <>
               {toPlayChallenges.map((value, index) => (
-                <Link to={`/duel/${value.id}`} key={index}>
+                <Link to={`/duel/about/${value.id}`} key={index}>
                   <article>
                     <Avatar
                       size="75px"
@@ -145,10 +145,10 @@ class HomePage extends Component {
             <>
               {pendingChallenges.map((value, index) => (
                 <article key={index}>
-                  <div className="challenges-text">
+                  <Link to={`/duel/${value.id}`} className="challenges-text">
                     <h3>{value.opponent}</h3>
                     <p>En train de jouer le round {value.currentRound}</p>
-                  </div>
+                  </Link>
                   <Avatar
                     size="75px"
                     eyes={usersData[value.opponent]?.avatar.eyes ?? 0}

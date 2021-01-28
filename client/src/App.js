@@ -15,6 +15,7 @@ import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 import HomePage from "./pages/HomePage";
 import CreateDuel from "./pages/CreateDuel";
+import DuelOverview from "./pages/DuelOverview";
 import Duel from "./pages/Duel";
 
 /**
@@ -105,6 +106,7 @@ export default class App extends Component {
           <ProtectedRoute path="/profile" exact component={Profile} />
           <ProtectedRoute path="/homepage" exact component={HomePage} />
           <ProtectedRoute path="/createduel" exact component={CreateDuel} />
+          <ProtectedRoute path="/duel/about/:id" exact component={DuelOverview} />
           <ProtectedRoute path="/duel/:id" exact component={Duel} />
         </Switch>
       </Router>
