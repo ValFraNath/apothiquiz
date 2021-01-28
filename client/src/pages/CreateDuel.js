@@ -59,9 +59,8 @@ class CreateDuel extends Component {
       .post("/api/v1/duels/new", {
         opponent: this.state.opponent,
       })
-      .then(() => {
-        // Todo: redirect to duel page
-        alert("New challenge created");
+      .then((res) => {
+        document.location.replace(`/duel/about/${res.data.id}`);
       })
       .catch((err) => console.error(err));
   };
