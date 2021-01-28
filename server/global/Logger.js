@@ -3,13 +3,33 @@
  * @param {Error} error The error object
  * @param {string} title Message explaining the reason for the error
  */
-export function logError(error, title) {
+function error(error, title) {
   const line = Array(100).fill("-").join("");
   const txt = `\n${line}\n${formatDate()} | ${
     error.title || title || "No message provided"
   }\n${line}\n> ${error.stack}\n${line}`;
   console.error(txt);
 }
+
+/**
+ * Log an information
+ * @param  {...any} messages Messages to log
+ */
+function info(...messages) {
+  console.info(...messages);
+}
+
+/**
+ * Log a debugging message
+ * @param  {...any} messages Messages to log
+ */
+function debug(...messages) {
+  if (process.NODE_ENV !== "production") {
+    console.debug(...messages);
+  }
+}
+
+export default { error, info, debug };
 
 /**
  * Format the current date

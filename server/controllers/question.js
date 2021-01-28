@@ -2,7 +2,7 @@ import fs from "fs/promises";
 import path from "path";
 
 import { queryPromise } from "../db/database.js";
-import { addErrorTitle } from "../global/ErrorManager.js";
+import { addErrorTitle } from "../global/Logger.js";
 import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
 
 const generatorInfosByType = {

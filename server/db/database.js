@@ -2,7 +2,7 @@ import mysql from "mysql";
 import dotenv from "dotenv";
 import fs from "fs/promises";
 import path from "path";
-import { addErrorTitle } from "../global/ErrorManager.js";
+import Logger, { addErrorTitle } from "../global/Logger.js";
 
 const __dirname = path.resolve();
 
@@ -41,7 +41,7 @@ function connect() {
       if (error) {
         return reject(addErrorTitle(error, "Can't connect to the database"));
       }
-      console.log("Connected to database!");
+      Logger.info("Connected to database!");
 
       getSystemInformation("api_version").then((db_version) => {
         if (db_version === null) {
@@ -69,10 +69,10 @@ function create() {
   return new Promise((resolve, reject) => {
     fs.readFile(path.resolve("db", "create_database.sql"), { encoding: "utf-8" })
       .then((script) => {
-        console.info("Creation of database... ");
+        Logger.info("Creation of database... ");
         queryPromise(script)
           .then(() => {
-            console.info("-> Database created!");
+            Logger.info("-> Database created!");
             resolve();
           })
           .catch((error) => reject(addErrorTitle(error, "Can't create the database")));
@@ -118,7 +118,7 @@ export function getSystemInformation(key) {
 function update(version = versions[0]) {
   return new Promise((resolve, reject) => {
     if (version === currentAPIVersion()) {
-      console.info("Database is up to date!");
+      Logger.info("Database is up to date!");
       return resolve();
     }
 
@@ -130,10 +130,10 @@ function update(version = versions[0]) {
     let i = versions.indexOf(version) + 1;
     (function updateRecursively() {
       if (i === versions.length) {
-        console.info("-> Database updated!\n");
+        Logger.info("-> Database updated!\n");
         return resolve();
       }
-      console.info(`Update database from ${versions[i - 1]} to ${versions[i]}... `);
+      Logger.info(`Update database from ${versions[i - 1]} to ${versions[i]}... `);
       fs.readFile(
         path.resolve(
           __dirname,

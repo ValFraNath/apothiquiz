@@ -1,5 +1,5 @@
 import { queryPromise } from "../db/database.js";
-import { addErrorTitle, logError } from "../global/ErrorManager.js";
+import Logger, { addErrorTitle } from "../global/Logger.js";
 import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
 import { createGeneratorOfType, NotEnoughDataError } from "./question.js";
 
@@ -272,7 +272,7 @@ let mockedDuelsRounds;
  */
 export function _initMockedDuelRounds(fakeDuelsRounds) {
   if (process.env.NODE_ENV !== "test") {
-    logError(new Error("Function reserved for tests"));
+    Logger.error(new Error("Function reserved for tests"));
     return;
   }
   mockedDuelsRounds = fakeDuelsRounds;

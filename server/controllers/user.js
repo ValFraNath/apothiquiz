@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 
 import { queryPromise } from "../db/database.js";
 import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
-import { addErrorTitle } from "../global/ErrorManager.js";
+import { addErrorTitle } from "../global/Logger.js";
 
 dotenv.config();
 

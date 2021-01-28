@@ -1,5 +1,5 @@
 import mysql from "mysql";
-import { logError } from "../ErrorManager.js";
+import Logger from "../Logger.js";
 import { parseCSV } from "./csv_parser/Parser.js";
 
 const propertiesId = {
@@ -142,7 +142,8 @@ function createSqlToInsertAllMolecules(molecules) {
  */
 function createSqlToInsertMolecule(molecule) {
   if (!FormattedMolecule.isInstance(molecule)) {
-    logError(new Error("Molecule must be formatted to be inserted"));
+    Logger.error(new Error("Molecule must be formatted to be inserted"));
+    return;
   }
 
   const columns = [
