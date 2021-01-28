@@ -1,0 +1,71 @@
+{
+  "name": "client",
+  "version": "0.1.0",
+  "proxy": "http://localhost:5035",
+  "private": true,
+  "dependencies": {
+    "@modulz/radix-icons": "^3.2.0",
+    "@radix-ui/react-collapsible": "0.0.1",
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.5.0",
+    "@testing-library/user-event": "^7.2.1",
+    "axios": "^0.21.1",
+    "chai": "^4.2.0",
+    "chai-jest-diff": "^1.0.2",
+    "dirty-chai": "^2.0.1",
+    "dotenv": "^8.2.0",
+    "find-config": "^1.0.0",
+    "node-sass": "^4.14.1",
+    "path": "^0.12.7",
+    "prop-types": "^15.7.2",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-git-info": "^2.0.0",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "^4.0.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "lint": "eslint src",
+    "lint:fix": "eslint --fix src",
+    "format": "prettier --write ."
+  },
+  "eslintConfig": {
+    "env": {
+      "browser": true
+    },
+    "parserOptions": {
+      "ecmaVersion": 2015,
+      "sourceType": "module"
+    },
+    "extends": [
+      "react-app",
+      "eslint:recommended"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "chai-enzyme": "^1.0.0-beta.0",
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.5",
+    "eslint": "^7.17.0",
+    "prettier": "^2.1.2",
+    "react-test-renderer": "^16.13.1",
+    "sinon": "^9.2.1",
+    "sinon-chai": "^3.5.0"
+  }
+}
