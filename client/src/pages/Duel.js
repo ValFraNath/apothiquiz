@@ -77,8 +77,9 @@ class Duel extends Component {
     const { currentQuestionNum } = this.state;
 
     const currentQuestion = this.getCurrentQuestion();
-    if (currentQuestionNum === currentQuestion.answers.length) {
+    if (currentQuestionNum === currentQuestion.answers.length + 1) {
       console.log("fin");
+      this.validateDuel();
       return;
     }
 
@@ -89,7 +90,16 @@ class Duel extends Component {
     });
   };
 
-  validateDuel = () => {};
+  validateDuel = () => {
+    const { duelData, userAnswers } = this.state;
+
+    axios
+      .post(`/api/v1/duels/${duelData.id}/${duelData.currentRound}`, {
+        answers: userAnswers,
+      })
+      .then(() => console.log("super"))
+      .catch((error) => console.error(error));
+  };
 
   render() {
     if (this.state.duelData === null) {
@@ -101,6 +111,8 @@ class Duel extends Component {
 
     return (
       <main id="duel">
+        <div id="duel-topbar"></div>
+
         <Question
           numero={currentQuestionNum}
           maxQuestion={duelData.rounds[duelData.currentRound - 1].length}
