@@ -78,6 +78,42 @@ function queryCAS(login, pass) {
  */
 
 /**
+ * @api {get} /users/ Get data of all users
+ * @apiName GetAllUsersData
+ * @apiGroup User
+ *
+ * @apiSuccess (200) {object[]} users  All users in an array
+ *
+ * @apiUse ErrorServer
+ */
+User.getAll = function (req, res) {
+  const sql =
+    "SELECT us_login AS pseudo, \
+            us_victories AS victories, \
+            us_defeats AS defeats, \
+            us_avatar AS avatar \
+      FROM user";
+  queryPromise(sql)
+    .then((sqlRes) => {
+      const usersData = {};
+      try {
+        for (let value of sqlRes) {
+          usersData[value.pseudo] = {
+            pseudo: value.pseudo,
+            victories: Number(value.victories),
+            defeats: Number(value.defeats),
+            avatar: JSON.parse(value.avatar),
+          };
+        }
+      } catch (e) {
+        res.status(500).json({ message: e });
+      }
+      res.status(200).json(usersData);
+    })
+    .catch((error) => res.status(500).json({ message: error }));
+};
+
+/**
  * @api {post} /users/ Get data of several users
  * @apiName GetUsersData
  * @apiGroup User
