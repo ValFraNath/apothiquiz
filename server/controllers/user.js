@@ -74,11 +74,11 @@ function login(req, _res) {
  *
  * @apiUse ErrorServer
  */
-User.severalGetInfos = function (req, res) {
+function severalGetInfos(req, _res) {
+  const res = new HttpResponseWrapper(_res);
   const listOfUsers = req.body;
   if (!Array.isArray(listOfUsers) || listOfUsers.length === 0) {
-    res.status(401).json({ error: "Bad request format." });
-    return;
+    return res.sendUsageError(401, "Bad request format.");
   }
 
   const sqlWhere = listOfUsers.map(() => "us_login = ?");
@@ -92,24 +92,20 @@ User.severalGetInfos = function (req, res) {
   queryPromise(sql, listOfUsers)
     .then((sqlRes) => {
       const usersData = {};
-      try {
-        for (let value of sqlRes) {
-          usersData[value.pseudo] = {
-            pseudo: value.pseudo,
-            victories: Number(value.victories),
-            defeats: Number(value.defeats),
-            avatar: JSON.parse(value.avatar),
-          };
-        }
-      } catch (e) {
-        res.status(500).json({ message: e });
+      for (let value of sqlRes) {
+        usersData[value.pseudo] = {
+          pseudo: value.pseudo,
+          victories: Number(value.victories),
+          defeats: Number(value.defeats),
+          avatar: JSON.parse(value.avatar),
+        };
       }
-      res.status(200).json(usersData);
+      res.sendResponse(200, usersData);
     })
     .catch((error) => {
-      res.status(500).json({ message: error });
+      res.sendServerError(error);
     });
-};
+}
 
 /**
  * @api       {get}        /user/:pseudo   Get user informations
@@ -209,7 +205,7 @@ function saveInfos(req, _res) {
     .catch(res.sendServerError);
 }
 
-export default { login, saveInfos, getInfos };
+export default { login, saveInfos, getInfos, severalGetInfos };
 
 // ***** INTERNAL FUNCTIONS *****
 
