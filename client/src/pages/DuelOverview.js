@@ -111,19 +111,25 @@ class DuelOverview extends Component {
 
           return (
             <section key={index}>
-              <h3>Tour {index + 1}</h3>
+              <h3>
+                Tour {index + 1} : <span>{round[0].title}</span>
+              </h3>
               <div className="result">
                 <span>{currentUser?.pseudo ?? "Pseudo"}</span>
-                {userAnswers.map((isCorrect, index) => (
-                  <span key={index} className={"brick " + isCorrect}></span>
-                ))}
+                <div className="bricks">
+                  {userAnswers.map((isCorrect, index) => (
+                    <span key={index} className={"brick " + isCorrect}></span>
+                  ))}
+                </div>
               </div>
 
               <div className="result">
                 <span>{opponent?.pseudo ?? "Pseudo"}</span>
-                {opponentAnswers.map((isCorrect, index) => (
-                  <span key={index} className={"brick " + isCorrect}></span>
-                ))}
+                <div className="bricks">
+                  {opponentAnswers.map((isCorrect, index) => (
+                    <span key={index} className={"brick " + isCorrect}></span>
+                  ))}
+                </div>
               </div>
             </section>
           );

@@ -48,57 +48,46 @@ main#duel-overview {
       font-weight: bold;
       background-color: $bg-color;
       padding: 8px 12px;
-      border-radius: $button-border-radius;
+      border-top-left-radius: $button-border-radius;
+      border-top-right-radius: $button-border-radius;
+      max-width: calc(100% - 2 * 12px);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      span {
+        font-weight: lighter;
+      }
     }
 
     .result {
       margin: auto 0;
       width: 45%;
-      display: grid;
-
-      grid-template-areas:
-        "name name name name name"
-        "brick1 brick2 brick3 brick4 brick5";
-      grid-column-gap: 5px;
-      grid-row-gap: 5px;
 
       > span {
-        grid-area: name;
+        display: block;
+        margin-bottom: 0.3rem;
         text-align: center;
       }
 
-      .brick {
-        background-color: gray;
+      .bricks {
+        display: flex;
+        justify-content: space-between;
 
-        display: inline-block;
-        height: 18px;
+        .brick {
+          display: inline-block;
+          flex-grow: 1;
+          margin: 0 2px;
+          background-color: gray;
+          height: 18px;
 
-        &.true {
-          background-color: $color-green-success;
-        }
+          &.true {
+            background-color: $color-green-success;
+          }
 
-        &.false {
-          background-color: $color-red-error;
-        }
-
-        &:nth-child(2) {
-          grid-area: brick1;
-        }
-
-        &:nth-child(3) {
-          grid-area: brick2;
-        }
-
-        &:nth-child(4) {
-          grid-area: brick3;
-        }
-
-        &:nth-child(5) {
-          grid-area: brick4;
-        }
-
-        &:nth-child(6) {
-          grid-area: brick5;
+          &.false {
+            background-color: $color-red-error;
+          }
         }
       }
     }
