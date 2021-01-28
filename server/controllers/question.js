@@ -2,7 +2,7 @@ import fs from "fs/promises";
 import path from "path";
 
 import { queryPromise } from "../db/database.js";
-import { logError } from "../global/ErrorLogger.js";
+import { addErrorTitle } from "../global/ErrorManager.js";
 import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
 
 const generatorInfosByType = {
@@ -110,7 +110,7 @@ async function generateQuestion(req, _res) {
         res.sendUsageError(422, "Not enough data to generate this type of question", error.code);
         return;
       }
-      res.sendServerError();
+      res.sendServerError(error);
     });
 }
 
@@ -138,6 +138,7 @@ async function queryQuestion(filename, type, before = "") {
             if (data.length < 3) {
               return reject(new NotEnoughDataError());
             }
+
             const formattedQuestion = formatQuestion(data);
             if (formattedQuestion.answers.includes(null)) {
               return reject(new NotEnoughDataError());
@@ -145,20 +146,10 @@ async function queryQuestion(filename, type, before = "") {
             resolve(Object.assign(formattedQuestion, { type }));
           })
           .catch((error) => {
-            if (!NotEnoughDataError.isInstance(error)) {
-              logError(error, "Can't generate question");
-              return reject();
-            }
-            reject(error);
+            reject(addErrorTitle(error, "Can't generate question in database"));
           });
       })
-      .catch((error) => {
-        if (!NotEnoughDataError.isInstance(error)) {
-          logError(error, `Can't read the script ${filename}`);
-          return reject();
-        }
-        reject(error);
-      });
+      .catch((error) => reject(addErrorTitle(error, "Can't read the question script")));
   });
 }
 
@@ -198,13 +189,7 @@ export function createGeneratorOfType(type) {
             })
           )
         )
-        .catch((error) => {
-          if (!NotEnoughDataError.isInstance(error)) {
-            logError(error, "Can't create the question");
-            return reject();
-          }
-          reject(error);
-        });
+        .catch((error) => reject(addErrorTitle(error, "Can't create the question generator")));
     });
   };
 }

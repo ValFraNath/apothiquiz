@@ -1,5 +1,5 @@
 import { queryPromise } from "../db/database.js";
-import { logError } from "../global/ErrorLogger.js";
+import { addErrorTitle, logError } from "../global/ErrorManager.js";
 import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
 import { createGeneratorOfType, NotEnoughDataError } from "./question.js";
 
@@ -60,7 +60,7 @@ function create(req, _res) {
           if (NotEnoughDataError.isInstance(error)) {
             return res.sendUsageError(422, "Not enought data to generate the duel", error.code);
           }
-          return res.sendServerError();
+          return res.sendServerError(error);
         });
     })
     .catch(res.sendServerError);
@@ -300,10 +300,7 @@ function doUsersExist(...users) {
         }
         resolve(true);
       })
-      .catch((error) => {
-        logError(error, "Can't check if the user exists");
-        reject();
-      });
+      .catch((error) => reject(addErrorTitle(error, "Can't check if the user exists")));
   });
 }
 
@@ -322,10 +319,7 @@ function createDuelInDatabase(player1, player2, rounds) {
       content: JSON.stringify(rounds),
     })
       .then((res) => resolve(res[0][0].id))
-      .catch((error) => {
-        logError(error, "Can't create duel");
-        reject();
-      });
+      .catch((error) => reject(addErrorTitle(error, "Can't create duel")));
   });
 }
 
@@ -359,7 +353,7 @@ function createRounds() {
           if (NotEnoughDataError.isInstance(error)) {
             createRoundsRecursively();
           } else {
-            reject();
+            reject(addErrorTitle(error, "Can't create a round"));
           }
         });
     })();
@@ -380,7 +374,7 @@ function createRound(type) {
       .then((questions) => {
         resolve(questions);
       })
-      .catch(reject);
+      .catch((error) => reject(addErrorTitle(error, "Can't create round")));
   });
 }
 
@@ -415,10 +409,7 @@ function getDuel(id, username) {
           resolve(formatDuel(res[0], username));
         }
       })
-      .catch((error) => {
-        logError(error, "Can't get duel");
-        reject();
-      });
+      .catch((error) => reject(addErrorTitle(error, "Can't get duel")));
   });
 }
 
@@ -448,10 +439,7 @@ function getAllDuels(username) {
           );
         }
       })
-      .catch((error) => {
-        logError(error, "Can't get all duels");
-        reject();
-      });
+      .catch((error) => reject(addErrorTitle(error, "Can't get all duels")));
   });
 }
 
@@ -533,10 +521,7 @@ function getDuelResults(id, username) {
     const sql = "SELECT re_answers FROM results WHERE us_login = ? AND du_id = ? ;";
     queryPromise(sql, [username, id])
       .then((res) => resolve(JSON.parse(res[0].re_answers)))
-      .catch((error) => {
-        logError(error, "Can't get duel results");
-        reject();
-      });
+      .catch((error) => reject(addErrorTitle(error, "Can't get duel results")));
   });
 }
 
@@ -556,12 +541,9 @@ function insertResultInDatabase(id, username, answers) {
           "UPDATE results SET re_answers = :answers WHERE us_login = :login AND du_id = :id ; CALL getDuel(:id,:login);";
         queryPromise(sql, { answers: updatedAnswers, login: username, id })
           .then((res) => resolve(formatDuel(res[1], username)))
-          .catch((error) => {
-            logError(error, "Can't insert answers");
-            reject();
-          });
+          .catch((error) => reject(addErrorTitle(error, "Can't insert answers in database")));
       })
-      .catch(reject);
+      .catch((error) => reject(addErrorTitle(error, "Can't get duel results")));
   });
 }
 
@@ -605,10 +587,7 @@ function updateDuelState(duel, username) {
           )
         );
       })
-      .catch((error) => {
-        logError(error, "Can't update the duel state");
-        reject();
-      });
+      .catch((error) => reject(addErrorTitle(error, "Can't update the duel state")));
   });
 }
 

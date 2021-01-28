@@ -6,7 +6,7 @@ import apiRouter from "./routes/api.route.js";
 import reactRouter from "./routes/react.route.js";
 import RequestSyntaxErrorHandler from "./middlewares/error.middleware.js";
 import Database from "./db/database.js";
-import { logError } from "./global/ErrorLogger.js";
+import { logError } from "./global/ErrorManager.js";
 
 dotenv.config();
 
@@ -35,7 +35,10 @@ Database.connect()
       console.info(`Server is running on port ${PORT}.`);
     });
   })
-  .catch(() => process.exit(1));
+  .catch((error) => {
+    logError(error);
+    process.exit(1);
+  });
 
 /**
  * Check every <interval> ms if the server is ready to use

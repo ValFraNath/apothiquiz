@@ -2,7 +2,7 @@ import mysql from "mysql";
 import dotenv from "dotenv";
 import fs from "fs/promises";
 import path from "path";
-import { logError } from "../global/ErrorLogger.js";
+import { addErrorTitle } from "../global/ErrorManager.js";
 
 const __dirname = path.resolve();
 
@@ -26,8 +26,8 @@ export const currentAPIVersion = () => versions[versions.length - 1];
 
 export const connection = mysql.createConnection({
   host: process.env.DB_HOST || "localhost",
-  user: process.env.DB_USER || "glowing-octo-guacamole",
-  password: process.env.DB_PASSWORD || "p@ssword",
+  user: process.env.DB_UdER || "glowing-octo-guacamole",
+  password: process.env.DBd_PASSWORD || "p@ssword",
   database: process.env.DB_DATABASE || "glowingOctoGuacamole",
   multipleStatements: true,
 });
@@ -37,10 +37,9 @@ export const connection = mysql.createConnection({
  */
 function connect() {
   return new Promise((resolve, reject) => {
-    connection.connect((err) => {
-      if (err) {
-        logError(err, "Can't connect to the database");
-        return reject();
+    connection.connect((error) => {
+      if (error) {
+        return reject(addErrorTitle(error, "Can't connect to the database"));
       }
       console.log("Connected to database!");
 
@@ -50,13 +49,13 @@ function connect() {
             .then(() =>
               update()
                 .then(() => resolve())
-                .catch(reject)
+                .catch((error) => reject(addErrorTitle(error, "Can't update the database")))
             )
-            .catch(reject);
+            .catch((error) => reject(addErrorTitle(error, "Can't create the database")));
         } else {
           update(db_version)
             .then(() => resolve())
-            .catch(reject);
+            .catch((error) => reject(addErrorTitle(error, "Can't update the database")));
         }
       });
     });
@@ -68,18 +67,17 @@ function connect() {
  */
 function create() {
   return new Promise((resolve, reject) => {
-    fs.readFile(path.resolve("db", "create_database.sql"), { encoding: "utf-8" }).then((script) => {
-      console.info("Creation of database... ");
-      queryPromise(script)
-        .then(() => {
-          console.info("-> Database created!");
-          resolve();
-        })
-        .catch((err) => {
-          logError(err, "Can't create the database");
-          reject();
-        });
-    });
+    fs.readFile(path.resolve("db", "create_database.sql"), { encoding: "utf-8" })
+      .then((script) => {
+        console.info("Creation of database... ");
+        queryPromise(script)
+          .then(() => {
+            console.info("-> Database created!");
+            resolve();
+          })
+          .catch((error) => reject(addErrorTitle(error, "Can't create the database")));
+      })
+      .catch((error) => reject(addErrorTitle(error, "Can't read the database creation script")));
   });
 }
 
@@ -107,8 +105,7 @@ export function getSystemInformation(key) {
         if (error.code === "ER_NO_SUCH_TABLE") {
           resolve(null);
         } else {
-          logError(error, "Can't get data information");
-          reject();
+          reject(addErrorTitle(error, "Can't get system information"));
         }
       });
   });
@@ -126,8 +123,8 @@ function update(version = versions[0]) {
     }
 
     if (!versions.includes(version)) {
-      logError(new Error("Invalid database version found"));
-      return reject();
+      reject(addErrorTitle(new Error("Invalid database version found"), "Can't update database"));
+      return;
     }
 
     let i = versions.indexOf(version) + 1;
@@ -152,15 +149,9 @@ function update(version = versions[0]) {
               i++;
               updateRecursively();
             })
-            .catch((err) => {
-              logError(err, "Can't update the database");
-              reject();
-            })
+            .catch((error) => reject(addErrorTitle(error, "Can't update the database")))
         )
-        .catch((error) => {
-          logError(error, "Can't read the update file");
-          reject();
-        });
+        .catch((error) => reject(addErrorTitle(error, "Can't read the update file")));
     })();
   });
 }

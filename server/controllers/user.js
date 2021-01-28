@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 
 import { queryPromise } from "../db/database.js";
 import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
+import { addErrorTitle } from "../global/ErrorManager.js";
 
 dotenv.config();
 
@@ -176,7 +177,7 @@ function doesUserExist(login) {
                   WHERE us_login = ?`;
     queryPromise(sql, [login])
       .then((res) => resolve(res[0].found > 0))
-      .catch(reject);
+      .catch((error) => reject(addErrorTitle(error, "Can't check if the user exists")));
   });
 }
 
@@ -198,7 +199,7 @@ function updateUserAvatar(user, avatar) {
 
     queryPromise(sql, [JSON.stringify(avatar), user])
       .then(() => resolve())
-      .catch(reject);
+      .catch((error) => reject(addErrorTitle(error, "Can't update user avatar")));
   });
 }
 
@@ -233,6 +234,6 @@ function getUserInformations(pseudo) {
 
         resolve(result);
       })
-      .catch(reject);
+      .catch((error) => reject(addErrorTitle(error, "Can't get user informations")));
   });
 }

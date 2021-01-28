@@ -1,5 +1,5 @@
 import mysql from "mysql";
-import { logError } from "../ErrorLogger.js";
+import { logError } from "../ErrorManager.js";
 import { parseCSV } from "./csv_parser/Parser.js";
 
 const propertiesId = {
