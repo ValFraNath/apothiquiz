@@ -1,9 +1,11 @@
 import jwt from "jsonwebtoken";
-import { queryPromise } from "../db/database.js";
 import dotenv from "dotenv";
-dotenv.config();
 
-const User = {};
+import { queryPromise } from "../db/database.js";
+import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
+import { addErrorTitle } from "../global/Logger.js";
+
+dotenv.config();
 
 /**
  * @api       {post}        /user/login   Post a user login
@@ -20,46 +22,30 @@ const User = {};
  * @apiError   (404) UserNotFound
  * @apiUse ErrorServer
  */
-User.login = function (req, res) {
+function login(req, _res) {
+  const res = new HttpResponseWrapper(_res);
   const { userPseudo, userPassword } = req.body;
 
   if (!userPseudo || !userPassword) {
-    res.status(401).json({ message: "Bad request format." });
-    return;
+    return res.sendUsageError(401, "Bad request format.");
   }
 
-  const sql =
-    "SELECT COUNT(*) as found \
-               FROM user                \
-               WHERE us_login = ?";
-
-  queryPromise(sql, [userPseudo])
-    .then((sqlRes) => {
-      let found = sqlRes[0]["found"];
-      if (found) {
+  doesUserExist(userPseudo)
+    .then((userExists) => {
+      if (userExists) {
         if (queryCAS(userPseudo, userPassword)) {
-          res.status(200).json({
+          res.sendResponse(200, {
             pseudo: userPseudo,
             token: jwt.sign({ pseudo: userPseudo }, process.env.TOKEN_PRIVATE_KEY),
           });
         } else {
-          res.status(401).json({
-            message: "Incorrect password.",
-          });
+          res.sendUsageError(401, "Authentication failed");
         }
       } else {
-        res.status(404).json({
-          message: "User not found.",
-        });
+        res.sendUsageError(404, "User not found.");
       }
     })
-    .catch((error) => {
-      res.status(500).json({ message: `login process error : ${error}` });
-    });
-};
-
-function queryCAS(login, pass) {
-  return pass === "1234";
+    .catch(res.sendServerError);
 }
 
 /**
@@ -78,6 +64,39 @@ function queryCAS(login, pass) {
  */
 
 /**
+ * @api {get} /users/ Get data of all users
+ * @apiName GetAllUsersData
+ * @apiGroup User
+ *
+ * @apiSuccess (200) {object[]} users  All users in an array
+ *
+ * @apiUse ErrorServer
+ */
+function getAll(_, _res) {
+  const res = new HttpResponseWrapper(_res);
+  const sql =
+    "SELECT us_login AS pseudo, \
+            us_victories AS victories, \
+            us_defeats AS defeats, \
+            us_avatar AS avatar \
+      FROM user";
+  queryPromise(sql)
+    .then((sqlRes) => {
+      const usersData = {};
+      for (let value of sqlRes) {
+        usersData[value.pseudo] = {
+          pseudo: value.pseudo,
+          victories: Number(value.victories),
+          defeats: Number(value.defeats),
+          avatar: JSON.parse(value.avatar),
+        };
+      }
+      res.sendResponse(200, usersData);
+    })
+    .catch((error) => res.sendUsageError(error));
+}
+
+/**
  * @api {post} /users/ Get data of several users
  * @apiName GetUsersData
  * @apiGroup User
@@ -88,11 +107,11 @@ function queryCAS(login, pass) {
  *
  * @apiUse ErrorServer
  */
-User.severalGetInfos = function (req, res) {
+function severalGetInfos(req, _res) {
+  const res = new HttpResponseWrapper(_res);
   const listOfUsers = req.body;
   if (!Array.isArray(listOfUsers) || listOfUsers.length === 0) {
-    res.status(401).json({ error: "Bad request format." });
-    return;
+    return res.sendUsageError(401, "Bad request format.");
   }
 
   const sqlWhere = listOfUsers.map(() => "us_login = ?");
@@ -106,24 +125,20 @@ User.severalGetInfos = function (req, res) {
   queryPromise(sql, listOfUsers)
     .then((sqlRes) => {
       const usersData = {};
-      try {
-        for (let value of sqlRes) {
-          usersData[value.pseudo] = {
-            pseudo: value.pseudo,
-            victories: Number(value.victories),
-            defeats: Number(value.defeats),
-            avatar: JSON.parse(value.avatar),
-          };
-        }
-      } catch (e) {
-        res.status(500).json({ message: e });
+      for (let value of sqlRes) {
+        usersData[value.pseudo] = {
+          pseudo: value.pseudo,
+          victories: Number(value.victories),
+          defeats: Number(value.defeats),
+          avatar: JSON.parse(value.avatar),
+        };
       }
-      res.status(200).json(usersData);
+      res.sendResponse(200, usersData);
     })
     .catch((error) => {
-      res.status(500).json({ message: error });
+      res.sendServerError(error);
     });
-};
+}
 
 /**
  * @api       {get}        /user/:pseudo   Get user informations
@@ -135,20 +150,22 @@ User.severalGetInfos = function (req, res) {
  * @apiUse GetUserSuccess
  * @apiError (404) UserNotFound User not found
  */
-User.getInfos = function (req, res) {
-  var user = String(req.params.pseudo);
+function getInfos(req, _res) {
+  const res = new HttpResponseWrapper(_res);
+  let user = String(req.params.pseudo);
   if (user === "me") {
     user = req.body.auth_user;
   }
 
   getUserInformations(user)
     .then((infos) => {
-      res.status(200).json(infos);
+      if (!infos) {
+        return res.sendUsageError(404, "User not found");
+      }
+      res.sendResponse(200, infos);
     })
-    .catch((error) => {
-      res.status(404).json({ message: error });
-    });
-};
+    .catch(res.sendServerError);
+}
 
 /**
  * @api       {patch}               /user/:pseudo   Patch user informations
@@ -175,7 +192,8 @@ User.getInfos = function (req, res) {
  * @apiError (404) NotFound   User not found
  * @apiUse ErrorServer
  */
-User.saveInfos = async function (req, res) {
+function saveInfos(req, _res) {
+  const res = new HttpResponseWrapper(_res);
   var user = String(req.params.pseudo);
   if (user === "me") {
     user = req.body.auth_user;
@@ -183,102 +201,116 @@ User.saveInfos = async function (req, res) {
 
   if (req.body.auth_user != user) {
     // TODO? Add admin ?
-    res.status(403).json({ message: "Not allowed" });
-    return;
+    return res.sendUsageError(403, "Operation not allowed");
   }
 
   const { avatar } = req.body;
 
   if (!avatar && true) {
     // true will be replaced by another fields of the request
-    res.status(400).json({ message: "No information given" });
-    return;
+    return res.sendUsageError(400, "No information given");
   }
 
   if (avatar) {
     const wantedProperties = ["colorBG", "eyes", "hands", "hat", "mouth", "colorBody"];
     if (!wantedProperties.every((p) => Object.prototype.hasOwnProperty.call(avatar, p))) {
-      res.status(400).json({ message: "Bad request" });
-      return;
+      return res.sendUsageError(400, "Bad request");
     }
 
     const integerProperties = ["eyes", "hands", "hat", "mouth"];
     if (!integerProperties.every((p) => Number(avatar[p]) === avatar[p])) {
-      res.status(400).json({ message: "Bad request" });
-      return;
+      return res.sendUsageError(400, "Bad request");
     }
 
     const hexColorProperties = ["colorBG", "colorBody"];
     if (!hexColorProperties.every((p) => /^#[0-9A-Fa-f]{6}$/i.test(avatar[p]))) {
-      res.status(400).json({ message: "Bad request" });
-      return;
+      return res.sendUsageError(400, "Bad request");
     }
   }
 
   getUserInformations(user)
     .then((infos) => {
       infos.avatar = avatar || infos.avatar;
-
-      queryPromise("UPDATE user \
-         SET us_avatar = ?      \
-         WHERE us_login = ?;", [
-        JSON.stringify(infos.avatar),
-        infos.pseudo,
-      ])
-        .then(() => res.status(200).json(infos))
-        .catch((err) => {
-          console.error(err);
-          res.status(500).json({ message: "Server side error" });
-        });
+      updateUserAvatar(user, infos.avatar)
+        .then(() => res.sendResponse(200, infos))
+        .catch(res.sendServerError);
     })
-    .catch((error) => {
-      res.status(404).json({ message: error });
-    });
-};
+    .catch(res.sendServerError);
+}
+
+export default { login, saveInfos, getInfos, getAll, severalGetInfos };
+
+// ***** INTERNAL FUNCTIONS *****
+
+/**
+ * Check if a user exists
+ * @param {string} login The user login
+ * @returns {Promise<boolean>} True if the user exists, false otherwise
+ */
+function doesUserExist(login) {
+  return new Promise((resolve, reject) => {
+    const sql = `SELECT COUNT(*) as found 
+                  FROM user                
+                  WHERE us_login = ?`;
+    queryPromise(sql, [login])
+      .then((res) => resolve(res[0].found > 0))
+      .catch((error) => reject(addErrorTitle(error, "Can't check if the user exists")));
+  });
+}
+
+function queryCAS(login, pass) {
+  return pass === "1234";
+}
+
+/**
+ * Update the user avatar in database
+ * @param {string} user The username login
+ * @param {object} avatar The avatar object
+ * @returns {Promise}
+ */
+function updateUserAvatar(user, avatar) {
+  return new Promise((resolve, reject) => {
+    const sql = `UPDATE user 
+                  SET us_avatar = ?      
+                  WHERE us_login = ?;`;
+
+    queryPromise(sql, [JSON.stringify(avatar), user])
+      .then(() => resolve())
+      .catch((error) => reject(addErrorTitle(error, "Can't update user avatar")));
+  });
+}
 
 /**
  * Contruct a JSON object with informations for the user from the database
  * @param {String} pseudo ENT login of the user
  * @return {Object|null} user informations or null if user not found
  */
-async function getUserInformations(pseudo) {
-  return new Promise(function (resolve, reject) {
-    queryPromise(
-      "SELECT \
-        us_login AS pseudo, \
-        us_victories AS victories,    \
-        us_defeats AS defeats, \
-        us_avatar AS avatar \
-      FROM user             \
-      WHERE `us_login` = ?",
-      [pseudo]
-    )
+function getUserInformations(pseudo) {
+  return new Promise((resolve, reject) => {
+    const sql = `SELECT 
+                  us_login AS pseudo, 
+                  us_victories AS victories,    
+                  us_defeats AS defeats, 
+                  us_avatar AS avatar 
+                FROM user             
+                WHERE us_login = ?`;
+
+    queryPromise(sql, [pseudo])
       .then((res) => {
         if (res.length !== 1) {
-          reject("User not found");
+          resolve(null);
           return;
         }
 
-        let result = {};
-        try {
-          result = {
-            pseudo: res[0].pseudo,
-            victories: Number(res[0].victories),
-            defeats: Number(res[0].defeats),
-            avatar: JSON.parse(res[0].avatar),
-          };
-        } catch (e) {
-          console.error(e);
-          reject("bad mysql response format");
-          return;
-        }
+        const result = {
+          pseudo: res[0].pseudo,
+          victories: Number(res[0].victories),
+          defeats: Number(res[0].defeats),
+          avatar: JSON.parse(res[0].avatar),
+        };
 
         resolve(result);
       })
-      .catch((error) => {
-        reject("Error", error);
-      });
+      .catch((error) => reject(addErrorTitle(error, "Can't get user informations")));
   });
 }
-
-export default User;

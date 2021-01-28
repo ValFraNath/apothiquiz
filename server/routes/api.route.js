@@ -12,6 +12,8 @@ apiRouter.get("/status", ApiController.status);
 
 apiRouter.get("/question/:type", QuestionController.generateQuestion);
 
+apiRouter.get("/users/", auth, UserController.getAll);
+
 apiRouter.post("/users/", auth, UserController.severalGetInfos);
 
 apiRouter.post("/users/login", UserController.login);

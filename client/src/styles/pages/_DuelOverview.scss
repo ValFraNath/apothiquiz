@@ -1,0 +1,83 @@
+main#duel-overview {
+  padding-top: 20px;
+
+  header {
+    padding: 0 10%;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+
+    > span {
+      font-size: 2em;
+    }
+
+    .badge {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      > span {
+        margin-top: 0.1em;
+      }
+    }
+  }
+
+  > .btn {
+    margin: 1rem auto;
+    text-align: center;
+  }
+
+  section {
+    margin: auto 1.2rem 1rem 1.2rem;
+    padding: 0.8em 0;
+    background-color: #e5e5ea;
+    border-radius: $button-border-radius;
+
+    display: flex;
+    justify-content: space-evenly;
+
+    .result {
+      margin: auto 0;
+      width: 45%;
+      display: grid;
+
+      grid-template-areas:
+        "name name name"
+        "brick1 brick2 brick3";
+      grid-column-gap: 5px;
+      grid-row-gap: 5px;
+
+      > span {
+        grid-area: name;
+        text-align: center;
+      }
+
+      .brick {
+        background-color: gray;
+
+        display: inline-block;
+        height: 22px;
+
+        &.true {
+          background-color: $color-green-success;
+        }
+
+        &.false {
+          background-color: $color-red-error;
+        }
+
+        &:nth-child(2) {
+          grid-area: brick1;
+        }
+
+        &:nth-child(3) {
+          grid-area: brick2;
+        }
+
+        &:nth-child(4) {
+          grid-area: brick3;
+        }
+      }
+    }
+  }
+}

@@ -20,4 +20,6 @@ reactRouter.get("/homepage", goToReactIndex);
 
 reactRouter.get("/duel/:duelID", goToReactIndex);
 
+reactRouter.get("/createduel", goToReactIndex);
+
 export default reactRouter;
