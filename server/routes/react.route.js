@@ -18,4 +18,6 @@ reactRouter.get("/profile", goToReactIndex);
 
 reactRouter.get("/homepage", goToReactIndex);
 
+reactRouter.get("/createduel", goToReactIndex);
+
 export default reactRouter;

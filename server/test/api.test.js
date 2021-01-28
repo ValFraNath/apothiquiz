@@ -1,7 +1,7 @@
 import chai from "chai";
 import chaiHttp from "chai-http";
 
-import db from "../db/database.js";
+import { currentAPIVersion } from "../db/database.js";
 import app from "../index.js";
 
 chai.use(chaiHttp);
@@ -16,7 +16,7 @@ describe("GET /status", function () {
         expect(res.status).to.be.equal(200);
         expect(res.body).to.be.deep.equal({
           status: "connected",
-          api_version: db.currentAPIVersion(),
+          api_version: currentAPIVersion(),
         });
         done();
       });

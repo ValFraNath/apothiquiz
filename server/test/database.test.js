@@ -2,7 +2,7 @@ import chai from "chai";
 import equalInAnyOrder from "deep-equal-in-any-order";
 
 import assert from "assert";
-import db, { queryPromise } from "../db/database.js";
+import { queryPromise, connection } from "../db/database.js";
 import { insertData, forceTruncateTables } from "./index.test.js";
 
 const { expect } = chai;
@@ -11,26 +11,18 @@ chai.use(equalInAnyOrder);
 describe("Create and delete table", function () {
   it("Create table", function (done) {
     let sql = "CREATE TABLE testBasicTable (number INT, string VARCHAR(255))";
-    db.connection.query(sql, function (err) {
-      if (err) throw err;
-      done();
-    });
+    queryPromise(sql).then(() => done());
   });
 
   it("Insert into", function (done) {
     let sql =
       "INSERT INTO testBasicTable (number, string) VALUES (2, 'Viva el guacamole'), (-10, 'Y las tortillas')";
-    db.connection.query(sql, function (err) {
-      if (err) throw err;
-      done();
-    });
+    queryPromise(sql).then(() => done());
   });
 
   it("Select from", function (done) {
     let sql = "SELECT * FROM testBasicTable";
-    db.connection.query(sql, function (err, result) {
-      if (err) throw err;
-
+    queryPromise(sql).then((result) => {
       assert.deepStrictEqual(JSON.parse(JSON.stringify(result)), [
         { number: 2, string: "Viva el guacamole" },
         { number: -10, string: "Y las tortillas" },
@@ -42,10 +34,7 @@ describe("Create and delete table", function () {
 
   it("Drop table", function (done) {
     let sql = "DROP TABLE testBasicTable";
-    db.connection.query(sql, function (err) {
-      if (err) throw err;
-      done();
-    });
+    queryPromise(sql).then(() => done());
   });
 });
 
@@ -105,10 +94,9 @@ describe("Check the database structure", function () {
     let sql = `SELECT COUNT(table_name) as nbr
                 FROM information_schema.tables 
                 WHERE table_type = 'base table'
-                AND table_schema= '${db.connection.config.database}'`;
+                AND table_schema= '${connection.config.database}'`;
 
-    db.connection.query(sql, function (err, res) {
-      if (err) throw err;
+    queryPromise(sql).then((res) => {
       assert.strictEqual(res[0]["nbr"], structure.length, "Incorrect number of tables");
       done();
     });
@@ -119,10 +107,9 @@ describe("Check the database structure", function () {
       let sql = `SELECT *
                   FROM INFORMATION_SCHEMA.COLUMNS
                   WHERE TABLE_NAME = '${table.name}'
-                  AND table_schema= '${db.connection.config.database}'`;
+                  AND table_schema= '${connection.config.database}'`;
 
-      db.connection.query(sql, function (err, res) {
-        if (err) throw err;
+      queryPromise(sql).then((res) => {
         assert(res.length !== 0, `The table '${table.name}' doesn't exist. `);
 
         let fieldsToTest = res.map((e) => e["COLUMN_NAME"]);

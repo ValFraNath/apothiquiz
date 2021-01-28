@@ -1,6 +1,9 @@
 import fs from "fs/promises";
 import path from "path";
+
 import { queryPromise } from "../db/database.js";
+import { addErrorTitle } from "../global/Logger.js";
+import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
 
 const generatorInfosByType = {
   1: {
@@ -88,27 +91,26 @@ const generatorInfosByType = {
  * @apiError   (404) NotFound Incorrect type of question
  * @apiUse     ErrorBadRequest
  */
-async function generateQuestion(req, res) {
-  let type = Number(req.params.type);
-  let generateQuestion = createGeneratorOfType(type);
+async function generateQuestion(req, _res) {
+  const res = new HttpResponseWrapper(_res);
+  const type = Number(req.params.type);
+  const generateQuestion = createGeneratorOfType(type);
 
   if (!generateQuestion) {
-    res.status(404).json({ message: "Incorrect type of question" });
+    res.sendUsageError(404, "Incorrect type of question");
     return;
   }
 
   generateQuestion()
     .then(({ type, title, subject, goodAnswer, answers, wording }) => {
-      res.status(200).json({ type, title, subject, goodAnswer, answers, wording });
+      res.sendResponse(200, { type, title, subject, goodAnswer, answers, wording });
     })
     .catch((error) => {
       if (NotEnoughDataError.isInstance(error)) {
-        res.status(422).json({ message: error.message, code: error.code });
+        res.sendUsageError(422, "Not enough data to generate this type of question", error.code);
         return;
       }
-      res.status(500).json({
-        message: `Error while generating question of type ${type} : ${error}`,
-      });
+      res.sendServerError(error);
     });
 }
 
@@ -116,7 +118,7 @@ export default { generateQuestion };
 
 // ***** Internal functions *****
 
-const scriptsFolderPath = path.resolve("modules", "question_generator_scripts");
+const scriptsFolderPath = path.resolve("global", "question_generator_scripts");
 
 /**
  * Create a question by requesting database with a given script
@@ -126,23 +128,28 @@ const scriptsFolderPath = path.resolve("modules", "question_generator_scripts");
  * @return {Promise<object>} The question
  */
 async function queryQuestion(filename, type, before = "") {
-  return new Promise(function (resolve, reject) {
-    fs.readFile(path.resolve(scriptsFolderPath, filename), { encoding: "utf-8" }).then((script) => {
-      queryPromise(before + script)
-        .then((res) => {
-          const data = res.find((e) => e instanceof Array);
+  return new Promise((resolve, reject) => {
+    fs.readFile(path.resolve(scriptsFolderPath, filename), { encoding: "utf-8" })
+      .then((script) => {
+        queryPromise(before + script)
+          .then((res) => {
+            const data = res.find((e) => e instanceof Array);
 
-          if (data.length < 3) {
-            reject(new NotEnoughDataError());
-          }
-          const formattedQuestion = formatQuestion(data);
-          if (formattedQuestion.answers.includes(null)) {
-            reject(new NotEnoughDataError());
-          }
-          resolve(Object.assign(formattedQuestion, { type }));
-        })
-        .catch(reject);
-    });
+            if (data.length < 3) {
+              return reject(new NotEnoughDataError());
+            }
+
+            const formattedQuestion = formatQuestion(data);
+            if (formattedQuestion.answers.includes(null)) {
+              return reject(new NotEnoughDataError());
+            }
+            resolve(Object.assign(formattedQuestion, { type }));
+          })
+          .catch((error) => {
+            reject(addErrorTitle(error, "Can't generate question in database"));
+          });
+      })
+      .catch((error) => reject(addErrorTitle(error, "Can't read the question script")));
   });
 }
 
@@ -182,7 +189,7 @@ export function createGeneratorOfType(type) {
             })
           )
         )
-        .catch(reject);
+        .catch((error) => reject(addErrorTitle(error, "Can't create the question generator")));
     });
   };
 }
@@ -195,8 +202,8 @@ export function createGeneratorOfType(type) {
 function formatQuestion(data) {
   const badAnswers = data.map((e) => e.bad_answer);
   const goodAnswer = data[0].good_answer;
-  const randomIndex = Math.floor(Math.random() * data.length + 1);
 
+  const randomIndex = Math.floor(Math.random() * (data.length + 1));
   const answers = badAnswers.slice();
   answers.splice(randomIndex, 0, goodAnswer);
 
@@ -210,7 +217,6 @@ function formatQuestion(data) {
 export class NotEnoughDataError extends Error {
   constructor() {
     super();
-    this.message = "This type of question is currently not available";
     this.name = "Not Enough Data";
     this.code = "NED";
   }

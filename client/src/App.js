@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import * as serviceWorker from "./serviceWorker";
 import { ReloadIcon } from "@modulz/radix-icons";
 import axios from "axios";
+import AuthService from "./services/auth.service";
 
 import "./styles/styles.scss";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -13,8 +14,8 @@ import Train from "./pages/Train";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 import HomePage from "./pages/HomePage";
+import CreateDuel from "./pages/CreateDuel";
 import Duel from "./pages/Duel";
-import AuthService from "./services/auth.service";
 
 /**
  * Set up the authorization header in all request if the user is logged in
@@ -103,7 +104,8 @@ export default class App extends Component {
           <Route path="/login" exact component={Login} />
           <ProtectedRoute path="/profile" exact component={Profile} />
           <ProtectedRoute path="/homepage" exact component={HomePage} />
-          <ProtectedRoute path="/duel/:id" exact component={Duel} />
+          <ProtectedRoute path="/createduel" exact component={CreateDuel} />
+          <ProtectedRoute path="/duel/:id" exact component={Duel} />            
         </Switch>
       </Router>
     );
