@@ -43,21 +43,23 @@ function connect() {
       }
       Logger.info("Connected to database!");
 
-      getSystemInformation("api_version").then((db_version) => {
-        if (db_version === null) {
-          create()
-            .then(() =>
-              update()
-                .then(() => resolve())
-                .catch((error) => reject(addErrorTitle(error, "Can't update the database")))
-            )
-            .catch((error) => reject(addErrorTitle(error, "Can't create the database")));
-        } else {
-          update(db_version)
-            .then(() => resolve())
-            .catch((error) => reject(addErrorTitle(error, "Can't update the database")));
-        }
-      });
+      getSystemInformation("api_version")
+        .then((db_version) => {
+          if (db_version === null) {
+            create()
+              .then(() =>
+                update()
+                  .then(() => resolve())
+                  .catch((error) => reject(addErrorTitle(error, "Can't update the database")))
+              )
+              .catch((error) => reject(addErrorTitle(error, "Can't create the database")));
+          } else {
+            update(db_version)
+              .then(() => resolve())
+              .catch((error) => reject(addErrorTitle(error, "Can't update the database")));
+          }
+        })
+        .catch((error) => reject(addErrorTitle(error, "Can't get the api version")));
     });
   });
 }

@@ -1,0 +1,8 @@
+04/01/2021 - 16:14:03 | Connected to database!
+04/01/2021 - 16:14:03 | Database is up to date!
+04/01/2021 - 16:14:03 | Server is running on port 5035.
+04/01/2021 - 16:14:25 | Connected to database!
+04/01/2021 - 16:16:58 | Connected to database!
+04/01/2021 - 16:17:59 | Connected to database!
+04/01/2021 - 16:17:59 | Database is up to date!
+04/01/2021 - 16:17:59 | Server is running on port 5035.

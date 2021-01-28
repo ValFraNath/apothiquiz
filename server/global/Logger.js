@@ -1,3 +1,6 @@
+import fs from "fs";
+import path from "path";
+
 /**
  * Log an error
  * @param {Error} error The error object
@@ -8,7 +11,11 @@ function error(error, title) {
   const txt = `\n${line}\n${formatDate()} | ${
     error.title || title || "No message provided"
   }\n${line}\n> ${error.stack}\n${line}`;
-  console.error(txt);
+  if (isProduction()) {
+    logInFile("error.txt", txt);
+  } else {
+    console.error(txt);
+  }
 }
 
 /**
@@ -16,7 +23,12 @@ function error(error, title) {
  * @param  {...any} messages Messages to log
  */
 function info(...messages) {
-  console.info(...messages);
+  messages = messages.map(prefixByDate);
+  if (isProduction()) {
+    logInFile("out.txt", ...messages);
+  } else {
+    console.info(...messages);
+  }
 }
 
 /**
@@ -24,15 +36,40 @@ function info(...messages) {
  * @param  {...any} messages Messages to log
  */
 function debug(...messages) {
-  if (process.NODE_ENV !== "production") {
-    console.debug(...messages);
+  if (!isProduction()) {
+    console.debug(...messages.map(prefixByDate));
   }
 }
 
 export default { error, info, debug };
 
+// ***** INTERNAL FUNCTIONS *****
+
+const isProduction = () => process.env.NODE_ENV === "production";
+
+const logsDir = path.resolve("logs");
+
+/**
+ * Log a message in a file
+ * @param {string} file The filename
+ * @param  {...string} messages The messages to log
+ */
+function logInFile(file, ...messages) {
+  messages.forEach((message) =>
+    fs.appendFileSync(path.resolve(logsDir, file), message + "\n", { encoding: "utf-8" })
+  );
+}
+
+/**
+ * Prefix a string by the formatted current date
+ * @param {string} str
+ * @returns {string}
+ */
+const prefixByDate = (str) => `${formatDate()} | ${str}`;
+
 /**
  * Format the current date
+ * @returns {string}
  */
 function formatDate() {
   const date = new Date();
