@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import AuthService from "../services/auth.service";
+import { PropTypes } from "prop-types";
 
 import Avatar from "../components/Avatar";
 
@@ -23,6 +24,11 @@ const UserBadge = ({ user, reversed }) => {
   );
 };
 
+UserBadge.propTypes = {
+  user: PropTypes.object,
+  reversed: PropTypes.bool,
+};
+
 const ResultBricks = ({ user, answers }) => (
   <div className="result">
     <span>{user?.pseudo ?? "Pseudo"}</span>
@@ -33,6 +39,11 @@ const ResultBricks = ({ user, answers }) => (
     </div>
   </div>
 );
+
+ResultBricks.propTypes = {
+  user: PropTypes.object,
+  answer: PropTypes.array,
+};
 
 class DuelOverview extends Component {
   constructor(props) {
