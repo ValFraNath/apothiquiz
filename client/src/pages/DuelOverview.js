@@ -61,7 +61,10 @@ class DuelOverview extends Component {
           })
           .catch((err) => console.error(err));
       })
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        console.error("Error retrieving the duel", err);
+        document.location.replace("/homepage");
+      });
   }
 
   render() {
