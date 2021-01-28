@@ -55,6 +55,14 @@ class Duel extends Component {
     });
   };
 
+  nextQuestion = () => {
+    const { currentQuestionNum } = this.state;
+    this.setState({
+      inProgress: true,
+      currentQuestionNum: currentQuestionNum + 1,
+    });
+  };
+
   render() {
     if (this.state.duelData === null) {
       return <p>Chargement en cours</p>;
@@ -65,7 +73,11 @@ class Duel extends Component {
 
     return (
       <main id="duel">
-        <Question numero={currentQuestionNum} text={currentQuestion.wording} />
+        <Question
+          numero={currentQuestionNum}
+          maxQuestion={duelData.rounds[duelData.currentRound - 1].length}
+          text={currentQuestion.wording}
+        />
 
         {inProgress ? (
           <Timer inProgress={inProgress} duration={timer} updateParent={this.updateTimer} />
