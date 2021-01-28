@@ -38,9 +38,14 @@ class Duel extends Component {
       .catch((err) => console.error(err));
   }
 
+  getCurrentRound() {
+    const { duelData } = this.state;
+    return duelData.rounds[duelData.currentRound - 1];
+  }
+
   getCurrentQuestion() {
-    const { duelData, currentQuestionNum } = this.state;
-    return duelData.rounds[duelData.currentRound - 1][currentQuestionNum - 1];
+    const { currentQuestionNum } = this.state;
+    return this.getCurrentRound()[currentQuestionNum - 1];
   }
 
   updateTimer = (value) => {
@@ -76,8 +81,8 @@ class Duel extends Component {
   nextQuestion = () => {
     const { currentQuestionNum } = this.state;
 
-    const currentQuestion = this.getCurrentQuestion();
-    if (currentQuestionNum === currentQuestion.answers.length + 1) {
+    const currentRound = this.getCurrentRound();
+    if (currentQuestionNum === currentRound.length) {
       console.log("fin");
       this.validateDuel();
       return;
@@ -89,6 +94,14 @@ class Duel extends Component {
       timer: Duel.TIMER_DURATION,
     });
   };
+
+  computeClassTopBar(index, question) {
+    const { userAnswers } = this.state;
+    if (index >= userAnswers.length) {
+      return "";
+    }
+    return question.goodAnswer === userAnswers[index] ? "good" : "bad";
+  }
 
   validateDuel = () => {
     const { duelData, userAnswers } = this.state;
@@ -107,11 +120,23 @@ class Duel extends Component {
     }
 
     const { duelData, currentQuestionNum, inProgress, lastClicked, timer } = this.state;
+    const currentRound = this.getCurrentRound();
     const currentQuestion = this.getCurrentQuestion();
 
     return (
       <main id="duel">
-        <div id="duel-topbar"></div>
+        <div id="duel-topbar">
+          <div>
+            {currentRound.map((value, index) => (
+              <div key={index} className={this.computeClassTopBar(index, value)}></div>
+            ))}
+          </div>
+          <div>
+            vs
+            <br />
+            {duelData.opponent}
+          </div>
+        </div>
 
         <Question
           numero={currentQuestionNum}
