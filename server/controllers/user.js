@@ -86,7 +86,7 @@ function queryCAS(login, pass) {
  *
  * @apiUse ErrorServer
  */
-User.getAll = function (req, res) {
+User.getAll = function (_, res) {
   const sql =
     "SELECT us_login AS pseudo, \
             us_victories AS victories, \

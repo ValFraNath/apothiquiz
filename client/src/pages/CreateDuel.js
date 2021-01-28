@@ -1,5 +1,5 @@
-import axios from "axios";
 import React, { Component } from "react";
+import axios from "axios";
 import AuthService from "../services/auth.service";
 
 import Avatar from "../components/Avatar";
