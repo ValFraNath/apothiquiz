@@ -22,22 +22,32 @@ const UserBadge = ({ user }) => {
   );
 };
 
+const ResultBricks = ({ user, answers }) => (
+  <div className="result">
+    <span>{user?.pseudo ?? "Pseudo"}</span>
+    <div className="bricks">
+      {answers.map((answerType, index) => (
+        <span key={index} className={"brick " + answerType}></span>
+      ))}
+    </div>
+  </div>
+);
+
 class DuelOverview extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      duelID: this.props.match.params.duelID,
       userScore: "-",
       opponentScore: "-",
-      currentUser: {},
-      opponent: {},
+      currentUser: null,
+      opponent: null,
       rounds: [],
     };
   }
 
   componentDidMount() {
-    const duelID = this.state.duelID;
+    const duelID = this.props.match.params.duelID;
 
     axios
       .get(`/api/v1/duels/${duelID}`)
@@ -89,17 +99,17 @@ class DuelOverview extends Component {
         </header>
 
         <Link
-          to="#"
+          to="#" // TODO
           className="btn"
           onClick={() => alert("Oups, tu as trouvé une fonctionnalité pas encore implémentée !")}
           disabled={!currentUserCanPlay}
         >
-          Jouer le tour {currentUserCanPlay}
+          Jouer le tour {rounds.length}
         </Link>
 
         {rounds.map((round, index) => {
-          let userAnswers = [],
-            opponentAnswers = [];
+          const userAnswers = [];
+          const opponentAnswers = [];
 
           round.forEach((question) => {
             const good = question.goodAnswer;
@@ -117,23 +127,10 @@ class DuelOverview extends Component {
               <h3>
                 Tour {index + 1} : <span>{round[0].title}</span>
               </h3>
-              <div className="result">
-                <span>{currentUser?.pseudo ?? "Pseudo"}</span>
-                <div className="bricks">
-                  {userAnswers.map((isCorrect, index) => (
-                    <span key={index} className={"brick " + isCorrect}></span>
-                  ))}
-                </div>
-              </div>
 
-              <div className="result">
-                <span>{opponent?.pseudo ?? "Pseudo"}</span>
-                <div className="bricks">
-                  {opponentAnswers.map((isCorrect, index) => (
-                    <span key={index} className={"brick " + isCorrect}></span>
-                  ))}
-                </div>
-              </div>
+              <ResultBricks user={currentUser} answers={userAnswers} />
+
+              <ResultBricks user={opponent} answers={opponentAnswers} />
             </section>
           );
         })}
