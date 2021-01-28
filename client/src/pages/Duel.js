@@ -1,11 +1,21 @@
-import axios from "axios";
 import React, { Component } from "react";
+import axios from "axios";
+import { ArrowRightIcon } from "@modulz/radix-icons";
+
+import Question from "../components/quiz/Question";
+import Timer from "../components/quiz/Timer";
+import Answers from "../components/quiz/Answers";
+import ButtonCircle from "../components/buttons/ButtonCircle";
 
 class Duel extends Component {
   constructor(props) {
     super(props);
     this.state = {
       duelData: null,
+      currentQuestionNum: 1,
+      inProgress: true,
+      lastClicked: "",
+      timer: Duel.TIMER_DURATION,
     };
   }
 
@@ -23,9 +33,62 @@ class Duel extends Component {
       .catch((err) => console.error(err));
   }
 
+  updateTimer = (value) => {
+    let { inProgress } = this.state;
+
+    if (!inProgress) return false;
+    if (value === 0) {
+      inProgress = false;
+    }
+
+    this.setState({
+      inProgress: inProgress,
+      timer: value,
+    });
+  };
+
+  handleAnswerClick = (value) => {
+    if (!this.state.inProgress) return;
+    this.setState({
+      inProgress: false,
+      lastClicked: value,
+    });
+  };
+
   render() {
-    return <p>Hello</p>;
+    if (this.state.duelData === null) {
+      return <p>Chargement en cours</p>;
+    }
+
+    const { duelData, currentQuestionNum, inProgress, lastClicked, timer } = this.state;
+    const currentQuestion = duelData.rounds[duelData.currentRound - 1][currentQuestionNum - 1];
+
+    return (
+      <main id="duel">
+        <Question numero={currentQuestionNum} text={currentQuestion.wording} />
+
+        {inProgress ? (
+          <Timer inProgress={inProgress} duration={timer} updateParent={this.updateTimer} />
+        ) : (
+          <div id="next-btn">
+            <ButtonCircle onClick={this.nextQuestion}>
+              <ArrowRightIcon />
+            </ButtonCircle>
+          </div>
+        )}
+
+        <Answers
+          inProgress={inProgress}
+          goodAnswerIndex={-1}
+          answers={currentQuestion.answers}
+          lastClicked={lastClicked}
+          onClick={this.handleAnswerClick}
+        />
+      </main>
+    );
   }
 }
+
+Duel.TIMER_DURATION = 10;
 
 export default Duel;

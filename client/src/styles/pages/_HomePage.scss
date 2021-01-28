@@ -71,14 +71,18 @@
       }
     }
 
+    & > a {
+      text-decoration: none;
+
+      &:last-of-type article {
+        margin-bottom: 0;
+      }
+    }
+
     article {
       display: flex;
       align-items: center;
       margin-bottom: 1.2rem;
-
-      &:last-of-type {
-        margin-bottom: 0;
-      }
 
       & > div:first-of-type {
         margin-right: 0.8rem;
@@ -93,8 +97,13 @@
         h3 {
           font-size: 1.2rem;
           margin-bottom: 0.3rem;
+          color: black;
         }
       }
+    }
+
+    section > article:last-of-type {
+      margin-bottom: 0;
     }
 
     &:first-of-type {

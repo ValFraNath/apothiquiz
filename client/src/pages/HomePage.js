@@ -110,7 +110,7 @@ class HomePage extends Component {
           ) : (
             <>
               {toPlayChallenges.map((value, index) => (
-                <Link to="/duel/1" key={index}>
+                <Link to={`/duel/${value.id}`} key={index}>
                   <article>
                     <Avatar
                       size="75px"

@@ -1,7 +1,8 @@
 // Local variables
 $timer-size: 100px;
 
-#quiz {
+#quiz,
+#duel {
   padding: 1rem 0.8rem;
 
   @media screen and (min-width: $desktop-size) {
