@@ -14,6 +14,7 @@ button {
 
 .btn {
   display: block;
+  width: max-content;
   border: none;
   background: $button-bg;
   color: $button-fg;
@@ -22,6 +23,7 @@ button {
   font-size: 0.9rem;
   box-shadow: 0 2px 4px rgba(134, 134, 134, 0.4);
   flex-shrink: 0;
+  text-decoration: none;
 }
 
 /* ---------- Full width button ---------- */

@@ -64,6 +64,54 @@ function login(req, _res) {
  */
 
 /**
+ * @api {post} /users/ Get data of several users
+ * @apiName GetUsersData
+ * @apiGroup User
+ *
+ * @apiParam {string[]} listOfUsers  Pseudo of several users
+ *
+ * @apiSuccess (200) {object[]} users  All users in an array
+ *
+ * @apiUse ErrorServer
+ */
+User.severalGetInfos = function (req, res) {
+  const listOfUsers = req.body;
+  if (!Array.isArray(listOfUsers) || listOfUsers.length === 0) {
+    res.status(401).json({ error: "Bad request format." });
+    return;
+  }
+
+  const sqlWhere = listOfUsers.map(() => "us_login = ?");
+  const sql = `SELECT us_login AS pseudo,
+                      us_victories AS victories,
+                      us_defeats AS defeats,
+                      us_avatar AS avatar
+               FROM user
+               WHERE ${sqlWhere.join(" OR ")}`;
+
+  queryPromise(sql, listOfUsers)
+    .then((sqlRes) => {
+      const usersData = {};
+      try {
+        for (let value of sqlRes) {
+          usersData[value.pseudo] = {
+            pseudo: value.pseudo,
+            victories: Number(value.victories),
+            defeats: Number(value.defeats),
+            avatar: JSON.parse(value.avatar),
+          };
+        }
+      } catch (e) {
+        res.status(500).json({ message: e });
+      }
+      res.status(200).json(usersData);
+    })
+    .catch((error) => {
+      res.status(500).json({ message: error });
+    });
+};
+
+/**
  * @api       {get}        /user/:pseudo   Get user informations
  * @apiName   GetUserInformations
  * @apiGroup  User

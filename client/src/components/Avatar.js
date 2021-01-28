@@ -8,45 +8,43 @@ import ImageMouthes from "../images/avatar/mouthes.png";
 import ImageBodyTop from "../images/avatar/bodyTop.png";
 import { ReactComponent as BodyBottom } from "../images/avatar/bodyBottom.svg";
 
-const Avatar = function (props) {
+const Avatar = function ({
+  size,
+  eyes = 0,
+  hands = 0,
+  hat = 0,
+  mouth = 0,
+  colorBG = "#d3d3d3",
+  colorBody = "#0c04fc",
+}) {
   return (
     <div
       className="avatar"
       style={{
-        width: props.size,
-        height: props.size,
+        width: size,
+        height: size,
       }}
     >
-      <div className="avatar-inside" style={{ backgroundColor: props.colorBG }}>
-        <img className="avatar-eyes" src={ImageEyes} data-choice={props.eyes} alt="Avatar eyes" />
-        <img
-          className="avatar-hands"
-          src={ImageHands}
-          data-choice={props.hands}
-          alt="Avatar hands"
-        />
-        <img className="avatar-hat" src={ImageHats} data-choice={props.hat} alt="Avatar hat" />
-        <img
-          className="avatar-mouth"
-          src={ImageMouthes}
-          data-choice={props.mouth}
-          alt="Avatar mouth"
-        />
+      <div className="avatar-inside" style={{ backgroundColor: colorBG }}>
+        <img className="avatar-eyes" src={ImageEyes} data-choice={eyes} alt="Avatar eyes" />
+        <img className="avatar-hands" src={ImageHands} data-choice={hands} alt="Avatar hands" />
+        <img className="avatar-hat" src={ImageHats} data-choice={hat} alt="Avatar hat" />
+        <img className="avatar-mouth" src={ImageMouthes} data-choice={mouth} alt="Avatar mouth" />
         <img className="avatar-body-top" src={ImageBodyTop} alt="Avatar body" />
-        <BodyBottom className="avatar-body-bottom" fill={props.colorBody} alt="Avatar body" />
+        <BodyBottom className="avatar-body-bottom" fill={colorBody} alt="Avatar body" />
       </div>
     </div>
   );
 };
 
 Avatar.propTypes = {
-  size: PropTypes.string,
-  eyes: PropTypes.number.isRequired,
-  hands: PropTypes.number.isRequired,
-  hat: PropTypes.number.isRequired,
-  mouth: PropTypes.number.isRequired,
-  colorBody: PropTypes.string.isRequired,
-  colorBG: PropTypes.string.isRequired,
+  size: PropTypes.string.isRequired,
+  eyes: PropTypes.number,
+  hands: PropTypes.number,
+  hat: PropTypes.number,
+  mouth: PropTypes.number,
+  colorBody: PropTypes.string,
+  colorBG: PropTypes.string,
 };
 
 export default Avatar;

@@ -1,0 +1,133 @@
+#homepage {
+  header {
+    position: relative;
+    display: flex;
+    padding: 1rem 1.1rem 2.2rem 1.1rem;
+    align-items: center;
+    overflow: hidden;
+
+    #header-background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url("../../images/bg_menu.png") no-repeat top;
+      background-size: cover;
+      filter: blur(1px);
+
+      &:before {
+        content: "";
+        display: block;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.25);
+      }
+    }
+
+    .avatar {
+      margin-right: 0.8rem;
+    }
+
+    & > div:last-of-type {
+      z-index: 2;
+
+      h1 {
+        font-size: 1.7rem;
+        margin-bottom: 0.4rem;
+        color: white;
+      }
+
+      p {
+        color: white;
+        line-height: 1.2;
+      }
+    }
+  }
+
+  #links {
+    display: flex;
+    justify-content: center;
+    transform: translateY(-50%);
+
+    .btn:first-child {
+      margin-right: 1rem;
+    }
+  }
+
+  section {
+    margin-bottom: 1.8rem;
+    padding: 0 1.2rem;
+
+    h2 {
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: #252525;
+      margin-bottom: 0.8rem;
+
+      img {
+        vertical-align: middle;
+        height: 3rem;
+      }
+    }
+
+    article {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1.2rem;
+
+      &:last-of-type {
+        margin-bottom: 0;
+      }
+
+      & > div:first-of-type {
+        margin-right: 0.8rem;
+      }
+
+      .challenges-text {
+        background: #eaeaea;
+        padding: 0.8rem 1rem;
+        border-radius: 7px;
+        flex-grow: 1;
+
+        h3 {
+          font-size: 1.2rem;
+          margin-bottom: 0.3rem;
+        }
+      }
+    }
+
+    &:first-of-type {
+      .challenges-text {
+        display: flex;
+        align-items: center;
+
+        div {
+          margin-right: 0.5rem;
+        }
+
+        svg {
+          width: 1.5rem;
+          height: auto;
+          color: $button-bg;
+        }
+      }
+    }
+
+    &:last-of-type {
+      article {
+        justify-content: flex-end;
+
+        & > div {
+          &:first-of-type {
+            text-align: right;
+          }
+        }
+      }
+    }
+  }
+
+  .avatar {
+    flex-shrink: 0;
+  }
+}

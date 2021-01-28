@@ -3,7 +3,7 @@ import chaiHttp from "chai-http";
 import jwt from "jsonwebtoken";
 
 import app from "../index.js";
-import { forceTruncateTables, insertData } from "./index.test.js";
+import { forceTruncateTables, insertData, requestAPI } from "./index.test.js";
 
 chai.use(chaiHttp);
 const expect = chai.expect;
@@ -88,6 +88,74 @@ describe("User test", function () {
           expect(res.status).to.be.equal(401);
           done();
         });
+    });
+  });
+
+  describe("Get data from several users", function () {
+    let token;
+    before(async function () {
+      // Authenticate
+      const res = await requestAPI("users/login", {
+        body: {
+          userPseudo: "fpoguet",
+          userPassword: "1234",
+        },
+        method: "post",
+      });
+      expect(res.status).to.be.equal(200);
+
+      expect(Object.keys(res.body)).to.contains("pseudo");
+      expect(Object.keys(res.body)).to.contains("token");
+      token = res.body.token;
+    });
+
+    it("All users exist", async function () {
+      const res = await requestAPI("users", {
+        token: token,
+        body: ["nhoun", "fpoguet"],
+        method: "post",
+      });
+
+      expect(res.status, res.error).to.be.equal(200);
+
+      expect(Object.keys(res.body)).to.have.lengthOf(2);
+      expect(Object.keys(res.body)).to.contains("nhoun");
+      expect(Object.keys(res.body)).to.contains("fpoguet");
+
+      const firstUser = res.body["nhoun"];
+      expect(Object.keys(firstUser)).to.contains("pseudo");
+      expect(firstUser.pseudo).to.be.equal("nhoun");
+      expect(Object.keys(firstUser)).to.contains("defeats");
+      expect(Object.keys(firstUser)).to.contains("victories");
+      expect(Object.keys(firstUser)).to.contains("avatar");
+    });
+
+    it("Some users do not exist", async function () {
+      const res = await requestAPI("users", {
+        token: token,
+        body: ["nhoun", "azerty"],
+        method: "post",
+      });
+
+      expect(res.status, res.error).to.be.equal(200);
+
+      expect(Object.keys(res.body)).to.have.lengthOf(1);
+      expect(Object.keys(res.body)).to.contains("nhoun");
+
+      const firstUser = res.body["nhoun"];
+      expect(Object.keys(firstUser)).to.contains("pseudo");
+      expect(firstUser.pseudo).to.be.equal("nhoun");
+      expect(Object.keys(firstUser)).to.contains("defeats");
+      expect(Object.keys(firstUser)).to.contains("victories");
+      expect(Object.keys(firstUser)).to.contains("avatar");
+    });
+
+    it("Not logged in", async function () {
+      const err = await requestAPI("users", {
+        body: ["nhoun", "fpoguet"],
+        method: "post",
+      });
+      expect(err.status).to.be.equal(401);
     });
   });
 
