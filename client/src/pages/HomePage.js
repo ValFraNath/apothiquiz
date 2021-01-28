@@ -96,7 +96,7 @@ class HomePage extends Component {
           <Link to="/train" className="btn">
             Entraînement
           </Link>
-          <Link to="/homepage" className="btn" onClick={() => alert("Travail en cours.")}>
+          <Link to="/createduel" className="btn">
             Nouveau duel
           </Link>
         </div>
