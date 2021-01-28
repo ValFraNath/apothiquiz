@@ -120,13 +120,13 @@ class HomePage extends Component {
                     colorBG={usersData[value.opponent]?.avatar.colorBG}
                     colorBody={usersData[value.opponent]?.avatar.colorBody}
                   />
-                  <div className="challenges-text">
+                  <Link to={`/duel/${value.id}`} className="challenges-text">
                     <div>
                       <h3>{value.opponent}</h3>
                       <p>Vous pouvez jouer le round {value.currentRound}</p>
                     </div>
                     <ChevronRightIcon />
-                  </div>
+                  </Link>
                 </article>
               ))}
             </>
@@ -143,10 +143,10 @@ class HomePage extends Component {
             <>
               {pendingChallenges.map((value, index) => (
                 <article key={index}>
-                  <div className="challenges-text">
+                  <Link to={`/duel/${value.id}`}  className="challenges-text">
                     <h3>{value.opponent}</h3>
                     <p>En train de jouer le round {value.currentRound}</p>
-                  </div>
+                  </Link>
                   <Avatar
                     size="75px"
                     eyes={usersData[value.opponent]?.avatar.eyes ?? 0}
