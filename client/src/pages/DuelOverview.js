@@ -5,7 +5,7 @@ import AuthService from "../services/auth.service";
 
 import Avatar from "../components/Avatar";
 
-const UserBadge = ({ user }) => {
+const UserBadge = ({ user, reversed }) => {
   return (
     <div className="badge">
       <Avatar
@@ -16,6 +16,7 @@ const UserBadge = ({ user }) => {
         mouth={user?.avatar?.mouth}
         colorBG={user?.avatar?.colorBG}
         colorBody={user?.avatar?.colorBody}
+        reversed={reversed}
       />
       <span>{user?.pseudo ?? "Pseudonyme"}</span>
     </div>
@@ -91,7 +92,7 @@ class DuelOverview extends Component {
     return (
       <main id="duel-overview">
         <header>
-          <UserBadge user={currentUser} />
+          <UserBadge user={currentUser} reversed={true} />
           <span>
             {this.state.userScore} — {this.state.opponentScore}
           </span>
