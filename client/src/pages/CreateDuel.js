@@ -9,24 +9,38 @@ class CreateDuel extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      listOfUsers: {
-        a: "hey",
-      },
+      listOfUsers: {},
       opponent: null,
+      search: "",
     };
   }
 
   componentDidMount() {
     axios
       .get("/api/v1/users")
-      .then((res) => {
-        this.setState({
-          listOfUsers: res.data,
-        });
+      .then((resUsers) => {
+        axios
+          .get("/api/v1/duels")
+          .then((resDuels) => {
+            const usersToDisplay = resUsers.data;
+            for (let usr of resDuels.data) {
+              if (usr.opponent in usersToDisplay) {
+                delete usersToDisplay[usr.opponent];
+              }
+            }
+            this.setState({
+              listOfUsers: usersToDisplay,
+            });
+          })
+          .catch((err) => console.error(err));
       })
       .catch((err) => console.error(err));
   }
 
+  /**
+   * Select an opponent
+   * @param {string} name Username of the opponent
+   */
   chooseOpponent(name) {
     let newValue = name;
     if (this.state.opponent === name) {
@@ -37,8 +51,10 @@ class CreateDuel extends Component {
     });
   }
 
+  /**
+   * Create a duel with the chosen opponent
+   */
   createDuel = () => {
-    console.log("hey");
     axios
       .post("/api/v1/duels/new", {
         opponent: this.state.opponent,
@@ -50,20 +66,37 @@ class CreateDuel extends Component {
       .catch((err) => console.error(err));
   };
 
+  /**
+   * Search for a user
+   * @param {*} event
+   */
+  handleSearch = (event) => {
+    this.setState({
+      search: event.target.value,
+    });
+  };
+
   render() {
-    const { listOfUsers, opponent } = this.state;
+    const { listOfUsers, opponent, search } = this.state;
     const currentUser = AuthService.getCurrentUser();
 
     return (
       <main id="create-duel">
         <section>
           <h1>Créer un nouveau duel</h1>
-          <input type="text" placeholder="Rechercher un utilisateur"></input>
+          <input
+            type="text"
+            placeholder="Rechercher un utilisateur"
+            onChange={this.handleSearch}
+          ></input>
         </section>
         <section>
           <ul>
             {Object.keys(listOfUsers)
-              .filter((user) => user !== currentUser.pseudo)
+              .filter((user) => {
+                let searchBoolean = search !== "" ? new RegExp(search, "i").test(user) : true;
+                return user !== currentUser.pseudo && searchBoolean;
+              })
               .map((user, index) => (
                 <li
                   key={index}
@@ -79,7 +112,7 @@ class CreateDuel extends Component {
                     colorBG={listOfUsers[user]?.avatar?.colorBG}
                     colorBody={listOfUsers[user]?.avatar?.colorBody}
                   />
-                  {user}
+                  <p>{user}</p>
                 </li>
               ))}
           </ul>

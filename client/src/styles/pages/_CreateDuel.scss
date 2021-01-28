@@ -6,6 +6,9 @@ main#create-duel {
   }
 
   input {
+    padding: 0.7rem 0.6rem;
+    border: 1px solid $button-bg;
+    border-radius: 5px;
     box-sizing: border-box;
     width: 100%;
   }
@@ -28,8 +31,31 @@ main#create-duel {
       left: 0;
       background-color: white;
       text-align: center;
-      padding: 1.2rem 1rem;
+      padding: 0.9rem 1rem;
       border-top: 1px solid $button-bg;
+
+      p {
+        padding: 0.9rem 1.6rem;
+      }
+    }
+  }
+
+  li {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
+    border-radius: 7px;
+
+    &.selected {
+      background-color: $button-bg;
+      p {
+        color: white;
+      }
+    }
+
+    p {
+      font-size: 1.1rem;
+      margin-left: 0.8rem;
     }
   }
 }
