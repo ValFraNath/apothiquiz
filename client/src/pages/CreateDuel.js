@@ -28,10 +28,27 @@ class CreateDuel extends Component {
   }
 
   chooseOpponent(name) {
+    let newValue = name;
+    if (this.state.opponent === name) {
+      newValue = null;
+    }
     this.setState({
-      opponent: name,
+      opponent: newValue,
     });
   }
+
+  createDuel = () => {
+    console.log("hey");
+    axios
+      .post("/api/v1/duels/new", {
+        opponent: this.state.opponent,
+      })
+      .then(() => {
+        // Todo: redirect to duel page
+        alert("New challenge created");
+      })
+      .catch((err) => console.error(err));
+  };
 
   render() {
     const { listOfUsers, opponent } = this.state;
@@ -69,7 +86,7 @@ class CreateDuel extends Component {
         </section>
         <section>
           {opponent !== null ? (
-            <ButtonFullWidth onclick="Hey">Lancer le défi</ButtonFullWidth>
+            <ButtonFullWidth onClick={this.createDuel}>Lancer le défi</ButtonFullWidth>
           ) : (
             <p>Veuillez choisir un adversaire</p>
           )}
