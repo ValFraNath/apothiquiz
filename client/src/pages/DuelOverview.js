@@ -111,7 +111,7 @@ class DuelOverview extends Component {
         </header>
 
         <Link
-          to={`/duel/${duelID}/play`}
+          to={`/duel/${this.props.match.params.id}/play`}
           className="btn"
           disabled={!currentUserCanPlay}
         >
