@@ -110,24 +110,24 @@ class HomePage extends Component {
           ) : (
             <>
               {toPlayChallenges.map((value, index) => (
-                  <article key={index}>
-                    <Avatar
-                      size="75px"
-                      eyes={usersData[value.opponent]?.avatar.eyes}
-                      hands={usersData[value.opponent]?.avatar.hands}
-                      hat={usersData[value.opponent]?.avatar.hat}
-                      mouth={usersData[value.opponent]?.avatar.mouth}
-                      colorBG={usersData[value.opponent]?.avatar.colorBG}
-                      colorBody={usersData[value.opponent]?.avatar.colorBody}
-                    />
-                    <Link to={`/duel/${value.id}`} className="challenges-text">
-                      <div>
-                        <h3>{value.opponent}</h3>
-                        <p>Vous pouvez jouer le round {value.currentRound}</p>
-                      </div>
-                      <ChevronRightIcon />
-                    </Link>
-                  </article>
+                <article key={index}>
+                  <Avatar
+                    size="75px"
+                    eyes={usersData[value.opponent]?.avatar.eyes}
+                    hands={usersData[value.opponent]?.avatar.hands}
+                    hat={usersData[value.opponent]?.avatar.hat}
+                    mouth={usersData[value.opponent]?.avatar.mouth}
+                    colorBG={usersData[value.opponent]?.avatar.colorBG}
+                    colorBody={usersData[value.opponent]?.avatar.colorBody}
+                  />
+                  <Link to={`/duel/${value.id}`} className="challenges-text">
+                    <div>
+                      <h3>{value.opponent}</h3>
+                      <p>Vous pouvez jouer le round {value.currentRound}</p>
+                    </div>
+                    <ChevronRightIcon />
+                  </Link>
+                </article>
               ))}
             </>
           )}
@@ -142,21 +142,21 @@ class HomePage extends Component {
           ) : (
             <>
               {pendingChallenges.map((value, index) => (
-                  <article key={index}>
-                    <Link to={`/duel/${value.id}`} className="challenges-text">
-                      <h3>{value.opponent}</h3>
-                      <p>En train de jouer le round {value.currentRound}</p>
-                    </Link>
-                    <Avatar
-                      size="75px"
-                      eyes={usersData[value.opponent]?.avatar.eyes ?? 0}
-                      hands={usersData[value.opponent]?.avatar.hands ?? 0}
-                      hat={usersData[value.opponent]?.avatar.hat ?? 0}
-                      mouth={usersData[value.opponent]?.avatar.mouth ?? 0}
-                      colorBG={usersData[value.opponent]?.avatar.colorBG ?? "#d3d3d3"}
-                      colorBody={usersData[value.opponent]?.avatar.colorBody ?? "#0c04fc"}
-                    />
-                  </article>
+                <article key={index}>
+                  <Link to={`/duel/${value.id}`} className="challenges-text">
+                    <h3>{value.opponent}</h3>
+                    <p>En train de jouer le round {value.currentRound}</p>
+                  </Link>
+                  <Avatar
+                    size="75px"
+                    eyes={usersData[value.opponent]?.avatar.eyes ?? 0}
+                    hands={usersData[value.opponent]?.avatar.hands ?? 0}
+                    hat={usersData[value.opponent]?.avatar.hat ?? 0}
+                    mouth={usersData[value.opponent]?.avatar.mouth ?? 0}
+                    colorBG={usersData[value.opponent]?.avatar.colorBG ?? "#d3d3d3"}
+                    colorBody={usersData[value.opponent]?.avatar.colorBody ?? "#0c04fc"}
+                  />
+                </article>
               ))}
             </>
           )}

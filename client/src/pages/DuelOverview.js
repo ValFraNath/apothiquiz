@@ -117,7 +117,6 @@ class DuelOverview extends Component {
         >
           Jouer le tour {rounds.length}
         </Link>
-        
 
         {rounds.map((round, index) => {
           const userAnswers = [];

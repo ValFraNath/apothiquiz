@@ -40,7 +40,6 @@ class Duel extends Component {
         }
       })
       .catch((err) => console.error(err));
-
   }
 
   /**
@@ -178,7 +177,11 @@ class Duel extends Component {
         ) : (
           <div id="next-btn">
             <ButtonCircle onClick={this.nextQuestion}>
-              {currentQuestionNum === this.getCurrentRound().length ? (<RocketIcon />) : (<ArrowRightIcon />)}
+              {currentQuestionNum === this.getCurrentRound().length ? (
+                <RocketIcon />
+              ) : (
+                <ArrowRightIcon />
+              )}
             </ButtonCircle>
           </div>
         )}
