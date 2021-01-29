@@ -1,9 +1,9 @@
 import express from "express";
 
 import ApiController from "../controllers/api.js";
+import DuelController from "../controllers/duels.js";
 import QuestionController from "../controllers/question.js";
 import UserController from "../controllers/user.js";
-import DuelController from "../controllers/duels.js";
 import auth from "../middlewares/auth.middleware.js";
 
 const apiRouter = express.Router();

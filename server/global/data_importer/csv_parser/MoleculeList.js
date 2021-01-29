@@ -1,10 +1,10 @@
 // eslint-disable-next-line no-unused-vars
 import FileStructure from "./FileStructure.js";
-import MoleculesProperty from "./MoleculesProperty.js";
 import MoleculesClassification, {
   // eslint-disable-next-line no-unused-vars
   ClassificationNode,
 } from "./MoleculesClassification.js";
+import MoleculesProperty from "./MoleculesProperty.js";
 
 /**
  * Create a list of molecules from a matrix of molecules and classifications/properties data

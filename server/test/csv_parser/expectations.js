@@ -15,8 +15,8 @@
  *
  */
 export const expectations = {
-  first_version: {
-    number_of_molecules: 140,
+  firstVersion: {
+    numberOfMolecules: 140,
     classes: {
       all: [
         "INHIBITEUR DE FUSION",
@@ -85,7 +85,7 @@ export const expectations = {
         { name: "ANTIBIOTIQUE", children: [] },
       ],
     },
-    side_effects: [
+    sideEffects: [
       "hypotension orthostatique",
       "Nephrotoxicité",
       "Décoloration dents",
@@ -124,11 +124,11 @@ export const expectations = {
         class: "INTI (INHIBITEURS NUCLEOSIDIQUES TRANSCRIPTASE INVERSE)",
         indications: ["VHB", "VIH"],
         interactions: [],
-        side_effects: [],
+        sideEffects: [],
         ntr: null,
-        skeletal_formule: null,
-        level_easy: null,
-        level_hard: null,
+        skeletalFormula: null,
+        levelEasy: null,
+        levelHard: null,
       },
       {
         dci: "TINIDAZOLE",
@@ -136,11 +136,11 @@ export const expectations = {
         class: "5-NITRO-IMIDAZOLES",
         indications: ["Protozoaires", "Bactéries anaérobies"],
         interactions: [],
-        side_effects: [],
+        sideEffects: [],
         ntr: null,
-        level_easy: null,
-        level_hard: null,
-        skeletal_formule: null,
+        levelEasy: null,
+        levelHard: null,
+        skeletalFormula: null,
       },
       {
         dci: "AMANTADINE",
@@ -148,16 +148,16 @@ export const expectations = {
         class: "INHIBITEUR DE FUSION",
         indications: ["Grippe", "Parkinson"],
         interactions: [],
-        side_effects: ["hypotension orthostatique"],
+        sideEffects: ["hypotension orthostatique"],
         ntr: null,
-        level_easy: 0,
-        level_hard: 1,
-        skeletal_formule: null,
+        levelEasy: 0,
+        levelHard: 1,
+        skeletalFormula: null,
       },
     ],
   },
-  little_sample: {
-    number_of_molecules: 11,
+  littleSample: {
+    numberOfMolecules: 11,
     systems: {
       all: ["ANTIINFECTIEUX", "ANTIBIOTIQUE", "ANTIVIRAL"],
       nodes: [
@@ -185,7 +185,7 @@ export const expectations = {
     },
     indications: ["Grippe", "Infection bacterienne", "VHB", "VIH", "Parkinson"],
     interactions: [],
-    side_effects: [
+    sideEffects: [
       "hypotension orthostatique",
       "Décoloration dents",
       "Hypoplasie email dentaire",
@@ -194,20 +194,20 @@ export const expectations = {
     molecules: [
       {
         dci: "LYMECYCLINE",
-        level_easy: 0,
-        level_hard: 1,
+        levelEasy: 0,
+        levelHard: 1,
         ntr: 0,
-        skeletal_formule: null,
+        skeletalFormula: null,
         system: "ANTIBIOTIQUE",
         class: "TETRACYCLINES",
         indications: ["Infection bacterienne"],
-        side_effects: ["Décoloration dents", "Hypoplasie email dentaire", "oesophagite"],
+        sideEffects: ["Décoloration dents", "Hypoplasie email dentaire", "oesophagite"],
         interactions: [],
       },
     ],
   },
-  only_dci: {
-    number_of_molecules: 140,
+  onlyDCI: {
+    numberOfMolecules: 140,
     systems: {
       all: [],
       nodes: [],
@@ -218,36 +218,36 @@ export const expectations = {
     },
     indications: [],
     interactions: [],
-    side_effects: [],
+    sideEffects: [],
     molecules: [
       {
         dci: "AMANTADINE",
         ntr: null,
-        level_easy: null,
-        level_hard: null,
-        skeletal_formule: null,
+        levelEasy: null,
+        levelHard: null,
+        skeletalFormula: null,
         system: null,
         class: null,
         indications: [],
-        side_effects: [],
+        sideEffects: [],
         interactions: [],
       },
       {
         dci: "THIAMPHENICOL",
         ntr: null,
-        level_easy: null,
-        level_hard: null,
-        skeletal_formule: null,
+        levelEasy: null,
+        levelHard: null,
+        skeletalFormula: null,
         system: null,
         class: null,
         indications: [],
-        side_effects: [],
+        sideEffects: [],
         interactions: [],
       },
     ],
   },
   empty: {
-    number_of_molecules: 0,
+    numberOfMolecules: 0,
     systems: {
       all: [],
       nodes: [],
@@ -258,7 +258,7 @@ export const expectations = {
     },
     indications: [],
     interactions: [],
-    side_effects: [],
+    sideEffects: [],
     molecules: [],
   },
 };

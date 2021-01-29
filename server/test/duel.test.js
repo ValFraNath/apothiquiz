@@ -1,15 +1,18 @@
+import fs from "fs/promises";
+
+import path from "path";
+
 import chai from "chai";
 import chaiHttp from "chai-http";
 import mocha from "mocha";
-import fs from "fs/promises";
-import path from "path";
 
-import { forceTruncateTables, insertData, requestAPI } from "./index.test.js";
 import {
   NUMBER_OF_QUESTIONS_IN_ROUND,
   NUMBER_OF_ROUNDS_IN_DUEL,
   _initMockedDuelRounds,
 } from "../controllers/duels.js";
+
+import { forceTruncateTables, insertData, requestAPI } from "./index.test.js";
 
 chai.use(chaiHttp);
 const { expect } = chai;
@@ -26,8 +29,8 @@ describe("Duels", () => {
         requestAPI("users/login", {
           body: { userPseudo: user, userPassword: "1234" },
           method: "post",
-        })
-      )
+        }),
+      ),
     ).then((res) => {
       tokens = res.reduce((tokens, res) => {
         tokens[res.body.pseudo] = res.body.token;
@@ -63,7 +66,7 @@ describe("Duels", () => {
         "property_value",
         "molecule_property",
         "class",
-        "system"
+        "system",
       ).then(() => insertData("users.sql").then(() => insertData("molecules.sql").then(done)));
     });
 
@@ -139,7 +142,7 @@ describe("Duels", () => {
           (mock) => {
             _initMockedDuelRounds(JSON.parse(mock));
             done();
-          }
+          },
         );
       });
 
@@ -151,7 +154,7 @@ describe("Duels", () => {
               method: "post",
               body: { opponent: "nhoun" },
             })
-          ).body.id
+          ).body.id,
         );
       });
 
@@ -163,7 +166,7 @@ describe("Duels", () => {
               method: "post",
               body: { opponent: "vperigno" },
             })
-          ).body.id
+          ).body.id,
         );
       });
 
@@ -185,7 +188,7 @@ describe("Duels", () => {
             } else {
               expectNotHaveProperties(question, "wording", "subject");
             }
-          })
+          }),
         );
         duel.rounds.forEach((round) => expect(round).to.have.length(NUMBER_OF_QUESTIONS_IN_ROUND));
       });
@@ -204,7 +207,7 @@ describe("Duels", () => {
             } else {
               expectNotHaveProperties(question, "wording", "subject");
             }
-          })
+          }),
         );
         duel.rounds.forEach((round) => expect(round).to.have.length(NUMBER_OF_QUESTIONS_IN_ROUND));
       });
@@ -260,14 +263,14 @@ describe("Duels", () => {
                   "subject",
                   "answers",
                   "userAnswer",
-                  "goodAnswer"
+                  "goodAnswer",
                 );
                 if (i === duel.currentRound - 1) {
                   expectNotHaveProperties(question, "opponentAnswer");
                 } else {
                   expectHaveProperties(question, "opponentAnswer");
                 }
-              })
+              }),
             );
           });
 
@@ -286,7 +289,7 @@ describe("Duels", () => {
                 } else {
                   expectHaveProperties(question, "userAnswer", "opponentAnswer");
                 }
-              })
+              }),
             );
           });
 
@@ -351,9 +354,9 @@ describe("Duels", () => {
                   "subject",
                   "answers",
                   "userAnswer",
-                  "goodAnswer"
+                  "goodAnswer",
                 );
-              })
+              }),
             );
           });
           it("Get duel after : fpoguet", async () => {
@@ -373,9 +376,9 @@ describe("Duels", () => {
                   "subject",
                   "answers",
                   "userAnswer",
-                  "goodAnswer"
+                  "goodAnswer",
                 );
-              })
+              }),
             );
           });
         });

@@ -1,7 +1,9 @@
-import mysql from "mysql";
-import dotenv from "dotenv";
 import fs from "fs/promises";
 import path from "path";
+
+import dotenv from "dotenv";
+import mysql from "mysql";
+
 import Logger, { addErrorTitle } from "../global/Logger.js";
 
 const __dirname = path.resolve();
@@ -44,17 +46,17 @@ function connect() {
       Logger.info("Connected to database!");
 
       getSystemInformation("api_version")
-        .then((db_version) => {
-          if (db_version === null) {
+        .then((dbVersion) => {
+          if (dbVersion === null) {
             create()
               .then(() =>
                 update()
                   .then(() => resolve())
-                  .catch((error) => reject(addErrorTitle(error, "Can't update the database")))
+                  .catch((error) => reject(addErrorTitle(error, "Can't update the database"))),
               )
               .catch((error) => reject(addErrorTitle(error, "Can't create the database")));
           } else {
-            update(db_version)
+            update(dbVersion)
               .then(() => resolve())
               .catch((error) => reject(addErrorTitle(error, "Can't update the database")));
           }
@@ -141,9 +143,9 @@ function update(version = versions[0]) {
           __dirname,
           "db",
           "updates",
-          `db_${versions[i - 1].split("-").join("")}_to_${versions[i].split("-").join("")}.sql`
+          `db_${versions[i - 1].split("-").join("")}_to_${versions[i].split("-").join("")}.sql`,
         ),
-        { encoding: "utf-8" }
+        { encoding: "utf-8" },
       )
         .then((script) =>
           queryPromise(script)
@@ -151,7 +153,7 @@ function update(version = versions[0]) {
               i++;
               updateRecursively();
             })
-            .catch((error) => reject(addErrorTitle(error, "Can't update the database")))
+            .catch((error) => reject(addErrorTitle(error, "Can't update the database"))),
         )
         .catch((error) => reject(addErrorTitle(error, "Can't read the update file")));
     })();
@@ -203,7 +205,7 @@ connection.config.queryFormat = function (query, values) {
         return this.escape(values[key]);
       }
       return identifier;
-    }.bind(this)
+    }.bind(this),
   );
 };
 

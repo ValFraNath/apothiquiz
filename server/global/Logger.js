@@ -66,7 +66,7 @@ function logInFile(file, ...messages) {
     fs.appendFileSync(path.resolve(logsDir, file), message + "\n", {
       encoding: "utf-8",
       flag: "as",
-    })
+    }),
   );
 }
 
@@ -84,9 +84,9 @@ const prefixByDate = (str) => `${formatDate()} | ${str}`;
 function formatDate() {
   const date = new Date();
   return `${forceTwoDigit(date.getDay())}/${forceTwoDigit(
-    date.getMonth() + 1
+    date.getMonth() + 1,
   )}/${date.getFullYear()} - ${forceTwoDigit(date.getHours())}:${forceTwoDigit(
-    date.getMinutes()
+    date.getMinutes(),
   )}:${forceTwoDigit(date.getSeconds())}`;
 }
 

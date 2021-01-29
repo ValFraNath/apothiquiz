@@ -18,7 +18,7 @@ export default class About extends Component {
       .then((res) => {
         this.setState({
           serverStatus: res.data.status,
-          currentServerAPIVersion: res.data.api_version,
+          currentServerAPIVersion: res.data.apiVersion,
         });
       })
       .catch((err) => {

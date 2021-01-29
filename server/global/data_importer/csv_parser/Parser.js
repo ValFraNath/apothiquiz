@@ -1,12 +1,11 @@
-import { readCSV } from "./Reader.js";
-
+import FileStructure from "./FileStructure.js";
 // eslint-disable-next-line no-unused-vars
 import HeaderChecker, { HeaderErrors } from "./HeaderChecker.js";
-import ParserSpecifications from "./ParserSpecifications.js";
-import FileStructure from "./FileStructure.js";
+import MoleculeList from "./MoleculeList.js";
 import Classification from "./MoleculesClassification.js";
 import Property from "./MoleculesProperty.js";
-import MoleculeList from "./MoleculeList.js";
+import ParserSpecifications from "./ParserSpecifications.js";
+import { readCSV } from "./Reader.js";
 
 /**
  * Import CSV file to parse data into an object
@@ -31,20 +30,20 @@ export function parseCSV(filepath) {
 
         moleculesMatrix = removeInvalidMoleculeLines(
           moleculesMatrix,
-          structure.getIndexesFor("dci")[0]
+          structure.getIndexesFor("dci")[0],
         );
 
         const data = Object.create(null);
 
         const nonUniqueColumns = ParserSpecifications.columns.filter(
-          (column) => !column.isUnique()
+          (column) => !column.isUnique(),
         );
 
         for (let column of nonUniqueColumns) {
           const creator = column.isHierarchical() ? Classification.create : Property.create;
 
           data[column.property] = creator(
-            extractColumns(moleculesMatrix, ...structure.getIndexesFor(column.property))
+            extractColumns(moleculesMatrix, ...structure.getIndexesFor(column.property)),
           );
         }
 
@@ -81,7 +80,7 @@ function cleanUpStringsInMatrix(matrix) {
         return value === "" ? null : value;
       }
       return value;
-    })
+    }),
   );
 }
 

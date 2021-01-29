@@ -1,14 +1,16 @@
-import path from "path";
-import chai from "chai";
-import mocha from "mocha";
 import fs from "fs";
-import deepEqualAnyOrder from "deep-equal-in-any-order";
+import path from "path";
 
-import { parseCSV } from "../../global/data_importer/csv_parser/Parser.js";
-import { expectations } from "./expectations.js";
+import chai from "chai";
+import deepEqualAnyOrder from "deep-equal-in-any-order";
+import mocha from "mocha";
+
+import { HeaderErrors } from "../../global/data_importer/csv_parser/HeaderChecker.js";
 // eslint-disable-next-line no-unused-vars
 import { ClassificationNode } from "../../global/data_importer/csv_parser/MoleculesClassification.js";
-import { HeaderErrors } from "../../global/data_importer/csv_parser/HeaderChecker.js";
+import { parseCSV } from "../../global/data_importer/csv_parser/Parser.js";
+
+import { expectations } from "./expectations.js";
 
 chai.use(deepEqualAnyOrder);
 const { before } = mocha;
@@ -23,22 +25,22 @@ describe("Test if values are well imported", function () {
     {
       name: "molecules.csv",
       snapshot: "molecules.json",
-      expectation: expectations.first_version,
+      expectation: expectations.firstVersion,
     },
     {
       name: "molecules_moved_columns.csv",
       snapshot: "moved_columns.json",
-      expectation: expectations.first_version,
+      expectation: expectations.firstVersion,
     },
     {
       name: "molecules_little_sample.csv",
       snapshot: "sample.json",
-      expectation: expectations.little_sample,
+      expectation: expectations.littleSample,
     },
     {
       name: "molecules_only_dci.csv",
       snapshot: "only_dci.json",
-      expectation: expectations.only_dci,
+      expectation: expectations.onlyDCI,
     },
     {
       name: "molecules_empty.csv",
@@ -48,7 +50,7 @@ describe("Test if values are well imported", function () {
     {
       name: "molecules_separated_rows.csv",
       snapshot: "separated_rows.json",
-      expectation: expectations.first_version,
+      expectation: expectations.firstVersion,
     },
   ];
 
@@ -77,7 +79,7 @@ describe("Test if values are well imported", function () {
       });
 
       it("Good number of molecules", function (done) {
-        expect(data.molecules.length).to.be.equals(file.expectation.number_of_molecules);
+        expect(data.molecules.length).to.be.equals(file.expectation.numberOfMolecules);
         done();
       });
 
@@ -91,7 +93,7 @@ describe("Test if values are well imported", function () {
           expectNotContainsDuplication(ids, "Unique ids");
 
           expect(expectedValues.all, "Values are same than expected").to.be.deep.equalInAnyOrder(
-            names
+            names,
           );
 
           for (let expectedNode of expectedValues.nodes) {
@@ -101,7 +103,7 @@ describe("Test if values are well imported", function () {
 
             expect(
               expectedNode.children,
-              `'${expectedNode.name}' has same children than expected`
+              `'${expectedNode.name}' has same children than expected`,
             ).to.be.deep.equalInAnyOrder(value.children.map(toName));
           }
           expect(names, "Good number of name").to.have.length(expectedValues.all.length);
@@ -111,7 +113,7 @@ describe("Test if values are well imported", function () {
         });
       }
 
-      for (let property of ["side_effects", "interactions", "indications"]) {
+      for (let property of ["sideEffects", "interactions", "indications"]) {
         it(`Property : ${property}`, function (done) {
           const expectedNames = file.expectation[property];
           const values = data[property];
@@ -120,11 +122,11 @@ describe("Test if values are well imported", function () {
 
           expectNotContainsDuplication(
             values.map((v) => v.id),
-            "Unique ids"
+            "Unique ids",
           );
 
           expect(expectedNames, "Same values").to.be.deep.equalInAnyOrder(
-            values.map((v) => v.name)
+            values.map((v) => v.name),
           );
 
           done();
@@ -150,20 +152,20 @@ describe("Test if values are well imported", function () {
             expect(value.id, `| Invalid class |`).equals(molecule[moleculeProperty]);
           }
 
-          for (let property of ["skeletal_formule", "ntr", "level_easy", "level_hard"]) {
+          for (let property of ["skeletalFormula", "ntr", "levelEasy", "levelHard"]) {
             expect(molecule[property], `| Invalid property ${property} |`).equals(
-              expected[property]
+              expected[property],
             );
           }
 
-          for (let property of ["indications", "interactions", "side_effects"]) {
+          for (let property of ["indications", "interactions", "sideEffects"]) {
             let expectedValues = expected[property].map((value) => {
               let found = getPropertyValue(data[property], value);
               expect(found, `| Invalid value '${value}' for property ${property} |`).not.undefined;
               return found.id;
             });
             expect(molecule[property], `| Invalid property : ${property} |`).deep.equalInAnyOrder(
-              expectedValues
+              expectedValues,
             );
           }
 
@@ -175,7 +177,7 @@ describe("Test if values are well imported", function () {
 });
 
 describe("Tests for errors occurred while parsing an incorrectly formatted file", function () {
-  const bad_files = [
+  const badFiles = [
     {
       name: "empty_file.csv",
       errors: [HeaderErrors.EMPTY_FILE],
@@ -189,7 +191,7 @@ describe("Tests for errors occurred while parsing an incorrectly formatted file"
       errors: [HeaderErrors.MISSING_COLUMN],
     },
     {
-      name: "missing_skeletal_formule.csv",
+      name: "missing_skeletal_formula.csv",
       errors: [HeaderErrors.MISSING_COLUMN],
     },
     {
@@ -222,7 +224,7 @@ describe("Tests for errors occurred while parsing an incorrectly formatted file"
     },
   ];
 
-  for (const file of bad_files) {
+  for (const file of badFiles) {
     it(`File : ${file.name}`, async () => {
       try {
         const json = await parseCSV(path.resolve(badFilesFolderPath, file.name));
@@ -248,7 +250,7 @@ describe("Tests for errors occurred while parsing an incorrectly formatted file"
 function expectNotContainsDuplication(array, message = "") {
   expect(
     array.length === [...new Set(array)].length,
-    `| ${message} : Array do contains duplications |`
+    `| ${message} : Array do contains duplications |`,
   ).to.be.true;
 }
 

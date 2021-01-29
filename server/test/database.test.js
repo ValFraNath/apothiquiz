@@ -1,8 +1,10 @@
+import assert from "assert";
+
 import chai from "chai";
 import equalInAnyOrder from "deep-equal-in-any-order";
 
-import assert from "assert";
 import { queryPromise, connection } from "../db/database.js";
+
 import { insertData, forceTruncateTables } from "./index.test.js";
 
 const { expect } = chai;
@@ -132,18 +134,18 @@ describe("Procedures Molecule data", () => {
       "property_value",
       "molecule_property",
       "class",
-      "system"
+      "system",
     ).then(() => insertData("molecules.sql").then(() => done()));
   });
 
   it("GetClassesOf", async () => {
     let classes = (await queryPromise("CALL getClassesOf(?)", ["AMANTADINE"]))[0].map(
-      (e) => e.cl_name
+      (e) => e.cl_name,
     );
     expect(classes).to.be.deep.equals(["INHIBITEUR DE FUSION"]);
 
     classes = (await queryPromise("CALL getClassesOf(?)", ["TENOFOVIR DISOPROXIL"]))[0].map(
-      (e) => e.cl_name
+      (e) => e.cl_name,
     );
     expect(classes).to.be.deep.equals([
       "camion",
@@ -157,7 +159,7 @@ describe("Procedures Molecule data", () => {
 
   it("GetSystemsOf", async () => {
     let systems = (await queryPromise("CALL getSystemsOf(?)", ["AMANTADINE"]))[0].map(
-      (e) => e.sy_name
+      (e) => e.sy_name,
     );
     expect(systems).to.be.deep.equals(["ANTIVIRAL", "ANTIINFECTIEUX"]);
 
@@ -179,10 +181,10 @@ describe("Procedures Molecule data", () => {
     )[0].map((e) => e.value);
     expect(interactions).to.be.deep.equalInAnyOrder(["Allongement QT"]);
 
-    const side_effects = (
-      await queryPromise("CALL getPropertyValuesOf(?,?)", ["METHYLENECYCLINE", "side_effects"])
+    const sideEffects = (
+      await queryPromise("CALL getPropertyValuesOf(?,?)", ["METHYLENECYCLINE", "sideEffects"])
     )[0].map((e) => e.value);
-    expect(side_effects).to.be.deep.equalInAnyOrder([
+    expect(sideEffects).to.be.deep.equalInAnyOrder([
       "Décoloration dents",
       "Hypoplasie email dentaire",
       "oesophagite",
@@ -194,7 +196,7 @@ describe("Procedures Molecule data", () => {
     expect(invalid).to.be.deep.equalInAnyOrder([]);
 
     invalid = (
-      await queryPromise("CALL getPropertyValuesOf(?,?)", ["ENOET", "side_effects"])
+      await queryPromise("CALL getPropertyValuesOf(?,?)", ["ENOET", "sideEffects"])
     )[0].map((e) => e.value);
     expect(invalid).to.be.deep.equalInAnyOrder([]);
   });
@@ -297,7 +299,7 @@ describe("Procedures users statistics", () => {
     for (let i = 0; i < 5; ++i) {
       const res = await queryPromise(
         "CALL incrementUserVictories(?); SELECT us_victories FROM user WHERE us_login = ?",
-        ["fpoguet", "fpoguet"]
+        ["fpoguet", "fpoguet"],
       );
       expect(res[1][0].us_victories).equals(i + 1);
     }
@@ -307,7 +309,7 @@ describe("Procedures users statistics", () => {
     for (let i = 0; i < 5; ++i) {
       const res = await queryPromise(
         "CALL incrementUserDefeats(?); SELECT us_defeats FROM user WHERE us_login = ?",
-        ["fpoguet", "fpoguet"]
+        ["fpoguet", "fpoguet"],
       );
       expect(res[1][0].us_defeats).equals(i + 1);
     }

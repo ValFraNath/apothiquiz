@@ -1,6 +1,7 @@
 import { queryPromise } from "../db/database.js";
-import Logger, { addErrorTitle } from "../global/Logger.js";
 import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
+import Logger, { addErrorTitle } from "../global/Logger.js";
+
 import { createGeneratorOfType, NotEnoughDataError } from "./question.js";
 
 export const MAX_QUESTION_TYPE = 10;
@@ -33,7 +34,7 @@ export const NUMBER_OF_QUESTIONS_IN_ROUND = 5;
 function create(req, _res) {
   const res = new HttpResponseWrapper(_res);
 
-  const username = req.body.auth_user;
+  const username = req.body.authUser;
   const opponent = req.body.opponent;
 
   if (!opponent) {
@@ -53,7 +54,7 @@ function create(req, _res) {
         .then((rounds) =>
           createDuelInDatabase(username, opponent, rounds)
             .then((id) => res.sendResponse(201, { id }))
-            .catch(res.sendServerError)
+            .catch(res.sendServerError),
         )
 
         .catch((error) => {
@@ -160,7 +161,7 @@ function create(req, _res) {
 function fetch(req, _res) {
   const res = new HttpResponseWrapper(_res);
 
-  const username = req.body.auth_user;
+  const username = req.body.authUser;
   const duelID = Number(req.params.id);
 
   if (!duelID) {
@@ -190,7 +191,7 @@ function fetch(req, _res) {
  */
 function fetchAll(req, _res) {
   const res = new HttpResponseWrapper(_res);
-  const username = req.body.auth_user;
+  const username = req.body.authUser;
 
   getAllDuels(username)
     .then((duels) => res.sendResponse(200, duels))
@@ -227,7 +228,7 @@ function play(req, _res) {
   const res = new HttpResponseWrapper(_res);
   const id = Number(req.params.id);
   const round = Number(req.params.round);
-  const username = req.body.auth_user;
+  const username = req.body.authUser;
   const answers = req.body.answers || [];
 
   if (!id) {
@@ -258,7 +259,7 @@ function play(req, _res) {
       .then((newDuel) =>
         updateDuelState(newDuel, username)
           .then((duel) => res.sendResponse(200, duel))
-          .catch(res.sendServerError)
+          .catch(res.sendServerError),
       )
       .catch(res.sendServerError);
   });
@@ -434,8 +435,8 @@ function getAllDuels(username) {
                   duels[duel.du_id] = duel;
                 }
                 return duels;
-              }, Object.create(null))
-            )
+              }, Object.create(null)),
+            ),
           );
         }
       })
@@ -456,7 +457,7 @@ function formatDuel(duel, username) {
 
   const userAnswers = JSON.parse(duel.find((player) => player.us_login === username).re_answers);
   const opponentAnswers = JSON.parse(
-    duel.find((player) => player.us_login !== username).re_answers
+    duel.find((player) => player.us_login !== username).re_answers,
   );
 
   const opponent = duel.find((player) => player.us_login !== username).us_login;
@@ -583,8 +584,8 @@ function updateDuelState(duel, username) {
         resolve(
           formatDuel(
             res.find((e) => e instanceof Array),
-            username
-          )
+            username,
+          ),
         );
       })
       .catch((error) => reject(addErrorTitle(error, "Can't update the duel state")));
@@ -602,14 +603,14 @@ function computeScores(duel) {
     (scores, round) => {
       scores.user += round.reduce(
         (score, question) => score + Number(question.userAnswer === question.goodAnswer),
-        0
+        0,
       );
       scores.opponent += round.reduce(
         (score, question) => score + Number(question.opponentAnswer === question.goodAnswer),
-        0
+        0,
       );
       return scores;
     },
-    { user: 0, opponent: 0 }
+    { user: 0, opponent: 0 },
   );
 }

@@ -54,7 +54,7 @@ INSERT INTO system VALUES (3, 'ANTIBIOTIQUE', 1, 2);
 INSERT INTO system VALUES (4, 'ANTIPARASITAIRE', 1, 2);
 INSERT INTO system VALUES (5, 'ANTIRIEN', NULL, 1);
 INSERT INTO system VALUES (6, 'TRESNULLE', 5, 2);
-INSERT INTO property (pr_id, pr_name) VALUES (1, 'side_effects');
+INSERT INTO property (pr_id, pr_name) VALUES (1, 'sideEffects');
 INSERT INTO property_value (pv_id, pv_name, pv_property) VALUES (11, 'hypotension orthostatique', 1);
 INSERT INTO property_value (pv_id, pv_name, pv_property) VALUES (12, 'Nephrotoxicité', 1);
 INSERT INTO property_value (pv_id, pv_name, pv_property) VALUES (13, 'Décoloration dents', 1);

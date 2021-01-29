@@ -3,6 +3,7 @@ import chaiHttp from "chai-http";
 import jwt from "jsonwebtoken";
 
 import app from "../index.js";
+
 import { forceTruncateTables, insertData, requestAPI } from "./index.test.js";
 
 chai.use(chaiHttp);
