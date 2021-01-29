@@ -73,6 +73,7 @@
 
     & > a {
       text-decoration: none;
+      color: none;
 
       &:last-of-type article {
         margin-bottom: 0;
@@ -82,23 +83,10 @@
     article {
       display: flex;
       align-items: center;
-      margin-bottom: 1.2rem;
-
-      &:last-of-type {
-        margin-bottom: 0;
-      }
-
+      margin-bottom: 0.7rem;
+      
       & > *:first-of-type {
         margin-right: 0.8rem;
-      }
-
-      a {
-        text-decoration: none;
-
-        &,
-        &:visited {
-          color: initial;
-        }
       }
 
       .challenges-text {

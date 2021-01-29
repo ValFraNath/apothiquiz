@@ -4,17 +4,15 @@ import PropTypes from "prop-types";
 
 import AuthService from "../services/auth.service";
 
-class ProtectedRoute extends React.Component {
-  render() {
-    const { path, exact, component } = this.props;
-    const isAuthenticated = AuthService.getCurrentUser() !== null;
+const ProtectedRoute = (props) => {
+  const { path, exact, component } = props;
+  const isAuthenticated = AuthService.getCurrentUser() !== null;
 
-    return isAuthenticated ? (
-      <Route path={path} exact={exact} component={component} />
-    ) : (
-      <Redirect to={{ pathname: "/login" }} />
-    );
-  }
+  return isAuthenticated ? (
+    <Route path={path} exact={exact} component={component} />
+  ) : (
+    <Redirect to={{ pathname: "/login" }} />
+  );
 }
 
 ProtectedRoute.propTypes = {

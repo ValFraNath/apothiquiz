@@ -144,21 +144,23 @@ class HomePage extends Component {
           ) : (
             <>
               {pendingChallenges.map((value, index) => (
-                <article key={index}>
-                  <Link to={`/duel/${value.id}`} className="challenges-text">
-                    <h3>{value.opponent}</h3>
-                    <p>En train de jouer le round {value.currentRound}</p>
-                  </Link>
-                  <Avatar
-                    size="75px"
-                    eyes={usersData[value.opponent]?.avatar.eyes ?? 0}
-                    hands={usersData[value.opponent]?.avatar.hands ?? 0}
-                    hat={usersData[value.opponent]?.avatar.hat ?? 0}
-                    mouth={usersData[value.opponent]?.avatar.mouth ?? 0}
-                    colorBG={usersData[value.opponent]?.avatar.colorBG ?? "#d3d3d3"}
-                    colorBody={usersData[value.opponent]?.avatar.colorBody ?? "#0c04fc"}
-                  />
-                </article>
+                <Link to={`/duel/about/${value.id}`} className="challenges-text">
+                  <article key={index}>
+                    <div className="challenges-text">
+                      <h3>{value.opponent}</h3>
+                      <p>En train de jouer le round {value.currentRound}</p>
+                    </div>
+                    <Avatar
+                      size="75px"
+                      eyes={usersData[value.opponent]?.avatar.eyes ?? 0}
+                      hands={usersData[value.opponent]?.avatar.hands ?? 0}
+                      hat={usersData[value.opponent]?.avatar.hat ?? 0}
+                      mouth={usersData[value.opponent]?.avatar.mouth ?? 0}
+                      colorBG={usersData[value.opponent]?.avatar.colorBG ?? "#d3d3d3"}
+                      colorBody={usersData[value.opponent]?.avatar.colorBody ?? "#0c04fc"}
+                    />
+                  </article>
+                </Link>
               ))}
             </>
           )}
