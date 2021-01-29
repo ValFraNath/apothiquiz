@@ -28,6 +28,8 @@ class HomePage extends Component {
         const toPlay = [],
           pending = [],
           finished = [];
+
+        const listOfUsers = [];
         res.data.forEach((val) => {
           if (val.inProgress === 0) {
             finished.push(val);
@@ -36,17 +38,16 @@ class HomePage extends Component {
           } else {
             toPlay.push(val);
           }
+
+          listOfUsers.push(val.opponent);
         });
+
         this.setState({
           toPlayChallenges: toPlay,
           pendingChallenges: pending,
           finishedChallenges: finished,
         });
 
-        const listOfUsers = [
-          ...toPlay.map((value) => value.opponent),
-          ...pending.map((value) => value.opponent),
-        ];
         this.getUsersData(listOfUsers);
       })
       .catch((err) => console.error(err));
@@ -55,6 +56,7 @@ class HomePage extends Component {
   getUsersData(otherUsers) {
     const currentUser = AuthService.getCurrentUser();
     const listOfUsers = [currentUser.pseudo, ...otherUsers];
+
     axios
       .post("/api/v1/users/", listOfUsers)
       .then((res) => {
@@ -80,8 +82,9 @@ class HomePage extends Component {
       pendingChallenges,
       finishedChallenges,
     } = this.state;
-    const cuWins = currentUser?.wins ?? 0;
-    const cuLosses = currentUser?.losses ?? 0;
+
+    const cuVictories = currentUser?.victories ?? "-";
+    const cuDefeats = currentUser?.defeats ?? "-";
 
     return (
       <main id="homepage">
@@ -100,10 +103,10 @@ class HomePage extends Component {
           <div>
             <h1>{currentUser?.pseudo ?? "Pilette"}</h1>
             <p>
-              {cuWins} <Plural word="victoire" count={cuWins} />
+              {cuVictories} <Plural word="victoire" count={cuVictories} />
             </p>
             <p>
-              {cuLosses} <Plural word="défaite" count={cuLosses} />
+              {cuDefeats} <Plural word="défaite" count={cuDefeats} />
             </p>
           </div>
         </header>
