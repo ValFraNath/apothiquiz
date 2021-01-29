@@ -306,7 +306,7 @@ class Train extends Component {
     if (gameState === Train.STATE_INTRO) {
       additionalClass = "quiz-intro";
     } else if (gameState === Train.STATE_SUMMARY) {
-      additionalClass = "quiz-summury";
+      additionalClass = "quiz-summary";
     }
 
     return (

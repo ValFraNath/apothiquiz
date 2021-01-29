@@ -280,11 +280,11 @@ describe("Duels", () => {
 
             duel.rounds.slice(0, i).forEach((round, i) =>
               round.forEach((question) => {
-                expectHaveProperties(question, "title", "type", "subject", "answers");
+                expectHaveProperties(question, "title", "type", "subject", "answers", "goodAnswer");
                 if (i === duel.currentRound - 1) {
-                  expectNotHaveProperties(question, "userAnswer", "goodAnswer", "opponentAnswer");
+                  expectNotHaveProperties(question, "userAnswer", "opponentAnswer");
                 } else {
-                  expectHaveProperties(question, "userAnswer", "goodAnswer", "opponentAnswer");
+                  expectHaveProperties(question, "userAnswer", "opponentAnswer");
                 }
               })
             );

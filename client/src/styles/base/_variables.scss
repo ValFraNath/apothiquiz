@@ -1,14 +1,15 @@
 /* ---------- Screen sizes ---------- */
 
-$desktop-size: 600px;
-$little-smartphone: 360px;
+$screen-desktop: 600px;
+$screen-smartphone-small: 360px;
 
 /* ---------- Colors ---------- */
 
 $mascot-blue-light: #34a6c2;
 $mascot-blue-dark: #2d779b;
 
-$bg: #ffffff;
+$color-bg: #ffffff;
+$color-gray: #eaeaea;
 
 $text-color: #4a4a4a;
 
@@ -27,5 +28,6 @@ $top-bar-height: 50px;
 
 /* ---------- Success and errors ---------- */
 
+$color-gray-wait: #d0d0d0;
 $color-green-success: #488c54;
 $color-red-error: #e23737;
