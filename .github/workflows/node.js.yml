@@ -61,15 +61,6 @@ jobs:
           mysql user: "glowing-octo-guacamole"
           mysql password: ${{ secrets.CI_DATABASE_PASS }}
 
-      - name: Wait for mariadb server to be ready
-        env:
-          PORT: 3306
-        run: |
-          while ! mysqladmin ping -h"127.0.0.1" -P"$PORT" --silent; do
-            sleep 1
-          done
-          docker exec `docker ps -q` mysqld --version
-
       - run: npm ci
         working-directory: ./server
 
@@ -85,6 +76,15 @@ jobs:
       - name: Setting private key
         run: echo "TOKEN_PRIVATE_KEY=TMP_TOKEN_KEY" >> .env
         working-directory: ./server
+
+      - name: Wait for mariadb server to be ready
+        env:
+          PORT: 3306
+        run: |
+          while ! mysqladmin ping -h"127.0.0.1" -P"$PORT" --silent; do
+            sleep 1
+          done
+          docker exec `docker ps -q` mysqld --version
 
       - run: npm test
         working-directory: ./server
