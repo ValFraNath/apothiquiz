@@ -2,13 +2,18 @@ main#duel-overview {
   padding-top: 20px;
 
   header {
-    padding: 0 10%;
+    padding: 0 2rem;
     display: flex;
     align-items: center;
-    justify-content: space-evenly;
+    justify-content: space-between;
+    padding-bottom: 1rem;
 
     > span {
-      font-size: 2em;
+      font-size: 1.8rem;
+
+      @media screen and (max-width: $little-smartphone) {
+        font-size: 1.4rem;
+      }
     }
 
     .badge {
@@ -24,7 +29,7 @@ main#duel-overview {
 
   > .btn {
     width: auto;
-    margin: 1.2rem 1.2rem 2.5rem;
+    margin: 0rem 1.2rem 3rem;
     text-align: center;
   }
 

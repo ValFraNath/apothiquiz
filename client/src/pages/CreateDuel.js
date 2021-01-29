@@ -60,7 +60,7 @@ class CreateDuel extends Component {
         opponent: this.state.opponent,
       })
       .then((res) => {
-        document.location.replace(`/duel/about/${res.data.id}`);
+        document.location.replace(`/duel/${res.data.id}`);
       })
       .catch((err) => console.error(err));
   };

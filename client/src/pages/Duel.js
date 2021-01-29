@@ -108,7 +108,6 @@ class Duel extends Component {
 
     const currentRound = this.getCurrentRound();
     if (currentQuestionNum === currentRound.length) {
-      console.log("fin");
       this.validateDuel();
       return;
     }
@@ -143,7 +142,7 @@ class Duel extends Component {
       .post(`/api/v1/duels/${duelData.id}/${duelData.currentRound}`, {
         answers: userAnswers,
       })
-      .then(() => document.location.replace(`/duel/about/${duelData.currentRound}`))
+      .then(() => document.location.replace(`/duel/${duelData.currentRound}`))
       .catch((error) => console.error(error));
   };
 
