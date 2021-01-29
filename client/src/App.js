@@ -107,7 +107,7 @@ export default class App extends Component {
           <ProtectedRoute path="/homepage" exact component={HomePage} />
           <ProtectedRoute path="/createduel" exact component={CreateDuel} />
           <ProtectedRoute path="/duel/:id" exact component={DuelOverview} />
-          <ProtectedRoute path="/duel/play/:id" exact component={Duel} />
+          <ProtectedRoute path="/duel/:id/play" exact component={Duel} />
         </Switch>
       </Router>
     );

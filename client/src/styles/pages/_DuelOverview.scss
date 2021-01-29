@@ -35,7 +35,7 @@ main#duel-overview {
 
   section {
     $title-height: 35px;
-    $bg-color: #e5e5ea;
+    $bg-color: $gray;
 
     margin: $title-height 1.2rem 1rem 1.2rem;
     padding: 0.8em 0;
@@ -73,6 +73,7 @@ main#duel-overview {
         display: block;
         margin-bottom: 0.3rem;
         text-align: center;
+        font-size: 0.9rem;
       }
 
       .bricks {
@@ -83,8 +84,8 @@ main#duel-overview {
           display: inline-block;
           flex-grow: 1;
           margin: 0 2px;
-          background-color: gray;
-          height: 18px;
+          background-color: $color-gray-wait;
+          height: 0.8rem;
 
           &.true {
             background-color: $color-green-success;
