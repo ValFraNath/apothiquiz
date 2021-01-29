@@ -8,10 +8,14 @@ main#duel-overview {
     justify-content: space-between;
     padding-bottom: 1rem;
 
+    @media screen and (min-width: $screen-desktop) {
+      justify-content: space-evenly;
+    }
+
     > span {
       font-size: 1.8rem;
 
-      @media screen and (max-width: $little-smartphone) {
+      @media screen and (max-width: $screen-smartphone-small) {
         font-size: 1.4rem;
       }
     }

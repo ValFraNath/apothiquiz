@@ -71,23 +71,23 @@
       }
     }
 
-    & > a {
-      text-decoration: none;
-      color: none;
-
-      &:last-of-type article {
-        margin-bottom: 0;
-      }
-    }
-
     article {
       display: flex;
       align-items: center;
-      margin-bottom: 0.7rem;
-      
+      margin-bottom: 0.9rem;
+
+      &:last-of-type {
+        margin-bottom: 0;
+      }
+
       & > *:first-of-type {
         margin-right: 0.8rem;
       }
+
+      & > a {
+      text-decoration: none;
+      color: none;
+    }
 
       .challenges-text {
         background: $color-gray;

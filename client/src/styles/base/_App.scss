@@ -17,7 +17,7 @@ main {
   box-sizing: border-box;
 }
 
-@media only screen and (min-device-width: $desktop-size) {
+@media only screen and (min-device-width: $screen-desktop) {
   #root {
     width: 600px;
     height: calc(100vh - 20px - 2vh);

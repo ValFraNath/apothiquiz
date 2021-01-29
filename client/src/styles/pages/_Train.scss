@@ -1,5 +1,5 @@
 #quiz {
-  @media screen and (min-width: $desktop-size) {
+  @media screen and (min-width: $screen-desktop) {
     padding: 1.2rem;
   }
 
@@ -12,7 +12,7 @@
       width: 100%;
       float: right;
 
-      @media screen and (min-width: $desktop-size) and (max-height: 860px) {
+      @media screen and (min-width: $screen-desktop) and (max-height: 860px) {
         width: 70%;
       }
     }
@@ -143,11 +143,11 @@
       }
     }
 
-    @media screen and (max-width: $little-smartphone) {
+    @media screen and (max-width: $screen-smartphone-small) {
       margin-bottom: 0.9rem;
     }
 
-    @media screen and (min-width: $desktop-size) {
+    @media screen and (min-width: $screen-desktop) {
       margin-bottom: 1.2rem;
     }
   }

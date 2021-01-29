@@ -39,7 +39,7 @@ $timer-size: 100px;
     }
   }
 
-  @media screen and (max-width: $little-smartphone) {
+  @media screen and (max-width: $screen-smartphone-small) {
     min-height: auto;
     padding: 2.5rem 1rem 1.8rem 1rem;
     margin-bottom: 1rem;
@@ -53,7 +53,7 @@ $timer-size: 100px;
     }
   }
 
-  @media screen and (min-width: $desktop-size) {
+  @media screen and (min-width: $screen-desktop) {
     min-height: 2.9rem;
     padding: 2.9rem 1.5rem 2.1rem 1.5rem;
     margin-bottom: 1.8rem;
@@ -151,7 +151,7 @@ $timer-size: 100px;
     }
   }
 
-  @media screen and (max-width: $little-smartphone) {
+  @media screen and (max-width: $screen-smartphone-small) {
     margin-top: 1rem;
 
     button {
@@ -161,7 +161,7 @@ $timer-size: 100px;
     }
   }
 
-  @media screen and (min-width: $desktop-size) {
+  @media screen and (min-width: $screen-desktop) {
     margin-top: 1.8rem;
 
     button {
