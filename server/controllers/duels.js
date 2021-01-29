@@ -463,8 +463,8 @@ function formatDuel(duel, username) {
 
   const keepOnlyType = (question) => new Object({ type: question.type, title: question.title });
   const withQuestionOnly = (question) => {
-    const { type, subject, answers, wording, title } = question;
-    return { type, title, subject, answers, wording };
+    const { type, subject, answers, wording, title, goodAnswer } = question;
+    return { type, title, subject, answers, wording, goodAnswer };
   };
 
   const formattedRound = rounds.map((round, i) => {

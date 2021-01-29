@@ -5,6 +5,7 @@ import { ReloadIcon } from "@modulz/radix-icons";
 import axios from "axios";
 
 import "./styles/styles.scss";
+import AuthService from "./services/auth.service";
 import ProtectedRoute from "./components/ProtectedRoute";
 import TopBar from "./components/system/TopBar";
 import Menu from "./pages/Menu";
@@ -15,7 +16,7 @@ import Profile from "./pages/Profile";
 import HomePage from "./pages/HomePage";
 import CreateDuel from "./pages/CreateDuel";
 import DuelOverview from "./pages/DuelOverview";
-import AuthService from "./services/auth.service";
+import Duel from "./pages/Duel";
 
 /**
  * Set up the authorization header in all request if the user is logged in
@@ -104,8 +105,9 @@ export default class App extends Component {
           <Route path="/login" exact component={Login} />
           <ProtectedRoute path="/profile" exact component={Profile} />
           <ProtectedRoute path="/homepage" exact component={HomePage} />
-          <ProtectedRoute path="/duel/:duelID" exact component={DuelOverview} />
           <ProtectedRoute path="/createduel" exact component={CreateDuel} />
+          <ProtectedRoute path="/duel/:id" exact component={DuelOverview} />
+          <ProtectedRoute path="/duel/:id/play" exact component={Duel} />
         </Switch>
       </Router>
     );

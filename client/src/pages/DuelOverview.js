@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import AuthService from "../services/auth.service";
 import { PropTypes } from "prop-types";
 
+import AuthService from "../services/auth.service";
 import Avatar from "../components/Avatar";
 
 const UserBadge = ({ user, reversed }) => {
@@ -59,7 +59,7 @@ class DuelOverview extends Component {
   }
 
   componentDidMount() {
-    const duelID = this.props.match.params.duelID;
+    const duelID = this.props.match.params.id;
 
     axios
       .get(`/api/v1/duels/${duelID}`)
@@ -111,9 +111,8 @@ class DuelOverview extends Component {
         </header>
 
         <Link
-          to="#" // TODO
+          to={`/duel/${this.props.match.params.id}/play`}
           className="btn"
-          onClick={() => alert("Oups, tu as trouvé une fonctionnalité pas encore implémentée !")}
           disabled={!currentUserCanPlay}
         >
           Jouer le tour {rounds.length}
