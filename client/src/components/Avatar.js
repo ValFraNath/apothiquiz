@@ -1,12 +1,12 @@
-import React from "react";
 import PropTypes from "prop-types";
+import React from "react";
 
+import { ReactComponent as BodyBottom } from "../images/avatar/bodyBottom.svg";
+import ImageBodyTop from "../images/avatar/bodyTop.png";
 import ImageEyes from "../images/avatar/eyes.png";
 import ImageHands from "../images/avatar/hands.png";
 import ImageHats from "../images/avatar/hats.png";
 import ImageMouthes from "../images/avatar/mouthes.png";
-import ImageBodyTop from "../images/avatar/bodyTop.png";
-import { ReactComponent as BodyBottom } from "../images/avatar/bodyBottom.svg";
 
 const Avatar = function ({
   size,

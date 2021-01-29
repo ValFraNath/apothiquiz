@@ -1,11 +1,11 @@
-import React, { Component } from "react";
-import axios from "axios";
 import { ArrowRightIcon, RocketIcon } from "@modulz/radix-icons";
+import axios from "axios";
+import React, { Component } from "react";
 
+import ButtonCircle from "../components/buttons/ButtonCircle";
+import Answers from "../components/quiz/Answers";
 import Question from "../components/quiz/Question";
 import Timer from "../components/quiz/Timer";
-import Answers from "../components/quiz/Answers";
-import ButtonCircle from "../components/buttons/ButtonCircle";
 
 class Duel extends Component {
   constructor(props) {

@@ -1,11 +1,11 @@
-import React, { Component } from "react";
-import axios from "axios";
-import * as Collapsible from "@radix-ui/react-collapsible";
 import { CaretSortIcon } from "@modulz/radix-icons";
+import * as Collapsible from "@radix-ui/react-collapsible";
+import axios from "axios";
+import React, { Component } from "react";
 
-import AuthService from "../services/auth.service";
 import Avatar from "../components/Avatar";
 import ChooseAvatar from "../components/ChooseAvatar";
+import AuthService from "../services/auth.service";
 
 export default class Profile extends Component {
   constructor(props) {

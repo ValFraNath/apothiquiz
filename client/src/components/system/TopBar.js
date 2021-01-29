@@ -1,13 +1,13 @@
-import React, { Component, useState, useEffect } from "react";
-import PropTypes from "prop-types";
 import axios from "axios";
+import PropTypes from "prop-types";
+import React, { Component, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 // import { CaretLeftIcon } from "@modulz/radix-icons";
 
-import SpriteSheet from "../SpriteSheet";
-import Avatar from "../Avatar";
-
 import connection_anim from "../../images/connection_status.png";
+import Avatar from "../Avatar";
+import SpriteSheet from "../SpriteSheet";
+
 
 class UserBadge extends Component {
   constructor(props) {

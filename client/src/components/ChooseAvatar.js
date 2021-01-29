@@ -1,7 +1,7 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import axios from "axios";
 import { ArrowLeftIcon, ArrowRightIcon } from "@modulz/radix-icons";
+import axios from "axios";
+import PropTypes from "prop-types";
+import React, { Component } from "react";
 
 /** These const should match the number of possibilities in images/avatar/files.png */
 const NUMBER_OF_EYES = 5;

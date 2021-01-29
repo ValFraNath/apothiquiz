@@ -44,8 +44,37 @@
     },
     "extends": [
       "react-app",
-      "eslint:recommended"
-    ]
+      "eslint:recommended",
+      "plugin:react/recommended"
+    ],
+    "plugins": [
+      "react",
+      "import"
+    ],
+    "rules": {
+      "no-duplicate-imports": "error",
+      "no-useless-rename": "error",
+      "eqeqeq": "error",
+      "no-else-return": "error",
+      "array-bracket-newline": "warn",
+      "array-bracket-spacing": "warn",
+      "camelcase": "warn",
+      "comma-dangle": [
+        "error",
+        "always-multiline"
+      ],
+      "no-unneeded-ternary": "error",
+      "import/order": [
+        "warn",
+        {
+          "alphabetize": {
+            "order": "asc",
+            "caseInsensitive": true
+          },
+          "newlines-between": "always-and-inside-groups"
+        }
+      ]
+    }
   },
   "browserslist": {
     "production": [
