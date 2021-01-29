@@ -134,11 +134,12 @@ class Duel extends Component {
   validateDuel = () => {
     const { duelData, userAnswers } = this.state;
 
+    const duelId = this.props.match.params.id;
     axios
       .post(`/api/v1/duels/${duelData.id}/${duelData.currentRound}`, {
         answers: userAnswers,
       })
-      .then(() => document.location.replace(`/duel/${duelData.currentRound}`))
+      .then(() => document.location.replace(`/duel/${duelId}`))
       .catch((error) => console.error(error));
   };
 
