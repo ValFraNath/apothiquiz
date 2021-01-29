@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
-import { ArrowRightIcon } from "@modulz/radix-icons";
+import { ArrowRightIcon, RocketIcon } from "@modulz/radix-icons";
 
 import Question from "../components/quiz/Question";
 import Timer from "../components/quiz/Timer";
@@ -104,8 +104,7 @@ class Duel extends Component {
   nextQuestion = () => {
     const { currentQuestionNum } = this.state;
 
-    const currentRound = this.getCurrentRound();
-    if (currentQuestionNum === currentRound.length) {
+    if (currentQuestionNum === this.getCurrentRound().length) {
       this.validateDuel();
       return;
     }
@@ -179,7 +178,7 @@ class Duel extends Component {
         ) : (
           <div id="next-btn">
             <ButtonCircle onClick={this.nextQuestion}>
-              <ArrowRightIcon />
+              {currentQuestionNum === this.getCurrentRound().length ? (<RocketIcon />) : (<ArrowRightIcon />)}
             </ButtonCircle>
           </div>
         )}

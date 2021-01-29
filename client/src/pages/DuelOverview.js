@@ -110,15 +110,13 @@ class DuelOverview extends Component {
           <UserBadge user={opponent} />
         </header>
 
-        {currentUserCanPlay &&
-          <Link
-            to={`/duel/${this.props.match.params.id}/play`}
-            className="btn"
-            disabled={!currentUserCanPlay}
-          >
-            Jouer le tour {rounds.length}
-          </Link>
-        }
+        <Link
+          to={`/duel/${this.props.match.params.id}/play`}
+          className="btn"
+          disabled={!currentUserCanPlay}
+        >
+          Jouer le tour {rounds.length}
+        </Link>
         
 
         {rounds.map((round, index) => {
