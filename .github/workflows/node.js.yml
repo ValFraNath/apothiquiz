@@ -1,8 +1,6 @@
-name: Build and test the app
+name: Build and test
 
 on:
-  push:
-    branches: [main]
   pull_request:
     branches: [main]
 
@@ -11,8 +9,8 @@ env:
 
 jobs:
   build-test-client:
-    name: Build and test client
-    runs-on: ubuntu-latest
+    name: Client
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
         node-version: [14.x]
@@ -20,17 +18,24 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: npm install, lint, build and test
-        run: |
-          cd client
-          npm ci
-          npm run lint
-          npm run build --if-present
-          npm test
+      - run: npm ci
+        working-directory: ./client
+
+      - run: npm run lint
+        working-directory: ./client
+
+      - run: npm run format
+        working-directory: ./client
+
+      - run: npm run build --if-present
+        working-directory: ./client
+
+      - run: npm test
+        working-directory: ./client
 
   build-test-server:
-    name: Build and test server
-    runs-on: ubuntu-latest
+    name: Server
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
         node-version: [14.x]
@@ -54,6 +59,22 @@ jobs:
           mysql user: "glowing-octo-guacamole"
           mysql password: ${{ secrets.CI_DATABASE_PASS }}
 
+      - run: npm ci
+        working-directory: ./server
+
+      - run: npm run lint
+        working-directory: ./server
+
+      - run: npm run format
+        working-directory: ./server
+
+      - run: npm run build --if-present
+        working-directory: ./server
+
+      - name: Setting private key
+        run: echo "TOKEN_PRIVATE_KEY=TMP_TOKEN_KEY" >> .env
+        working-directory: ./server
+
       - name: Wait for mariadb server to be ready
         env:
           PORT: 3306
@@ -63,11 +84,5 @@ jobs:
           done
           docker exec `docker ps -q` mysqld --version
 
-      - name: npm install, lint, build and test
-        run: |
-          cd server
-          echo "TOKEN_PRIVATE_KEY=TMP_TOKEN_KEY" >> .env
-          npm ci
-          npm run lint
-          npm run build --if-present
-          npm test
+      - run: npm test
+        working-directory: ./server

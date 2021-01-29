@@ -9,7 +9,8 @@
     "start": "node .",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
-    "format": "prettier --write ."
+    "format": "prettier --check .",
+    "format:write": "prettier --write ."
   },
   "eslintConfig": {
     "env": {
