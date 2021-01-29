@@ -38,11 +38,17 @@ class Duel extends Component {
       .catch((err) => console.error(err));
   }
 
+  /**
+   * Get data about current round
+   */
   getCurrentRound() {
     const { duelData } = this.state;
     return duelData.rounds[duelData.currentRound - 1];
   }
 
+  /**
+   * Get data about current question
+   */
   getCurrentQuestion() {
     const { currentQuestionNum } = this.state;
     return this.getCurrentRound()[currentQuestionNum - 1];
