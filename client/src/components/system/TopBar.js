@@ -4,10 +4,9 @@ import React, { Component, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 // import { CaretLeftIcon } from "@modulz/radix-icons";
 
-import connection_anim from "../../images/connection_status.png";
+import connectionAnim from "../../images/connection_status.png";
 import Avatar from "../Avatar";
 import SpriteSheet from "../SpriteSheet";
-
 
 class UserBadge extends Component {
   constructor(props) {
@@ -117,7 +116,7 @@ const OfflineBanner = () => {
   return (
     <div id={"offlineBanner"} className={isOnline ? "online" : "offline"}>
       <SpriteSheet
-        image={connection_anim}
+        image={connectionAnim}
         frameHeight={35}
         frameWidth={35}
         steps={37}
@@ -140,6 +139,10 @@ const TopBar = ({ user }) => {
       <OfflineBanner />
     </nav>
   );
+};
+
+TopBar.propTypes = {
+  user: PropTypes.string,
 };
 
 export default TopBar;

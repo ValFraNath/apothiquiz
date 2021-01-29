@@ -42,7 +42,7 @@ const ResultBricks = ({ user, answers }) => (
 
 ResultBricks.propTypes = {
   user: PropTypes.object,
-  answer: PropTypes.array,
+  answers: PropTypes.array,
 };
 
 class DuelOverview extends Component {
@@ -149,5 +149,9 @@ class DuelOverview extends Component {
     );
   }
 }
+
+DuelOverview.propTypes = {
+  match: PropTypes.object.isRequired,
+};
 
 export default DuelOverview;
