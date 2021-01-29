@@ -17,6 +17,7 @@ class HomePage extends Component {
       usersData: [],
       toPlayChallenges: [],
       pendingChallenges: [],
+      finishedChallenges: [],
     };
   }
 
@@ -25,10 +26,12 @@ class HomePage extends Component {
       .get("/api/v1/duels/")
       .then((res) => {
         const toPlay = [],
-          pending = [];
+          pending = [],
+          finished = [];
         res.data.forEach((val) => {
-          if (!val.inProgress) return;
-          if (val.rounds[val.currentRound - 1][0].userAnswer !== undefined) {
+          if (val.inProgress === 0) {
+            finished.push(val);
+          } else if (val.rounds[val.currentRound - 1][0].userAnswer !== undefined) {
             pending.push(val);
           } else {
             toPlay.push(val);
@@ -37,6 +40,7 @@ class HomePage extends Component {
         this.setState({
           toPlayChallenges: toPlay,
           pendingChallenges: pending,
+          finishedChallenges: finished,
         });
 
         const listOfUsers = [
@@ -62,8 +66,20 @@ class HomePage extends Component {
       .catch((err) => console.error(err));
   }
 
+  displayResultDuel(user, opponent) {
+    if (user === opponent) return "Égalité !";
+    if (user > opponent) return "Vous avez gagné !";
+    return "Vous avez perdu";
+  }
+
   render() {
-    const { currentUser, usersData, toPlayChallenges, pendingChallenges } = this.state;
+    const {
+      currentUser,
+      usersData,
+      toPlayChallenges,
+      pendingChallenges,
+      finishedChallenges,
+    } = this.state;
     const cuWins = currentUser?.wins ?? 0;
     const cuLosses = currentUser?.losses ?? 0;
 
@@ -161,6 +177,31 @@ class HomePage extends Component {
             </>
           )}
         </section>
+
+        {finishedChallenges.length > 0 && (
+          <section>
+            <h2>Terminés</h2>
+            <>
+              {finishedChallenges.map((value, index) => (
+                <article key={index}>
+                  <Avatar
+                    size="75px"
+                    eyes={usersData[value.opponent]?.avatar.eyes}
+                    hands={usersData[value.opponent]?.avatar.hands}
+                    hat={usersData[value.opponent]?.avatar.hat}
+                    mouth={usersData[value.opponent]?.avatar.mouth}
+                    colorBG={usersData[value.opponent]?.avatar.colorBG}
+                    colorBody={usersData[value.opponent]?.avatar.colorBody}
+                  />
+                  <Link to={`/duel/${value.id}`} className="challenges-text">
+                    <h3>{value.opponent}</h3>
+                    <p>{this.displayResultDuel(value.userScore, value.opponentScore)}</p>
+                  </Link>
+                </article>
+              ))}
+            </>
+          </section>
+        )}
       </main>
     );
   }

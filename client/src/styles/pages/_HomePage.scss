@@ -124,7 +124,7 @@
       }
     }
 
-    &:last-of-type {
+    &:nth-of-type(2) {
       article {
         justify-content: flex-end;
 
