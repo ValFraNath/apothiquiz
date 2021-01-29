@@ -23,9 +23,9 @@ class CreateDuel extends Component {
           .get("/api/v1/duels")
           .then((resDuels) => {
             const usersToDisplay = resUsers.data;
-            for (let usr of resDuels.data) {
-              if (usr.opponent in usersToDisplay) {
-                delete usersToDisplay[usr.opponent];
+            for (let duel of resDuels.data) {
+              if (duel.opponent in usersToDisplay && duel.inProgress === 1) {
+                delete usersToDisplay[duel.opponent];
               }
             }
             this.setState({
