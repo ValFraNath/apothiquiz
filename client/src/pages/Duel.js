@@ -34,8 +34,15 @@ class Duel extends Component {
         this.setState({
           duelData: res.data,
         });
+
+        const firstQuestion = res.data.rounds[res.data.currentRound - 1][0];
+        console.log(firstQuestion);
+        if (firstQuestion.userAnswer !== undefined) {
+          document.location.replace("/homepage");
+        }
       })
       .catch((err) => console.error(err));
+
   }
 
   /**
@@ -93,7 +100,7 @@ class Duel extends Component {
   };
 
   /**
-   * Get next question or finish the duel
+   * Get next question or end the duel if it is the last question.
    */
   nextQuestion = () => {
     const { currentQuestionNum } = this.state;
