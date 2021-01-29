@@ -35,6 +35,7 @@ class Duel extends Component {
           duelData: res.data,
         });
 
+        // Can't access to a round already played
         const firstQuestion = res.data.rounds[res.data.currentRound - 1][0];
         console.log(firstQuestion);
         if (firstQuestion.userAnswer !== undefined) {
