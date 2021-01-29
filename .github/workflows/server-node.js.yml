@@ -9,7 +9,6 @@ env:
 
 jobs:
   build-test-server:
-    name: Build and test
     runs-on: ubuntu-latest
     strategy:
       matrix:
