@@ -39,7 +39,9 @@ class HomePage extends Component {
             toPlay.push(val);
           }
 
-          listOfUsers.push(val.opponent);
+          if (!listOfUsers.includes(val.opponent)) {
+            listOfUsers.push(val.opponent);
+          }
         });
 
         this.setState({
