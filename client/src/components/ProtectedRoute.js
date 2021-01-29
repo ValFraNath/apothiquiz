@@ -4,19 +4,18 @@ import PropTypes from "prop-types";
 
 import AuthService from "../services/auth.service";
 
-const ProtectedRoute = (props) => {
-  const { path, exact, component } = props;
+const ProtectedRoute = ({component, ...rest}) => {
   const isAuthenticated = AuthService.getCurrentUser() !== null;
 
   return isAuthenticated ? (
-    <Route path={path} exact={exact} component={component} />
+    <Route component={component} {...rest} />
   ) : (
     <Redirect to={{ pathname: "/login" }} />
   );
 }
 
 ProtectedRoute.propTypes = {
-  path: PropTypes.string.isRequired,
+  path: PropTypes.string,
   exact: PropTypes.bool,
 };
 

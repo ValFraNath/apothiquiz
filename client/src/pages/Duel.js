@@ -21,8 +21,6 @@ class Duel extends Component {
   }
 
   componentDidMount() {
-    if (this.state.duelData !== null) return;
-
     const duelId = this.props.match.params.id;
     axios
       .get(`/api/v1/duels/${duelId}`)
@@ -124,7 +122,7 @@ class Duel extends Component {
    * @param {int} index Index of the answer
    * @param {object} question Question data
    */
-  computeClassTopBar(index, question) {
+  computeClassDuelBar(index, question) {
     const { userAnswers } = this.state;
     if (index >= userAnswers.length) {
       return "";
@@ -160,7 +158,7 @@ class Duel extends Component {
         <div id="duel-topbar">
           <div>
             {currentRound.map((value, index) => (
-              <div key={index} className={this.computeClassTopBar(index, value)}></div>
+              <div key={index} className={this.computeClassDuelBar(index, value)}></div>
             ))}
           </div>
           <div>

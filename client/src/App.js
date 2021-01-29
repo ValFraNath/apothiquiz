@@ -3,9 +3,9 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import * as serviceWorker from "./serviceWorker";
 import { ReloadIcon } from "@modulz/radix-icons";
 import axios from "axios";
-import AuthService from "./services/auth.service";
 
 import "./styles/styles.scss";
+import AuthService from "./services/auth.service";
 import ProtectedRoute from "./components/ProtectedRoute";
 import TopBar from "./components/system/TopBar";
 import Menu from "./pages/Menu";

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
-import AuthService from "../services/auth.service";
 
+import AuthService from "../services/auth.service";
 import Avatar from "../components/Avatar";
 import ButtonFullWidth from "../components/buttons/ButtonFullWidth";
 

@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import axios from "axios";
 import { ChevronRightIcon } from "@modulz/radix-icons";
-import AuthService from "../services/auth.service";
 
+import AuthService from "../services/auth.service";
 import Avatar from "../components/Avatar";
 import { Link } from "react-router-dom";
 import Plural from "../components/Plural";

@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import AuthService from "../services/auth.service";
 import { PropTypes } from "prop-types";
 
+import AuthService from "../services/auth.service";
 import Avatar from "../components/Avatar";
 
 const UserBadge = ({ user, reversed }) => {
