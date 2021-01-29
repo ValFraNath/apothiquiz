@@ -9,7 +9,7 @@ chai.use(deepEqualAnyOrder);
 
 import { queryPromise } from "../../db/database.js";
 import { forceTruncateTables } from "../index.test.js";
-import { parseAndCreateSqlToInsertAllData } from "../../global/data_importer/data_importer.js";
+import { parseAndCreateSqlToInsertAllData } from "../../global/data_importer/dataImporter.js";
 import { expectations } from "./expectations.js";
 
 const files = [
