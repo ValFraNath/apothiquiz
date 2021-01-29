@@ -35,9 +35,8 @@ class Duel extends Component {
 
         // Can't access to a round already played
         const firstQuestion = res.data.rounds[res.data.currentRound - 1][0];
-        console.log(firstQuestion);
         if (firstQuestion.userAnswer !== undefined) {
-          document.location.replace("/homepage");
+          document.location.replace(`/duel/${duelId}`);
         }
       })
       .catch((err) => console.error(err));
