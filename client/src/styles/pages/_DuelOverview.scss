@@ -35,11 +35,11 @@ main#duel-overview {
 
   section {
     $title-height: 35px;
-    $bg-color: $gray;
+    $color-bg-color: $color-gray;
 
     margin: $title-height 1.2rem 1rem 1.2rem;
     padding: 0.8em 0;
-    background-color: $bg-color;
+    background-color: $color-bg-color;
     border-radius: $button-border-radius;
     position: relative;
 
@@ -51,7 +51,7 @@ main#duel-overview {
       top: -$title-height + 10px;
       left: 0;
       font-weight: bold;
-      background-color: $bg-color;
+      background-color: $color-bg-color;
       padding: 8px 12px;
       border-top-left-radius: $button-border-radius;
       border-top-right-radius: $button-border-radius;
