@@ -1,8 +1,6 @@
 name: Client
 
 on:
-  push:
-    branches: [main]
   pull_request:
     branches: [main]
 
@@ -11,7 +9,7 @@ env:
 
 jobs:
   build-test-client:
-    name: Build and test client
+    name: Build and test
     runs-on: ubuntu-latest
     strategy:
       matrix:
