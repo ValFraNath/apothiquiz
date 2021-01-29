@@ -74,7 +74,7 @@
     article {
       display: flex;
       align-items: center;
-      margin-bottom: 1.2rem;
+      margin-bottom: 0.9rem;
 
       &:last-of-type {
         margin-bottom: 0;
@@ -84,17 +84,13 @@
         margin-right: 0.8rem;
       }
 
-      a {
+      & > a {
         text-decoration: none;
-
-        &,
-        &:visited {
-          color: initial;
-        }
+        color: none;
       }
 
       .challenges-text {
-        background: #eaeaea;
+        background: $color-gray;
         padding: 0.8rem 1rem;
         border-radius: 7px;
         flex-grow: 1;
@@ -102,8 +98,13 @@
         h3 {
           font-size: 1.2rem;
           margin-bottom: 0.3rem;
+          color: black;
         }
       }
+    }
+
+    section > article:last-of-type {
+      margin-bottom: 0;
     }
 
     &:first-of-type {

@@ -1,316 +1,172 @@
 // Local variables
 $timer-size: 100px;
 
-#quiz {
+#quiz,
+#duel {
   padding: 1rem 0.8rem;
+}
 
-  @media screen and (min-width: $desktop-size) {
-    padding: 1.2rem;
+/* ---------- Question ---------- */
+
+#quiz-question {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 4.4rem;
+  padding: 2.9rem 1.2rem 2.1rem 1.2rem;
+  margin-bottom: 1.2em;
+  box-shadow: 0 0 12px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+
+  h1 {
+    font-size: 1.2em;
+    line-height: 1.2;
   }
 
-  &.quiz-intro {
-    padding: 1rem 0;
-
-    img {
-      width: 100%;
-      float: right;
-
-      @media screen and (min-width: $desktop-size) and (max-height: 860px) {
-        width: 70%;
-      }
-    }
-
-    div {
-      clear: both;
-      margin-bottom: 2rem;
-      text-align: center;
-
-      h1 {
-        font-size: 2rem;
-        margin-bottom: 0.3rem;
-      }
-
-      #about {
-        font-size: 1rem;
-      }
-    }
-
-    button {
-      margin: auto;
-    }
-  }
-
-  &.quiz-summury {
-    h1 {
-      font-size: 1.6rem;
-      text-align: center;
-      margin-bottom: 0.3rem;
-    }
-
-    h1 ~ p {
-      font-size: 1.3rem;
-      text-align: center;
-      margin-bottom: 1.2rem;
-    }
-
-    summary,
-    h2 {
-      font-size: 1.2rem;
-      margin-bottom: 0.4rem;
-    }
-
-    details {
-      margin-bottom: 1.2rem;
-
-      summary:focus {
-        outline: none;
-      }
-    }
-
-    ul {
-      li {
-        margin-bottom: 0.8rem;
-
-        p:first-of-type {
-          font-style: italic;
-          margin-bottom: 0.1rem;
-        }
-      }
-    }
-
-    details ul {
-      p:last-of-type {
-        color: $color-green-success;
-        font-weight: bold;
-      }
-    }
-
-    h2 ~ ul {
-      padding-bottom: 0.5rem;
-
-      p:last-of-type {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-
-        span:first-of-type {
-          color: $color-red-error;
-          text-align: right;
-        }
-
-        span:nth-of-type(2) {
-          text-align: center;
-        }
-
-        span:last-of-type {
-          color: $color-green-success;
-          font-weight: bold;
-        }
-      }
-    }
-  }
-
-  /* ---------- Topbar ---------- */
-
-  #quiz-topbar {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 0 0.2rem;
-    margin-bottom: 1rem;
+  h2 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: 1rem;
+    padding: 0.4em 0.7em;
+    background-color: $mascot-blue-light;
+    color: white;
+    border-bottom-right-radius: 10px;
 
     span {
-      &#score-good {
-        color: $color-green-success;
-        margin-right: 0.6rem;
-      }
-      &#score-bad {
-        color: $color-red-error;
-      }
-    }
-
-    div:last-of-type {
-      text-align: right;
-
-      button {
-        display: inline;
-        border: none;
-        background: transparent;
-        padding: 0;
-        color: black;
-        box-shadow: none;
-
-        svg {
-          color: #5a5a5a;
-        }
-      }
-    }
-
-    @media screen and (max-width: $little-smartphone) {
-      margin-bottom: 0.9rem;
-    }
-
-    @media screen and (min-width: $desktop-size) {
-      margin-bottom: 1.2rem;
+      font-size: 0.8rem;
     }
   }
 
-  /* ---------- Question ---------- */
-
-  #quiz-question {
-    position: relative;
-    display: flex;
-    align-items: center;
-    min-height: 4.4rem;
-    padding: 2.9rem 1.2rem 2.1rem 1.2rem;
-    margin-bottom: 1.2em;
-    box-shadow: 0 0 12px 4px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-    overflow: hidden;
+  @media screen and (max-width: $screen-smartphone-small) {
+    min-height: auto;
+    padding: 2.5rem 1rem 1.8rem 1rem;
+    margin-bottom: 1rem;
 
     h1 {
-      font-size: 1.2em;
-      line-height: 1.2;
+      font-size: 1.1rem;
     }
 
     h2 {
-      position: absolute;
-      top: 0;
-      left: 0;
-      font-size: 1rem;
-      padding: 0.4em 0.7em;
-      background-color: $mascot-blue-light;
-      color: white;
-      border-bottom-right-radius: 10px;
-    }
-
-    @media screen and (max-width: $little-smartphone) {
-      min-height: auto;
-      padding: 2.5rem 1rem 1.8rem 1rem;
-      margin-bottom: 1rem;
-
-      h1 {
-        font-size: 1.1rem;
-      }
-
-      h2 {
-        font-size: 0.9rem;
-      }
-    }
-
-    @media screen and (min-width: $desktop-size) {
-      min-height: 2.9rem;
-      padding: 2.9rem 1.5rem 2.1rem 1.5rem;
-      margin-bottom: 1.8rem;
+      font-size: 0.9rem;
     }
   }
 
-  /* ---------- Timer ---------- */
+  @media screen and (min-width: $screen-desktop) {
+    min-height: 2.9rem;
+    padding: 2.9rem 1.5rem 2.1rem 1.5rem;
+    margin-bottom: 1.8rem;
+  }
+}
 
-  #timer {
-    position: relative;
-    width: $timer-size;
-    height: $timer-size;
-    margin: auto;
+/* ---------- Timer ---------- */
 
-    div {
-      position: absolute;
-      bottom: 0;
-      display: block;
-      width: 100%;
-      height: 100%;
-      background-size: $timer-size;
-      background-position: bottom;
-    }
+#timer {
+  position: relative;
+  width: $timer-size;
+  height: $timer-size;
+  margin: auto;
 
-    #timer-color {
-      background-image: url("../../images/timer_colors.png");
-      animation: load-effect linear;
-    }
-
-    #timer-stroke {
-      background-image: url("../../images/timer_stroke.png");
-    }
+  div {
+    position: absolute;
+    bottom: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    background-size: $timer-size;
+    background-position: bottom;
   }
 
-  /* ---------- Next question button ---------- */
-
-  #next-btn {
-    display: flex;
-    justify-content: center;
-    height: 100px;
+  #timer-color {
+    background-image: url("../../images/timer_colors.png");
+    animation: load-effect linear;
   }
 
-  /* ---------- Answers ---------- */
+  #timer-stroke {
+    background-image: url("../../images/timer_stroke.png");
+  }
+}
 
-  #quiz-answers {
-    display: flex;
-    flex-direction: column;
-    margin-top: 1.2rem;
+/* ---------- Next question button ---------- */
 
-    button {
-      padding: 1rem 0.8rem;
-      text-transform: capitalize;
-      text-align: left;
-      font-size: 1rem;
-      border: 3px solid $button-bg;
-      background-color: $button-bg;
-      color: white;
-      border-radius: 8px;
-      margin-bottom: 0.7rem;
+#next-btn {
+  display: flex;
+  justify-content: center;
+  height: 100px;
+}
 
-      &:last-child {
-        margin-bottom: 0;
-      }
+/* ---------- Answers ---------- */
+
+#quiz-answers {
+  display: flex;
+  flex-direction: column;
+  margin-top: 1.2rem;
+
+  button {
+    padding: 1rem 0.8rem;
+    text-transform: capitalize;
+    text-align: left;
+    font-size: 1rem;
+    border: 3px solid $button-bg;
+    background-color: $button-bg;
+    color: white;
+    border-radius: 8px;
+    margin-bottom: 0.7rem;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    &:before {
+      content: "";
+      display: inline-block;
+      width: 1rem;
+      height: 1rem;
+      border-radius: 50%;
+      background: $button-bg-light;
+      margin-right: 0.5rem;
+      text-align: center;
+      vertical-align: top;
+    }
+
+    &.good-answer {
+      color: $color-green-success;
+      border: 3px solid $color-green-success;
 
       &:before {
-        content: "";
-        display: inline-block;
-        width: 1rem;
-        height: 1rem;
-        border-radius: 50%;
-        background: $button-bg-light;
-        margin-right: 0.5rem;
-        text-align: center;
-        vertical-align: top;
-      }
-
-      &.good-answer {
-        color: $color-green-success;
-        border: 3px solid $color-green-success;
-
-        &:before {
-          content: url("data:image/svg+xml,%3Csvg width='100%' height='100%' viewBox='0 0 15 15' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11.4669 3.72684C11.7558 3.91574 11.8369 4.30308 11.648 4.59198L7.39799 11.092C7.29783 11.2452 7.13556 11.3467 6.95402 11.3699C6.77247 11.3931 6.58989 11.3355 6.45446 11.2124L3.70446 8.71241C3.44905 8.48022 3.43023 8.08494 3.66242 7.82953C3.89461 7.57412 4.28989 7.55529 4.5453 7.78749L6.75292 9.79441L10.6018 3.90792C10.7907 3.61902 11.178 3.53795 11.4669 3.72684Z' fill='%231e2034' fill-rule='evenodd' clip-rule='evenodd'%3E%3C/path%3E%3C/svg%3E");
-          background-color: $color-green-success;
-        }
-      }
-
-      &.bad-answer {
-        color: $color-red-error;
-        border: 3px solid $color-red-error;
-
-        &:before {
-          content: url("data:image/svg+xml,%3Csvg width='100%' height='100%' viewBox='0 0 15 15' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11.7816 4.03157C12.0062 3.80702 12.0062 3.44295 11.7816 3.2184C11.5571 2.99385 11.193 2.99385 10.9685 3.2184L7.50005 6.68682L4.03164 3.2184C3.80708 2.99385 3.44301 2.99385 3.21846 3.2184C2.99391 3.44295 2.99391 3.80702 3.21846 4.03157L6.68688 7.49999L3.21846 10.9684C2.99391 11.193 2.99391 11.557 3.21846 11.7816C3.44301 12.0061 3.80708 12.0061 4.03164 11.7816L7.50005 8.31316L10.9685 11.7816C11.193 12.0061 11.5571 12.0061 11.7816 11.7816C12.0062 11.557 12.0062 11.193 11.7816 10.9684L8.31322 7.49999L11.7816 4.03157Z' fill='%231e2034' fill-rule='evenodd' clip-rule='evenodd'%3E%3C/path%3E%3C/svg%3E");
-          background-color: $color-red-error;
-        }
+        content: url("data:image/svg+xml,%3Csvg width='100%' height='100%' viewBox='0 0 15 15' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11.4669 3.72684C11.7558 3.91574 11.8369 4.30308 11.648 4.59198L7.39799 11.092C7.29783 11.2452 7.13556 11.3467 6.95402 11.3699C6.77247 11.3931 6.58989 11.3355 6.45446 11.2124L3.70446 8.71241C3.44905 8.48022 3.43023 8.08494 3.66242 7.82953C3.89461 7.57412 4.28989 7.55529 4.5453 7.78749L6.75292 9.79441L10.6018 3.90792C10.7907 3.61902 11.178 3.53795 11.4669 3.72684Z' fill='%231e2034' fill-rule='evenodd' clip-rule='evenodd'%3E%3C/path%3E%3C/svg%3E");
+        background-color: $color-green-success;
       }
     }
 
-    @media screen and (max-width: $little-smartphone) {
-      margin-top: 1rem;
+    &.bad-answer {
+      color: $color-red-error;
+      border: 3px solid $color-red-error;
 
-      button {
-        font-size: 0.9rem;
-        padding: 0.8rem 0.8rem;
-        margin-bottom: 0.6rem;
+      &:before {
+        content: url("data:image/svg+xml,%3Csvg width='100%' height='100%' viewBox='0 0 15 15' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11.7816 4.03157C12.0062 3.80702 12.0062 3.44295 11.7816 3.2184C11.5571 2.99385 11.193 2.99385 10.9685 3.2184L7.50005 6.68682L4.03164 3.2184C3.80708 2.99385 3.44301 2.99385 3.21846 3.2184C2.99391 3.44295 2.99391 3.80702 3.21846 4.03157L6.68688 7.49999L3.21846 10.9684C2.99391 11.193 2.99391 11.557 3.21846 11.7816C3.44301 12.0061 3.80708 12.0061 4.03164 11.7816L7.50005 8.31316L10.9685 11.7816C11.193 12.0061 11.5571 12.0061 11.7816 11.7816C12.0062 11.557 12.0062 11.193 11.7816 10.9684L8.31322 7.49999L11.7816 4.03157Z' fill='%231e2034' fill-rule='evenodd' clip-rule='evenodd'%3E%3C/path%3E%3C/svg%3E");
+        background-color: $color-red-error;
       }
     }
+  }
 
-    @media screen and (min-width: $desktop-size) {
-      margin-top: 1.8rem;
+  @media screen and (max-width: $screen-smartphone-small) {
+    margin-top: 1rem;
 
-      button {
-        padding: 1.1rem;
-        margin-bottom: 0.8rem;
-      }
+    button {
+      font-size: 0.9rem;
+      padding: 0.8rem 0.8rem;
+      margin-bottom: 0.6rem;
+    }
+  }
+
+  @media screen and (min-width: $screen-desktop) {
+    margin-top: 1.8rem;
+
+    button {
+      padding: 1.1rem;
+      margin-bottom: 0.8rem;
     }
   }
 }

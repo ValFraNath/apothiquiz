@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
-import AuthService from "../services/auth.service";
 
+import AuthService from "../services/auth.service";
 import Avatar from "../components/Avatar";
 import ButtonFullWidth from "../components/buttons/ButtonFullWidth";
 
@@ -59,9 +59,8 @@ class CreateDuel extends Component {
       .post("/api/v1/duels/new", {
         opponent: this.state.opponent,
       })
-      .then(() => {
-        // Todo: redirect to duel page
-        alert("New challenge created");
+      .then((res) => {
+        document.location.replace(`/duel/${res.data.id}`);
       })
       .catch((err) => console.error(err));
   };
