@@ -18,26 +18,17 @@
 
     svg,
     img {
-      --x: 0;
+      --offset: 0;
       width: 100%;
       position: absolute;
-      margin-top: calc(-100% * var(--x));
+      margin-top: calc(-100% * var(--offset));
     }
 
-    img[data-choice="1"] {
-      --x: 1;
-    }
-
-    img[data-choice="2"] {
-      --x: 2;
-    }
-
-    img[data-choice="3"] {
-      --x: 3;
-    }
-
-    img[data-choice="4"] {
-      --x: 4;
+    $max-avatar-choice: 4;
+    @for $i from 1 through $max-avatar-choice {
+      img[data-choice="#{$i}"] {
+        --offset: #{$i};
+      }
     }
 
     .avatar-eyes {
