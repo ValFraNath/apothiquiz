@@ -24,8 +24,10 @@
       margin-top: calc(-100% * var(--offset));
     }
 
-    $max-avatar-choice: 4;
-    @for $i from 1 through $max-avatar-choice {
+    @for $i
+      from 1
+      through max($max-choice-eyes, $max-choice-hands, $max-choice-hats, $max-choice-mouthes)
+    {
       img[data-choice="#{$i}"] {
         --offset: #{$i};
       }

@@ -31,3 +31,18 @@ $top-bar-height: 50px;
 $color-gray-wait: #d0d0d0;
 $color-green-success: #488c54;
 $color-red-error: #e23737;
+
+/* ---------- Avatar ---------- */
+/** These should match the number of possibilities in images/avatar/files.png */
+$max-choice-eyes: 5;
+$max-choice-hands: 5;
+$max-choice-hats: 5;
+$max-choice-mouthes: 5;
+
+/* ---------- Make variables accessible from JS files ---------- */
+:export {
+  maxChoiceEyes: $max-choice-eyes;
+  maxChoiceHands: $max-choice-hands;
+  maxChoiceHats: $max-choice-hats;
+  maxChoiceMouthes: $max-choice-mouthes;
+}
