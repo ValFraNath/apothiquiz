@@ -8,7 +8,7 @@ nav {
 
   grid-template-columns: 30% 40% 30%;
 
-  > * {
+  & > * {
     display: inline-block;
     margin: auto;
     color: $top-bar-fg;
@@ -49,7 +49,7 @@ nav {
 #userBadge {
   display: flex;
 
-  > span {
+  & > span {
     text-align: center;
     vertical-align: center;
     align-self: center;

@@ -12,7 +12,7 @@ main#duel-overview {
       justify-content: space-evenly;
     }
 
-    > span {
+    & > span {
       font-size: 1.8rem;
 
       @media screen and (max-width: $screen-smartphone-small) {
@@ -25,13 +25,13 @@ main#duel-overview {
       flex-direction: column;
       align-items: center;
 
-      > span {
+      & > span {
         margin-top: 0.1em;
       }
     }
   }
 
-  > .btn {
+  & > .btn {
     width: auto;
     margin: 0rem 1.2rem 3rem;
     text-align: center;
@@ -73,7 +73,7 @@ main#duel-overview {
       margin: auto 0;
       width: 45%;
 
-      > span {
+      & > span {
         display: block;
         margin-bottom: 0.3rem;
         text-align: center;

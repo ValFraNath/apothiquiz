@@ -3,11 +3,12 @@ import axios from "axios";
 import PropTypes from "prop-types";
 import React, { Component } from "react";
 
-/** These const should match the number of possibilities in images/avatar/files.png */
-const NUMBER_OF_EYES = 5;
-const NUMBER_OF_HANDS = 5;
-const NUMBER_OF_HATS = 5;
-const NUMBER_OF_MOUTHES = 5;
+import variables from "../styles/base/_variables.module.scss";
+
+const NUMBER_OF_EYES = Number(variables.maxChoiceEyes);
+const NUMBER_OF_HANDS = Number(variables.maxChoiceHands);
+const NUMBER_OF_HATS = Number(variables.maxChoiceHats);
+const NUMBER_OF_MOUTHES = Number(variables.maxChoiceMouthes);
 
 const Select = (props) => {
   return (
