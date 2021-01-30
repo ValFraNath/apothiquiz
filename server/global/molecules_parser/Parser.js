@@ -9,29 +9,14 @@ import Property from "./MoleculesProperty.js";
 import MoleculeList from "./MoleculeList.js";
 
 const columns = [
-  new ColumnSpecifications("DCI", "dci", ColumnSpecifications.UNIQUE, {
-    maxlength: 128,
-    key: true,
-  }),
-  new ColumnSpecifications("FORMULE_CHIMIQUE", "skeletal_formule", ColumnSpecifications.UNIQUE, {
-    maxlength: 64,
-  }),
-  new ColumnSpecifications("SYSTEME_n", "systems", ColumnSpecifications.HIERARCHICAL, {
-    maxlength: 128,
-  }),
-  new ColumnSpecifications("CLASSE_PHARMA_n", "classes", ColumnSpecifications.HIERARCHICAL, {
-    maxlength: 128,
-  }),
+  new ColumnSpecifications("DCI", "dci", ColumnSpecifications.UNIQUE),
+  new ColumnSpecifications("FORMULE_CHIMIQUE", "skeletal_formule", ColumnSpecifications.UNIQUE),
+  new ColumnSpecifications("SYSTEME_n", "systems", ColumnSpecifications.HIERARCHICAL),
+  new ColumnSpecifications("CLASSE_PHARMA_n", "classes", ColumnSpecifications.HIERARCHICAL),
   new ColumnSpecifications("MTE", "ntr", ColumnSpecifications.UNIQUE),
-  new ColumnSpecifications("INTERACTION", "interactions", ColumnSpecifications.MULTI_VALUED, {
-    maxlength: 128,
-  }),
-  new ColumnSpecifications("INDICATION", "indications", ColumnSpecifications.MULTI_VALUED, {
-    maxlength: 128,
-  }),
-  new ColumnSpecifications("EFFET_INDESIRABLE", "side_effects", ColumnSpecifications.MULTI_VALUED, {
-    maxlength: 128,
-  }),
+  new ColumnSpecifications("INTERACTION", "interactions", ColumnSpecifications.MULTI_VALUED),
+  new ColumnSpecifications("INDICATION", "indications", ColumnSpecifications.MULTI_VALUED),
+  new ColumnSpecifications("EFFET_INDESIRABLE", "side_effects", ColumnSpecifications.MULTI_VALUED),
   new ColumnSpecifications("NIVEAU_DEBUTANT", "level_easy", ColumnSpecifications.UNIQUE),
   new ColumnSpecifications("NIVEAU_EXPERT", "level_hard", ColumnSpecifications.UNIQUE),
 ];

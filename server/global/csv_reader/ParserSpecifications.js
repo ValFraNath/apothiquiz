@@ -7,14 +7,11 @@ export class ColumnSpecifications {
    * @param {string} title The column title
    * @param {string} property The property corresponding
    * @param {number} type The columns type (unique, hierarchical, multivalued)
-   * @param {{key? : boolean, maxlength? : number}} options Optional options
    */
-  constructor(title, property, type, { key = false, maxlength = null } = {}) {
+  constructor(title, property, type) {
     this.title = title;
     this.property = property;
     this.type = type;
-    this.key = key;
-    this.maxlength = maxlength;
   }
   isUnique() {
     return this.type === ColumnSpecifications.UNIQUE;
