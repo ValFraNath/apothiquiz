@@ -26,7 +26,12 @@
 
     @for $i
       from 1
-      through max($max-choice-eyes, $max-choice-hands, $max-choice-hats, $max-choice-mouthes)
+      through max(
+        $number-choices-eyes,
+        $number-choices-hands,
+        $number-choices-hats,
+        $number-choices-mouthes
+      )
     {
       img[data-choice="#{$i}"] {
         --offset: #{$i};
