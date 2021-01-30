@@ -49,17 +49,4 @@ ColumnSpecifications.HIERARCHICAL = 1;
 ColumnSpecifications.UNIQUE = 2;
 ColumnSpecifications.MULTI_VALUED = 3;
 
-const columns = [
-  new ColumnSpecifications("DCI", "dci", ColumnSpecifications.UNIQUE),
-  new ColumnSpecifications("FORMULE_CHIMIQUE", "skeletalFormula", ColumnSpecifications.UNIQUE),
-  new ColumnSpecifications("SYSTEME_n", "systems", ColumnSpecifications.HIERARCHICAL),
-  new ColumnSpecifications("CLASSE_PHARMA_n", "classes", ColumnSpecifications.HIERARCHICAL),
-  new ColumnSpecifications("MTE", "ntr", ColumnSpecifications.UNIQUE),
-  new ColumnSpecifications("INTERACTION", "interactions", ColumnSpecifications.MULTI_VALUED),
-  new ColumnSpecifications("INDICATION", "indications", ColumnSpecifications.MULTI_VALUED),
-  new ColumnSpecifications("EFFET_INDESIRABLE", "sideEffects", ColumnSpecifications.MULTI_VALUED),
-  new ColumnSpecifications("NIVEAU_DEBUTANT", "levelEasy", ColumnSpecifications.UNIQUE),
-  new ColumnSpecifications("NIVEAU_EXPERT", "levelHard", ColumnSpecifications.UNIQUE),
-];
-
-export default { columns };
+export default ColumnSpecifications;

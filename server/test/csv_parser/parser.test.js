@@ -5,10 +5,10 @@ import chai from "chai";
 import deepEqualAnyOrder from "deep-equal-in-any-order";
 import mocha from "mocha";
 
-import { HeaderErrors } from "../../global/data_importer/csv_parser/HeaderChecker.js";
+import { HeaderErrors } from "../../global/csv_reader/HeaderChecker.js";
 // eslint-disable-next-line no-unused-vars
-import { ClassificationNode } from "../../global/data_importer/csv_parser/MoleculesClassification.js";
-import { parseCSV } from "../../global/data_importer/csv_parser/Parser.js";
+import { ClassificationNode } from "../../global/molecules_parser/MoleculesClassification.js";
+import { parseMoleculesFromCsv } from "../../global/molecules_parser/Parser.js";
 
 import { expectations } from "./expectations.js";
 
@@ -59,7 +59,7 @@ describe("Test if values are well imported", function () {
       let data;
 
       before("Import data", (done) => {
-        parseCSV(path.resolve(filesFolderPath, file.name))
+        parseMoleculesFromCsv(path.resolve(filesFolderPath, file.name))
           .then((json) => {
             data = JSON.parse(json);
             done();
@@ -227,7 +227,7 @@ describe("Tests for errors occurred while parsing an incorrectly formatted file"
   for (const file of badFiles) {
     it(`File : ${file.name}`, async () => {
       try {
-        const json = await parseCSV(path.resolve(badFilesFolderPath, file.name));
+        const json = await parseMoleculesFromCsv(path.resolve(badFilesFolderPath, file.name));
         expect(json === null, "The parsing is not supposed to pass").be.true;
       } catch (errors) {
         if (!HeaderErrors.isInstance(errors)) {
