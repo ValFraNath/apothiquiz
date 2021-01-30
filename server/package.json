@@ -20,40 +20,6 @@
       "es6": true
     },
     "extends": "eslint:recommended",
-    "plugins": [
-      "import"
-    ],
-    "rules": {
-      "array-bracket-newline": "warn",
-      "array-bracket-spacing": "warn",
-      "camelcase": "warn",
-      "eqeqeq": "error",
-      "no-duplicate-imports": "error",
-      "no-else-return": "error",
-      "no-useless-rename": "error",
-      "comma-dangle": [
-        "error",
-        "always-multiline"
-      ],
-      "prefer-destructuring": [
-        "error",
-        {
-          "object": true,
-          "array": false
-        }
-      ],
-      "no-unneeded-ternary": "error",
-      "import/order": [
-        "warn",
-        {
-          "alphabetize": {
-            "order": "asc",
-            "caseInsensitive": true
-          },
-          "newlines-between": "always-and-inside-groups"
-        }
-      ]
-    },
     "parserOptions": {
       "ecmaVersion": 2017,
       "sourceType": "module"
