@@ -81,10 +81,10 @@ class ChooseAvatar extends Component {
 
   randomAvatar = () => {
     this.setState({ avatarChooserState: "not-saved" });
-    this.props.handleInputEyes(Math.round(Math.random() * NUMBER_OF_EYES));
-    this.props.handleInputHands(Math.round(Math.random() * NUMBER_OF_HANDS));
-    this.props.handleInputHat(Math.round(Math.random() * NUMBER_OF_HATS));
-    this.props.handleInputMouth(Math.round(Math.random() * NUMBER_OF_MOUTHES));
+    this.props.handleInputEyes(Math.floor(Math.random() * NUMBER_OF_EYES));
+    this.props.handleInputHands(Math.floor(Math.random() * NUMBER_OF_HANDS));
+    this.props.handleInputHat(Math.floor(Math.random() * NUMBER_OF_HATS));
+    this.props.handleInputMouth(Math.floor(Math.random() * NUMBER_OF_MOUTHES));
     this.props.handleInputColorBody(randomHexColor());
     this.props.handleInputColorBG(randomHexColor());
   };
