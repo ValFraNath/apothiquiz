@@ -186,8 +186,8 @@ export function createGeneratorOfType(type) {
             Object.assign(question, {
               wording: typeInfos.createWording(question.subject),
               title: typeInfos.title,
-            }),
-          ),
+            })
+          )
         )
         .catch((error) => reject(addErrorTitle(error, "Can't create the question generator")));
     });

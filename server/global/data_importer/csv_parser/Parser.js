@@ -30,20 +30,20 @@ export function parseCSV(filepath) {
 
         moleculesMatrix = removeInvalidMoleculeLines(
           moleculesMatrix,
-          structure.getIndexesFor("dci")[0],
+          structure.getIndexesFor("dci")[0]
         );
 
         const data = Object.create(null);
 
         const nonUniqueColumns = ParserSpecifications.columns.filter(
-          (column) => !column.isUnique(),
+          (column) => !column.isUnique()
         );
 
         for (let column of nonUniqueColumns) {
           const creator = column.isHierarchical() ? Classification.create : Property.create;
 
           data[column.property] = creator(
-            extractColumns(moleculesMatrix, ...structure.getIndexesFor(column.property)),
+            extractColumns(moleculesMatrix, ...structure.getIndexesFor(column.property))
           );
         }
 
@@ -80,7 +80,7 @@ function cleanUpStringsInMatrix(matrix) {
         return value === "" ? null : value;
       }
       return value;
-    }),
+    })
   );
 }
 

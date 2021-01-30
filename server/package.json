@@ -31,10 +31,6 @@
       "no-duplicate-imports": "error",
       "no-else-return": "error",
       "no-useless-rename": "error",
-      "comma-dangle": [
-        "error",
-        "always-multiline"
-      ],
       "prefer-destructuring": [
         "error",
         {

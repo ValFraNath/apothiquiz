@@ -93,7 +93,7 @@ describe("Test if values are well imported", function () {
           expectNotContainsDuplication(ids, "Unique ids");
 
           expect(expectedValues.all, "Values are same than expected").to.be.deep.equalInAnyOrder(
-            names,
+            names
           );
 
           for (let expectedNode of expectedValues.nodes) {
@@ -103,7 +103,7 @@ describe("Test if values are well imported", function () {
 
             expect(
               expectedNode.children,
-              `'${expectedNode.name}' has same children than expected`,
+              `'${expectedNode.name}' has same children than expected`
             ).to.be.deep.equalInAnyOrder(value.children.map(toName));
           }
           expect(names, "Good number of name").to.have.length(expectedValues.all.length);
@@ -122,11 +122,11 @@ describe("Test if values are well imported", function () {
 
           expectNotContainsDuplication(
             values.map((v) => v.id),
-            "Unique ids",
+            "Unique ids"
           );
 
           expect(expectedNames, "Same values").to.be.deep.equalInAnyOrder(
-            values.map((v) => v.name),
+            values.map((v) => v.name)
           );
 
           done();
@@ -154,7 +154,7 @@ describe("Test if values are well imported", function () {
 
           for (let property of ["skeletalFormula", "ntr", "levelEasy", "levelHard"]) {
             expect(molecule[property], `| Invalid property ${property} |`).equals(
-              expected[property],
+              expected[property]
             );
           }
 
@@ -165,7 +165,7 @@ describe("Test if values are well imported", function () {
               return found.id;
             });
             expect(molecule[property], `| Invalid property : ${property} |`).deep.equalInAnyOrder(
-              expectedValues,
+              expectedValues
             );
           }
 
@@ -250,7 +250,7 @@ describe("Tests for errors occurred while parsing an incorrectly formatted file"
 function expectNotContainsDuplication(array, message = "") {
   expect(
     array.length === [...new Set(array)].length,
-    `| ${message} : Array do contains duplications |`,
+    `| ${message} : Array do contains duplications |`
   ).to.be.true;
 }
 

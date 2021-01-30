@@ -16,7 +16,7 @@ describe("Question generation with empty database", () => {
       "system",
       "property_value",
       "molecule_property",
-      "property",
+      "property"
     ).then(() => done());
   });
 
@@ -39,7 +39,7 @@ describe("Question generation", function () {
       "system",
       "property",
       "property_value",
-      "molecule_property",
+      "molecule_property"
     ).then(() => insertData("molecules.sql").then(done));
   });
 
@@ -62,11 +62,11 @@ describe("Question generation", function () {
     const { answers, subject, goodAnswer } = res.body;
 
     const answersBelongsToClass = await Promise.all(
-      answers.map((value) => doesBelongToClass(value, subject)),
+      answers.map((value) => doesBelongToClass(value, subject))
     );
 
     answersBelongsToClass.forEach((value, index) =>
-      expect(value).to.be.equals(index === Number(goodAnswer)),
+      expect(value).to.be.equals(index === Number(goodAnswer))
     );
   });
 
@@ -75,11 +75,11 @@ describe("Question generation", function () {
     const { answers, subject, goodAnswer } = res.body;
 
     const answersContainingSubject = await Promise.all(
-      answers.map((value) => doesBelongToClass(subject, value)),
+      answers.map((value) => doesBelongToClass(subject, value))
     );
 
     answersContainingSubject.forEach((value, index) =>
-      expect(value).to.be.equals(index === Number(goodAnswer)),
+      expect(value).to.be.equals(index === Number(goodAnswer))
     );
   });
 
@@ -88,11 +88,11 @@ describe("Question generation", function () {
     const { answers, subject, goodAnswer } = res.body;
 
     const answersBelongsToSystem = await Promise.all(
-      answers.map((value) => doesBelongToSystem(value, subject)),
+      answers.map((value) => doesBelongToSystem(value, subject))
     );
 
     answersBelongsToSystem.forEach((value, index) =>
-      expect(value).to.be.equals(index === Number(goodAnswer)),
+      expect(value).to.be.equals(index === Number(goodAnswer))
     );
   });
 
@@ -107,11 +107,11 @@ describe("Question generation", function () {
     const { answers, subject, goodAnswer } = res.body;
 
     const answersHavePropertyValue = await Promise.all(
-      answers.map((value) => doesHavePropertyValue(value, "indications", subject)),
+      answers.map((value) => doesHavePropertyValue(value, "indications", subject))
     );
 
     answersHavePropertyValue.forEach((value, index) =>
-      expect(value).to.be.equals(index === Number(goodAnswer)),
+      expect(value).to.be.equals(index === Number(goodAnswer))
     );
   });
 
@@ -120,11 +120,11 @@ describe("Question generation", function () {
     const { answers, subject, goodAnswer } = res.body;
 
     const answersHavePropertyValue = await Promise.all(
-      answers.map((value) => doesHavePropertyValue(value, "sideEffects", subject)),
+      answers.map((value) => doesHavePropertyValue(value, "sideEffects", subject))
     );
 
     answersHavePropertyValue.forEach((value, index) =>
-      expect(value).to.be.equals(index === Number(goodAnswer)),
+      expect(value).to.be.equals(index === Number(goodAnswer))
     );
   });
 
@@ -133,11 +133,11 @@ describe("Question generation", function () {
     const { answers, subject, goodAnswer } = res.body;
 
     const answersHavePropertyValue = await Promise.all(
-      answers.map((value) => doesHavePropertyValue(value, "interactions", subject)),
+      answers.map((value) => doesHavePropertyValue(value, "interactions", subject))
     );
 
     answersHavePropertyValue.forEach((value, index) =>
-      expect(value).to.be.equals(index === Number(goodAnswer)),
+      expect(value).to.be.equals(index === Number(goodAnswer))
     );
   });
 
@@ -146,11 +146,11 @@ describe("Question generation", function () {
     const { answers, subject, goodAnswer } = res.body;
 
     const answersHavePropertyValue = await Promise.all(
-      answers.map((value) => doesHavePropertyValue(subject, "indications", value)),
+      answers.map((value) => doesHavePropertyValue(subject, "indications", value))
     );
 
     answersHavePropertyValue.forEach((value, index) =>
-      expect(value).to.be.equals(index === Number(goodAnswer)),
+      expect(value).to.be.equals(index === Number(goodAnswer))
     );
   });
 
@@ -159,11 +159,11 @@ describe("Question generation", function () {
     const { answers, subject, goodAnswer } = res.body;
 
     const answersHavePropertyValue = await Promise.all(
-      answers.map((value) => doesHavePropertyValue(subject, "sideEffects", value)),
+      answers.map((value) => doesHavePropertyValue(subject, "sideEffects", value))
     );
 
     answersHavePropertyValue.forEach((value, index) =>
-      expect(value).to.be.equals(index === Number(goodAnswer)),
+      expect(value).to.be.equals(index === Number(goodAnswer))
     );
   });
 
@@ -222,6 +222,6 @@ function doesHavePropertyValue(dci, property, value) {
   return new Promise((resolve, reject) =>
     queryPromise("CALL getPropertyValuesOf(?,?);", [dci, property])
       .then((res) => resolve(res[0].map((e) => e.value).includes(value)))
-      .catch(reject),
+      .catch(reject)
   );
 }

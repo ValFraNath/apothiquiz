@@ -61,10 +61,6 @@
       "no-unneeded-ternary": "error",
       "no-useless-rename": "error",
       "prefer-arrow-callback": "error",
-      "comma-dangle": [
-        "error",
-        "always-multiline"
-      ],
       "prefer-destructuring": [
         "error",
         {

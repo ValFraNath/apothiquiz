@@ -86,7 +86,7 @@ function createClassificationNodeInserter(classification) {
       insertNode(id, name, higher, level) +
       children.reduce(
         (sql, node) => sql + createSqlToInsertNodeAndChildren(node, id, level + 1),
-        "",
+        ""
       )
     );
   };
@@ -109,7 +109,7 @@ function createSqlToInsertProperty(name, values) {
       createSqlToInsertInto("property_value")("pv_id", "pv_name", "pv_property")(
         valueId,
         value.name,
-        id,
+        id
       )
     );
   }, script);
@@ -133,7 +133,7 @@ function newIdForPropertyValue(propertyId, valueId) {
 function createSqlToInsertAllMolecules(molecules) {
   return molecules.reduce(
     (sql, molecule) => sql + createSqlToInsertMolecule(new FormattedMolecule(molecule)),
-    "",
+    ""
   );
 }
 
@@ -158,7 +158,7 @@ function createSqlToInsertMolecule(molecule) {
     "mo_class",
   ];
   const values = ["id", "dci", "skeletalFormula", "ntr", "difficulty", "system", "class"].map((p) =>
-    molecule.getValue(p),
+    molecule.getValue(p)
   );
 
   return (
@@ -183,9 +183,9 @@ function createSqlToInsertMoleculeProperties(molecule) {
           sql +
           insertIntoMoleculeProperty(
             molecule.id,
-            newIdForPropertyValue(propertiesId[property], value),
+            newIdForPropertyValue(propertiesId[property], value)
           ),
-        "",
+        ""
       )
     );
   }, "");

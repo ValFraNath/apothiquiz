@@ -30,13 +30,13 @@ for (let file of files) {
         "property_value",
         "molecule_property",
         "class",
-        "system",
+        "system"
       ).then(() =>
         parseAndCreateSqlToInsertAllData(
-          path.resolve("test", "data_importer", "files", file.name),
+          path.resolve("test", "data_importer", "files", file.name)
         ).then((script) => {
           queryPromise(script).then(() => done());
-        }),
+        })
       );
     });
 

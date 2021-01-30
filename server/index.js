@@ -16,7 +16,7 @@ app.isReady = false;
 
 if (!process.env.TOKEN_PRIVATE_KEY) {
   Logger.error(
-    new Error("TOKEN_PRIVATE_KEY is not defined in .env. Please generate a random private key"),
+    new Error("TOKEN_PRIVATE_KEY is not defined in .env. Please generate a random private key")
   );
   process.exit(1);
 }

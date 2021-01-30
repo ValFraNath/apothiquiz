@@ -52,7 +52,7 @@ function connect() {
               .then(() =>
                 update()
                   .then(() => resolve())
-                  .catch((error) => reject(addErrorTitle(error, "Can't update the database"))),
+                  .catch((error) => reject(addErrorTitle(error, "Can't update the database")))
               )
               .catch((error) => reject(addErrorTitle(error, "Can't create the database")));
           } else {
@@ -143,9 +143,9 @@ function update(version = versions[0]) {
           __dirname,
           "db",
           "updates",
-          `db_${versions[i - 1].split("-").join("")}_to_${versions[i].split("-").join("")}.sql`,
+          `db_${versions[i - 1].split("-").join("")}_to_${versions[i].split("-").join("")}.sql`
         ),
-        { encoding: "utf-8" },
+        { encoding: "utf-8" }
       )
         .then((script) =>
           queryPromise(script)
@@ -153,7 +153,7 @@ function update(version = versions[0]) {
               i++;
               updateRecursively();
             })
-            .catch((error) => reject(addErrorTitle(error, "Can't update the database"))),
+            .catch((error) => reject(addErrorTitle(error, "Can't update the database")))
         )
         .catch((error) => reject(addErrorTitle(error, "Can't read the update file")));
     })();
@@ -205,7 +205,7 @@ connection.config.queryFormat = function (query, values) {
         return this.escape(values[key]);
       }
       return identifier;
-    }.bind(this),
+    }.bind(this)
   );
 };
 
