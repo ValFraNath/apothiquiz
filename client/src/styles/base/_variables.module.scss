@@ -34,15 +34,15 @@ $color-red-error: #e23737;
 
 /* ---------- Avatar ---------- */
 /** These should match the number of possibilities in images/avatar/files.png */
-$max-choice-eyes: 5;
-$max-choice-hands: 5;
-$max-choice-hats: 5;
-$max-choice-mouthes: 5;
+$number-choices-eyes: 5;
+$number-choices-hands: 5;
+$number-choices-hats: 5;
+$number-choices-mouthes: 5;
 
 /* ---------- Make variables accessible from JS files ---------- */
 :export {
-  maxChoiceEyes: $max-choice-eyes;
-  maxChoiceHands: $max-choice-hands;
-  maxChoiceHats: $max-choice-hats;
-  maxChoiceMouthes: $max-choice-mouthes;
+  numberChoicesEyes: $number-choices-eyes;
+  numberChoicesHands: $number-choices-hands;
+  numberChoicesHats: $number-choices-hats;
+  numberChoicesMouthes: $number-choices-mouthes;
 }
