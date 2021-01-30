@@ -15,13 +15,12 @@ const CLASSIFICATION_VALUE_MIN_DISTANCE = 2;
 export function analyzeData(data) {
   const warnings = [];
 
-  ["classes", "systems"].forEach((classification) => {
-    warnings.push(...analyzeClassification(classification, data[classification]));
-  });
+  warnings.push(...analyzeClassification("classes", data.classes));
+  warnings.push(...analyzeClassification("systèmes", data.systems));
 
-  ["indications", "side_effects", "interactions"].forEach((property) => {
-    warnings.push(analyzeProperty(property, data[property], 128));
-  });
+  warnings.push(...analyzeProperty("indications", data.indications, 128));
+  warnings.push(...analyzeProperty("effets indésirables", data.side_effects, 128));
+  warnings.push(...analyzeProperty("intéractions", data.interactions, 128));
 
   warnings.push(...analyzeMolecules(data.molecules));
 
