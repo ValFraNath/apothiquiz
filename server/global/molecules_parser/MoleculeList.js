@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-unused-vars
-import FileStructure from "./FileStructure.js";
+import FileStructure from "../csv_reader/FileStructure.js";
 import MoleculesProperty from "./MoleculesProperty.js";
 import MoleculesClassification, {
   // eslint-disable-next-line no-unused-vars

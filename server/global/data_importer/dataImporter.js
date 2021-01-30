@@ -1,6 +1,6 @@
 import mysql from "mysql";
 import Logger from "../Logger.js";
-import { parseCSV } from "./csv_parser/Parser.js";
+import { parseMoleculesFromCsv } from "../molecules_parser/Parser.js";
 
 const propertiesId = {
   side_effects: 1,
@@ -15,7 +15,7 @@ const propertiesId = {
  */
 export function parseAndCreateSqlToInsertAllData(filename) {
   return new Promise((resolve, reject) => {
-    parseCSV(filename)
+    parseMoleculesFromCsv(filename)
       .then((json) => {
         resolve(createSqlToInsertAllData(JSON.parse(json)));
       })
