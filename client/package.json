@@ -85,6 +85,9 @@
       "react/no-unescaped-entities": "off"
     }
   },
+  "prettier": {
+    "printWidth": 100
+  },
   "browserslist": {
     "production": [
       ">0.2%",

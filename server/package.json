@@ -59,6 +59,9 @@
       "sourceType": "module"
     }
   },
+  "prettier": {
+    "printWidth": 100
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {
