@@ -71,7 +71,7 @@ class DuelOverview extends Component {
         });
 
         // Will be replaced by cache later
-        const opponent = res.data.opponent;
+        const { opponent } = res.data;
         const currentUser = AuthService.getCurrentUser();
         axios
           .post("/api/v1/users/", [currentUser.pseudo, opponent])

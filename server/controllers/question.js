@@ -178,7 +178,7 @@ export function createGeneratorOfType(type) {
   return function () {
     return new Promise((resolve, reject) => {
       const filename = typeInfos.createFilename();
-      const before = typeInfos.before;
+      const { before } = typeInfos;
 
       queryQuestion(filename, type, before)
         .then((question) =>

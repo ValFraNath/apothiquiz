@@ -52,18 +52,26 @@
       "import"
     ],
     "rules": {
-      "no-duplicate-imports": "error",
-      "no-useless-rename": "error",
-      "eqeqeq": "error",
-      "no-else-return": "error",
       "array-bracket-newline": "warn",
       "array-bracket-spacing": "warn",
       "camelcase": "warn",
+      "eqeqeq": "error",
+      "no-duplicate-imports": "error",
+      "no-else-return": "error",
+      "no-unneeded-ternary": "error",
+      "no-useless-rename": "error",
+      "prefer-arrow-callback": "error",
       "comma-dangle": [
         "error",
         "always-multiline"
       ],
-      "no-unneeded-ternary": "error",
+      "prefer-destructuring": [
+        "error",
+        {
+          "object": true,
+          "array": false
+        }
+      ],
       "import/order": [
         "warn",
         {

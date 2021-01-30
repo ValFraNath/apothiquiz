@@ -35,7 +35,7 @@ function create(req, _res) {
   const res = new HttpResponseWrapper(_res);
 
   const username = req.body.authUser;
-  const opponent = req.body.opponent;
+  const { opponent } = req.body;
 
   if (!opponent) {
     return res.sendUsageError(400, "Missing opponent");
@@ -556,7 +556,7 @@ function insertResultInDatabase(id, username, answers) {
  */
 function updateDuelState(duel, username) {
   return new Promise((resolve, reject) => {
-    const currentRound = duel.currentRound;
+    const { currentRound } = duel;
     let sql = "";
     let winner, looser;
     if (duel.rounds[currentRound - 1][0].opponentAnswer !== undefined) {

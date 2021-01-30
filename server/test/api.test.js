@@ -5,7 +5,7 @@ import { currentAPIVersion } from "../db/database.js";
 import app from "../index.js";
 
 chai.use(chaiHttp);
-const expect = chai.expect;
+const { expect } = chai;
 
 describe("GET /status", function () {
   it("responds with the status and server version", function (done) {

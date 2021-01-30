@@ -32,7 +32,7 @@ function createMolecule(id, row, structure, data) {
   molecule.id = id++;
 
   structure.getColumnsSpecifications().forEach((column) => {
-    const property = column.property;
+    const { property } = column;
     if (column.isUnique()) {
       const value = row[structure.getIndexesFor(property)];
       molecule[property] = value !== undefined ? value : null;

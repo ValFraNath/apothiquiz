@@ -27,7 +27,7 @@ class UserBadge extends Component {
     axios
       .get(`/api/v1/users/me`)
       .then((res) => {
-        const avatar = res.data.avatar;
+        const { avatar } = res.data;
         this.setState({
           eyes: avatar.eyes,
           hands: avatar.hands,

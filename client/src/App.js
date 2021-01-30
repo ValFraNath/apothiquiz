@@ -21,7 +21,7 @@ import * as serviceWorker from "./serviceWorker";
 /**
  * Set up the authorization header in all request if the user is logged in
  */
-axios.interceptors.request.use(function (config) {
+axios.interceptors.request.use((config) => {
   const user = AuthService.getCurrentUser();
   if (user && user.token && user.pseudo) {
     config.headers.Authorization = `Bearer ${user.token}`;
