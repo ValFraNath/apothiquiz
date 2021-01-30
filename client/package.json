@@ -48,10 +48,40 @@
       "plugin:react/recommended"
     ],
     "plugins": [
-      "react"
+      "react",
+      "import"
     ],
     "rules": {
+      "array-bracket-newline": "warn",
+      "array-bracket-spacing": "warn",
+      "camelcase": "warn",
+      "eqeqeq": "error",
+      "no-duplicate-imports": "error",
+      "no-else-return": "error",
+      "no-unneeded-ternary": "error",
+      "no-useless-rename": "error",
       "prefer-arrow-callback": "error",
+      "comma-dangle": [
+        "error",
+        "always-multiline"
+      ],
+      "prefer-destructuring": [
+        "error",
+        {
+          "object": true,
+          "array": false
+        }
+      ],
+      "import/order": [
+        "warn",
+        {
+          "alphabetize": {
+            "order": "asc",
+            "caseInsensitive": true
+          },
+          "newlines-between": "always-and-inside-groups"
+        }
+      ],
       "react/no-unescaped-entities": "off"
     }
   },
