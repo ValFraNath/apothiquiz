@@ -2,10 +2,12 @@ import mysql from "mysql";
 import Logger from "../Logger.js";
 import { parseMoleculesFromCsv } from "../molecules_parser/Parser.js";
 
-const DCI_MAX_LENGTH = 128;
-const PROPERTY_VALUE_MAX_LENGTH = 128;
-const CLASSIFICATION_VALUE_MAX_LENGTH = 128;
-const SKELETAL_FORMULE_MAX_LENGTH = 64;
+export const MAX_LENGTH = {
+  DCI: 128,
+  PROPERTY_VALUE: 128,
+  CLASSIFICATION_VALUE: 128,
+  SKELETAL_FORMULA: 64,
+};
 
 const propertiesId = {
   side_effects: 1,
@@ -81,7 +83,7 @@ function createSqlToInsertClassification(name, classification) {
  */
 function createClassificationNodeInserter(classification) {
   function insertNode(id, name, higher, level) {
-    name = String(name).substr(0, CLASSIFICATION_VALUE_MAX_LENGTH);
+    name = String(name).substr(0, MAX_LENGTH.CLASSIFICATION_VALUE);
     return createSqlToInsertInto(classification)()([id, name, higher, level]);
   }
 
@@ -112,7 +114,7 @@ function createSqlToInsertProperty(name, values) {
       sql +
       createSqlToInsertInto("property_value")("pv_id", "pv_name", "pv_property")(
         valueId,
-        value.name.substr(0, PROPERTY_VALUE_MAX_LENGTH),
+        value.name.substr(0, MAX_LENGTH.PROPERTY_VALUE),
         id
       )
     );
@@ -212,12 +214,12 @@ class FormattedMolecule {
    */
   constructor(molecule) {
     this.id = Number(molecule.id);
-    this.dci = String(molecule.dci).substr(0, DCI_MAX_LENGTH);
+    this.dci = String(molecule.dci).substr(0, MAX_LENGTH.DCI);
     this.ntr = Number(molecule.ntr) || 0;
     this.system = molecule.system;
     this.class = molecule.class;
     this.skeletal_formule = molecule.skeletal_formule
-      ? String(molecule.skeletal_formule).substr(0, SKELETAL_FORMULE_MAX_LENGTH)
+      ? String(molecule.skeletal_formule).substr(0, MAX_LENGTH.SKELETAL_FORMULA)
       : "";
     this.difficulty = molecule.level_easy ? "EASY" : "HARD";
     this.properties = Object.create(null);
