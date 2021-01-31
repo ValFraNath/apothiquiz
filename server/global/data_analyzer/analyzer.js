@@ -1,6 +1,6 @@
 import levenshtein from "js-levenshtein";
 
-import { MAX_LENGTH } from "../data_importer/dataImporter.js";
+import { MAX_LENGTHS } from "../data_importer/dataImporter.js";
 
 const DCI_DISTANCE_MIN = 1;
 const PROPERTY_VALUE_MIN_DISTANCE = 2;
@@ -34,7 +34,7 @@ export function analyzeData(data) {
  */
 function analyzeProperty(property, values) {
   const names = values.map((v) => v.name);
-  const tooLongValues = getTooLongValues(names, MAX_LENGTH.PROPERTY_VALUE);
+  const tooLongValues = getTooLongValues(names, MAX_LENGTHS.PROPERTY_VALUE);
   const closeValues = getTooCloseValues(names, PROPERTY_VALUE_MIN_DISTANCE);
   const noStringValue = names.filter((name) => !isString(name));
 
@@ -43,7 +43,7 @@ function analyzeProperty(property, values) {
       (value) =>
         new AnalyzerWarning(
           AnalyzerWarning.TOO_LONG_VALUE,
-          `La valeur "${value}" de la propriété "${property}" est trop longue (max ${MAX_LENGTH.PROPERTY_VALUE})`
+          `La valeur "${value}" de la propriété "${property}" est trop longue (max ${MAX_LENGTHS.PROPERTY_VALUE})`
         )
     ),
     ...closeValues.map(
@@ -72,7 +72,7 @@ function analyzeProperty(property, values) {
 function analyzeClassification(classification, nodes) {
   const names = flattenClassification(nodes).map((n) => n.name);
   const closeValues = getTooCloseValues(names, CLASSIFICATION_VALUE_MIN_DISTANCE);
-  const tooLongValues = getTooLongValues(names, MAX_LENGTH.CLASSIFICATION_VALUE);
+  const tooLongValues = getTooLongValues(names, MAX_LENGTHS.CLASSIFICATION_VALUE);
   const nodesHavingSeveralParents = findNodeWithDifferentsParents(nodes);
   const noStringValue = names.filter((name) => !isString(name));
 
@@ -97,7 +97,7 @@ function analyzeClassification(classification, nodes) {
       (value) =>
         new AnalyzerWarning(
           AnalyzerWarning.TOO_LONG_VALUE,
-          `La valeur de "${classification}" "${value}" est trop longue (max ${MAX_LENGTH.CLASSIFICATION_VALUE})`
+          `La valeur de "${classification}" "${value}" est trop longue (max ${MAX_LENGTHS.CLASSIFICATION_VALUE})`
         )
     ),
     ...noStringValue.map(
@@ -119,7 +119,7 @@ function analyzeMolecules(molecules) {
   const dciList = molecules.map((m) => m.dci);
   const duplicates = getDuplicates(dciList);
   const closeNames = getTooCloseValues(dciList, DCI_DISTANCE_MIN);
-  const tooLongNames = getTooLongValues(dciList, MAX_LENGTH.DCI);
+  const tooLongNames = getTooLongValues(dciList, MAX_LENGTHS.DCI);
   const nonValidNumberValues = getNonValidNumberValue(molecules);
 
   return [
@@ -141,7 +141,7 @@ function analyzeMolecules(molecules) {
       (dci) =>
         new AnalyzerWarning(
           AnalyzerWarning.TOO_LONG_VALUE,
-          `La DCI "${dci}" est trop longue (max ${MAX_LENGTH.DCI})`
+          `La DCI "${dci}" est trop longue (max ${MAX_LENGTHS.DCI})`
         )
     ),
     ...nonValidNumberValues.map(
@@ -254,18 +254,17 @@ function findNodeWithDifferentsParents(classification) {
       return;
     }
 
-    const duplicates = classification
-      .slice(i)
-      .filter((other) => other && node.name === other.name)
-      .map((node) => node.name);
+    const isDuplicated = classification
+      .slice(i + 1)
+      .find((other) => other && node.name === other.name);
 
-    if (duplicates.length > 1) {
+    if (isDuplicated) {
       const parents = classification
-        .filter((n) => n && n.children.find((n) => n.name === duplicates[0]))
+        .filter((n) => n && n.children.find((n) => n.name === node.name))
         .map((p) => p.name);
 
-      groups.push({ node: duplicates[0], parents });
-      classification = classification.map((n) => (duplicates.includes(n) ? null : n));
+      groups.push({ node: node.name, parents });
+      classification = classification.map((n) => (n && n.name === node.name ? null : n));
     }
   });
   return groups;
