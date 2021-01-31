@@ -88,7 +88,6 @@ describe("Data analyzer", () => {
 
       it("Expected warnings", async () => {
         const warnings = analyzeData(data);
-        console.log(warnings);
         const counter = warningsCounter(warnings);
         file.warnings.forEach((warning) =>
           expect(counter(warning.type), "Type " + warning.type).equals(warning.count)
