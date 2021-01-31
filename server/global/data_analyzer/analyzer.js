@@ -18,7 +18,7 @@ export function analyzeData(data) {
   warnings.push(...analyzeClassification("systèmes", data.systems));
 
   warnings.push(...analyzeProperty("indications", data.indications, 128));
-  warnings.push(...analyzeProperty("effets indésirables", data.side_effects, 128));
+  warnings.push(...analyzeProperty("effets indésirables", data.sideEffects, 128));
   warnings.push(...analyzeProperty("intéractions", data.interactions, 128));
 
   warnings.push(...analyzeMolecules(data.molecules));
@@ -104,7 +104,7 @@ function analyzeClassification(classification, nodes) {
       (value) =>
         new AnalyzerWarning(
           AnalyzerWarning.INVALID_TYPE,
-          `Une valeur de '${classification}' devrait être une chaîne de caractères : '${value}'`
+          `Une valeur de "${classification}" devrait être une chaîne de caractères : "${value}"`
         )
     ),
   ];
@@ -162,7 +162,7 @@ function analyzeMolecules(molecules) {
 function getNonValidNumberValue(molecules) {
   return molecules.reduce(
     (noNumberValues, molecule) =>
-      ["level_easy", "level_hard", "ntr"].reduce((noNumberValues, prop) => {
+      ["levelEasy", "levelHard", "ntr"].reduce((noNumberValues, prop) => {
         const value = molecule[prop];
         if (value !== null && (!isNumber(value) || value < 0 || value > 1)) {
           noNumberValues.push({ molecule: molecule.dci, property: prop, value });
