@@ -5,10 +5,10 @@ import { ArrowLeftIcon, ArrowRightIcon } from "@modulz/radix-icons";
 
 import variables from "../styles/base/_variables.module.scss";
 
-const NUMBER_OF_EYES = Number(variables.maxChoiceEyes);
-const NUMBER_OF_HANDS = Number(variables.maxChoiceHands);
-const NUMBER_OF_HATS = Number(variables.maxChoiceHats);
-const NUMBER_OF_MOUTHES = Number(variables.maxChoiceMouthes);
+const NUMBER_OF_EYES = Number(variables.numberChoicesEyes);
+const NUMBER_OF_HANDS = Number(variables.numberChoicesHands);
+const NUMBER_OF_HATS = Number(variables.numberChoicesHats);
+const NUMBER_OF_MOUTHES = Number(variables.numberChoicesMouthes);
 
 const Select = (props) => {
   return (
@@ -81,10 +81,10 @@ class ChooseAvatar extends Component {
 
   randomAvatar = () => {
     this.setState({ avatarChooserState: "not-saved" });
-    this.props.handleInputEyes(Math.round(Math.random() * NUMBER_OF_EYES));
-    this.props.handleInputHands(Math.round(Math.random() * NUMBER_OF_HANDS));
-    this.props.handleInputHat(Math.round(Math.random() * NUMBER_OF_HATS));
-    this.props.handleInputMouth(Math.round(Math.random() * NUMBER_OF_MOUTHES));
+    this.props.handleInputEyes(Math.floor(Math.random() * NUMBER_OF_EYES));
+    this.props.handleInputHands(Math.floor(Math.random() * NUMBER_OF_HANDS));
+    this.props.handleInputHat(Math.floor(Math.random() * NUMBER_OF_HATS));
+    this.props.handleInputMouth(Math.floor(Math.random() * NUMBER_OF_MOUTHES));
     this.props.handleInputColorBody(randomHexColor());
     this.props.handleInputColorBG(randomHexColor());
   };
