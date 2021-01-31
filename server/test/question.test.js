@@ -2,6 +2,7 @@ import chai from "chai";
 import chaiHttp from "chai-http";
 
 import { queryPromise } from "../db/database.js";
+
 import { forceTruncateTables, insertData, requestAPI } from "./index.test.js";
 
 chai.use(chaiHttp);
@@ -119,7 +120,7 @@ describe("Question generation", function () {
     const { answers, subject, goodAnswer } = res.body;
 
     const answersHavePropertyValue = await Promise.all(
-      answers.map((value) => doesHavePropertyValue(value, "side_effects", subject))
+      answers.map((value) => doesHavePropertyValue(value, "sideEffects", subject))
     );
 
     answersHavePropertyValue.forEach((value, index) =>
@@ -158,7 +159,7 @@ describe("Question generation", function () {
     const { answers, subject, goodAnswer } = res.body;
 
     const answersHavePropertyValue = await Promise.all(
-      answers.map((value) => doesHavePropertyValue(subject, "side_effects", value))
+      answers.map((value) => doesHavePropertyValue(subject, "sideEffects", value))
     );
 
     answersHavePropertyValue.forEach((value, index) =>

@@ -1,5 +1,5 @@
-import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import jwt from "jsonwebtoken";
 
 import { queryPromise } from "../db/database.js";
 import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
@@ -154,7 +154,7 @@ function getInfos(req, _res) {
   const res = new HttpResponseWrapper(_res);
   let user = String(req.params.pseudo);
   if (user === "me") {
-    user = req.body.auth_user;
+    user = req.body.authUser;
   }
 
   getUserInformations(user)
@@ -196,10 +196,10 @@ function saveInfos(req, _res) {
   const res = new HttpResponseWrapper(_res);
   var user = String(req.params.pseudo);
   if (user === "me") {
-    user = req.body.auth_user;
+    user = req.body.authUser;
   }
 
-  if (req.body.auth_user != user) {
+  if (req.body.authUser !== user) {
     // TODO? Add admin ?
     return res.sendUsageError(403, "Operation not allowed");
   }

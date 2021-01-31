@@ -1,15 +1,17 @@
-import mocha from "mocha";
+import path from "path";
+
 import chai from "chai";
 import deepEqualAnyOrder from "deep-equal-in-any-order";
-import path from "path";
+import mocha from "mocha";
 
 const { expect } = chai;
 const { describe, it, before } = mocha;
 chai.use(deepEqualAnyOrder);
 
 import { queryPromise } from "../../db/database.js";
-import { forceTruncateTables } from "../index.test.js";
 import { parseAndCreateSqlToInsertAllData } from "../../global/data_importer/dataImporter.js";
+import { forceTruncateTables } from "../index.test.js";
+
 import { expectations } from "./expectations.js";
 
 const files = [
@@ -40,10 +42,10 @@ for (let file of files) {
 
     it("Good number of molecule", async () => {
       let numberOfMolecules = await getNumberOfEntry("molecule");
-      expect(numberOfMolecules).equals(file.expectation.number_of_molecule);
+      expect(numberOfMolecules).equals(file.expectation.numberOfMolecules);
     });
 
-    for (let property of ["side_effects", "interactions", "indications"]) {
+    for (let property of ["sideEffects", "interactions", "indications"]) {
       it("Property " + property, async () => {
         let values = await getPropertyValuesList(property);
         expect(values).deep.equalInAnyOrder(file.expectation[property]);
@@ -70,7 +72,7 @@ for (let file of files) {
         expect(data).not.null;
         expect(data.class).equals(expMolecule.class);
         expect(data.system).equals(expMolecule.system);
-        expect(data.side_effects).deep.equalInAnyOrder(expMolecule.side_effects);
+        expect(data.sideEffects).deep.equalInAnyOrder(expMolecule.sideEffects);
         expect(data.interactions).deep.equalInAnyOrder(expMolecule.interactions);
         expect(data.indications).deep.equalInAnyOrder(expMolecule.indications);
       });
@@ -93,7 +95,7 @@ async function getNumberOfEntry(table) {
 /**
  * Get all data of a molecule
  * @param {string} dci
- * @returns {Promise<{system : number, class : number, side_effects : strings[], interactions : string[], indications : string[]}>}
+ * @returns {Promise<{system : number, class : number, sideEffects : strings[], interactions : string[], indications : string[]}>}
  */
 async function getMoleculeData(dci) {
   let sql = `SELECT mo_dci,cl_name as class, sy_name as system, pv_name as property_value, pr_name as property
@@ -115,7 +117,7 @@ async function getMoleculeData(dci) {
   molecule.system = data[0]["system"];
   molecule.class = data[0]["class"];
 
-  molecule.side_effects = keepOnlyPropertyValue("side_effects");
+  molecule.sideEffects = keepOnlyPropertyValue("sideEffects");
   molecule.indications = keepOnlyPropertyValue("indications");
   molecule.interactions = keepOnlyPropertyValue("interactions");
 

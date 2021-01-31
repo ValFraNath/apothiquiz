@@ -1,13 +1,14 @@
-import React, { Component } from "react";
-import axios from "axios";
 import { ChevronRightIcon } from "@modulz/radix-icons";
+import axios from "axios";
+import React, { Component } from "react";
 
-import AuthService from "../services/auth.service";
-import Avatar from "../components/Avatar";
 import { Link } from "react-router-dom";
+
+import Avatar from "../components/Avatar";
 import Plural from "../components/Plural";
-import FightPilette from "../images/fight.png";
 import WaitPilette from "../images/attente.png";
+import FightPilette from "../images/fight.png";
+import AuthService from "../services/auth.service";
 
 class HomePage extends Component {
   constructor(props) {

@@ -3,10 +3,11 @@ import chaiHttp from "chai-http";
 import jwt from "jsonwebtoken";
 
 import app from "../index.js";
+
 import { forceTruncateTables, insertData, requestAPI } from "./index.test.js";
 
 chai.use(chaiHttp);
-const expect = chai.expect;
+const { expect } = chai;
 describe("User test", function () {
   before("Insert users data", (done) => {
     forceTruncateTables("user").then(() => insertData("users.sql").then(done));
@@ -106,6 +107,7 @@ describe("User test", function () {
 
       expect(Object.keys(res.body)).to.contains("pseudo");
       expect(Object.keys(res.body)).to.contains("token");
+      // eslint-disable-next-line prefer-destructuring
       token = res.body.token;
     });
 

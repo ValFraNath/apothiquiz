@@ -1,13 +1,12 @@
-import React, { Component, useState, useEffect } from "react";
-import PropTypes from "prop-types";
 import axios from "axios";
+import PropTypes from "prop-types";
+import React, { Component, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 // import { CaretLeftIcon } from "@modulz/radix-icons";
 
-import SpriteSheet from "../SpriteSheet";
+import connectionAnim from "../../images/connection_status.png";
 import Avatar from "../Avatar";
-
-import connection_anim from "../../images/connection_status.png";
+import SpriteSheet from "../SpriteSheet";
 
 class UserBadge extends Component {
   constructor(props) {
@@ -28,7 +27,7 @@ class UserBadge extends Component {
     axios
       .get(`/api/v1/users/me`)
       .then((res) => {
-        const avatar = res.data.avatar;
+        const { avatar } = res.data;
         this.setState({
           eyes: avatar.eyes,
           hands: avatar.hands,
@@ -117,7 +116,7 @@ const OfflineBanner = () => {
   return (
     <div id={"offlineBanner"} className={isOnline ? "online" : "offline"}>
       <SpriteSheet
-        image={connection_anim}
+        image={connectionAnim}
         frameHeight={35}
         frameWidth={35}
         steps={37}
@@ -140,6 +139,10 @@ const TopBar = ({ user }) => {
       <OfflineBanner />
     </nav>
   );
+};
+
+TopBar.propTypes = {
+  user: PropTypes.string,
 };
 
 export default TopBar;

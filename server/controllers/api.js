@@ -35,7 +35,7 @@ function status(req, _res) {
     .then((version) => {
       const response = {
         status: "connected",
-        api_version: version,
+        apiVersion: version,
       };
 
       res.sendResponse(200, response);

@@ -1,5 +1,6 @@
-import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import jwt from "jsonwebtoken";
+
 import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
 dotenv.config();
 
@@ -11,7 +12,7 @@ function auth(req, _res, next) {
   try {
     const token = req.headers.authorization.split(" ")[1];
     const decodedToken = jwt.verify(token, process.env.TOKEN_PRIVATE_KEY);
-    req.body.auth_user = decodedToken.pseudo;
+    req.body.authUser = decodedToken.pseudo;
     next();
   } catch (e) {
     res.sendUsageError(401, "Unauthorized connection");

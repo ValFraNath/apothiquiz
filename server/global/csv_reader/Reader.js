@@ -1,5 +1,6 @@
-import reader from "csv-reader";
 import fs from "fs";
+
+import reader from "csv-reader";
 
 export function readCSV(filepath) {
   return new Promise((resolve, reject) => {

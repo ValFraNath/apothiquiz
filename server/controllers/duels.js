@@ -1,6 +1,7 @@
 import { queryPromise } from "../db/database.js";
-import Logger, { addErrorTitle } from "../global/Logger.js";
 import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
+import Logger, { addErrorTitle } from "../global/Logger.js";
+
 import { createGeneratorOfType, NotEnoughDataError } from "./question.js";
 
 export const MAX_QUESTION_TYPE = 10;
@@ -33,8 +34,8 @@ export const NUMBER_OF_QUESTIONS_IN_ROUND = 5;
 function create(req, _res) {
   const res = new HttpResponseWrapper(_res);
 
-  const username = req.body.auth_user;
-  const opponent = req.body.opponent;
+  const username = req.body.authUser;
+  const { opponent } = req.body;
 
   if (!opponent) {
     return res.sendUsageError(400, "Missing opponent");
@@ -160,7 +161,7 @@ function create(req, _res) {
 function fetch(req, _res) {
   const res = new HttpResponseWrapper(_res);
 
-  const username = req.body.auth_user;
+  const username = req.body.authUser;
   const duelID = Number(req.params.id);
 
   if (!duelID) {
@@ -190,7 +191,7 @@ function fetch(req, _res) {
  */
 function fetchAll(req, _res) {
   const res = new HttpResponseWrapper(_res);
-  const username = req.body.auth_user;
+  const username = req.body.authUser;
 
   getAllDuels(username)
     .then((duels) => res.sendResponse(200, duels))
@@ -227,7 +228,7 @@ function play(req, _res) {
   const res = new HttpResponseWrapper(_res);
   const id = Number(req.params.id);
   const round = Number(req.params.round);
-  const username = req.body.auth_user;
+  const username = req.body.authUser;
   const answers = req.body.answers || [];
 
   if (!id) {
@@ -555,7 +556,7 @@ function insertResultInDatabase(id, username, answers) {
  */
 function updateDuelState(duel, username) {
   return new Promise((resolve, reject) => {
-    const currentRound = duel.currentRound;
+    const { currentRound } = duel;
     let sql = "";
     let winner, looser;
     if (duel.rounds[currentRound - 1][0].opponentAnswer !== undefined) {

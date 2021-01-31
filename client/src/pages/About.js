@@ -1,9 +1,9 @@
-import React, { Component } from "react";
 import axios from "axios";
+import React, { Component } from "react";
 import GitInfo from "react-git-info/macro";
 
-import Message from "../components/quiz/Message";
 import Button from "../components/buttons/ButtonFullWidth";
+import Message from "../components/quiz/Message";
 
 export default class About extends Component {
   constructor(props) {
@@ -18,7 +18,7 @@ export default class About extends Component {
       .then((res) => {
         this.setState({
           serverStatus: res.data.status,
-          currentServerAPIVersion: res.data.api_version,
+          currentServerAPIVersion: res.data.apiVersion,
         });
       })
       .catch((err) => {

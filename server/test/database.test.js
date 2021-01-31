@@ -1,8 +1,10 @@
+import assert from "assert";
+
 import chai from "chai";
 import equalInAnyOrder from "deep-equal-in-any-order";
 
-import assert from "assert";
 import { queryPromise, connection } from "../db/database.js";
+
 import { insertData, forceTruncateTables } from "./index.test.js";
 
 const { expect } = chai;
@@ -179,10 +181,10 @@ describe("Procedures Molecule data", () => {
     )[0].map((e) => e.value);
     expect(interactions).to.be.deep.equalInAnyOrder(["Allongement QT"]);
 
-    const side_effects = (
-      await queryPromise("CALL getPropertyValuesOf(?,?)", ["METHYLENECYCLINE", "side_effects"])
+    const sideEffects = (
+      await queryPromise("CALL getPropertyValuesOf(?,?)", ["METHYLENECYCLINE", "sideEffects"])
     )[0].map((e) => e.value);
-    expect(side_effects).to.be.deep.equalInAnyOrder([
+    expect(sideEffects).to.be.deep.equalInAnyOrder([
       "Décoloration dents",
       "Hypoplasie email dentaire",
       "oesophagite",
@@ -194,7 +196,7 @@ describe("Procedures Molecule data", () => {
     expect(invalid).to.be.deep.equalInAnyOrder([]);
 
     invalid = (
-      await queryPromise("CALL getPropertyValuesOf(?,?)", ["ENOET", "side_effects"])
+      await queryPromise("CALL getPropertyValuesOf(?,?)", ["ENOET", "sideEffects"])
     )[0].map((e) => e.value);
     expect(invalid).to.be.deep.equalInAnyOrder([]);
   });
