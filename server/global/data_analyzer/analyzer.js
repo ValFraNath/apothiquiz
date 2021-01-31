@@ -171,21 +171,32 @@ function getTooCloseValues(values, minDistance) {
   values = values.slice();
   const groups = [];
 
-  values.forEach((value, i) => {
-    if (!value) {
+  values.forEach((value) => {
+    if (!isString(value)) {
       return;
     }
-    const group = values
-      .slice(i)
-      .filter((other) => other && levenshtein(other, value) <= minDistance);
+    const group = values.filter((other) => {
+      if (!isString(other)) {
+        return;
+      }
+      const distance = levenshtein(other, value);
+      return distance <= minDistance && distance > 0;
+    });
 
-    if (group.length > 1) {
-      groups.push(group);
+    // console.log(value, group);
+
+    const existingGroup = groups.find((egroup) => egroup.some((e) => group.includes(e)));
+    if (existingGroup) {
+      existingGroup.push(...group, value);
+      return;
     }
-    values = values.map((value) => (group.includes(value) ? null : value));
+
+    if (group.length > 0) {
+      groups.push([...group, value]);
+    }
   });
 
-  return groups;
+  return groups.map((group) => [...new Set(group)]);
 }
 
 /**
@@ -238,3 +249,5 @@ function flattenClassification(classification) {
   }
   return res;
 }
+
+const isString = (v) => typeof v === "string" || v instanceof String;
