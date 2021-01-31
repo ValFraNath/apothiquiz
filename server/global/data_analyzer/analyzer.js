@@ -90,7 +90,7 @@ function analyzeClassification(classification, nodes) {
           AnalyzerWarning.DUPLICATE_CLASSIFICATION_NODE,
           `La valeur de '${classification}' '${
             node.node
-          }' apparait plusieurs fois dans la hiérarchie, enfant de : '${node.parents.join("', '")}'`
+          }' apparaît plusieurs fois dans la hiérarchie, enfant de : '${node.parents.join("', '")}'`
         )
     ),
     ...tooLongValues.map(
