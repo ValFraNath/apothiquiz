@@ -104,7 +104,7 @@ function analyzeClassification(classification, nodes) {
       (value) =>
         new AnalyzerWarning(
           AnalyzerWarning.INVALID_TYPE,
-          `Une valeur de '${classification}' devrait être une chaine de caractères : '${value}'`
+          `Une valeur de '${classification}' devrait être une chaîne de caractères : '${value}'`
         )
     ),
   ];
