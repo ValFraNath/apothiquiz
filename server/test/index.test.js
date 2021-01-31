@@ -1,10 +1,11 @@
 import fs from "fs/promises";
 import path from "path";
+
 import chai from "chai";
 import chaiHttp from "chai-http";
 
-import app from "../index.js";
 import { queryPromise } from "../db/database.js";
+import app from "../index.js";
 
 chai.use(chaiHttp);
 

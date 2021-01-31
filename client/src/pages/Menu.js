@@ -1,8 +1,9 @@
+import { PropTypes } from "prop-types";
 import React from "react";
 import { Link } from "react-router-dom";
 
-import AuthService from "../services/auth.service";
 import InstallApp from "../components/system/InstallApp";
+import AuthService from "../services/auth.service";
 
 const Menu = ({ installPromptEvent, user }) => {
   if (AuthService.getCurrentUser() !== null) {
@@ -19,6 +20,11 @@ const Menu = ({ installPromptEvent, user }) => {
       </div>
     </main>
   );
+};
+
+Menu.propTypes = {
+  installPromptEvent: PropTypes.func,
+  user: PropTypes.string,
 };
 
 export default Menu;

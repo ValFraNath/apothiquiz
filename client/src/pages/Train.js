@@ -1,15 +1,15 @@
-import React, { Component } from "react";
+import { ArrowRightIcon, CheckCircledIcon, CrossCircledIcon, ExitIcon } from "@modulz/radix-icons";
 import axios from "axios";
 import PropTypes from "prop-types";
-import { ArrowRightIcon, CheckCircledIcon, CrossCircledIcon, ExitIcon } from "@modulz/radix-icons";
+import React, { Component } from "react";
 
-import Question from "../components/quiz/Question";
-import Timer from "../components/quiz/Timer";
+import ButtonCircle from "../components/buttons/ButtonCircle";
+import ButtonDefault from "../components/buttons/ButtonDefault";
 import Answers from "../components/quiz/Answers";
 import Message from "../components/quiz/Message";
+import Question from "../components/quiz/Question";
+import Timer from "../components/quiz/Timer";
 import InformationPilette from "../images/information_crop.png";
-import ButtonDefault from "../components/buttons/ButtonDefault";
-import ButtonCircle from "../components/buttons/ButtonCircle";
 
 /* ---------- Introduction view ---------- */
 

@@ -1,7 +1,7 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import axios from "axios";
 import { ArrowLeftIcon, ArrowRightIcon } from "@modulz/radix-icons";
+import axios from "axios";
+import PropTypes from "prop-types";
+import React, { Component } from "react";
 
 import variables from "../styles/base/_variables.module.scss";
 
@@ -209,6 +209,12 @@ ChooseAvatar.propTypes = {
   handleInputMouth: PropTypes.func.isRequired,
   handleInputColorBody: PropTypes.func.isRequired,
   handleInputColorBG: PropTypes.func.isRequired,
+  choiceEyes: PropTypes.number,
+  choiceHands: PropTypes.number,
+  choiceHat: PropTypes.number,
+  choiceMouth: PropTypes.number,
+  choiceColorBody: PropTypes.string,
+  choiceColorBG: PropTypes.string,
 };
 
 export default ChooseAvatar;

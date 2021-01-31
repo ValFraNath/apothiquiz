@@ -1,13 +1,13 @@
-import React from "react";
-import { shallow } from "enzyme";
 import { expect, assert } from "chai";
+import { shallow } from "enzyme";
+import React from "react";
 
 import SpriteSheet from "../components/SpriteSheet";
 import spritesheet from "../images/connection_status.png";
 
-describe("sprite sheet component have a good behavior", function () {
+describe("sprite sheet component have a good behavior", () => {
   let sp = null;
-  beforeEach(function (done) {
+  beforeEach((done) => {
     shallow(
       <SpriteSheet
         image={spritesheet}
@@ -23,13 +23,13 @@ describe("sprite sheet component have a good behavior", function () {
     done();
   });
 
-  it("constructor", function (done) {
+  it("constructor", (done) => {
     expect(sp.state.currentFrame).to.be.equal(0);
     expect(sp.state.direction).to.be.equal(1);
     done();
   });
 
-  it("setDirection - valid direction", function (done) {
+  it("setDirection - valid direction", (done) => {
     sp.setDirection("reverse");
     expect(sp.state.direction).to.be.equal(-1);
     sp.setDirection("normal");
@@ -37,7 +37,7 @@ describe("sprite sheet component have a good behavior", function () {
     done();
   });
 
-  it("setDirection - invalid direction", function (done) {
+  it("setDirection - invalid direction", (done) => {
     assert.throws(() => sp.setDirection("aa"), Error);
     expect(sp.state.direction).to.be.equal(1);
 
@@ -49,7 +49,7 @@ describe("sprite sheet component have a good behavior", function () {
     done();
   });
 
-  it("setCurrentFrame - valid frame number", function (done) {
+  it("setCurrentFrame - valid frame number", (done) => {
     sp.setCurrentFrame(6);
     expect(sp.state.currentFrame).to.be.equal(6);
     sp.setCurrentFrame(36);
@@ -62,7 +62,7 @@ describe("sprite sheet component have a good behavior", function () {
     done();
   });
 
-  it("setCurrentFrame - invalid frame number", function (done) {
+  it("setCurrentFrame - invalid frame number", (done) => {
     assert.throws(() => sp.setCurrentFrame(40), Error);
     assert.throws(() => sp.setCurrentFrame(-5), Error);
     expect(sp.state.currentFrame).to.be.equal(0);
@@ -74,17 +74,17 @@ describe("sprite sheet component have a good behavior", function () {
     done();
   });
 
-  it("play reverse", function (done) {
+  it("play reverse", (done) => {
     let i = 7;
     sp.setCurrentFrame(i);
     sp.setDirection("reverse");
 
     sp.play(
-      function (currentFrame, currentDirection) {
+      (currentFrame, currentDirection) => {
         expect(currentFrame).to.be.equal(--i);
         expect(currentDirection).to.be.equal(-1);
       },
-      function (finalFrame, finalDirection) {
+      (finalFrame, finalDirection) => {
         expect(finalDirection).to.be.equal(-1);
         expect(finalFrame).to.be.equal(0);
         done();
@@ -92,17 +92,17 @@ describe("sprite sheet component have a good behavior", function () {
     );
   });
 
-  it("play reverse", function (done) {
+  it("play reverse", (done) => {
     let i = 3;
     sp.setCurrentFrame(i);
     sp.setDirection("normal");
 
     sp.play(
-      function (currentFrame, currentDirection) {
+      (currentFrame, currentDirection) => {
         expect(currentFrame).to.be.equal(++i);
         expect(currentDirection).to.be.equal(1);
       },
-      function (finalFrame, finalDirection) {
+      (finalFrame, finalDirection) => {
         expect(finalDirection).to.be.equal(1);
         expect(finalFrame).to.be.equal(36);
         done();

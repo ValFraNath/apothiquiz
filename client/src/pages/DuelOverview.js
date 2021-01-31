@@ -1,10 +1,10 @@
-import React, { Component } from "react";
-import { Link } from "react-router-dom";
 import axios from "axios";
 import { PropTypes } from "prop-types";
+import React, { Component } from "react";
+import { Link } from "react-router-dom";
 
-import AuthService from "../services/auth.service";
 import Avatar from "../components/Avatar";
+import AuthService from "../services/auth.service";
 
 const UserBadge = ({ user, reversed }) => {
   return (
@@ -42,7 +42,7 @@ const ResultBricks = ({ user, answers }) => (
 
 ResultBricks.propTypes = {
   user: PropTypes.object,
-  answer: PropTypes.array,
+  answers: PropTypes.array,
 };
 
 class DuelOverview extends Component {
@@ -71,7 +71,7 @@ class DuelOverview extends Component {
         });
 
         // Will be replaced by cache later
-        const opponent = res.data.opponent;
+        const { opponent } = res.data;
         const currentUser = AuthService.getCurrentUser();
         axios
           .post("/api/v1/users/", [currentUser.pseudo, opponent])
@@ -149,5 +149,9 @@ class DuelOverview extends Component {
     );
   }
 }
+
+DuelOverview.propTypes = {
+  match: PropTypes.object.isRequired,
+};
 
 export default DuelOverview;

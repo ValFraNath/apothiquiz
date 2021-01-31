@@ -1,9 +1,9 @@
-import React, { Component } from "react";
 import axios from "axios";
+import React, { Component } from "react";
 
-import AuthService from "../services/auth.service";
 import Avatar from "../components/Avatar";
 import ButtonFullWidth from "../components/buttons/ButtonFullWidth";
+import AuthService from "../services/auth.service";
 
 class CreateDuel extends Component {
   constructor(props) {

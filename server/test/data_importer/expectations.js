@@ -1,6 +1,6 @@
 export const expectations = {
   molecules: {
-    number_of_molecule: 141,
+    numberOfMolecules: 141,
     systems: {
       all: [
         "ANTIINFECTIEUX",
@@ -88,7 +88,7 @@ export const expectations = {
         },
       ],
     },
-    side_effects: [
+    sideEffects: [
       "hypotension orthostatique",
       "Nephrotoxicité",
       "Décoloration dents",
@@ -127,11 +127,11 @@ export const expectations = {
         class: "camion",
         indications: ["VHB", "VIH"],
         interactions: [],
-        side_effects: [],
+        sideEffects: [],
         ntr: null,
-        skeletal_formule: null,
-        level_easy: null,
-        level_hard: null,
+        skeletalFormula: null,
+        levelEasy: null,
+        levelHard: null,
       },
       {
         dci: "TINIDAZOLE",
@@ -139,11 +139,11 @@ export const expectations = {
         class: "5-NITRO-IMIDAZOLES",
         indications: ["Protozoaires", "Bactéries anaérobies"],
         interactions: [],
-        side_effects: [],
+        sideEffects: [],
         ntr: null,
-        level_easy: null,
-        level_hard: null,
-        skeletal_formule: null,
+        levelEasy: null,
+        levelHard: null,
+        skeletalFormula: null,
       },
       {
         dci: "AMANTADINE",
@@ -151,11 +151,11 @@ export const expectations = {
         class: "INHIBITEUR DE FUSION",
         indications: ["Grippe", "Parkinson"],
         interactions: [],
-        side_effects: ["hypotension orthostatique"],
+        sideEffects: ["hypotension orthostatique"],
         ntr: null,
-        level_easy: 0,
-        level_hard: 1,
-        skeletal_formule: null,
+        levelEasy: 0,
+        levelHard: 1,
+        skeletalFormula: null,
       },
     ],
   },

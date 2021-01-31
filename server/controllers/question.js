@@ -2,8 +2,8 @@ import fs from "fs/promises";
 import path from "path";
 
 import { queryPromise } from "../db/database.js";
-import { addErrorTitle } from "../global/Logger.js";
 import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
+import { addErrorTitle } from "../global/Logger.js";
 
 const generatorInfosByType = {
   1: {
@@ -38,7 +38,7 @@ const generatorInfosByType = {
   },
   6: {
     createFilename: () => "question_PM.sql",
-    before: "SET @property = 'side_effects';",
+    before: "SET @property = 'sideEffects';",
     createWording: (subject) => `Quelle molécule a comme effet indésirable '${subject}' ?`,
     title: "1 effet indésirable - 4 molecules",
   },
@@ -56,7 +56,7 @@ const generatorInfosByType = {
   },
   9: {
     createFilename: () => "question_MP.sql",
-    before: "SET @property = 'side_effects';",
+    before: "SET @property = 'sideEffects';",
     createWording: (subject) => `Quel effet indésirable a la molécule '${subject}' ?`,
     title: "1 molécule - 4 effets indésirables",
   },
@@ -178,7 +178,7 @@ export function createGeneratorOfType(type) {
   return function () {
     return new Promise((resolve, reject) => {
       const filename = typeInfos.createFilename();
-      const before = typeInfos.before;
+      const { before } = typeInfos;
 
       queryQuestion(filename, type, before)
         .then((question) =>

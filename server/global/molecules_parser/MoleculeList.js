@@ -1,10 +1,11 @@
 // eslint-disable-next-line no-unused-vars
 import FileStructure from "../csv_reader/FileStructure.js";
-import MoleculesProperty from "./MoleculesProperty.js";
+
 import MoleculesClassification, {
   // eslint-disable-next-line no-unused-vars
   ClassificationNode,
 } from "./MoleculesClassification.js";
+import MoleculesProperty from "./MoleculesProperty.js";
 
 /**
  * Create a list of molecules from a matrix of molecules and classifications/properties data
@@ -32,7 +33,7 @@ function createMolecule(id, row, structure, data) {
   molecule.id = id++;
 
   structure.getColumnsSpecifications().forEach((column) => {
-    const property = column.property;
+    const { property } = column;
     if (column.isUnique()) {
       const value = row[structure.getIndexesFor(property)];
       molecule[property] = value !== undefined ? value : null;

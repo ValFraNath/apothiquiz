@@ -1,5 +1,7 @@
 import mysql from "mysql";
+
 import Logger from "../Logger.js";
+
 import { parseMoleculesFromCsv } from "../molecules_parser/Parser.js";
 
 export const MAX_LENGTH = {
@@ -10,7 +12,7 @@ export const MAX_LENGTH = {
 };
 
 const propertiesId = {
-  side_effects: 1,
+  sideEffects: 1,
   interactions: 2,
   indications: 3,
 };
@@ -41,7 +43,7 @@ export function createSqlToInsertAllData(data) {
   script += createSqlToInsertClassification("class", data["classes"]);
   script += createSqlToInsertClassification("system", data["systems"]);
 
-  for (let property of ["side_effects", "indications", "interactions"]) {
+  for (let property of ["sideEffects", "indications", "interactions"]) {
     script += createSqlToInsertProperty(property, data[property]);
   }
   script += createSqlToInsertAllMolecules(data.molecules);
@@ -164,15 +166,9 @@ function createSqlToInsertMolecule(molecule) {
     "mo_class",
   ];
 
-  const values = [
-    "id",
-    "dci",
-    "skeletal_formule",
-    "ntr",
-    "difficulty",
-    "system",
-    "class",
-  ].map((p) => molecule.getValue(p));
+  const values = ["id", "dci", "skeletalFormula", "ntr", "difficulty", "system", "class"].map((p) =>
+    molecule.getValue(p)
+  );
 
   return (
     createSqlToInsertInto("molecule")(...columns)(...values) +
@@ -218,13 +214,13 @@ class FormattedMolecule {
     this.ntr = Number(molecule.ntr) || 0;
     this.system = molecule.system;
     this.class = molecule.class;
-    this.skeletal_formule = molecule.skeletal_formule
-      ? String(molecule.skeletal_formule).substr(0, MAX_LENGTH.SKELETAL_FORMULA)
+    this.skeletalFormula = molecule.skeletalFormula
+      ? String(molecule.skeletalFormula).substr(0, MAX_LENGTH.SKELETAL_FORMULA)
       : "";
-    this.difficulty = molecule.level_easy ? "EASY" : "HARD";
+    this.difficulty = molecule.levelEasy ? "EASY" : "HARD";
     this.properties = Object.create(null);
     this.properties.indications = molecule.indications.slice();
-    this.properties.side_effects = molecule.side_effects.slice();
+    this.properties.sideEffects = molecule.sideEffects.slice();
     this.properties.interactions = molecule.interactions.slice();
   }
 

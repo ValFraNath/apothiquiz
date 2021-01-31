@@ -1,7 +1,9 @@
-import mysql from "mysql";
-import dotenv from "dotenv";
 import fs from "fs/promises";
 import path from "path";
+
+import dotenv from "dotenv";
+import mysql from "mysql";
+
 import Logger, { addErrorTitle } from "../global/Logger.js";
 
 const __dirname = path.resolve();
@@ -44,8 +46,8 @@ function connect() {
       Logger.info("Connected to database!");
 
       getSystemInformation("api_version")
-        .then((db_version) => {
-          if (db_version === null) {
+        .then((dbVersion) => {
+          if (dbVersion === null) {
             create()
               .then(() =>
                 update()
@@ -54,7 +56,7 @@ function connect() {
               )
               .catch((error) => reject(addErrorTitle(error, "Can't create the database")));
           } else {
-            update(db_version)
+            update(dbVersion)
               .then(() => resolve())
               .catch((error) => reject(addErrorTitle(error, "Can't update the database")));
           }

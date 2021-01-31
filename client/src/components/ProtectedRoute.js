@@ -1,6 +1,6 @@
+import PropTypes from "prop-types";
 import React from "react";
 import { Route, Redirect } from "react-router-dom";
-import PropTypes from "prop-types";
 
 import AuthService from "../services/auth.service";
 
@@ -15,6 +15,7 @@ const ProtectedRoute = ({ component, ...rest }) => {
 };
 
 ProtectedRoute.propTypes = {
+  component: PropTypes.func.isRequired,
   path: PropTypes.string,
   exact: PropTypes.bool,
 };

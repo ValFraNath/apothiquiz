@@ -1,15 +1,18 @@
+import fs from "fs/promises";
+
+import path from "path";
+
 import chai from "chai";
 import chaiHttp from "chai-http";
 import mocha from "mocha";
-import fs from "fs/promises";
-import path from "path";
 
-import { forceTruncateTables, insertData, requestAPI } from "./index.test.js";
 import {
   NUMBER_OF_QUESTIONS_IN_ROUND,
   NUMBER_OF_ROUNDS_IN_DUEL,
   _initMockedDuelRounds,
 } from "../controllers/duels.js";
+
+import { forceTruncateTables, insertData, requestAPI } from "./index.test.js";
 
 chai.use(chaiHttp);
 const { expect } = chai;
