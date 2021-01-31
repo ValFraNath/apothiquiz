@@ -43,21 +43,21 @@ function analyzeProperty(property, values) {
       (value) =>
         new AnalyzerWarning(
           AnalyzerWarning.TOO_LONG_VALUE,
-          `La valeur '${value}' de la propriété '${property}' est trop long (max ${MAX_LENGTH.PROPERTY_VALUE})`
+          `La valeur "${value}" de la propriété "${property}" est trop longue (max ${MAX_LENGTH.PROPERTY_VALUE})`
         )
     ),
     ...closeValues.map(
       (group) =>
         new AnalyzerWarning(
           AnalyzerWarning.TOO_CLOSE_VALUES,
-          `Ces valeurs de '${property}' sont très proches : ${group.join(", ")}`
+          `Ces valeurs de "${property}" sont très proches : "${group.join('", "')}"`
         )
     ),
     ...noStringValue.map(
       (value) =>
         new AnalyzerWarning(
           AnalyzerWarning.INVALID_TYPE,
-          `Une valeur de '${property}' devrait être une chaine de caractères : '${value}'`
+          `Une valeur de "${property}" devrait être une chaine de caractères : "${value}"`
         )
     ),
   ];
@@ -65,7 +65,7 @@ function analyzeProperty(property, values) {
 
 /**
  * Analyze a classification
- * @param {string} classification The classification names
+ * @param {string} classification The classification name
  * @param {object[]} nodes The classification node
  * @returns {AnalyzerWarning[]}
  */
@@ -81,23 +81,23 @@ function analyzeClassification(classification, nodes) {
       (group) =>
         new AnalyzerWarning(
           AnalyzerWarning.TOO_CLOSE_VALUES,
-          `Ces valeurs de '${classification}' sont très proches : '${group.join("', '")}'`
+          `Ces valeurs de "${classification}" sont très proches : "${group.join('", "')}"`
         )
     ),
     ...nodesHavingSeveralParents.map(
       (node) =>
         new AnalyzerWarning(
           AnalyzerWarning.DUPLICATE_CLASSIFICATION_NODE,
-          `La valeur de '${classification}' '${
+          `La valeur de "${classification}" "${
             node.node
-          }' apparait plusieurs fois dans la hiérarchie, enfant de : '${node.parents.join("', '")}'`
+          }" apparait plusieurs fois dans la hiérarchie, enfant de : "${node.parents.join('", "')}"`
         )
     ),
     ...tooLongValues.map(
       (value) =>
         new AnalyzerWarning(
           AnalyzerWarning.TOO_LONG_VALUE,
-          `La valeur de '${classification}' '${value}' est trop longue (max ${MAX_LENGTH.CLASSIFICATION_VALUE})'`
+          `La valeur de "${classification}" "${value}" est trop longue (max ${MAX_LENGTH.CLASSIFICATION_VALUE})`
         )
     ),
     ...noStringValue.map(
@@ -127,28 +127,28 @@ function analyzeMolecules(molecules) {
       (mol) =>
         new AnalyzerWarning(
           AnalyzerWarning.DUPLICATE_UNIQUE_VALUE,
-          `Duplications de la molécule '${mol}'`
+          `Duplications de la molécule "${mol}"`
         )
     ),
     ...closeNames.map(
       (group) =>
         new AnalyzerWarning(
           AnalyzerWarning.TOO_CLOSE_VALUES,
-          `Ces molécules ont une DCI très proche : '${group.join("', '")}'`
+          `Ces molécules ont une DCI très proche : "${group.join('", "')}"`
         )
     ),
     ...tooLongNames.map(
       (dci) =>
         new AnalyzerWarning(
           AnalyzerWarning.TOO_LONG_VALUE,
-          `La DCI '${dci}' est trop longue (max ${MAX_LENGTH.DCI})`
+          `La DCI "${dci}" est trop longue (max ${MAX_LENGTH.DCI})`
         )
     ),
     ...nonValidNumberValues.map(
       (value) =>
         new AnalyzerWarning(
           AnalyzerWarning.INVALID_TYPE,
-          `La propriété '${value.property}' de la molécule '${value.molecule}' devrait être un nombre compris entre 0 et 1 : ${value.value}'`
+          `La propriété "${value.property}" de la molécule "${value.molecule}" devrait être un nombre compris entre 0 et 1 : "${value.value}"`
         )
     ),
   ];
@@ -226,8 +226,6 @@ function getTooCloseValues(values, minDistance) {
       const distance = levenshtein(other, value);
       return distance <= minDistance && distance > 0;
     });
-
-    // console.log(value, group);
 
     const existingGroup = groups.find((egroup) => egroup.some((e) => group.includes(e)));
     if (existingGroup) {
