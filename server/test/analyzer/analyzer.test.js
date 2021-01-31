@@ -4,8 +4,7 @@ import chai from "chai";
 import { forceTruncateTables } from "../index.test.js";
 import { analyzeData, AnalyzerWarning } from "../../global/data_analyzer/analyzer.js";
 import { parseMoleculesFromCsv } from "../../global/molecules_parser/Parser.js";
-import { createSqlToInsertAllData } from "../../global/data_importer/dataImporter.js";
-import { queryPromise } from "../../db/database.js";
+
 const { expect } = chai;
 
 const files = [
@@ -16,6 +15,7 @@ const files = [
       { type: AnalyzerWarning.TOO_LONG_VALUE, count: 0 },
       { type: AnalyzerWarning.DUPLICATE_CLASSIFICATION_NODE, count: 0 },
       { type: AnalyzerWarning.TOO_CLOSE_VALUES, count: 3 },
+      { type: AnalyzerWarning.INVALID_TYPE, count: 0 },
     ],
   },
   {
@@ -25,6 +25,7 @@ const files = [
       { type: AnalyzerWarning.TOO_LONG_VALUE, count: 0 },
       { type: AnalyzerWarning.DUPLICATE_CLASSIFICATION_NODE, count: 2 },
       { type: AnalyzerWarning.TOO_CLOSE_VALUES, count: 4 },
+      { type: AnalyzerWarning.INVALID_TYPE, count: 0 },
     ],
   },
   {
@@ -34,6 +35,7 @@ const files = [
       { type: AnalyzerWarning.TOO_LONG_VALUE, count: 1 },
       { type: AnalyzerWarning.DUPLICATE_CLASSIFICATION_NODE, count: 0 },
       { type: AnalyzerWarning.TOO_CLOSE_VALUES, count: 3 },
+      { type: AnalyzerWarning.INVALID_TYPE, count: 0 },
     ],
   },
   {
@@ -43,6 +45,7 @@ const files = [
       { type: AnalyzerWarning.TOO_LONG_VALUE, count: 0 },
       { type: AnalyzerWarning.DUPLICATE_CLASSIFICATION_NODE, count: 2 },
       { type: AnalyzerWarning.TOO_CLOSE_VALUES, count: 3 },
+      { type: AnalyzerWarning.INVALID_TYPE, count: 6 },
     ],
   },
 ];
@@ -73,17 +76,17 @@ describe("Data analyzer", () => {
 
       it("Expected warnings", async () => {
         const warnings = analyzeData(data);
-        console.log(warnings);
+        //console.log(warnings);
         const counter = warningsCounter(warnings);
         file.warnings.forEach((warning) =>
           expect(counter(warning.type), "Type " + warning.type).equals(warning.count)
         );
       });
 
-      it("Can import without errors", async () => {
-        const sql = createSqlToInsertAllData(data);
-        await queryPromise(sql);
-      });
+      // it("Can import without errors", async () => {
+      //   const sql = createSqlToInsertAllData(data);
+      //   await queryPromise(sql);
+      // });
     });
   }
 });

@@ -36,6 +36,7 @@ function analyzeProperty(property, values) {
   const names = values.map((v) => v.name);
   const tooLongValues = getTooLongValues(names, MAX_LENGTH.PROPERTY_VALUE);
   const closeValues = getTooCloseValues(names, PROPERTY_VALUE_MIN_DISTANCE);
+  const noStringValue = names.filter((name) => !isString(name));
 
   return [
     ...tooLongValues.map(
@@ -52,6 +53,13 @@ function analyzeProperty(property, values) {
           `Ces valeurs de '${property}' sont très proches : ${group.join(", ")}`
         )
     ),
+    ...noStringValue.map(
+      (value) =>
+        new AnalyzerWarning(
+          AnalyzerWarning.INVALID_TYPE,
+          `Une valeur de '${property}' devrait être une chaine de caractères : '${value}'`
+        )
+    ),
   ];
 }
 
@@ -66,6 +74,7 @@ function analyzeClassification(classification, nodes) {
   const closeValues = getTooCloseValues(names, CLASSIFICATION_VALUE_MIN_DISTANCE);
   const tooLongValues = getTooLongValues(names, MAX_LENGTH.CLASSIFICATION_VALUE);
   const nodesHavingSeveralParents = findNodeWithDifferentsParents(nodes);
+  const noStringValue = names.filter((name) => !isString(name));
 
   return [
     ...closeValues.map(
@@ -91,6 +100,13 @@ function analyzeClassification(classification, nodes) {
           `La valeur de '${classification}' '${value}' est trop longue (max ${MAX_LENGTH.CLASSIFICATION_VALUE})'`
         )
     ),
+    ...noStringValue.map(
+      (value) =>
+        new AnalyzerWarning(
+          AnalyzerWarning.INVALID_TYPE,
+          `Une valeur de '${classification}' devrait être une chaine de caractères : '${value}'`
+        )
+    ),
   ];
 }
 
@@ -104,6 +120,8 @@ function analyzeMolecules(molecules) {
   const duplicates = getDuplicates(dciList);
   const closeNames = getTooCloseValues(dciList, DCI_DISTANCE_MIN);
   const tooLongNames = getTooLongValues(dciList, MAX_LENGTH.DCI);
+  const nonValidNumberValues = getNonValidNumberValue(molecules);
+
   return [
     ...duplicates.map(
       (mol) =>
@@ -126,7 +144,33 @@ function analyzeMolecules(molecules) {
           `La DCI '${dci}' est trop longue (max ${MAX_LENGTH.DCI})`
         )
     ),
+    ...nonValidNumberValues.map(
+      (value) =>
+        new AnalyzerWarning(
+          AnalyzerWarning.INVALID_TYPE,
+          `La propriété '${value.property}' de la molécule '${value.molecule}' devrait être un nombre compris entre 0 et 1 : ${value.value}'`
+        )
+    ),
   ];
+}
+
+/**
+ * Get all invalid value of number property
+ * @param {object[]} molecules The molecule list
+ * @returns {{molecule : string, property : string, value : string}[]}
+ */
+function getNonValidNumberValue(molecules) {
+  return molecules.reduce(
+    (noNumberValues, molecule) =>
+      ["level_easy", "level_hard", "ntr"].reduce((noNumberValues, prop) => {
+        const value = molecule[prop];
+        if (value !== null && (!isNumber(value) || value < 0 || value > 1)) {
+          noNumberValues.push({ molecule: molecule.dci, property: prop, value });
+        }
+        return noNumberValues;
+      }, noNumberValues),
+    []
+  );
 }
 
 export class AnalyzerWarning {
@@ -251,3 +295,4 @@ function flattenClassification(classification) {
 }
 
 const isString = (v) => typeof v === "string" || v instanceof String;
+const isNumber = (v) => typeof v === "number" || v instanceof Number;
