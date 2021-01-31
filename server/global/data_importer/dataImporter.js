@@ -4,7 +4,7 @@ import { parseMoleculesFromCsv } from "../molecules_parser/Parser.js";
 
 export const MAX_LENGTH = {
   DCI: 128,
-  PROPERTY_VALUE: 128,
+  PROPERTY_VALUE: 64,
   CLASSIFICATION_VALUE: 128,
   SKELETAL_FORMULA: 64,
 };
@@ -114,7 +114,7 @@ function createSqlToInsertProperty(name, values) {
       sql +
       createSqlToInsertInto("property_value")("pv_id", "pv_name", "pv_property")(
         valueId,
-        value.name.substr(0, MAX_LENGTH.PROPERTY_VALUE),
+        String(value.name).substr(0, MAX_LENGTH.PROPERTY_VALUE),
         id
       )
     );
