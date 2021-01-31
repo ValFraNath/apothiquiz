@@ -1,11 +1,12 @@
 import path from "path";
+
 import chai from "chai";
 
-import { forceTruncateTables } from "../index.test.js";
-import { analyzeData, AnalyzerWarning } from "../../global/data_analyzer/analyzer.js";
-import { parseMoleculesFromCsv } from "../../global/molecules_parser/Parser.js";
 import { queryPromise } from "../../db/database.js";
+import { analyzeData, AnalyzerWarning } from "../../global/data_analyzer/analyzer.js";
 import { createSqlToInsertAllData } from "../../global/data_importer/dataImporter.js";
+import { parseMoleculesFromCsv } from "../../global/molecules_parser/Parser.js";
+import { forceTruncateTables } from "../index.test.js";
 
 const { expect } = chai;
 
