@@ -10,21 +10,20 @@ import { createSqlToInsertAllData } from "../global/molecules_importer/molecules
 import { parseMoleculesFromCsv } from "../global/molecules_parser/Parser.js";
 
 /**
- *
  * @api {post} /import/molecules Import a csv file of molecules data
  * @apiName ImportMolecules
  * @apiGroup Import
  * 
  * @apiPermission LoggedIn
  * @apiPermission Admin
- * @apiDescription Import a csv file to update the molecules data, the format of the request must be multipart/form-data ! 
+ * @apiDescription Import a csv file to update the molecules data; the format of the request must be multipart/form-data ! 
  * 
  * @apiParam  {File} file The csv file
  * @apiParam {string} confirmed If "true", the data will be imported, otherwise they will be only tested
  * 
  * @apiSuccess (200) {string} message Message explaining what was done
  * @apiSuccess (200) {object[]} warnings Array of warnings
- * @apiSuccess (200) {object} warnings.warning a warning
+ * @apiSuccess (200) {object} warnings.warning A warning
  * @apiSuccess (200) {number} warnings.warning.code The warning code
  * @apiSuccess (200) {string} warnings.warning.message The warning message
  * @apiSuccess (200) {boolean} imported Boolean telling if data are imported
