@@ -1,3 +1,5 @@
+import fs from "fs";
+
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
 import express from "express";
@@ -27,6 +29,17 @@ app.use(express.static("../client/build/"));
 app.use("/api/v1/", apiRouter);
 app.use("/", reactRouter);
 app.use(RequestSyntaxErrorHandler);
+
+try {
+  fs.mkdirSync("files");
+} catch (error) {
+  if (error.code !== "EEXIST") {
+    Logger.error(error, "Can't create the 'files' directory");
+    process.exit(1);
+  }
+}
+
+app.use(express.static("files"));
 
 Database.connect()
   .then(() => {
