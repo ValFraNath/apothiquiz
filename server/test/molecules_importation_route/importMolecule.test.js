@@ -32,7 +32,7 @@ describe("Import molecule", () => {
 
   it("Can upload file", async () => {
     const res = await uploadFile("molecules.csv", "false", mytoken);
-    expect(res.status).equals(200);
+    expect(res.status).equals(202);
     expect(res.body).to.haveOwnProperty("message");
     expect(res.body.imported).to.false;
     expect(res.body.errors).to.undefined;
@@ -42,11 +42,11 @@ describe("Import molecule", () => {
 
   it("Upload files and get the last", async () => {
     let res = await uploadFile("molecules.csv", "true", mytoken);
-    expect(res.status).equals(200);
+    expect(res.status).equals(201);
     expect(res.body.imported).to.be.true;
 
     res = await uploadFile("little_sample.csv", "true", mytoken);
-    expect(res.status).equals(200);
+    expect(res.status).equals(201);
     expect(res.body.imported).to.be.true;
     const size = getFileSize("little_sample.csv");
 
@@ -127,7 +127,7 @@ describe("Import molecule", () => {
 
   it("Fake csv file", async () => {
     const res = await uploadFile("molecules_false.csv", true, mytoken);
-    console.log(res.body);
+    expect(res.status).equals(400);
   });
 });
 
