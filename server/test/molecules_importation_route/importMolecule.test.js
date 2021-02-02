@@ -86,7 +86,7 @@ describe("Import molecule", () => {
     expect(res.body.imported).to.be.false;
   });
 
-  it("Can't access file without be logged", async () => {
+  it("Can't access file without being logged", async () => {
     await uploadFile("molecules.csv", "true", mytoken);
     let res = await requestAPI("import/molecules", { method: "get", token: mytoken });
 
