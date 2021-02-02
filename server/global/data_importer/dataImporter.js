@@ -38,7 +38,7 @@ export function parseAndCreateSqlToInsertAllData(filename) {
  * @returns {string} The sql script
  */
 export function createSqlToInsertAllData(data) {
-  let script = "";
+  let script = "START TRANSACTION; SET AUTOCOMMIT=0; ";
 
   script += createSqlToInsertClassification("class", data["classes"]);
   script += createSqlToInsertClassification("system", data["systems"]);
@@ -47,6 +47,7 @@ export function createSqlToInsertAllData(data) {
     script += createSqlToInsertProperty(property, data[property]);
   }
   script += createSqlToInsertAllMolecules(data.molecules);
+  script += "COMMIT; SET AUTOCOMMIT=1;";
   return script;
 }
 
