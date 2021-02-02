@@ -68,6 +68,7 @@ import { parseMoleculesFromCsv } from "../global/molecules_parser/Parser.js";
       }
     }   
  * @apiError (400) BadFileType The file is not csv
+ * @apiError (400) MissingFile No file provided
  * @apiUse ErrorServer
  *
  */
@@ -80,6 +81,10 @@ function importMolecules(req, _res) {
     _uploadedFileDirectory: directory,
     careAboutWarnings,
   } = req.body;
+
+  if (!filename) {
+    return res.sendUsageError(400, "Missing file");
+  }
 
   const deleteUploadedFile = () =>
     deleteFile(path.resolve(directory, filename)).catch(Logger.error);
@@ -149,7 +154,48 @@ function importMolecules(req, _res) {
     });
 }
 
-export default { importMolecules };
+/**
+ *
+ * @api {get} /import/molecules Get the last imported file
+ * @apiName GetLastImported
+ * @apiGroup Import
+ * @apiPermissions LoggedIn 
+ * @apiPermissions Admin 
+ *
+ * @apiSuccess (200) {string} file The url to the file
+ *
+ *
+ * @apiSuccessExample Success-Response:
+ *  {
+      "file": "https://glowing-octo-guacamole.com/api/v1/molecules/molecules_1612279095021.csv"
+    }
+ *
+ *
+ */
+function getLastImportedFile(req, _res) {
+  const res = new HttpResponseWrapper(_res);
+  getFiles(path.resolve("files", "molecules"))
+    .then((files) => {
+      const last = files.reduce(
+        ({ filename, time }, file) => {
+          const fileTime = Number(file.split("_")[1].split(".")[0]);
+          if (time < fileTime) {
+            filename = file;
+            time = fileTime;
+          }
+          return { filename, time };
+        },
+        { filename: null, time: 0 }
+      ).filename;
+
+      res.sendResponse(200, {
+        file: last ? `${req.protocol}://${req.get("host")}/molecules/${last}` : null,
+      });
+    })
+    .catch(res.sendServerError);
+}
+
+export default { importMolecules, getLastImportedFile };
 
 // ********* INTERNAL FUNCTIONS *********
 
@@ -195,6 +241,22 @@ function createDir(dirname) {
         } else {
           reject(error);
         }
+      });
+  });
+}
+
+function getFiles(dirpath) {
+  return new Promise((resolve, reject) => {
+    fs.readdir(dirpath)
+      .then((files) => {
+        console.log(files);
+        resolve(files);
+      })
+      .catch((error) => {
+        if (error.code === "ENOENT") {
+          resolve([]);
+        }
+        reject(addErrorTitle(error, "Can't read the directory"));
       });
   });
 }

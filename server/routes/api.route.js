@@ -2,7 +2,7 @@ import express from "express";
 
 import ApiController from "../controllers/api.js";
 import DuelController from "../controllers/duels.js";
-import ImporterController from "../controllers/importer.js";
+import ImporterController from "../controllers/moleculesImporter.js";
 import QuestionController from "../controllers/question.js";
 import UserController from "../controllers/user.js";
 import auth from "../middlewares/auth.middleware.js";
@@ -33,5 +33,7 @@ apiRouter.get("/duels/:id", auth, DuelController.fetch);
 apiRouter.post("/duels/:id/:round", auth, DuelController.play);
 
 apiRouter.post("/import/molecules", auth, multer, ImporterController.importMolecules);
+
+apiRouter.get("/import/molecules", auth, multer, ImporterController.getLastImportedFile);
 
 export default apiRouter;
