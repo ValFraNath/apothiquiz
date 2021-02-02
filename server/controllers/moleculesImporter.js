@@ -10,7 +10,6 @@ import { createSqlToInsertAllData } from "../global/molecules_importer/molecules
 import { parseMoleculesFromCsv } from "../global/molecules_parser/Parser.js";
 
 /**
- *
  * @api {post} /import/molecules Import a csv file of molecules data
  * @apiName ImportMolecules
  * @apiGroup Import
