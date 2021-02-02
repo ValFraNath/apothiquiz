@@ -38,7 +38,18 @@ export function parseAndCreateSqlToInsertAllData(filename) {
  * @returns {string} The sql script
  */
 export function createSqlToInsertAllData(data) {
-  let script = "START TRANSACTION; SET AUTOCOMMIT=0; ";
+  let script = "START TRANSACTION; SET AUTOCOMMIT=0; SET FOREIGN_KEY_CHECKS = 0; ";
+
+  script += [
+    "molecule",
+    "class",
+    "system",
+    "property",
+    "property_value",
+    "molecule_property",
+  ].reduce((script, table) => {
+    return script + `DELETE FROM ${table}; `;
+  }, "");
 
   script += createSqlToInsertClassification("class", data["classes"]);
   script += createSqlToInsertClassification("system", data["systems"]);

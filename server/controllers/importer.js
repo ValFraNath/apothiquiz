@@ -9,6 +9,65 @@ import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
 import Logger, { addErrorTitle } from "../global/Logger.js";
 import { parseMoleculesFromCsv } from "../global/molecules_parser/Parser.js";
 
+/**
+ *
+ * @api {post} /import/molecules Import a csv file of molecules data
+ * @apiName ImportMolecules
+ * @apiGroup Import
+ * 
+ * @apiPermission LoggedIn
+ * @apiPermission Admin
+ * @apiDescription Import a csv file to update the molecules data, the format of the request must be multipart/form-data ! 
+ * @apiParam  {File} file The csv file
+ * @apiSuccess (200) {string} message Message explaining what was done
+ * @apiSuccess (200) {object[]} warnings Array of warnings
+ * @apiSuccess (200) {object} warnings.warning a warning
+ * @apiSuccess (200) {number} warnings.warning.code The warning code
+ * @apiSuccess (200) {string} warnings.warning.message The warning message
+ * @apiSuccess (200) {boolean} imported Boolean telling if data are imported
+ *
+ * @apiSuccessExample Success-Response:
+ *  {
+      "message": "File tested but not imported",
+      "warnings": [
+        {
+          "type": 3,
+          "message": "Ces valeurs de \"classes\" sont très proches : \"PENICILLINES A\", \"PENICILLINES\""
+        },
+        {
+          "type": 3,
+          "message": "Ces valeurs de \"indications\" sont très proches : \"VIH\", \"VHB\""
+        }
+      ],
+      "imported": false
+    }
+  
+ * @apiError (400) BadFormattedFile The csv file is bad formatted
+ * @apiErrorExample BadFormattedFile Error-Response:
+    {
+      "message": {
+        "message": "Bad formatted file",
+        "errors": [
+          {
+            "code": 1,
+            "message": "Colonne manquante : 'FORMULE_CHIMIQUE'"
+          },
+          {
+            "code": 4,
+            "message": "Colonne invalide : 'INDICATIO' (col. 10)"
+          },
+          {
+            "code": 4,
+            "message": "Colonne invalide : 'FORMULE CHIMIQUE' (col. 19)"
+          }
+        ],
+        "imported": false
+      }
+    }   
+ * @apiError (400) BadFileType The file is not csv
+ * @apiUse ErrorServer
+ *
+ */
 function importMolecules(req, _res) {
   const res = new HttpResponseWrapper(_res);
 
@@ -19,51 +78,97 @@ function importMolecules(req, _res) {
     careAboutWarnings,
   } = req.body;
 
+  const deleteUploadedFile = () =>
+    deleteFile(path.resolve(directory, filename)).catch(Logger.error);
+
   if (extension !== "csv") {
-    deleteFile(path.resolve(directory, filename))
-      .catch(Logger.error)
-      .then(() => res.sendUsageError(400, "Invalid file format : must be csv "));
+    res.sendUsageError(400, "Invalid file format : must be csv ");
+    deleteUploadedFile();
     return;
   }
 
+  let imported = false;
   parseMoleculesFromCsv(path.resolve(directory, filename))
     .then((json) => {
       const data = JSON.parse(json);
-      const warnings = analyzeData(data);
 
       if (careAboutWarnings === "false") {
-        moveFile(
-          path.resolve(directory, filename),
-          path.resolve("files", "molecules", `molecules_${filename}.${extension}`)
-        )
-          .then(() => {
-            const sql = createSqlToInsertAllData(data);
-            queryPromise(sql)
-              .then(() => res.sendResponse(200, { message: "File imported", warnings }))
-              .catch((error) => res.sendServerError(addErrorTitle(error, "Can't import data")));
-          })
-          .catch(res.sendServerError);
+        const sql = createSqlToInsertAllData(data);
+        queryPromise(sql)
+          .then(() =>
+            createDir(path.resolve("files", "molecules"))
+              .then(() =>
+                moveFile(
+                  path.resolve(directory, filename),
+                  path.resolve("files", "molecules", `molecules_${filename}.${extension}`)
+                )
+                  .then(() =>
+                    res.sendResponse(200, {
+                      message: "File imported",
+                      warnings: [],
+                      imported: true,
+                    })
+                  )
+                  .catch((error) => {
+                    res.sendServerError(error);
+                    deleteUploadedFile();
+                  })
+              )
+              .catch((error) => {
+                res.sendServerError(addErrorTitle(error, "Can't import data"));
+                deleteUploadedFile();
+              })
+          )
+          .catch((error) => {
+            res.sendServerError(addErrorTitle(error, "Can't insert new molecules"));
+            deleteUploadedFile();
+          });
       } else {
-        res.sendResponse(200, { message: "File tested but not imported", warnings });
-        deleteFile(path.resolve(directory, filename)).catch(Logger.error);
+        const warnings = analyzeData(data);
+        res.sendResponse(200, {
+          message: "File tested but not imported",
+          warnings,
+          imported,
+        });
+        deleteUploadedFile();
       }
     })
     .catch((error) => {
       if (HeaderErrors.isInstance(error)) {
-        return res.sendUsageError(400, { message: "Fichier mal formatté", errors: error.errors });
+        return res.sendUsageError(400, {
+          message: "Bad formatted file",
+          errors: error.errors,
+          imported,
+        });
       }
+      deleteUploadedFile();
       return res.sendServerError(error);
     });
 }
 
-function moveFile(oldFile, newFile) {
+export default { importMolecules };
+
+// ********* INTERNAL FUNCTIONS *********
+
+/**
+ * Move a file
+ * @param {string} oldPath
+ * @param {string} newPath
+ * @return {Promise}
+ */
+function moveFile(oldPath, newPath) {
   return new Promise((resolve, reject) => {
-    fs.rename(oldFile, newFile)
+    fs.rename(oldPath, newPath)
       .then(resolve)
       .catch((error) => reject(addErrorTitle(error, "Can't move the file")));
   });
 }
 
+/**
+ * Delete a file
+ * @param {string} filename
+ * @returns {Promise}
+ */
 function deleteFile(filename) {
   return new Promise((resolve, reject) => {
     fs.unlink(filename)
@@ -72,4 +177,21 @@ function deleteFile(filename) {
   });
 }
 
-export default { importMolecules };
+/**
+ * Create a directory if it does not exist
+ * @param {string} dirname
+ * @return {Promise}
+ */
+function createDir(dirname) {
+  return new Promise((resolve, reject) => {
+    fs.mkdir(dirname)
+      .then(resolve)
+      .catch((error) => {
+        if (error.code === "EEXIST") {
+          resolve();
+        } else {
+          reject(error);
+        }
+      });
+  });
+}
