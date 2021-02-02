@@ -142,13 +142,14 @@ function importMolecules(req, _res) {
     })
     .catch((error) => {
       if (HeaderErrors.isInstance(error)) {
-        return res.sendUsageError(400, "Bad formatted file", {
+        res.sendUsageError(400, "Bad formatted file", {
           errors: error.errors,
           imported,
         });
+      } else {
+        res.sendServerError(error);
       }
       deleteUploadedFile();
-      return res.sendServerError(error);
     });
 }
 
