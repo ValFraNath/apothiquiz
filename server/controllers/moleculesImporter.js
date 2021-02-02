@@ -23,7 +23,7 @@ import { parseMoleculesFromCsv } from "../global/molecules_parser/Parser.js";
  * 
  * @apiSuccess (200) {string} message Message explaining what was done
  * @apiSuccess (200) {object[]} warnings Array of warnings
- * @apiSuccess (200) {object} warnings.warning a warning
+ * @apiSuccess (200) {object} warnings.warning A warning
  * @apiSuccess (200) {number} warnings.warning.code The warning code
  * @apiSuccess (200) {string} warnings.warning.message The warning message
  * @apiSuccess (200) {boolean} imported Boolean telling if data are imported
