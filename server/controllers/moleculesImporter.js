@@ -111,7 +111,7 @@ function importMolecules(req, _res) {
                   path.resolve("files", "molecules", `molecules_${filename}.${extension}`)
                 )
                   .then(() =>
-                    res.sendResponse(200, {
+                    res.sendResponse(201, {
                       message: "File imported",
                       warnings: [],
                       imported: true,
@@ -133,7 +133,7 @@ function importMolecules(req, _res) {
           });
       } else {
         const warnings = analyzeData(data);
-        res.sendResponse(200, {
+        res.sendResponse(202, {
           message: "File tested but not imported",
           warnings,
           imported,
@@ -234,15 +234,9 @@ function deleteFile(filename) {
  */
 function createDir(dirname) {
   return new Promise((resolve, reject) => {
-    fs.mkdir(dirname)
+    fs.mkdir(dirname, { recursive: true })
       .then(resolve)
-      .catch((error) => {
-        if (error.code === "EEXIST") {
-          resolve();
-        } else {
-          reject(error);
-        }
-      });
+      .catch((error) => reject(addErrorTitle(error, "Can't create the directory")));
   });
 }
 
