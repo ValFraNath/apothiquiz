@@ -17,7 +17,7 @@ import { parseMoleculesFromCsv } from "../global/molecules_parser/Parser.js";
  * 
  * @apiPermission LoggedIn
  * @apiPermission Admin
- * @apiDescription Import a csv file to update the molecules data, the format of the request must be multipart/form-data ! 
+ * @apiDescription Import a csv file to update the molecules data; the format of the request must be multipart/form-data ! 
  * 
  * @apiParam  {File} file The csv file
  * @apiParam {string} confirmed If "true", the data will be imported, otherwise they will be only tested
