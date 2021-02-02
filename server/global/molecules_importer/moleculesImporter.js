@@ -40,16 +40,13 @@ export function parseAndCreateSqlToInsertAllData(filename) {
 export function createSqlToInsertAllData(data) {
   let script = "START TRANSACTION; SET AUTOCOMMIT=0; SET FOREIGN_KEY_CHECKS = 0; ";
 
-  script += [
-    "molecule",
-    "class",
-    "system",
-    "property",
-    "property_value",
-    "molecule_property",
-  ].reduce((script, table) => {
-    return script + `DELETE FROM ${table}; `;
-  }, "");
+  script +=
+    ["molecule", "class", "system", "property", "property_value", "molecule_property"].reduce(
+      (script, table) => {
+        return script + `DELETE FROM ${table}; `;
+      },
+      ""
+    ) + "SET FOREIGN_KEY_CHECKS = 1; ";
 
   script += createSqlToInsertClassification("class", data["classes"]);
   script += createSqlToInsertClassification("system", data["systems"]);

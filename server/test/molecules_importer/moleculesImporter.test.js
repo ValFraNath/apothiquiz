@@ -9,7 +9,7 @@ const { describe, it, before } = mocha;
 chai.use(deepEqualAnyOrder);
 
 import { queryPromise } from "../../db/database.js";
-import { parseAndCreateSqlToInsertAllData } from "../../global/data_importer/dataImporter.js";
+import { parseAndCreateSqlToInsertAllData } from "../../global/molecules_importer/moleculesImporter.js";
 import { forceTruncateTables } from "../index.test.js";
 
 import { expectations } from "./expectations.js";
@@ -33,7 +33,7 @@ for (let file of files) {
         "system"
       ).then(() =>
         parseAndCreateSqlToInsertAllData(
-          path.resolve("test", "data_importer", "files", file.name)
+          path.resolve("test", "molecules_importer", "files", file.name)
         ).then((script) => {
           queryPromise(script).then(() => done());
         })

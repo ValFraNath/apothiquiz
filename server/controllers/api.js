@@ -2,7 +2,7 @@ import { getSystemInformation } from "../db/database.js";
 import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
 
 /**
- * @apiDefine AccessLoggedIn Logged user access only
+ * @apiDefine LoggedIn Logged user access only
  * The user has to be logged in to use this endpoint (see Authentication)
  */
 

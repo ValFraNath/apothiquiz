@@ -3,10 +3,10 @@ import path from "path";
 
 import { queryPromise } from "../db/database.js";
 import { HeaderErrors } from "../global/csv_reader/HeaderChecker.js";
-import { analyzeData } from "../global/data_analyzer/analyzer.js";
-import { createSqlToInsertAllData } from "../global/data_importer/dataImporter.js";
 import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
 import Logger, { addErrorTitle } from "../global/Logger.js";
+import { analyzeData } from "../global/molecules_analyzer/moleculesAnalyzer.js";
+import { createSqlToInsertAllData } from "../global/molecules_importer/moleculesImporter.js";
 import { parseMoleculesFromCsv } from "../global/molecules_parser/Parser.js";
 
 /**
@@ -18,7 +18,10 @@ import { parseMoleculesFromCsv } from "../global/molecules_parser/Parser.js";
  * @apiPermission LoggedIn
  * @apiPermission Admin
  * @apiDescription Import a csv file to update the molecules data, the format of the request must be multipart/form-data ! 
+ * 
  * @apiParam  {File} file The csv file
+ * @apiParam {string} careAboutWarnings If "false", the data will be imported even if there are warnings
+ * 
  * @apiSuccess (200) {string} message Message explaining what was done
  * @apiSuccess (200) {object[]} warnings Array of warnings
  * @apiSuccess (200) {object} warnings.warning a warning
