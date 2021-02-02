@@ -5,5 +5,5 @@ server/.env
 rapport-guacamole/
 .eslintcache
 server/logs/
-files/
+server/files/
 uploads/
