@@ -20,7 +20,7 @@ import { parseMoleculesFromCsv } from "../global/molecules_parser/Parser.js";
  * @apiDescription Import a csv file to update the molecules data, the format of the request must be multipart/form-data ! 
  * 
  * @apiParam  {File} file The csv file
- * @apiParam {string} careAboutWarnings If "false", the data will be imported even if there are warnings
+ * @apiParam {string} confirmed If "true", the data will be imported, otherwise they will be only tested
  * 
  * @apiSuccess (200) {string} message Message explaining what was done
  * @apiSuccess (200) {object[]} warnings Array of warnings
@@ -79,7 +79,7 @@ function importMolecules(req, _res) {
     _uploadedFileName: filename,
     _uploadedFileExtension: extension,
     _uploadedFileDirectory: directory,
-    careAboutWarnings,
+    confirmed,
   } = req.body;
 
   if (!filename) {
@@ -100,7 +100,7 @@ function importMolecules(req, _res) {
     .then((json) => {
       const data = JSON.parse(json);
 
-      if (careAboutWarnings === "false") {
+      if (confirmed === "true") {
         const sql = createSqlToInsertAllData(data);
         queryPromise(sql)
           .then(() =>
@@ -143,8 +143,7 @@ function importMolecules(req, _res) {
     })
     .catch((error) => {
       if (HeaderErrors.isInstance(error)) {
-        return res.sendUsageError(400, {
-          message: "Bad formatted file",
+        return res.sendUsageError(400, "Bad formatted file", {
           errors: error.errors,
           imported,
         });
@@ -189,7 +188,9 @@ function getLastImportedFile(req, _res) {
       ).filename;
 
       res.sendResponse(200, {
-        file: last ? `${req.protocol}://${req.get("host")}/molecules/${last}` : null,
+        fullpath: last ? `${req.protocol}://${req.get("host")}/molecules/${last}` : null,
+        shortpath: `/molecules/${last}`,
+        file: last,
       });
     })
     .catch(res.sendServerError);
@@ -249,7 +250,6 @@ function getFiles(dirpath) {
   return new Promise((resolve, reject) => {
     fs.readdir(dirpath)
       .then((files) => {
-        console.log(files);
         resolve(files);
       })
       .catch((error) => {

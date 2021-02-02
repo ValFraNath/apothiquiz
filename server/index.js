@@ -6,6 +6,7 @@ import express from "express";
 
 import Database from "./db/database.js";
 import Logger from "./global/Logger.js";
+import auth from "./middlewares/auth.middleware.js";
 import RequestSyntaxErrorHandler from "./middlewares/error.middleware.js";
 import apiRouter from "./routes/api.route.js";
 import reactRouter from "./routes/react.route.js";
@@ -39,7 +40,7 @@ try {
   }
 }
 
-app.use(express.static("files"));
+app.use(auth, express.static("files"));
 
 Database.connect()
   .then(() => {
