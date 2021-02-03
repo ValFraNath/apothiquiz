@@ -3,8 +3,8 @@ import path from "path";
 import chai from "chai";
 
 import { queryPromise } from "../../db/database.js";
-import { analyzeData, AnalyzerWarning } from "../../global/data_analyzer/analyzer.js";
-import { createSqlToInsertAllData } from "../../global/data_importer/dataImporter.js";
+import { analyzeData, AnalyzerWarning } from "../../global/molecules_analyzer/moleculesAnalyzer.js";
+import { createSqlToInsertAllData } from "../../global/molecules_importer/moleculesImporter.js";
 import { parseMoleculesFromCsv } from "../../global/molecules_parser/Parser.js";
 import { forceTruncateTables } from "../index.test.js";
 
@@ -63,12 +63,12 @@ const files = [
   },
 ];
 
-const FILES_DIR = path.resolve("test", "analyzer", "files");
+const FILES_DIR = path.resolve("test", "molecules_analyzer", "files");
 
 const warningsCounter = (warnings) => (type) =>
   warnings.reduce((count, warning) => count + (warning.type === type), 0);
 
-describe("Data analyzer", () => {
+describe("Molecules analyzer", () => {
   for (const file of files) {
     describe(`File : ${file.name}`, () => {
       let data;

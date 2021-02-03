@@ -170,7 +170,7 @@ export function queryPromise(sql, values = []) {
   return new Promise(function (resolve, reject) {
     connection.query(sql, values, function (err, res) {
       if (err) {
-        reject(err);
+        reject(addErrorTitle(err, "MySql error"));
       }
       resolve(res);
     });

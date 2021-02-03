@@ -2,9 +2,11 @@ import express from "express";
 
 import ApiController from "../controllers/api.js";
 import DuelController from "../controllers/duels.js";
+import ImporterController from "../controllers/moleculesImporter.js";
 import QuestionController from "../controllers/question.js";
 import UserController from "../controllers/user.js";
-import auth from "../middlewares/auth.middleware.js";
+import authenticationMiddleware from "../middlewares/auth.middleware.js";
+import fileMiddleware from "../middlewares/multer.middleware.js";
 
 const apiRouter = express.Router();
 
@@ -12,22 +14,36 @@ apiRouter.get("/status", ApiController.status);
 
 apiRouter.get("/question/:type", QuestionController.generateQuestion);
 
-apiRouter.get("/users/", auth, UserController.getAll);
+apiRouter.get("/users/", authenticationMiddleware, UserController.getAll);
 
-apiRouter.post("/users/", auth, UserController.severalGetInfos);
+apiRouter.post("/users/", authenticationMiddleware, UserController.severalGetInfos);
 
 apiRouter.post("/users/login", UserController.login);
 
-apiRouter.get("/users/:pseudo", auth, UserController.getInfos);
+apiRouter.get("/users/:pseudo", authenticationMiddleware, UserController.getInfos);
 
-apiRouter.patch("/users/:pseudo", auth, UserController.saveInfos);
+apiRouter.patch("/users/:pseudo", authenticationMiddleware, UserController.saveInfos);
 
-apiRouter.post("/duels/new", auth, DuelController.create);
+apiRouter.post("/duels/new", authenticationMiddleware, DuelController.create);
 
-apiRouter.get("/duels/", auth, DuelController.fetchAll);
+apiRouter.get("/duels/", authenticationMiddleware, DuelController.fetchAll);
 
-apiRouter.get("/duels/:id", auth, DuelController.fetch);
+apiRouter.get("/duels/:id", authenticationMiddleware, DuelController.fetch);
 
-apiRouter.post("/duels/:id/:round", auth, DuelController.play);
+apiRouter.post("/duels/:id/:round", authenticationMiddleware, DuelController.play);
+
+apiRouter.post(
+  "/import/molecules",
+  authenticationMiddleware,
+  fileMiddleware,
+  ImporterController.importMolecules
+);
+
+apiRouter.get(
+  "/import/molecules",
+  authenticationMiddleware,
+  fileMiddleware,
+  ImporterController.getLastImportedFile
+);
 
 export default apiRouter;
