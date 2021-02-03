@@ -1,8 +1,8 @@
 import axios from "axios";
-import React, { Component, createRef, useRef } from "react";
+import PropTypes from "prop-types";
+import React, { Component, useRef } from "react";
 
 import AuthService from "../services/auth.service";
-
 const FileImporter = () => {
   // const [file, updateFile] = useState();
   return (
@@ -13,7 +13,10 @@ const FileImporter = () => {
   );
 };
 
-const FileDownloader = () => {
+/**
+ * Component which, on click, fetch a file and opens it.
+ */
+const FileDownloader = ({ filename, endpoint, text }) => {
   const linkRef = useRef(null);
 
   /**
@@ -27,8 +30,53 @@ const FileDownloader = () => {
     }
     e.preventDefault();
 
+    getLastImportedFile(endpoint)
+      .then((url) => {
+        link.href = url;
+        link.click();
+        link.href = "none";
+      })
+      .catch((error) => console.error("Can't download the file", error));
+  }
+
+  return (
+    <a ref={linkRef} href={"none"} download={filename} onClick={fetchAndOpenFile}>
+      {text}
+    </a>
+  );
+};
+
+FileDownloader.propTypes = {
+  filename: PropTypes.string.isRequired,
+  endpoint: PropTypes.string.isRequired,
+  text: PropTypes.string.isRequired,
+};
+
+export default class Admin extends Component {
+  render() {
+    return (
+      <main id="administration">
+        <h1>Espace Administration</h1>
+        <FileImporter />
+        <FileDownloader
+          text="Télécharcher le dernier fichier importé"
+          filename="molecules.csv"
+          endpoint="/api/v1/import/molecules"
+        />
+      </main>
+    );
+  }
+}
+
+/**
+ * Fetch the last imported file, and return the url of the object
+ * @param {string} endpoint The endpoint to request
+ * @returns {string} The data url
+ */
+function getLastImportedFile(endpoint) {
+  return new Promise((resolve, reject) => {
     axios
-      .get("/api/v1/import/molecules")
+      .get(endpoint)
       .then((res) => {
         const { token } = AuthService.getCurrentUser();
         fetch(res.data.shortpath, {
@@ -38,44 +86,16 @@ const FileDownloader = () => {
         })
           .then((res) => {
             if (res.status !== 200) {
-              res.json().then((error) => console.error("Can't download the file", error));
+              res.json().then((error) => reject(error));
               return;
             }
             res
               .blob()
-              .then((data) => {
-                const href = window.URL.createObjectURL(data);
-                link.download = "molecule.csv";
-                link.href = href;
-                link.click();
-                link.href = "none";
-              })
-              .catch(console.error);
+              .then((data) => resolve(window.URL.createObjectURL(data)))
+              .catch(reject);
           })
-          .catch(console.error);
+          .catch(reject);
       })
-      .catch(console.error);
-  }
-  return (
-    <a ref={linkRef} href={"none"} onClick={fetchAndOpenFile}>
-      Télécharcher le dernier fichier importé
-    </a>
-  );
-};
-
-export default class Admin extends Component {
-  constructor() {
-    super();
-    this.link = createRef();
-  }
-
-  render() {
-    return (
-      <main id="administration">
-        <h1>Espace Administration</h1>
-        <FileImporter />
-        <FileDownloader />
-      </main>
-    );
-  }
+      .catch(reject);
+  });
 }
