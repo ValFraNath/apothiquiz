@@ -303,7 +303,7 @@ function doUsersExist(...users) {
         }
         resolve(true);
       })
-      .catch((error) => reject(addErrorTitle(error, "Can't check if the user exists")));
+      .catch((error) => reject(addErrorTitle(error, "Can't check if the user exists", true)));
   });
 }
 
@@ -322,7 +322,7 @@ function createDuelInDatabase(player1, player2, rounds) {
       content: JSON.stringify(rounds),
     })
       .then((res) => resolve(res[0][0].id))
-      .catch((error) => reject(addErrorTitle(error, "Can't create duel")));
+      .catch((error) => reject(addErrorTitle(error, "Can't create duel", true)));
   });
 }
 
@@ -356,7 +356,7 @@ function createRounds() {
           if (NotEnoughDataError.isInstance(error)) {
             createRoundsRecursively();
           } else {
-            reject(addErrorTitle(error, "Can't create a round"));
+            reject(addErrorTitle(error, "Can't create a round", true));
           }
         });
     })();
@@ -412,7 +412,7 @@ function getDuel(id, username) {
           resolve(formatDuel(res[0], username));
         }
       })
-      .catch((error) => reject(addErrorTitle(error, "Can't get duel")));
+      .catch((error) => reject(addErrorTitle(error, "Can't get duel", true)));
   });
 }
 
@@ -442,7 +442,7 @@ function getAllDuels(username) {
           );
         }
       })
-      .catch((error) => reject(addErrorTitle(error, "Can't get all duels")));
+      .catch((error) => reject(addErrorTitle(error, "Can't get all duels", true)));
   });
 }
 
@@ -524,7 +524,7 @@ function getDuelResults(id, username) {
     const sql = "SELECT re_answers FROM results WHERE us_login = ? AND du_id = ? ;";
     queryPromise(sql, [username, id])
       .then((res) => resolve(JSON.parse(res[0].re_answers)))
-      .catch((error) => reject(addErrorTitle(error, "Can't get duel results")));
+      .catch((error) => reject(addErrorTitle(error, "Can't get duel results", true)));
   });
 }
 
@@ -544,9 +544,9 @@ function insertResultInDatabase(id, username, answers) {
           "UPDATE results SET re_answers = :answers WHERE us_login = :login AND du_id = :id ; CALL getDuel(:id,:login);";
         queryPromise(sql, { answers: updatedAnswers, login: username, id })
           .then((res) => resolve(formatDuel(res[1], username)))
-          .catch((error) => reject(addErrorTitle(error, "Can't insert answers in database")));
+          .catch((error) => reject(addErrorTitle(error, "Can't insert answers in database", true)));
       })
-      .catch((error) => reject(addErrorTitle(error, "Can't get duel results")));
+      .catch((error) => reject(addErrorTitle(error, "Can't get duel results", true)));
   });
 }
 
@@ -590,7 +590,7 @@ function updateDuelState(duel, username) {
           )
         );
       })
-      .catch((error) => reject(addErrorTitle(error, "Can't update the duel state")));
+      .catch((error) => reject(addErrorTitle(error, "Can't update the duel state", true)));
   });
 }
 

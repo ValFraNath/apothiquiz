@@ -9,6 +9,9 @@ import { analyzeData } from "../global/molecules_analyzer/moleculesAnalyzer.js";
 import { createSqlToInsertAllData } from "../global/molecules_importer/moleculesImporter.js";
 import { parseMoleculesFromCsv } from "../global/molecules_parser/Parser.js";
 
+const FILES_DIR_PATH = path.resolve("files", "molecules");
+const MAX_FILE_KEPT = 15;
+
 /**
  * @api {post} /import/molecules Import a csv file of molecules data
  * @apiName ImportMolecules
@@ -88,6 +91,11 @@ function importMolecules(req, _res) {
   const deleteUploadedFile = () =>
     deleteFile(path.resolve(directory, filename)).catch(Logger.error);
 
+  const sendServorError = (error, title) => {
+    res.sendServerError(addErrorTitle(error, title));
+    deleteUploadedFile();
+  };
+
   if (extension !== "csv") {
     res.sendUsageError(400, "Invalid file format : must be csv ");
     deleteUploadedFile();
@@ -103,33 +111,34 @@ function importMolecules(req, _res) {
         const sql = createSqlToInsertAllData(data);
         queryPromise(sql)
           .then(() =>
-            createDir(path.resolve("files", "molecules"))
+            createDir(FILES_DIR_PATH)
               .then(() =>
                 moveFile(
                   path.resolve(directory, filename),
                   path.resolve("files", "molecules", `molecules_${filename}.${extension}`)
                 )
                   .then(() =>
-                    res.sendResponse(201, {
-                      message: "File imported",
-                      warnings: [],
-                      imported: true,
-                    })
+                    getSortedFiles(FILES_DIR_PATH)
+                      .then((files) =>
+                        deleteFile(
+                          ...files.slice(MAX_FILE_KEPT).map((file) => `${FILES_DIR_PATH}/${file}`)
+                        )
+                          .then(() =>
+                            res.sendResponse(201, {
+                              message: "File imported",
+                              warnings: [],
+                              imported: true,
+                            })
+                          )
+                          .catch(sendServorError)
+                      )
+                      .catch(sendServorError)
                   )
-                  .catch((error) => {
-                    res.sendServerError(error);
-                    deleteUploadedFile();
-                  })
+                  .catch(sendServorError)
               )
-              .catch((error) => {
-                res.sendServerError(addErrorTitle(error, "Can't import data"));
-                deleteUploadedFile();
-              })
+              .catch(sendServorError)
           )
-          .catch((error) => {
-            res.sendServerError(addErrorTitle(error, "Can't insert new molecules"));
-            deleteUploadedFile();
-          });
+          .catch(sendServorError);
       } else {
         const warnings = analyzeData(data);
         res.sendResponse(202, {
@@ -173,19 +182,9 @@ function importMolecules(req, _res) {
  */
 function getLastImportedFile(req, _res) {
   const res = new HttpResponseWrapper(_res);
-  getFiles(path.resolve("files", "molecules"))
+  getSortedFiles(path.resolve("files", "molecules"))
     .then((files) => {
-      const last = files.reduce(
-        ({ filename, time }, file) => {
-          const fileTime = Number(file.split("_")[1].split(".")[0]);
-          if (time < fileTime) {
-            filename = file;
-            time = fileTime;
-          }
-          return { filename, time };
-        },
-        { filename: null, time: 0 }
-      ).filename;
+      const last = files[0];
 
       res.sendResponse(200, {
         fullpath: last ? `${req.protocol}://${req.get("host")}/molecules/${last}` : null,
@@ -219,11 +218,15 @@ function moveFile(oldPath, newPath) {
  * @param {string} filename
  * @returns {Promise}
  */
-function deleteFile(filename) {
+function deleteFile(...filenames) {
   return new Promise((resolve, reject) => {
-    fs.unlink(filename)
+    Promise.all(
+      filenames.map((filename) => {
+        fs.unlink(filename);
+      })
+    )
       .then(resolve)
-      .catch((error) => reject(addErrorTitle(error, "Can't delete the file")));
+      .catch((error) => reject(addErrorTitle(error, "Can't delete files")));
   });
 }
 
@@ -240,11 +243,11 @@ function createDir(dirname) {
   });
 }
 
-function getFiles(dirpath) {
+function getSortedFiles(dirpath) {
   return new Promise((resolve, reject) => {
     fs.readdir(dirpath)
       .then((files) => {
-        resolve(files);
+        resolve(files.sort().reverse());
       })
       .catch((error) => {
         if (error.code === "ENOENT") {
