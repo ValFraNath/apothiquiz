@@ -24,12 +24,12 @@ const MAX_FILE_KEPT = 15;
  * @apiParam  {File} file The csv file
  * @apiParam {string} confirmed If "true", the data will be imported, otherwise they will be only tested
  * 
- * @apiSuccess (200) {string} message Message explaining what has been done
- * @apiSuccess (200) {object[]} warnings Array of warnings
- * @apiSuccess (200) {object} warnings.warning A warning
- * @apiSuccess (200) {number} warnings.warning.code The warning code
- * @apiSuccess (200) {string} warnings.warning.message The warning message
- * @apiSuccess (200) {boolean} imported Boolean telling if data are imported
+ * @apiSuccess (201 | 202) {string} message Message explaining what has been done
+ * @apiSuccess (201 | 202) {object[]} warnings Array of warnings
+ * @apiSuccess (201 | 202) {object} warnings.warning A warning
+ * @apiSuccess (201 | 202) {number} warnings.warning.code The warning code
+ * @apiSuccess (201 | 202) {string} warnings.warning.message The warning message
+ * @apiSuccess (201 | 202) {boolean} imported Boolean telling if data are imported
  *
  * @apiSuccessExample Success-Response:
  *  {
@@ -89,7 +89,7 @@ function importMolecules(req, _res) {
   }
 
   const deleteUploadedFile = () =>
-    deleteFile(path.resolve(directory, filename)).catch(Logger.error);
+    deleteFiles(path.resolve(directory, filename)).catch(Logger.error);
 
   const sendServorError = (error, title) => {
     res.sendServerError(addErrorTitle(error, title));
@@ -120,7 +120,7 @@ function importMolecules(req, _res) {
                   .then(() =>
                     getSortedFiles(FILES_DIR_PATH)
                       .then((files) =>
-                        deleteFile(
+                        deleteFiles(
                           ...files.slice(MAX_FILE_KEPT).map((file) => `${FILES_DIR_PATH}/${file}`)
                         )
                           .then(() =>
@@ -170,12 +170,16 @@ function importMolecules(req, _res) {
  * @apiPermissions LoggedIn 
  * @apiPermissions Admin 
  *
- * @apiSuccess (200) {string} file The url to the file
+ * @apiSuccess (200) {string} url The url to the file
+ * @apiSuccess (200) {string} shortpath The path to the file in the server
+ * @apiSuccess (200) {string} file The file name
  *
  *
  * @apiSuccessExample Success-Response:
  *  {
-      "file": "https://glowing-octo-guacamole.com/api/v1/molecules/molecules_1612279095021.csv"
+      "url": "https://glowing-octo-guacamole.com/files/molecules/molecules_1612279095021.csv",
+      "shortpath" : "files/molecules/molecules_1612279095021.csv",
+      "file" : "molecules_1612279095021.csv"
     }
  *
  *
@@ -187,8 +191,8 @@ function getLastImportedFile(req, _res) {
       const last = files[0];
 
       res.sendResponse(200, {
-        fullpath: last ? `${req.protocol}://${req.get("host")}/molecules/${last}` : null,
-        shortpath: `/molecules/${last}`,
+        url: last ? `${req.protocol}://${req.get("host")}/files/molecules/${last}` : null,
+        shortpath: `/files/molecules/${last}`,
         file: last,
       });
     })
@@ -214,11 +218,11 @@ function moveFile(oldPath, newPath) {
 }
 
 /**
- * Delete a file
+ * Delete files
  * @param {string} filename
  * @returns {Promise}
  */
-function deleteFile(...filenames) {
+function deleteFiles(...filenames) {
   return new Promise((resolve, reject) => {
     Promise.all(
       filenames.map((filename) => {
@@ -244,7 +248,7 @@ function createDir(dirname) {
 }
 
 /**
- * Get an alphabetically sorted array of files in a directory 
+ * Get an alphabetically sorted array of files in a directory
  * @param {string} dirpath
  * @return {Promise}
  */

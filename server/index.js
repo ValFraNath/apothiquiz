@@ -24,16 +24,14 @@ if (!process.env.TOKEN_PRIVATE_KEY) {
   process.exit(1);
 }
 
-app.use(bodyParser.json());
+fs.mkdirSync("files", { recursive: true });
 
+app.use(bodyParser.json());
 app.use(express.static("../client/build/"));
+app.use("/files", AuthenticationMiddleware, express.static("files"));
 app.use("/api/v1/", apiRouter);
 app.use("/", reactRouter);
 app.use(RequestSyntaxErrorHandler);
-
-fs.mkdirSync("files", { recursive: true });
-
-app.use(AuthenticationMiddleware, express.static("files"));
 
 Database.connect()
   .then(() => {
