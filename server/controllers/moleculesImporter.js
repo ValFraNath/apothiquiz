@@ -24,7 +24,7 @@ const MAX_FILE_KEPT = 15;
  * @apiParam  {File} file The csv file
  * @apiParam {string} confirmed If "true", the data will be imported, otherwise they will be only tested
  * 
- * @apiSuccess (200) {string} message Message explaining what was done
+ * @apiSuccess (200) {string} message Message explaining what has been done
  * @apiSuccess (200) {object[]} warnings Array of warnings
  * @apiSuccess (200) {object} warnings.warning A warning
  * @apiSuccess (200) {number} warnings.warning.code The warning code
