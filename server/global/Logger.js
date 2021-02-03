@@ -98,12 +98,12 @@ const forceTwoDigit = (number) => ("0" + number).slice(-2);
 
 /**
  * Add a title to an existing error to set the context.
- * N.B. If the error already contains a title, it does not change.
  * @param {Error} error The error
  * @param {string} title The title
+ * @param {boolean} override? Boolean telling if you want to replace the title if there is one
  */
-export function addErrorTitle(error, title) {
-  if (!error.title) {
+export function addErrorTitle(error, title, override = false) {
+  if (!error.title || (override && title)) {
     error.title = title;
   }
   return error;

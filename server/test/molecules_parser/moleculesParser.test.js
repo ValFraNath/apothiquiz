@@ -16,9 +16,9 @@ chai.use(deepEqualAnyOrder);
 const { before } = mocha;
 const { expect } = chai;
 
-const filesFolderPath = path.resolve("test", "csv_parser", "files");
+const filesFolderPath = path.resolve("test", "molecules_parser", "files");
 const badFilesFolderPath = path.resolve(filesFolderPath, "bad_formatted_files");
-const snapshotsFolderPath = path.resolve("test", "csv_parser", "snapshots");
+const snapshotsFolderPath = path.resolve("test", "molecules_parser", "snapshots");
 
 describe("Test if values are well imported", function () {
   const files = [

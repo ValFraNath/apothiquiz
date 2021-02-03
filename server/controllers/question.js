@@ -107,7 +107,9 @@ async function generateQuestion(req, _res) {
     })
     .catch((error) => {
       if (NotEnoughDataError.isInstance(error)) {
-        res.sendUsageError(422, "Not enough data to generate this type of question", error.code);
+        res.sendUsageError(422, "Not enough data to generate this type of question", {
+          code: error.code,
+        });
         return;
       }
       res.sendServerError(error);

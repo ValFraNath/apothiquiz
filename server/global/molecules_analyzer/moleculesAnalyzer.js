@@ -1,6 +1,6 @@
 import levenshtein from "js-levenshtein";
 
-import { MAX_LENGTHS } from "../data_importer/dataImporter.js";
+import { MAX_LENGTHS } from "../molecules_importer/moleculesImporter.js";
 
 const DCI_DISTANCE_MIN = 1;
 const PROPERTY_VALUE_MIN_DISTANCE = 2;

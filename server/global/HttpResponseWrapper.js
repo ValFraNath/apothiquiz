@@ -20,8 +20,8 @@ export default class HttpResponseWrapper {
     return this.sendResponse(500, { message: "Server side error" });
   }
 
-  sendUsageError(status, message, code) {
-    return this.sendResponse(status, { message, code });
+  sendUsageError(status, message, body = {}) {
+    return this.sendResponse(status, Object.assign(body, { message }));
   }
 
   /**
