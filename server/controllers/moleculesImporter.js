@@ -51,7 +51,7 @@ const MAX_FILE_KEPT = 15;
  * @apiErrorExample BadlyFormattedFile Error-Response:
     {
       "message": {
-        "message": "Bad formatted file",
+        "message": "Badly formatted file",
         "errors": [
           {
             "code": 1,
