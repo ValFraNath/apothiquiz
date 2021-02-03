@@ -191,8 +191,8 @@ function getLastImportedFile(req, _res) {
       const last = files[0];
 
       res.sendResponse(200, {
-        url: last ? `${req.protocol}://${req.get("host")}/files/molecules/${last}` : null,
-        shortpath: `/files/molecules/${last}`,
+        url: last ? `${req.protocol}://${req.get("host")}/api/v1/files/molecules/${last}` : null,
+        shortpath: `/api/v1/files/molecules/${last}`,
         file: last,
       });
     })
