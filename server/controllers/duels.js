@@ -59,7 +59,7 @@ function create(req, _res) {
 
         .catch((error) => {
           if (NotEnoughDataError.isInstance(error)) {
-            return res.sendUsageError(422, "Not enought data to generate the duel", {
+            return res.sendUsageError(422, "Not enough data to generate the duel", {
               code: error.code,
             });
           }
