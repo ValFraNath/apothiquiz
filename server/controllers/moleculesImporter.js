@@ -47,7 +47,7 @@ const MAX_FILE_KEPT = 15;
       "imported": false
     }
   
- * @apiError (400) BadFormattedFile The csv file is bad formatted
+ * @apiError (400) BadFormattedFile The csv file is badly formatted
  * @apiErrorExample BadFormattedFile Error-Response:
     {
       "message": {
