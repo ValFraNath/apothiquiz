@@ -243,6 +243,11 @@ function createDir(dirname) {
   });
 }
 
+/**
+ * Get an alphabetically sorted array of files in a directory 
+ * @param {string} dirpath
+ * @return {Promise}
+ */
 function getSortedFiles(dirpath) {
   return new Promise((resolve, reject) => {
     fs.readdir(dirpath)
