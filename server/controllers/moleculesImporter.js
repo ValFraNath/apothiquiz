@@ -48,7 +48,7 @@ const MAX_FILE_KEPT = 15;
     }
   
  * @apiError (400) BadFormattedFile The csv file is badly formatted
- * @apiErrorExample BadFormattedFile Error-Response:
+ * @apiErrorExample BadlyFormattedFile Error-Response:
     {
       "message": {
         "message": "Bad formatted file",
