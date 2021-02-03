@@ -4,11 +4,25 @@ import React, { Component, useRef } from "react";
 
 import AuthService from "../services/auth.service";
 const FileImporter = () => {
-  // const [file, updateFile] = useState();
+  const inputRef = useRef(null);
+
+  function sendImportedFile(e) {
+    e.preventDefault();
+    const input = inputRef.current;
+    console.log(input.files);
+  }
+
   return (
     <div>
-      <input type="file" />
-      <button type="submit">Envoyer</button>
+      <form>
+        <label>
+          Importer un fichier
+          <input ref={inputRef} type="file" />
+        </label>
+        <button type="submit" onClick={sendImportedFile}>
+          Envoyer
+        </button>
+      </form>
     </div>
   );
 };
