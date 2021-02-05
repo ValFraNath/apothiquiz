@@ -4,7 +4,8 @@ import React, { Component, useRef } from "react";
 
 import AuthService from "../services/auth.service";
 
-const ACCEPTED_TYPES = ["text/csv", "application/vnd.ms-excel"];
+const CSV_MIME = ["text/csv", "application/vnd.ms-excel"];
+const ZIP_MIME = ["application/zip", "application/x-zip-compressed"];
 
 class FileImporter extends Component {
   constructor(props) {
@@ -14,39 +15,55 @@ class FileImporter extends Component {
       errors: [],
       warnings: [],
       selectedFile: null,
+      canConfirm: false,
     };
   }
 
-  sendImportedFile(e) {
+  /**
+   * Send the selected file
+   * @param {Event} e The event
+   */
+  sendSelectedFile(e) {
     e.preventDefault();
     const file = this.state.selectedFile;
     const requestData = new FormData();
 
     requestData.append("file", file);
+    if (this.state.canConfirm) {
+      requestData.append("confirmed", "true");
+    }
 
     axios
-      .post("/api/v1/import/molecules", requestData)
+      .post(this.props.endpoint, requestData)
       .then((res) => {
-        const warnings = res.data.warnings.map((w) => w.message);
-        this.setState({ warnings, errors: [] });
+        const warnings = res.data.warnings.map((w) => `[${w.code}] - ${w.message}`);
+
+        this.setState({ warnings, errors: [], canConfirm: !this.state.canConfirm });
       })
       .catch((error) => {
-        if (error.response.status === 400) {
-          const errors = error.response.data.errors.map((w) => w.message);
-          this.setState({ errors, warnings: [] });
+        if (error.response?.status === 400) {
+          const errors = error.response.data.errors.map((e) => `[${e.code}] - ${e.message}`);
+          this.setState({ errors, warnings: [], canConfirm: false });
           return;
         }
         this.setState({ errors: ["Une erreur est survenue de notre coté."] });
       });
   }
 
+  /**
+   * Check if the file format is .csv
+   * @param {*} e
+   */
   handleInput(e) {
-    const file = e.target.files[0] || null;
-    if (!ACCEPTED_TYPES.includes(file.type)) {
+    let file = e.target.files[0] || null;
+    const errors = [];
+    console.log(this.props.mimeTypes, file.type);
+    if (!this.props.mimeTypes.includes(file.type)) {
       e.target.parentNode.reset();
-      return;
+      file = null;
+      errors.push("Le format du fichier est invalide");
     }
-    this.setState({ selectedFile: file });
+    this.setState({ selectedFile: file, canConfirm: false, errors });
   }
 
   render() {
@@ -57,9 +74,9 @@ class FileImporter extends Component {
           <button
             type="submit"
             disabled={this.state.selectedFile === null}
-            onClick={this.sendImportedFile.bind(this)}
+            onClick={this.sendSelectedFile.bind(this)}
           >
-            Envoyer
+            {this.state.canConfirm ? "Confirmer" : "Envoyer"}
           </button>
         </form>
         <ul>
@@ -78,6 +95,11 @@ class FileImporter extends Component {
     );
   }
 }
+
+FileImporter.propTypes = {
+  endpoint: PropTypes.string.isRequired,
+  mimeTypes: PropTypes.arrayOf(PropTypes.string).isRequired,
+};
 
 /**
  * Component which, on click, fetch a file and opens it.
@@ -118,19 +140,61 @@ FileDownloader.propTypes = {
   text: PropTypes.string.isRequired,
 };
 
+const Configuration = () => {
+  function saveConfig(e) {
+    e.preventDefault();
+    console.log(e);
+  }
+  return (
+    <form className="configuration" onSubmit={saveConfig}>
+      <label>
+        <input type="number" min="2" max="10" defaultValue="5" />
+        Nombre de questions dans une manche
+      </label>
+      <label>
+        <input type="number" min="2" max="10" defaultValue="5" />
+        Nombre de manches dans un duel
+      </label>
+      <input type="submit" value="Enregistrer" />
+    </form>
+  );
+};
+
 export default class Admin extends Component {
   render() {
     return (
       <main id="administration">
         <h1>Espace Administration</h1>
-        <details open>
+        <details>
           <summary>Importer des molécules</summary>
           <FileDownloader
-            text="Télécharcher le dernier fichier importé"
+            text="Télécharger le dernier fichier importé"
             filename="molecules.csv"
             endpoint="/api/v1/import/molecules"
           />
-          <FileImporter />
+          <FileImporter endpoint="/api/v1/import/molecules" mimeTypes={CSV_MIME} />
+        </details>
+        <details open>
+          <summary>Importer des étudiants</summary>
+          <FileDownloader
+            text="Télécharger le dernier fichier importé"
+            filename="etudiants.csv"
+            endpoint="/api/v1/import/students"
+          />
+          <FileImporter endpoint="/api/v1/import/students" mimeTypes={CSV_MIME} />
+        </details>
+        <details>
+          <summary>Configuration</summary>
+          <Configuration />
+        </details>
+        <details open>
+          <summary>Importer des images</summary>
+          <FileDownloader
+            text="Télécharger le dernier fichier importé"
+            filename="images.csv"
+            endpoint="/api/v1/import/images"
+          />
+          <FileImporter endpoint="/api/v1/import/images" mimeTypes={ZIP_MIME} />
         </details>
       </main>
     );

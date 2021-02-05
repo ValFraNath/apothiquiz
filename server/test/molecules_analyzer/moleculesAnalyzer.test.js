@@ -14,59 +14,59 @@ const files = [
   {
     name: "duplicatesMolecules.csv",
     warnings: [
-      { type: AnalyzerWarning.DUPLICATE_UNIQUE_VALUE, count: 1 },
-      { type: AnalyzerWarning.TOO_LONG_VALUE, count: 0 },
-      { type: AnalyzerWarning.DUPLICATE_CLASSIFICATION_NODE, count: 0 },
-      { type: AnalyzerWarning.TOO_CLOSE_VALUES, count: 3 },
-      { type: AnalyzerWarning.INVALID_TYPE, count: 0 },
+      { code: AnalyzerWarning.DUPLICATE_UNIQUE_VALUE, count: 1 },
+      { code: AnalyzerWarning.TOO_LONG_VALUE, count: 0 },
+      { code: AnalyzerWarning.DUPLICATE_CLASSIFICATION_NODE, count: 0 },
+      { code: AnalyzerWarning.TOO_CLOSE_VALUES, count: 3 },
+      { code: AnalyzerWarning.INVALID_TYPE, count: 0 },
     ],
   },
   {
     name: "duplicatesNodes.csv",
     warnings: [
-      { type: AnalyzerWarning.DUPLICATE_UNIQUE_VALUE, count: 0 },
-      { type: AnalyzerWarning.TOO_LONG_VALUE, count: 0 },
-      { type: AnalyzerWarning.DUPLICATE_CLASSIFICATION_NODE, count: 2 },
-      { type: AnalyzerWarning.TOO_CLOSE_VALUES, count: 4 },
-      { type: AnalyzerWarning.INVALID_TYPE, count: 0 },
+      { code: AnalyzerWarning.DUPLICATE_UNIQUE_VALUE, count: 0 },
+      { code: AnalyzerWarning.TOO_LONG_VALUE, count: 0 },
+      { code: AnalyzerWarning.DUPLICATE_CLASSIFICATION_NODE, count: 2 },
+      { code: AnalyzerWarning.TOO_CLOSE_VALUES, count: 4 },
+      { code: AnalyzerWarning.INVALID_TYPE, count: 0 },
     ],
   },
   {
     name: "tooLongNames.csv",
     warnings: [
-      { type: AnalyzerWarning.DUPLICATE_UNIQUE_VALUE, count: 0 },
-      { type: AnalyzerWarning.TOO_LONG_VALUE, count: 1 },
-      { type: AnalyzerWarning.DUPLICATE_CLASSIFICATION_NODE, count: 0 },
-      { type: AnalyzerWarning.TOO_CLOSE_VALUES, count: 3 },
-      { type: AnalyzerWarning.INVALID_TYPE, count: 0 },
+      { code: AnalyzerWarning.DUPLICATE_UNIQUE_VALUE, count: 0 },
+      { code: AnalyzerWarning.TOO_LONG_VALUE, count: 1 },
+      { code: AnalyzerWarning.DUPLICATE_CLASSIFICATION_NODE, count: 0 },
+      { code: AnalyzerWarning.TOO_CLOSE_VALUES, count: 3 },
+      { code: AnalyzerWarning.INVALID_TYPE, count: 0 },
     ],
   },
   {
     name: "badTypes.csv",
     warnings: [
-      { type: AnalyzerWarning.DUPLICATE_UNIQUE_VALUE, count: 0 },
-      { type: AnalyzerWarning.TOO_LONG_VALUE, count: 0 },
-      { type: AnalyzerWarning.DUPLICATE_CLASSIFICATION_NODE, count: 2 },
-      { type: AnalyzerWarning.TOO_CLOSE_VALUES, count: 3 },
-      { type: AnalyzerWarning.INVALID_TYPE, count: 6 },
+      { code: AnalyzerWarning.DUPLICATE_UNIQUE_VALUE, count: 0 },
+      { code: AnalyzerWarning.TOO_LONG_VALUE, count: 0 },
+      { code: AnalyzerWarning.DUPLICATE_CLASSIFICATION_NODE, count: 2 },
+      { code: AnalyzerWarning.TOO_CLOSE_VALUES, count: 3 },
+      { code: AnalyzerWarning.INVALID_TYPE, count: 6 },
     ],
   },
   {
     name: "worst.csv",
     warnings: [
-      { type: AnalyzerWarning.DUPLICATE_UNIQUE_VALUE, count: 1 },
-      { type: AnalyzerWarning.TOO_LONG_VALUE, count: 1 },
-      { type: AnalyzerWarning.DUPLICATE_CLASSIFICATION_NODE, count: 1 },
-      { type: AnalyzerWarning.TOO_CLOSE_VALUES, count: 3 },
-      { type: AnalyzerWarning.INVALID_TYPE, count: 4 },
+      { code: AnalyzerWarning.DUPLICATE_UNIQUE_VALUE, count: 1 },
+      { code: AnalyzerWarning.TOO_LONG_VALUE, count: 1 },
+      { code: AnalyzerWarning.DUPLICATE_CLASSIFICATION_NODE, count: 1 },
+      { code: AnalyzerWarning.TOO_CLOSE_VALUES, count: 3 },
+      { code: AnalyzerWarning.INVALID_TYPE, count: 4 },
     ],
   },
 ];
 
 const FILES_DIR = path.resolve("test", "molecules_analyzer", "files");
 
-const warningsCounter = (warnings) => (type) =>
-  warnings.reduce((count, warning) => count + (warning.type === type), 0);
+const warningsCounter = (warnings) => (code) =>
+  warnings.reduce((count, warning) => count + (warning.code === code), 0);
 
 describe("Molecules analyzer", () => {
   for (const file of files) {
@@ -91,7 +91,7 @@ describe("Molecules analyzer", () => {
         const warnings = analyzeData(data);
         const counter = warningsCounter(warnings);
         file.warnings.forEach((warning) =>
-          expect(counter(warning.type), "Type " + warning.type).equals(warning.count)
+          expect(counter(warning.code), "Type " + warning.code).equals(warning.count)
         );
       });
 

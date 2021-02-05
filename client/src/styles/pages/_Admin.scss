@@ -15,24 +15,32 @@ main#administration {
   }
 
   button,
-  input {
+  input[type="file"],
+  input[type="submit"] {
     cursor: pointer;
     width: max-content;
     font-size: 1rem;
     margin-right: 1rem;
   }
 
-  form {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-  }
-
   details {
-    padding: 2rem;
+    padding: 0 2rem;
+
+    summary {
+      font-size: 1.2rem;
+    }
+
+    + details {
+      padding-top: 2rem;
+    }
   }
 
   .file-importer {
+    form {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+    }
     li {
       font-style: italic;
       font-size: 0.8rem;
@@ -56,6 +64,16 @@ main#administration {
       &.error::before {
         content: "❌  ";
       }
+    }
+  }
+
+  form.configuration {
+    display: flex;
+    flex-direction: column;
+
+    input[type="number"] {
+      width: 50px;
+      margin: 0.5rem 1rem;
     }
   }
 }
