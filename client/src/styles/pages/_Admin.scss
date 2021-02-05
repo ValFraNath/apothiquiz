@@ -1,8 +1,61 @@
 main#administration {
+  box-sizing: border-box;
+
   h1 {
     font-size: 2rem;
+    padding: 2rem;
     margin: auto;
-    padding: 1rem;
     width: max-content;
+  }
+
+  a {
+    display: block;
+    width: max-content;
+    margin: 1rem 0;
+  }
+
+  button,
+  input {
+    cursor: pointer;
+    width: max-content;
+    font-size: 1rem;
+    margin-right: 1rem;
+  }
+
+  form {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+  }
+
+  details {
+    padding: 2rem;
+  }
+
+  .file-importer {
+    li {
+      font-style: italic;
+      font-size: 0.8rem;
+      letter-spacing: 0.5px;
+      line-height: 1rem;
+      margin: 0.5rem 0;
+      color: black;
+      padding-left: 1.5rem;
+      position: relative;
+      word-wrap: break-word;
+
+      &::before {
+        position: absolute;
+        left: 0;
+      }
+
+      &.warning::before {
+        content: "⚠️  ";
+      }
+
+      &.error::before {
+        content: "❌  ";
+      }
+    }
   }
 }

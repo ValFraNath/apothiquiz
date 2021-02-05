@@ -8,6 +8,7 @@ import { addErrorTitle } from "../global/Logger.js";
 
 const MIME_TYPES = {
   "text/csv": "csv",
+  "application/vnd.ms-excel": "csv",
 };
 
 /**

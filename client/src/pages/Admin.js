@@ -3,29 +3,81 @@ import PropTypes from "prop-types";
 import React, { Component, useRef } from "react";
 
 import AuthService from "../services/auth.service";
-const FileImporter = () => {
-  const inputRef = useRef(null);
 
-  function sendImportedFile(e) {
-    e.preventDefault();
-    const input = inputRef.current;
-    console.log(input.files);
+const ACCEPTED_TYPES = ["text/csv", "application/vnd.ms-excel"];
+
+class FileImporter extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      errors: [],
+      warnings: [],
+      selectedFile: null,
+    };
   }
 
-  return (
-    <div>
-      <form>
-        <label>
-          Importer un fichier
-          <input ref={inputRef} type="file" />
-        </label>
-        <button type="submit" onClick={sendImportedFile}>
-          Envoyer
-        </button>
-      </form>
-    </div>
-  );
-};
+  sendImportedFile(e) {
+    e.preventDefault();
+    const file = this.state.selectedFile;
+    const requestData = new FormData();
+
+    requestData.append("file", file);
+
+    axios
+      .post("/api/v1/import/molecules", requestData)
+      .then((res) => {
+        const warnings = res.data.warnings.map((w) => w.message);
+        this.setState({ warnings, errors: [] });
+      })
+      .catch((error) => {
+        if (error.response.status === 400) {
+          const errors = error.response.data.errors.map((w) => w.message);
+          this.setState({ errors, warnings: [] });
+          return;
+        }
+        this.setState({ errors: ["Une erreur est survenue de notre coté."] });
+      });
+  }
+
+  handleInput(e) {
+    const file = e.target.files[0] || null;
+    if (!ACCEPTED_TYPES.includes(file.type)) {
+      e.target.parentNode.reset();
+      return;
+    }
+    this.setState({ selectedFile: file });
+  }
+
+  render() {
+    return (
+      <div className="file-importer">
+        <form>
+          <input id="molecules-file" onChange={this.handleInput.bind(this)} type="file" />
+          <button
+            type="submit"
+            disabled={this.state.selectedFile === null}
+            onClick={this.sendImportedFile.bind(this)}
+          >
+            Envoyer
+          </button>
+        </form>
+        <ul>
+          {this.state.errors.map((error) => (
+            <li key={error} className="error">
+              {error}
+            </li>
+          ))}
+          {this.state.warnings.map((warning) => (
+            <li key={warning} className="warning">
+              {warning}
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  }
+}
 
 /**
  * Component which, on click, fetch a file and opens it.
@@ -71,12 +123,15 @@ export default class Admin extends Component {
     return (
       <main id="administration">
         <h1>Espace Administration</h1>
-        <FileImporter />
-        <FileDownloader
-          text="Télécharcher le dernier fichier importé"
-          filename="molecules.csv"
-          endpoint="/api/v1/import/molecules"
-        />
+        <details open>
+          <summary>Importer des molécules</summary>
+          <FileDownloader
+            text="Télécharcher le dernier fichier importé"
+            filename="molecules.csv"
+            endpoint="/api/v1/import/molecules"
+          />
+          <FileImporter />
+        </details>
       </main>
     );
   }
