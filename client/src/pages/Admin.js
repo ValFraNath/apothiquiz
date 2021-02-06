@@ -4,8 +4,10 @@ import React, { Component } from "react";
 
 import AuthService from "../services/auth.service";
 
-const CSV_MIME = ["text/csv", "application/vnd.ms-excel"];
-const ZIP_MIME = ["application/zip", "application/x-zip-compressed"];
+const MIME_TYPES = {
+  CSV_MIME: { name: "fichier CSV", mime: ["text/csv", "application/vnd.ms-excel"] },
+  ZIP_MIME: { name: "archive ZIP", mime: ["application/zip", "application/x-zip-compressed"] },
+};
 
 class FileImporter extends Component {
   constructor(props) {
@@ -46,7 +48,7 @@ class FileImporter extends Component {
         });
       })
       .catch((error) => {
-        if (error.response?.status === 400) {
+        if (error.response?.status === 422) {
           const errors = error.response.data.errors.map((e) => `[${e.code}] - ${e.message}`);
           this.setState({
             errors,
@@ -56,7 +58,7 @@ class FileImporter extends Component {
           });
           return;
         }
-        this.setState({ errors: ["Une erreur est survenue de notre coté."] });
+        this.setState({ errors: [error.response?.data?.message] });
       });
   }
 
@@ -68,10 +70,10 @@ class FileImporter extends Component {
     let file = e.target.files[0] || null;
     const errors = [];
 
-    if (!this.props.mimeTypes.includes(file.type)) {
+    if (!this.props.type.mime.includes(file.type)) {
       e.target.parentNode.reset();
       file = null;
-      errors.push("Le format du fichier est invalide");
+      errors.push("Le format du fichier doit être : " + this.props.type.name);
     }
     this.setState({ selectedFile: file, canConfirm: false, errors, imported: false });
   }
@@ -97,17 +99,20 @@ class FileImporter extends Component {
   render() {
     return (
       <div className="file-importer">
-        <form>
-          <input id="molecules-file" onChange={this.handleFileChange.bind(this)} type="file" />
-          <button
+        <form onSubmit={this.sendSelectedFile.bind(this)}>
+          <input
+            id="molecules-file"
+            required
+            onChange={this.handleFileChange.bind(this)}
+            type="file"
+          />
+          <input
             type="submit"
             disabled={this.state.selectedFile === null}
-            onClick={this.sendSelectedFile.bind(this)}
-          >
-            {this.state.canConfirm ? "Confirmer" : "Envoyer"}
-          </button>
+            value={this.state.canConfirm ? "Confirmer" : "Envoyer"}
+          />
         </form>
-        {this.state.imported && <p className="success">Le fichier à été importé avec succès</p>}
+        {this.state.imported && <p className="success">Le fichier a été importé avec succès</p>}
         {this.displayList(this.state.warnings, "warnings")}
         {this.displayList(this.state.errors, "errors")}
       </div>
@@ -117,11 +122,11 @@ class FileImporter extends Component {
 
 FileImporter.propTypes = {
   endpoint: PropTypes.string.isRequired,
-  mimeTypes: PropTypes.arrayOf(PropTypes.string).isRequired,
+  type: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 /**
- * Component which, on click, fetch a file and opens it.
+ * Component which, on click, fetches a file and opens it.
  */
 const FileDownloader = ({ filename, endpoint, text }) => {
   /**
@@ -160,6 +165,7 @@ FileDownloader.propTypes = {
 const Configuration = () => {
   function saveConfig(e) {
     e.preventDefault();
+    // TODO update config in the server
   }
   return (
     <form className="configuration" onSubmit={saveConfig}>
@@ -186,29 +192,29 @@ const Admin = () => (
         filename="molecules.csv"
         endpoint="/api/v1/import/molecules"
       />
-      <FileImporter endpoint="/api/v1/import/molecules" mimeTypes={CSV_MIME} />
+      <FileImporter endpoint="/api/v1/import/molecules" type={MIME_TYPES.CSV_MIME} />
     </details>
     <details>
-      <summary>Importer des étudiants</summary>
+      <summary>Importer des étudiants (WIP)</summary>
       <FileDownloader
         text="Télécharger le dernier fichier importé"
         filename="etudiants.csv"
         endpoint="/api/v1/import/students"
       />
-      <FileImporter endpoint="/api/v1/import/students" mimeTypes={CSV_MIME} />
+      <FileImporter endpoint="/api/v1/import/students" type={MIME_TYPES.CSV_MIME} />
     </details>
     <details>
-      <summary>Configuration</summary>
+      <summary>Configuration (WIP)</summary>
       <Configuration />
     </details>
     <details>
-      <summary>Importer des images</summary>
+      <summary>Importer des images (WIP)</summary>
       <FileDownloader
         text="Télécharger le dernier fichier importé"
         filename="images.csv"
         endpoint="/api/v1/import/images"
       />
-      <FileImporter endpoint="/api/v1/import/images" mimeTypes={ZIP_MIME} />
+      <FileImporter endpoint="/api/v1/import/images" type={MIME_TYPES.ZIP_MIME} />
     </details>
   </main>
 );

@@ -24,7 +24,7 @@ main#administration {
   }
 
   details {
-    padding: 0 2rem;
+    margin: 0 2rem;
 
     summary {
       font-size: 1.2rem;
@@ -32,7 +32,7 @@ main#administration {
     }
 
     + details {
-      padding-top: 2rem;
+      margin-top: 2rem;
     }
   }
 

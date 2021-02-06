@@ -151,7 +151,7 @@ function importMolecules(req, _res) {
     })
     .catch((error) => {
       if (HeaderErrors.isInstance(error)) {
-        res.sendUsageError(400, "Badly formatted file", {
+        res.sendUsageError(422, "Badly formatted file", {
           errors: error.errors,
           imported,
         });
