@@ -72,14 +72,14 @@ describe("Import molecule", () => {
   it("Import bad files", async () => {
     let res = await uploadFile("bad.csv", false, mytoken);
 
-    expect(res.status).equals(400);
+    expect(res.status).equals(422);
 
     expect(res.body.errors).to.have.length.greaterThan(0);
     expect(res.body.imported).to.be.false;
 
     res = await uploadFile("bad.csv", true, mytoken);
 
-    expect(res.status).equals(400);
+    expect(res.status).equals(422);
 
     expect(res.body.errors).to.have.length.greaterThan(0);
     res.body.errors.forEach((error) => expect(error).to.haveOwnProperty("message"));
@@ -127,7 +127,7 @@ describe("Import molecule", () => {
 
   it("Fake csv file", async () => {
     const res = await uploadFile("molecules_false.csv", true, mytoken);
-    expect(res.status).equals(400);
+    expect(res.status).equals(422);
   });
 });
 
