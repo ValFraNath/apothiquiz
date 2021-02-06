@@ -25,10 +25,15 @@
 
   div.choice {
     margin: auto;
+    touch-action: manipulation;
 
     .disabled {
       pointer-events: none;
       color: lightgray;
+    }
+
+    svg {
+      cursor: pointer;
     }
   }
 
