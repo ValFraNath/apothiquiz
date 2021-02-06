@@ -28,6 +28,7 @@ main#administration {
 
     summary {
       font-size: 1.2rem;
+      @include not-selectable;
     }
 
     + details {
@@ -41,28 +42,38 @@ main#administration {
       flex-direction: row;
       justify-content: flex-start;
     }
-    li {
-      font-style: italic;
-      font-size: 0.8rem;
-      letter-spacing: 0.5px;
-      line-height: 1rem;
-      margin: 0.5rem 0;
-      color: black;
-      padding-left: 1.5rem;
-      position: relative;
-      word-wrap: break-word;
 
-      &::before {
-        position: absolute;
-        left: 0;
-      }
-
-      &.warning::before {
+    ul {
+      &.warnings > li::before {
         content: "⚠️  ";
       }
 
-      &.error::before {
+      &.errors > li::before {
         content: "❌  ";
+      }
+
+      li {
+        font-style: italic;
+        font-size: 0.8rem;
+        letter-spacing: 0.5px;
+        line-height: 1rem;
+        margin: 0.5rem 0;
+        color: black;
+        padding-left: 1.5rem;
+        position: relative;
+        word-wrap: break-word;
+
+        &::before {
+          position: absolute;
+          left: 0;
+        }
+      }
+    }
+
+    p.success {
+      margin: 1rem;
+      &::before {
+        content: "✔️";
       }
     }
   }
