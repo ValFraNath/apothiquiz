@@ -43,36 +43,31 @@ INSERT INTO classes_by_molecule(
         cl_higher,
         cl_level
     FROM classification
-    WHERE cl_level <= 2
     ORDER BY  mo_id, cl_level
 );
 
 -- // Get a random class 1 which have at least 4 child
-SET @class1 = ( SELECT cl_id
+SET @class = ( SELECT cl_id
                 FROM classes_by_molecule AS C1
                 WHERE 3 < (	SELECT COUNT(DISTINCT cl_id)
                             FROM classes_by_molecule AS C2
-                            WHERE C1.cl_id = C2.cl_higher 
-                           	AND C2.cl_level = 2
-                          )
-               	AND C1.cl_level = 1
+                            WHERE (C1.cl_higher = C2.cl_higher 
+                                   OR (C1.cl_higher IS NULL AND C2.cl_higher IS NULL))
+                           	AND C1.cl_id <> C2.cl_id
+                           	)
                 ORDER BY RAND()
                 LIMIT 1 );
-
--- // Get a random class 2, child of @class1
-SET @good = (SELECT cl_id
-               FROM classes_by_molecule
-               WHERE cl_higher = @class1
-               AND cl_level = 2
-               ORDER BY RAND()
-               LIMIT 1);
 
 -- // Get a molecule belonging to @class2
 SET @molecule = (SELECT mo_id
                  FROM classes_by_molecule
-                 WHERE cl_id = @good
+                 WHERE cl_id = @class
                  ORDER BY RAND()
                  LIMIT 1);
+                 
+SET @level = (SELECT cl_level
+              FROM class
+              WHERE cl_id = @class);
 
 -- // Get 3 classes different than @class2, but belonging to @class1                 
 SELECT DISTINCT (SELECT mo_dci
@@ -80,11 +75,14 @@ SELECT DISTINCT (SELECT mo_dci
         WHERE mo_id = @molecule) as subject,
         (SELECT cl_name 
          FROM class
-         WHERE cl_id = @good) AS good_answer,
+         WHERE cl_id = @class) AS good_answer,
          cl_name AS bad_answer
-FROM classes_by_molecule
-WHERE cl_higher = @class1
-AND cl_id <> @good
+FROM classes_by_molecule AS C
+WHERE cl_id <> @class
+AND ((@level > 1 AND C.cl_higher = (SELECT cl_higher
+                                   	FROM class
+                                   	WHERE cl_id = @class))
+OR (@level = 1 AND C.cl_level = 1))
 ORDER BY RAND()
 LIMIT 3;
 

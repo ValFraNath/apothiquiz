@@ -1,5 +1,5 @@
 -- ************************************************************************
---    TYPE D2 : A quelle // systeme 2 // appartient la molecule // DCI // 
+--    TYPE B2 : A quelle // systeme 2 // appartient la molecule // DCI // 
 -- ************************************************************************
 
 -- // create a temp table to store the level 2 system of each molecule 
@@ -13,7 +13,7 @@ CREATE TEMPORARY TABLE systems_by_molecule(
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8 COLLATE = utf8_bin;
 
 INSERT INTO systems_by_molecule(
-    WITH RECURSIVE classification AS(
+    WITH RECURSIVE systemification AS(
         SELECT sy_id,
             sy_name,
             sy_higher,
@@ -32,7 +32,7 @@ INSERT INTO systems_by_molecule(
             parent.sy_level,
             c.mo_id,
             c.mo_dci
-        FROM system parent INNER JOIN classification c 
+        FROM system parent INNER JOIN systemification c 
         	ON parent.sy_id = c.sy_higher
         
     )
@@ -42,54 +42,51 @@ INSERT INTO systems_by_molecule(
         sy_name,
         sy_higher,
         sy_level
-    FROM classification
-    WHERE sy_level <= 2
+    FROM systemification
     ORDER BY  mo_id, sy_level
 );
 
-
-
 -- // Get a random system 1 which have at least 4 child
-SET @system1 = ( SELECT sy_id
+SET @system = ( SELECT sy_id
                 FROM systems_by_molecule AS C1
                 WHERE 3 < (	SELECT COUNT(DISTINCT sy_id)
                             FROM systems_by_molecule AS C2
-                            WHERE C1.sy_id = C2.sy_higher 
-                           	AND C2.sy_level = 2
-                          )
-               	AND C1.sy_level = 1
+                            WHERE (C1.sy_higher = C2.sy_higher 
+                                   OR (C1.sy_higher IS NULL AND C2.sy_higher IS NULL))
+                           	AND C1.sy_id <> C2.sy_id
+                           	)
                 ORDER BY RAND()
                 LIMIT 1 );
-                           
 
--- // Get a random system 2, child of @system1
-SET @good = (SELECT sy_id
-               FROM systems_by_molecule
-               WHERE sy_higher = @system1
-               AND sy_level = 2
-               ORDER BY RAND()
-               LIMIT 1);
-
--- // Get a molecule belonging to @good
+-- // Get a molecule belonging to @system2
 SET @molecule = (SELECT mo_id
                  FROM systems_by_molecule
-                 WHERE sy_id = @good
+                 WHERE sy_id = @system
                  ORDER BY RAND()
                  LIMIT 1);
+                 
+SET @level = (SELECT sy_level
+              FROM system
+              WHERE sy_id = @system);
 
--- // Get 3 systems different than @class2, but belonging to @system1                 
+-- // Get 3 systems different than @system2, but belonging to @system1                 
 SELECT DISTINCT (SELECT mo_dci
         FROM molecule 
         WHERE mo_id = @molecule) as subject,
         (SELECT sy_name 
          FROM system
-         WHERE sy_id = @good) AS good_answer,
+         WHERE sy_id = @system) AS good_answer,
          sy_name AS bad_answer
-FROM systems_by_molecule
-WHERE sy_higher = @system1
-AND sy_id <> @good
+FROM systems_by_molecule AS C
+WHERE sy_id <> @system
+AND ((@level > 1 AND C.sy_higher = (SELECT sy_higher
+                                   	FROM system
+                                   	WHERE sy_id = @system))
+OR (@level = 1 AND C.sy_level = 1))
 ORDER BY RAND()
 LIMIT 3;
 
-DROP TABLE systems_by_molecule;
+DROP TABLE systems_by_molecule;               	
+
+          
           

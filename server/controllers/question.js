@@ -7,61 +7,61 @@ import { addErrorTitle } from "../global/Logger.js";
 
 const generatorInfosByType = {
   1: {
-    createFilename: () => filenameRandomLevel("question_CM", 2),
+    filename: "question_CM.sql",
     before: "",
     createWording: (subject) => `Quelle molécule appartient à la classe '${subject}' ?`,
     title: "1 classe - 4 molécules",
   },
   2: {
-    createFilename: () => filenameRandomLevel("question_MC", 2),
+    filename: "question_MC.sql",
     before: "",
     createWording: (subject) => `À quelle classe appartient la molécule '${subject}' ?`,
     title: "1 molecule - 4 classes",
   },
   3: {
-    createFilename: () => filenameRandomLevel("question_SM", 2),
+    filename: "question_SM.sql",
     before: "",
     createWording: (subject) => `Quelle molécule appartient au système '${subject}' ?`,
     title: "1 système - 4 molécules",
   },
   4: {
-    createFilename: () => filenameRandomLevel("question_MS", 2),
+    filename: "question_MS.sql",
     before: "",
     createWording: (subject) => `À quel système appartient la molécule '${subject}' ?`,
     title: "1 molecule - 4 systèmes",
   },
   5: {
-    createFilename: () => "question_PM.sql",
+    filename: "question_PM.sql",
     before: "SET @property = 'indications';",
     createWording: (subject) => `Quelle molécule a comme indication '${subject}' ?`,
     title: "1 indication - 4 molecules",
   },
   6: {
-    createFilename: () => "question_PM.sql",
+    filename: "question_PM.sql",
     before: "SET @property = 'sideEffects';",
     createWording: (subject) => `Quelle molécule a comme effet indésirable '${subject}' ?`,
     title: "1 effet indésirable - 4 molecules",
   },
   7: {
-    createFilename: () => "question_PM.sql",
+    filename: "question_PM.sql",
     before: "SET @property = 'interactions';",
     createWording: (subject) => `Quelle molécule a comme intéraction '${subject}' ?`,
     title: "1 intéraction - 4 molecules",
   },
   8: {
-    createFilename: () => "question_MP.sql",
+    filename: "question_MP.sql",
     before: "SET @property = 'indications';",
     createWording: (subject) => `Quelle indication a la molécule '${subject}' ?`,
     title: "1 molécule - 4 indications",
   },
   9: {
-    createFilename: () => "question_MP.sql",
+    filename: "question_MP.sql",
     before: "SET @property = 'sideEffects';",
     createWording: (subject) => `Quel effet indésirable a la molécule '${subject}' ?`,
     title: "1 molécule - 4 effets indésirables",
   },
   10: {
-    createFilename: () => "question_MP.sql",
+    filename: "question_MP.sql",
     before: "SET @property = 'interactions';",
     createWording: (subject) => `Quelle intéraction a la molécule '${subject}' ?`,
     title: "1 molécule - 4 intéractions",
@@ -156,17 +156,6 @@ async function queryQuestion(filename, type, before = "") {
 }
 
 /**
- * Compute a script filename with a random level
- * @param {string} filenamePrefix The beginning of the filename, without the level
- * @param {number} maxLevel The level maximum
- * @returns {string} The filename
- */
-function filenameRandomLevel(filenamePrefix, maxLevel) {
-  const level = Math.floor(1 + Math.random() * maxLevel);
-  return `${filenamePrefix}${level}.sql`;
-}
-
-/**
  * Create a function generator to a given type
  * @param {number} type The question type
  * @returns {function():Promise}
@@ -179,8 +168,7 @@ export function createGeneratorOfType(type) {
 
   return function () {
     return new Promise((resolve, reject) => {
-      const filename = typeInfos.createFilename();
-      const { before } = typeInfos;
+      const { before, filename } = typeInfos;
 
       queryQuestion(filename, type, before)
         .then((question) =>
