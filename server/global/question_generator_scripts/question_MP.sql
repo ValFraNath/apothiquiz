@@ -18,7 +18,7 @@ SET @molecule = (SELECT mo_id
                                            FROM properties_by_molecule AS P3
                                            WHERE P3.pr_name = @property
                                            AND P3.mo_id = P1.mo_id
-                                           AND P3.pv_id = p2.pv_id
+                                           AND P3.pv_id = P2.pv_id
                                           )
                           )
                  ORDER BY RAND()
