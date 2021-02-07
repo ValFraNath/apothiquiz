@@ -47,30 +47,32 @@ const MAX_FILE_KEPT = 15;
       "imported": false
     }
   
- * @apiError (400) BadFormattedFile The csv file is badly formatted
+ * @apiError (422) BadFormattedFile The csv file is badly formatted
  * @apiErrorExample BadlyFormattedFile Error-Response:
     {
-      "message": {
-        "message": "Badly formatted file",
-        "errors": [
-          {
-            "code": 1,
-            "message": "Colonne manquante : 'FORMULE_CHIMIQUE'"
-          },
-          {
-            "code": 4,
-            "message": "Colonne invalide : 'INDICATIO' (col. 10)"
-          },
-          {
-            "code": 4,
-            "message": "Colonne invalide : 'FORMULE CHIMIQUE' (col. 19)"
-          }
-        ],
-        "imported": false
-      }
+      "message": "Badly formatted file",
+      "errors": [
+        {
+          "code": 1,
+          "message": "Colonne manquante : 'FORMULE_CHIMIQUE'"
+        },
+        {
+          "code": 4,
+          "message": "Colonne invalide : 'INDICATIO' (col. 10)"
+        },
+        {
+          "code": 4,
+          "message": "Colonne invalide : 'FORMULE CHIMIQUE' (col. 19)"
+        }
+      ],
+      "imported": false      
     }   
  * @apiError (400) BadFileType The file is not csv
  * @apiError (400) MissingFile No file provided
+ * @apiErrorExample 400 Error-Response:
+  {
+    "message" : "Fichier manquant"
+  }
  * @apiUse ErrorServer
  *
  */
@@ -151,7 +153,7 @@ function importMolecules(req, _res) {
     })
     .catch((error) => {
       if (HeaderErrors.isInstance(error)) {
-        res.sendUsageError(400, "Badly formatted file", {
+        res.sendUsageError(422, "Badly formatted file", {
           errors: error.errors,
           imported,
         });
@@ -167,8 +169,8 @@ function importMolecules(req, _res) {
  * @api {get} /import/molecules Get the last imported file
  * @apiName GetLastImported
  * @apiGroup Import
- * @apiPermissions LoggedIn 
- * @apiPermissions Admin 
+ * @apiPermission LoggedIn 
+ * @apiPermission Admin 
  *
  * @apiSuccess (200) {string} url The url to the file
  * @apiSuccess (200) {string} shortpath The path to the file in the server
@@ -191,8 +193,8 @@ function getLastImportedFile(req, _res) {
       const last = files[0];
 
       res.sendResponse(200, {
-        url: last ? `${req.protocol}://${req.get("host")}/files/molecules/${last}` : null,
-        shortpath: `/files/molecules/${last}`,
+        url: last ? `${req.protocol}://${req.get("host")}/api/v1/files/molecules/${last}` : null,
+        shortpath: `/api/v1/files/molecules/${last}`,
         file: last,
       });
     })

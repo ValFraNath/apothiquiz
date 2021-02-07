@@ -6,7 +6,6 @@ import express from "express";
 
 import Database from "./db/database.js";
 import Logger from "./global/Logger.js";
-import AuthenticationMiddleware from "./middlewares/auth.middleware.js";
 import RequestSyntaxErrorHandler from "./middlewares/error.middleware.js";
 import apiRouter from "./routes/api.route.js";
 import reactRouter from "./routes/react.route.js";
@@ -28,7 +27,6 @@ fs.mkdirSync("files", { recursive: true });
 
 app.use(bodyParser.json());
 app.use(express.static("../client/build/"));
-app.use("/files", AuthenticationMiddleware, express.static("files"));
 app.use("/api/v1/", apiRouter);
 app.use("/", reactRouter);
 app.use(RequestSyntaxErrorHandler);

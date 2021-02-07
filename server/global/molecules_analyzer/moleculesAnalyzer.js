@@ -174,8 +174,8 @@ function getNonValidNumberValue(molecules) {
 }
 
 export class AnalyzerWarning {
-  constructor(type, message) {
-    this.type = type;
+  constructor(code, message) {
+    this.code = code;
     this.message = message;
   }
 }

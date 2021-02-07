@@ -1,0 +1,90 @@
+main#administration {
+  box-sizing: border-box;
+
+  h1 {
+    font-size: 2rem;
+    padding: 2rem;
+    margin: auto;
+    width: max-content;
+  }
+
+  a {
+    display: block;
+    width: max-content;
+    margin: 1rem 0;
+  }
+
+  button,
+  input[type="file"],
+  input[type="submit"] {
+    cursor: pointer;
+    width: max-content;
+    font-size: 1rem;
+    margin-right: 1rem;
+  }
+
+  details {
+    margin: 0 2rem;
+
+    summary {
+      font-size: 1.2rem;
+      @include not-selectable;
+    }
+
+    + details {
+      margin-top: 2rem;
+    }
+  }
+
+  .file-importer {
+    form {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+    }
+
+    ul {
+      &.warnings > li::before {
+        content: "⚠️  ";
+      }
+
+      &.errors > li::before {
+        content: "❌  ";
+      }
+
+      li {
+        font-style: italic;
+        font-size: 0.8rem;
+        letter-spacing: 0.5px;
+        line-height: 1rem;
+        margin: 0.5rem 0;
+        color: black;
+        padding-left: 1.5rem;
+        position: relative;
+        word-wrap: break-word;
+
+        &::before {
+          position: absolute;
+          left: 0;
+        }
+      }
+    }
+
+    p.success {
+      margin: 1rem;
+      &::before {
+        content: "✔️";
+      }
+    }
+  }
+
+  form.configuration {
+    display: flex;
+    flex-direction: column;
+
+    input[type="number"] {
+      width: 50px;
+      margin: 0.5rem 1rem;
+    }
+  }
+}
