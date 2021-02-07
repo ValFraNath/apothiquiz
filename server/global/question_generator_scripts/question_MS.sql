@@ -46,7 +46,7 @@ INSERT INTO systems_by_molecule(
     ORDER BY  mo_id, sy_level
 );
 
--- // Get a random system 1 which have at least 4 child
+-- Get a random system which have at least 3 siblings
 SET @system = ( SELECT sy_id
                 FROM systems_by_molecule AS C1
                 WHERE 3 < (	SELECT COUNT(DISTINCT sy_id)
@@ -58,7 +58,7 @@ SET @system = ( SELECT sy_id
                 ORDER BY RAND()
                 LIMIT 1 );
 
--- // Get a molecule belonging to @system2
+-- // Get a random molecule belonging to @system
 SET @molecule = (SELECT mo_id
                  FROM systems_by_molecule
                  WHERE sy_id = @system
@@ -69,7 +69,7 @@ SET @level = (SELECT sy_level
               FROM system
               WHERE sy_id = @system);
 
--- // Get 3 systems different than @system2, but belonging to @system1                 
+-- Get 3 random systems among @system siblings 
 SELECT DISTINCT (SELECT mo_dci
         FROM molecule 
         WHERE mo_id = @molecule) as subject,

@@ -2,7 +2,6 @@
 --                  TYPE 2 : 1 molecule - 4 classes 
 -- ************************************************************************
 
--- // create a temp table to store the level 2 class of each molecule 
 CREATE TEMPORARY TABLE classes_by_molecule(
        mo_id int(11),
        mo_dci varchar(256),
@@ -46,7 +45,7 @@ INSERT INTO classes_by_molecule(
     ORDER BY  mo_id, cl_level
 );
 
--- // Get a random class 1 which have at least 4 child
+-- Get a random class which have at least 3 siblings
 SET @class = ( SELECT cl_id
                 FROM classes_by_molecule AS C1
                 WHERE 3 < (	SELECT COUNT(DISTINCT cl_id)
@@ -58,18 +57,14 @@ SET @class = ( SELECT cl_id
                 ORDER BY RAND()
                 LIMIT 1 );
 
--- // Get a molecule belonging to @class2
+-- Get a random molecule belonging to @class
 SET @molecule = (SELECT mo_id
                  FROM classes_by_molecule
                  WHERE cl_id = @class
                  ORDER BY RAND()
-                 LIMIT 1);
-                 
-SET @level = (SELECT cl_level
-              FROM class
-              WHERE cl_id = @class);
+                 LIMIT 1);                
 
--- // Get 3 classes different than @class2, but belonging to @class1                 
+-- Get 3 random classes among @class siblings 
 SELECT DISTINCT (SELECT mo_dci
         FROM molecule 
         WHERE mo_id = @molecule) as subject,

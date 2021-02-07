@@ -2,7 +2,6 @@
 --                  TYPE 3  : 1 system - 4 molécule
 -- **************************************************************** 
 
--- // create a temp table to store the level 2 system of each molecule 
 CREATE TEMPORARY TABLE systems_by_molecule(
        mo_id int(11),
        mo_dci varchar(256),
@@ -47,9 +46,7 @@ INSERT INTO systems_by_molecule(
 );
 
 
--- // GET a random system of level 2, 
--- // for which there are at least 3 molecules not belonging to this system 
--- // but to the same parent system
+--  Get a random system which have at least 3 siblings
 SET @system = ( SELECT C1.sy_id
               	FROM systems_by_molecule AS C1
               	WHERE 3 <= ( SELECT COUNT(sy_id)
@@ -61,32 +58,28 @@ SET @system = ( SELECT C1.sy_id
               	LIMIT 1 );
        
 
--- // Get a random molecule belonging to @system
+-- Get a random molecule belonging to @system
 SET @good = ( SELECT mo_id
               FROM systems_by_molecule AS C
               WHERE C.sy_id = @system
               ORDER BY RAND()
               LIMIT 1 );             
-              
-SET @level = (SELECT sy_level
-              FROM system
-              WHERE sy_id = @system);
-              
+             
 
--- // Get 3 random molecules, belonging to the parent system of @system, but not to @system
+-- Get 3 random molecules, belonging to @system siblings
 SELECT 	DISTINCT (SELECT mo_dci
          FROM molecule
          WHERE mo_id = @good) AS good_answer,
         (SELECT sy_name
          FROM system
          WHERE sy_id = @system) AS subject,
-         mo_dci AS bad_answer, @level AS LEVEL
+         mo_dci AS bad_answer
 FROM systems_by_molecule AS C
 WHERE C.sy_id <> @system
 AND ((@level > 1 AND C.sy_higher = ( SELECT sy_higher
               		FROM system
               		WHERE sy_id = @system ))
-OR (@level = 1 AND C.sy_level = 1)) -- // TODO test that
+OR (@level = 1 AND C.sy_level = 1)) 
 ORDER BY RAND()
 LIMIT 3;
 

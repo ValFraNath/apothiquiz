@@ -2,8 +2,6 @@
 --            TYPE 8-9-10 : 1 molecule - 4 property values
 -- ****************************************************************
 
--- SET @property = "indications";
-
 CREATE TEMPORARY TABLE properties_by_molecule(
        mo_id int(11),
        mo_dci varchar(256),
@@ -18,7 +16,7 @@ JOIN property ON pr_id = pv_property NATURAL JOIN molecule
 WHERE pr_name = @property
 ORDER BY RAND();
 
-
+-- Get a random molecule for which there are at least 3 property values ​​that it does not have
 SET @molecule = (SELECT mo_id
                  FROM properties_by_molecule AS P1
                  WHERE 3 <= (SELECT COUNT(DISTINCT pv_id)
@@ -31,14 +29,16 @@ SET @molecule = (SELECT mo_id
                           )
                  
                  LIMIT 1);
-                 
+
+-- Get a random property value among these of @molecule                 
 SET @good = (SELECT pv_id
              FROM properties_by_molecule
              WHERE mo_id = @molecule
              ORDER BY RAND()
              LIMIT 1);                 
-                 
-SELECT DISTINCT	(SELECT mo_dci
+
+-- - Get 3 random property values ​​that @molecule doesn't have                 
+SELECT DISTINCT (SELECT mo_dci
                  FROM molecule
                  WHERE mo_id = @molecule) AS subject,
                 (SELECT pv_name

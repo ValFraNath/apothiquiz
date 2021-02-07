@@ -2,7 +2,6 @@
 --                  TYPE 1  : 1 class - 4 molecules 
 -- **************************************************************** 
 
--- // create a temp table to store the level 2 class of each molecule 
 CREATE TEMPORARY TABLE classes_by_molecule(
        mo_id int(11),
        mo_dci varchar(256),
@@ -47,9 +46,7 @@ INSERT INTO classes_by_molecule(
 );
 
 
--- // GET a random class of level 2, 
--- // for which there are at least 3 molecules not belonging to this class 
--- // but to the same parent class
+--  Get a random class which have at least 3 siblings
 SET @class = ( SELECT C1.cl_id
               	FROM classes_by_molecule AS C1
               	WHERE 3 <= ( SELECT COUNT( cl_id)
@@ -61,26 +58,23 @@ SET @class = ( SELECT C1.cl_id
               	LIMIT 1 );
        
 
--- // Get a random molecule belonging to @class
+--  Get a random molecule belonging to @class
 SET @good = ( SELECT mo_id
               FROM classes_by_molecule AS C
               WHERE C.cl_id = @class
               ORDER BY RAND()
               LIMIT 1 );             
               
-SET @level = (SELECT cl_level
-              FROM class
-              WHERE cl_id = @class);
               
 
--- // Get 3 random molecules, belonging to the parent class of @class, but not to @class
+--  Get 3 random molecules, belonging to @class siblings
 SELECT 	DISTINCT (SELECT mo_dci
          FROM molecule
          WHERE mo_id = @good) AS good_answer,
         (SELECT cl_name
          FROM class
          WHERE cl_id = @class) AS subject,
-         mo_dci AS bad_answer, @level AS LEVEL
+         mo_dci AS bad_answer
 FROM classes_by_molecule AS C
 WHERE C.cl_id <> @class
 AND ((@level > 1 AND C.cl_higher = ( SELECT cl_higher
