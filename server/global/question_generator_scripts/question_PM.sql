@@ -24,7 +24,7 @@ SET @value = (SELECT pv_id
                           WHERE mo_id NOT IN (SELECT mo_id
                                             FROM properties_by_molecule AS P3
                                             WHERE P3.mo_id = P2.mo_id
-                                            AND P3.pv_id = p1.pv_id
+                                            AND P3.pv_id = P1.pv_id
                                            )
                          )
               
