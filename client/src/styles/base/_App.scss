@@ -14,7 +14,6 @@ main {
   margin: 0;
   min-height: calc(100% - 50px);
   background-color: $color-bg;
-  box-sizing: border-box;
 }
 
 @media only screen and (min-device-width: $screen-desktop) {
@@ -31,6 +30,7 @@ main {
     border: solid 10px black;
     border-radius: 20px;
     overflow-y: auto;
+    background-color: white;
   }
 
   body {

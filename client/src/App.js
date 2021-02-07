@@ -7,6 +7,7 @@ import "./styles/styles.scss";
 import ProtectedRoute from "./components/ProtectedRoute";
 import TopBar from "./components/system/TopBar";
 import About from "./pages/About";
+import Admin from "./pages/Admin";
 import CreateDuel from "./pages/CreateDuel";
 import Duel from "./pages/Duel";
 import DuelOverview from "./pages/DuelOverview";
@@ -108,6 +109,7 @@ export default class App extends Component {
           <ProtectedRoute path="/createduel" exact component={CreateDuel} />
           <ProtectedRoute path="/duel/:id" exact component={DuelOverview} />
           <ProtectedRoute path="/duel/:id/play" exact component={Duel} />
+          <ProtectedRoute path="/admin" exact component={Admin} />
         </Switch>
       </Router>
     );

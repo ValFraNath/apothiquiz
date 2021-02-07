@@ -24,4 +24,6 @@ reactRouter.get("/duel/:id", goToReactIndex);
 
 reactRouter.get("/duel/:id/play", goToReactIndex);
 
+reactRouter.get("/admin", goToReactIndex);
+
 export default reactRouter;
