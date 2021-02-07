@@ -1,5 +1,5 @@
 -- ****************************************************************
---      TYPE 5-6-7 : 1 property values - 4 molecules
+--            TYPE 5-6-7 : 1 property values - 4 molecules
 -- ****************************************************************
 -- SET @property = "indications";
 

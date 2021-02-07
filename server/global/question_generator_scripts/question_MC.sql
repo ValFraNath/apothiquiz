@@ -1,5 +1,5 @@
 -- ************************************************************************
---    TYPE B2 : A quelle // classe 2 // appartient la molecule // DCI // 
+--                  TYPE 2 : 1 molecule - 4 classes 
 -- ************************************************************************
 
 -- // create a temp table to store the level 2 class of each molecule 

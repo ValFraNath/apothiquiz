@@ -1,5 +1,5 @@
 -- ************************************************************************
---    TYPE B2 : A quelle // systeme 2 // appartient la molecule // DCI // 
+--                  TYPE 4 : 1 molecule - 4 systems
 -- ************************************************************************
 
 -- // create a temp table to store the level 2 system of each molecule 

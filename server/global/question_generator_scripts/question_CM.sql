@@ -1,5 +1,5 @@
 -- **************************************************************** 
---     TYPE A2  : Quelle molécule appartient à la // classe 2 // 
+--                  TYPE 1  : 1 class - 4 molecules 
 -- **************************************************************** 
 
 -- // create a temp table to store the level 2 class of each molecule 

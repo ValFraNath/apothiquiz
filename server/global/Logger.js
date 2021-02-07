@@ -83,7 +83,7 @@ const prefixByDate = (str) => `${formatDate()} | ${str}`;
  */
 function formatDate() {
   const date = new Date();
-  return `${forceTwoDigit(date.getDay())}/${forceTwoDigit(
+  return `${forceTwoDigit(date.getDate())}/${forceTwoDigit(
     date.getMonth() + 1
   )}/${date.getFullYear()} - ${forceTwoDigit(date.getHours())}:${forceTwoDigit(
     date.getMinutes()

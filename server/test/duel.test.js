@@ -131,7 +131,6 @@ describe("Duels", () => {
     });
 
     describe("Mocked rounds", function () {
-      this.timeout(4000);
       const ids = [];
 
       before("Cleat duels", (done) => {
@@ -154,7 +153,7 @@ describe("Duels", () => {
           body: { opponent: "nhoun" },
         }).then((res) => {
           ids[0] = res.body.id;
-          setTimeout(done, 1000);
+          done();
         });
       });
 

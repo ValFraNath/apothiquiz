@@ -1,5 +1,5 @@
 -- **************************************************************** 
---     TYPE A2  : Quelle molécule appartient au // système // 
+--                  TYPE 3  : 1 system - 4 molécule
 -- **************************************************************** 
 
 -- // create a temp table to store the level 2 system of each molecule 
