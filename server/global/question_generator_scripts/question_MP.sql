@@ -2,32 +2,39 @@
 --      TYPE 8-9-10 : 1 molecule - 4 property values
 -- ****************************************************************
 
-CREATE OR REPLACE VIEW properties_by_molecule AS
-SELECT * 
+-- SET @property = "indications";
+
+CREATE TEMPORARY TABLE properties_by_molecule(
+       mo_id int(11),
+       mo_dci varchar(256),
+       pv_id int(11),
+       pv_name varchar(256)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8 COLLATE = utf8_bin;
+
+INSERT INTO properties_by_molecule
+SELECT mo_id, mo_dci, pv_id, pv_name 
 FROM molecule_property NATURAL JOIN property_value 
-JOIN property ON pr_id = pv_property NATURAL JOIN molecule;
+JOIN property ON pr_id = pv_property NATURAL JOIN molecule
+WHERE pr_name = @property
+ORDER BY RAND();
 
 
 SET @molecule = (SELECT mo_id
                  FROM properties_by_molecule AS P1
-                 WHERE P1.pr_name = @property
-                 AND 3 <= (SELECT COUNT(DISTINCT pv_id)
+                 WHERE 3 <= (SELECT COUNT(DISTINCT pv_id)
                            FROM properties_by_molecule AS P2
-                           WHERE P2.pr_name = @property
-                           AND NOT EXISTS (SELECT *
+                           WHERE NOT EXISTS (SELECT *
                                            FROM properties_by_molecule AS P3
-                                           WHERE P3.pr_name = @property
-                                           AND P3.mo_id = P1.mo_id
+                                           WHERE P3.mo_id = P1.mo_id
                                            AND P3.pv_id = P2.pv_id
                                           )
                           )
-                 ORDER BY RAND()
+                 
                  LIMIT 1);
                  
 SET @good = (SELECT pv_id
              FROM properties_by_molecule
-             WHERE pr_name = @property
-             AND mo_id = @molecule
+             WHERE mo_id = @molecule
              ORDER BY RAND()
              LIMIT 1);                 
                  
@@ -39,14 +46,12 @@ SELECT DISTINCT	(SELECT mo_dci
                  WHERE pv_id = @good) AS good_answer,
                  pv_name AS bad_answer
 FROM properties_by_molecule AS P1
-WHERE P1.pr_name = @property
-AND NOT EXISTS (SELECT *
+WHERE NOT EXISTS (SELECT *
                 FROM properties_by_molecule AS P2
-                WHERE P2.pr_name = @property
-                AND P1.pv_id = P2.pv_id
+                WHERE P1.pv_id = P2.pv_id
                 AND P2.mo_id = @molecule) 
 ORDER BY RAND()
 LIMIT 3;                
 
 
-DROP VIEW properties_by_molecule;
+DROP TABLE properties_by_molecule;
