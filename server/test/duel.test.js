@@ -112,7 +112,7 @@ describe("Duels", () => {
         expect(res.body).haveOwnProperty("id");
 
         duel = (await requestAPI(`duels/${res.body.id}`, { token: tokens.vperigno })).body;
-      }).timeout(4000);
+      });
 
       it("Good number of rounds & questions", (done) => {
         expect(duel.rounds).to.have.length(NUMBER_OF_ROUNDS_IN_DUEL);
@@ -130,7 +130,7 @@ describe("Duels", () => {
       });
     });
 
-    describe("Mocked rounds", function () {
+    describe("Mocked rounds", () => {
       const ids = [];
 
       before("Cleat duels", (done) => {
