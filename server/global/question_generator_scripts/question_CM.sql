@@ -64,8 +64,11 @@ SET @good = ( SELECT mo_id
               WHERE C.cl_id = @class
               ORDER BY RAND()
               LIMIT 1 );             
-              
-              
+
+-- Get the level of @class             
+SET @level = (SELECT cl_level
+              FROM class
+              WHERE cl_id = @class);     
 
 --  Get 3 random molecules, belonging to @class siblings
 SELECT 	DISTINCT (SELECT mo_dci
@@ -80,7 +83,7 @@ WHERE C.cl_id <> @class
 AND ((@level > 1 AND C.cl_higher = ( SELECT cl_higher
               		FROM class
               		WHERE cl_id = @class ))
-OR (@level = 1 AND C.cl_level = 1)) -- // TODO test that
+OR (@level = 1 AND C.cl_level = 1)) 
 ORDER BY RAND()
 LIMIT 3;
 

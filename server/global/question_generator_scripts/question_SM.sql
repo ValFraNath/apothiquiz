@@ -63,7 +63,12 @@ SET @good = ( SELECT mo_id
               FROM systems_by_molecule AS C
               WHERE C.sy_id = @system
               ORDER BY RAND()
-              LIMIT 1 );             
+              LIMIT 1 ); 
+
+-- Get the level of @system             
+SET @level = (SELECT sy_level
+              FROM system
+              WHERE sy_id = @system);                           
              
 
 -- Get 3 random molecules, belonging to @system siblings

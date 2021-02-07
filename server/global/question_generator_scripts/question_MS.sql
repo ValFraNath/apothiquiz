@@ -58,13 +58,14 @@ SET @system = ( SELECT sy_id
                 ORDER BY RAND()
                 LIMIT 1 );
 
--- // Get a random molecule belonging to @system
+-- Get a random molecule belonging to @system
 SET @molecule = (SELECT mo_id
                  FROM systems_by_molecule
                  WHERE sy_id = @system
                  ORDER BY RAND()
                  LIMIT 1);
-                 
+
+-- Get the level of @system                 
 SET @level = (SELECT sy_level
               FROM system
               WHERE sy_id = @system);

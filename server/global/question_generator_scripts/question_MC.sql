@@ -62,7 +62,12 @@ SET @molecule = (SELECT mo_id
                  FROM classes_by_molecule
                  WHERE cl_id = @class
                  ORDER BY RAND()
-                 LIMIT 1);                
+                 LIMIT 1);    
+
+-- Get the level of @class                 
+SET @level = (SELECT cl_level
+              FROM class
+              WHERE cl_id = @class);
 
 -- Get 3 random classes among @class siblings 
 SELECT DISTINCT (SELECT mo_dci
