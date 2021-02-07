@@ -55,4 +55,3 @@ ORDER BY RAND()
 LIMIT 3;                
 
 DROP TABLE properties_by_molecule;
-

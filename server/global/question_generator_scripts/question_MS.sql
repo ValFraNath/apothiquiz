@@ -87,7 +87,4 @@ OR (@level = 1 AND C.sy_level = 1))
 ORDER BY RAND()
 LIMIT 3;
 
-DROP TABLE systems_by_molecule;               	
-
-          
-          
+DROP TABLE systems_by_molecule;

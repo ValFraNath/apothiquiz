@@ -86,7 +86,4 @@ OR (@level = 1 AND C.cl_level = 1))
 ORDER BY RAND()
 LIMIT 3;
 
-DROP TABLE classes_by_molecule;               	
-
-          
-          
+DROP TABLE classes_by_molecule;
