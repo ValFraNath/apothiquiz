@@ -12,12 +12,20 @@ const Menu = ({ installPromptEvent, user }) => {
 
   return (
     <main id="menu">
-      <div id="list">
-        <Link to="/train">Entraînement libre</Link>
-        {user === null && <Link to="/login">Se connecter</Link>}
-        <Link to="/about">À propos</Link>
-        {installPromptEvent !== null && <InstallApp installPromptEvent={installPromptEvent} />}
-      </div>
+      <section>
+        <Link to="/train" className="btn btn-fw">
+          Entraînement libre
+        </Link>
+        {user === null && (
+          <Link to="/login" className="btn btn-fw">
+            Se connecter
+          </Link>
+        )}
+        <Link to="/about" className="btn btn-fw">
+          À propos
+        </Link>
+      </section>
+      {installPromptEvent !== null && <InstallApp installPromptEvent={installPromptEvent} />}
     </main>
   );
 };

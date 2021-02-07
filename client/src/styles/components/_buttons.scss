@@ -24,6 +24,7 @@ button {
   box-shadow: 0 2px 4px rgba(134, 134, 134, 0.4);
   flex-shrink: 0;
   text-decoration: none;
+  text-align: center;
 
   &[disabled] {
     opacity: 0.4;

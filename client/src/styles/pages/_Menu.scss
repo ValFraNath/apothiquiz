@@ -1,27 +1,23 @@
 main#menu {
+  display: flex;
+  flex-direction: column-reverse;
   background-image: url("../../images/bg_menu.png");
   background-size: cover;
-  background-position: center 0px;
+  background-position: top;
   height: calc(100% - #{$top-bar-height});
-  overflow: auto;
 
-  #list {
-    position: absolute;
-    width: 100%;
-    bottom: 0;
-  }
+  section {
+    padding-bottom: 2.5rem;
 
-  a {
-    display: block;
-    width: 60%;
-    text-align: center;
-    margin: 1rem auto;
-    padding: 20px;
-    background-color: $button-bg;
-    color: $button-fg;
-    text-decoration: none;
-    font-weight: bold;
-    border-radius: $button-border-radius;
+    a {
+      margin-bottom: 1rem;
+      padding-top: 1.2rem;
+      padding-bottom: 1.2rem;
+
+      &:last-of-type {
+        margin-bottom: 0;
+      }
+    }
   }
 }
 
