@@ -3,15 +3,6 @@
 -- ****************************************************************
 
 
-DROP VIEW properties_by_molecule;
-
-
-CREATE OR REPLACE VIEW properties_by_molecule AS
-SELECT * 
-FROM molecule_property NATURAL JOIN property_value 
-JOIN property ON pr_id = pv_property NATURAL JOIN molecule;
-
-
 SET @molecule = (SELECT mo_id
                  FROM properties_by_molecule AS P1
                  WHERE P1.pr_name = @property

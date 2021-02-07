@@ -54,6 +54,7 @@ describe("Question generation", function () {
       expect(Object.getOwnPropertyNames(res.body)).to.contains("wording");
       expect(res.body.goodAnswer).greaterThan(-1);
       expect(res.body.goodAnswer).lessThan(res.body.answers.length);
+      expect(res.body.answers).to.have.length(4);
     });
   }
 
@@ -157,6 +158,7 @@ describe("Question generation", function () {
   it("Type 9 : Consistent values", async () => {
     const res = await requestAPI("question/9");
     const { answers, subject, goodAnswer } = res.body;
+    console.log(res.body);
 
     const answersHavePropertyValue = await Promise.all(
       answers.map((value) => doesHavePropertyValue(subject, "sideEffects", value))

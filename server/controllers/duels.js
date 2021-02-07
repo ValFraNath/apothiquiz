@@ -346,6 +346,7 @@ function createRounds() {
 
       createRound(types.pop())
         .then((round) => {
+          console.log("round created");
           if (rounds.push(round) === NUMBER_OF_ROUNDS_IN_DUEL) {
             resolve(rounds);
           } else {

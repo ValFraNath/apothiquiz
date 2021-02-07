@@ -169,16 +169,17 @@ export function createGeneratorOfType(type) {
   return function () {
     return new Promise((resolve, reject) => {
       const { before, filename } = typeInfos;
-
+      const start = Date.now();
       queryQuestion(filename, type, before)
-        .then((question) =>
+        .then((question) => {
+          console.log(Date.now() - start);
           resolve(
             Object.assign(question, {
               wording: typeInfos.createWording(question.subject),
               title: typeInfos.title,
             })
-          )
-        )
+          );
+        })
         .catch((error) => reject(addErrorTitle(error, "Can't create the question generator")));
     });
   };
