@@ -2,10 +2,6 @@
 --      TYPE 8-9-10 : 1 molecule - 4 property values
 -- ****************************************************************
 
-
-DROP VIEW properties_by_molecule;
-
-
 CREATE OR REPLACE VIEW properties_by_molecule AS
 SELECT * 
 FROM molecule_property NATURAL JOIN property_value 
@@ -53,3 +49,4 @@ ORDER BY RAND()
 LIMIT 3;                
 
 
+DROP VIEW properties_by_molecule;

@@ -112,7 +112,7 @@ describe("Duels", () => {
         expect(res.body).haveOwnProperty("id");
 
         duel = (await requestAPI(`duels/${res.body.id}`, { token: tokens.vperigno })).body;
-      });
+      }).timeout(4000);
 
       it("Good number of rounds & questions", (done) => {
         expect(duel.rounds).to.have.length(NUMBER_OF_ROUNDS_IN_DUEL);
@@ -130,7 +130,8 @@ describe("Duels", () => {
       });
     });
 
-    describe("Mocked rounds", () => {
+    describe("Mocked rounds", function () {
+      this.timeout(4000);
       const ids = [];
 
       before("Cleat duels", (done) => {
@@ -146,28 +147,26 @@ describe("Duels", () => {
         );
       });
 
-      before("Create against nath", async () => {
-        ids.push(
-          (
-            await requestAPI("duels/new", {
-              token: tokens.fpoguet,
-              method: "post",
-              body: { opponent: "nhoun" },
-            })
-          ).body.id
-        );
+      before("Create against nath", (done) => {
+        requestAPI("duels/new", {
+          token: tokens.fpoguet,
+          method: "post",
+          body: { opponent: "nhoun" },
+        }).then((res) => {
+          ids[0] = res.body.id;
+          setTimeout(done, 1000);
+        });
       });
 
-      before("Create against val", async () => {
-        ids.push(
-          (
-            await requestAPI("duels/new", {
-              token: tokens.fpoguet,
-              method: "post",
-              body: { opponent: "vperigno" },
-            })
-          ).body.id
-        );
+      before("Create against val", (done) => {
+        requestAPI("duels/new", {
+          token: tokens.fpoguet,
+          method: "post",
+          body: { opponent: "vperigno" },
+        }).then((res) => {
+          ids[1] = res.body.id;
+          done();
+        });
       });
 
       it("Different ids", (done) => {
