@@ -1,5 +1,5 @@
 -- ****************************************************************
---            TYPE 5-6-7 : 1 property values - 4 molecules
+--            TYPE 5-6-7 : 1 property value - 4 molecules
 -- ****************************************************************
 
 CREATE TEMPORARY TABLE properties_by_molecule(
@@ -55,5 +55,4 @@ ORDER BY RAND()
 LIMIT 3;                
 
 DROP TABLE properties_by_molecule;
-
 
