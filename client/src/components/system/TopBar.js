@@ -9,19 +9,6 @@ import Avatar from "../Avatar";
 import SpriteSheet from "../SpriteSheet";
 
 class UserBadge extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      eyes: 0,
-      hands: 0,
-      hat: 0,
-      mouth: 0,
-      colorBody: "#0c04fc", // blue
-      colorBG: "#D3D3D3", // lightgray
-    };
-  }
-
   componentDidMount() {
     // TODO? Use global state?
     axios
@@ -49,12 +36,12 @@ class UserBadge extends Component {
       <Link to="/profile" id={"userBadge"}>
         <Avatar
           size="32px"
-          eyes={this.state.eyes}
-          hands={this.state.hands}
-          hat={this.state.hat}
-          mouth={this.state.mouth}
-          colorBody={this.state.colorBody}
-          colorBG={this.state.colorBG}
+          eyes={this.state?.eyes}
+          hands={this.state?.hands}
+          hat={this.state?.hat}
+          mouth={this.state?.mouth}
+          colorBody={this.state?.colorBody}
+          colorBG={this.state?.colorBG}
         />
         <span>{this.props.pseudo}</span>
       </Link>
