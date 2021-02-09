@@ -223,7 +223,7 @@ class Train extends Component {
     const minQuestionType = 1,
       maxQuestionType = 10;
     const questionType =
-      Math.floor(Math.random() * (maxQuestionType - minQuestionType)) + minQuestionType;
+      Math.floor(Math.random() * (maxQuestionType + 1 - minQuestionType)) + minQuestionType;
     axios
       .get(`/api/v1/question/${questionType}`)
       .then((res) => {
