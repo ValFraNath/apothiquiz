@@ -54,6 +54,7 @@ describe("Question generation", function () {
       expect(Object.getOwnPropertyNames(res.body)).to.contains("wording");
       expect(res.body.goodAnswer).greaterThan(-1);
       expect(res.body.goodAnswer).lessThan(res.body.answers.length);
+      expect(res.body.answers).to.have.length(4);
     });
   }
 
