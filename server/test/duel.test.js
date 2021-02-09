@@ -146,28 +146,26 @@ describe("Duels", () => {
         );
       });
 
-      before("Create against nath", async () => {
-        ids.push(
-          (
-            await requestAPI("duels/new", {
-              token: tokens.fpoguet,
-              method: "post",
-              body: { opponent: "nhoun" },
-            })
-          ).body.id
-        );
+      before("Create against nath", (done) => {
+        requestAPI("duels/new", {
+          token: tokens.fpoguet,
+          method: "post",
+          body: { opponent: "nhoun" },
+        }).then((res) => {
+          ids[0] = res.body.id;
+          done();
+        });
       });
 
-      before("Create against val", async () => {
-        ids.push(
-          (
-            await requestAPI("duels/new", {
-              token: tokens.fpoguet,
-              method: "post",
-              body: { opponent: "vperigno" },
-            })
-          ).body.id
-        );
+      before("Create against val", (done) => {
+        requestAPI("duels/new", {
+          token: tokens.fpoguet,
+          method: "post",
+          body: { opponent: "vperigno" },
+        }).then((res) => {
+          ids[1] = res.body.id;
+          done();
+        });
       });
 
       it("Different ids", (done) => {
