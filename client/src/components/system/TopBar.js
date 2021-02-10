@@ -1,53 +1,33 @@
 import axios from "axios";
 import PropTypes from "prop-types";
-import React, { Component, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
-// import { CaretLeftIcon } from "@modulz/radix-icons";
 
 import connectionAnim from "../../images/connection_status.png";
 import Avatar from "../Avatar";
 import SpriteSheet from "../SpriteSheet";
 
-class UserBadge extends Component {
-  componentDidMount() {
-    // TODO? Use global state?
-    axios
-      .get(`/api/v1/users/me`)
-      .then((res) => {
-        const { avatar } = res.data;
-        this.setState({
-          eyes: avatar.eyes,
-          hands: avatar.hands,
-          hat: avatar.hat,
-          mouth: avatar.mouth,
-          colorBody: avatar.colorBody,
-          colorBG: avatar.colorBG,
-        });
-      })
-      .catch((error) => {
-        // TODO show message
-        console.error(error);
-        return;
-      });
-  }
+const UserBadge = ({ pseudo }) => {
+  const { data: user } = useQuery(["users", "me"], async () => {
+    return (await axios.get(`/api/v1/users/me`)).data;
+  });
 
-  render() {
-    return (
-      <Link to="/profile" id={"userBadge"}>
-        <Avatar
-          size="32px"
-          eyes={this.state?.eyes}
-          hands={this.state?.hands}
-          hat={this.state?.hat}
-          mouth={this.state?.mouth}
-          colorBody={this.state?.colorBody}
-          colorBG={this.state?.colorBG}
-        />
-        <span>{this.props.pseudo}</span>
-      </Link>
-    );
-  }
-}
+  return (
+    <Link to="/profile" id={"userBadge"}>
+      <Avatar
+        size="32px"
+        eyes={user?.avatar?.eyes}
+        hands={user?.avatar?.hands}
+        hat={user?.avatar?.hat}
+        mouth={user?.avatar?.mouth}
+        colorBody={user?.avatar?.colorBody}
+        colorBG={user?.avatar?.colorBG}
+      />
+      <span>{pseudo}</span>
+    </Link>
+  );
+};
 
 UserBadge.propTypes = {
   pseudo: PropTypes.string.isRequired,
