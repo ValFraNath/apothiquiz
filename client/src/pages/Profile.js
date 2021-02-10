@@ -11,14 +11,7 @@ export default class Profile extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      choiceEyes: 0,
-      choiceHands: 0,
-      choiceHat: 0,
-      choiceMouth: 0,
-      choiceColorBody: "#0c04fc", // blue
-      choiceColorBG: "#D3D3D3", // lightgray
-    };
+    this.state = Avatar.defaultProps;
   }
 
   componentDidMount() {
@@ -52,12 +45,12 @@ export default class Profile extends Component {
       <main id="profile">
         <Avatar
           size="256px"
-          eyes={this.state.choiceEyes}
-          hands={this.state.choiceHands}
-          hat={this.state.choiceHat}
-          mouth={this.state.choiceMouth}
-          colorBody={this.state.choiceColorBody}
-          colorBG={this.state.choiceColorBG}
+          eyes={this.state?.choiceEyes}
+          hands={this.state?.choiceHands}
+          hat={this.state?.choiceHat}
+          mouth={this.state?.choiceMouth}
+          colorBody={this.state?.choiceColorBody}
+          colorBG={this.state?.choiceColorBG}
         />
 
         <Collapsible.Root>
@@ -67,12 +60,12 @@ export default class Profile extends Component {
           </Collapsible.Button>
           <Collapsible.Content>
             <ChooseAvatar
-              choiceEyes={this.state.choiceEyes}
-              choiceHands={this.state.choiceHands}
-              choiceHat={this.state.choiceHat}
-              choiceMouth={this.state.choiceMouth}
-              choiceColorBody={this.state.choiceColorBody}
-              choiceColorBG={this.state.choiceColorBG}
+              choiceEyes={this.state?.choiceEyes}
+              choiceHands={this.state?.choiceHands}
+              choiceHat={this.state?.choiceHat}
+              choiceMouth={this.state?.choiceMouth}
+              choiceColorBody={this.state?.choiceColorBody}
+              choiceColorBG={this.state?.choiceColorBG}
               handleInputEyes={(val) => this.setState({ choiceEyes: parseInt(val) })}
               handleInputHands={(val) => this.setState({ choiceHands: parseInt(val) })}
               handleInputHat={(val) => this.setState({ choiceHat: parseInt(val) })}
