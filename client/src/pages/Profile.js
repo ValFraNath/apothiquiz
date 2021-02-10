@@ -2,6 +2,7 @@ import { CaretSortIcon } from "@modulz/radix-icons";
 import * as Collapsible from "@radix-ui/react-collapsible";
 import axios from "axios";
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 
 import Avatar from "../components/Avatar";
 import ChooseAvatar from "../components/ChooseAvatar";
@@ -79,6 +80,10 @@ export default class Profile extends Component {
         <button className="btn" onClick={this.handleLogoutClick}>
           Me déconnecter
         </button>
+
+        <Link to="/about" className="btn btn-fw">
+          À propos de l'application
+        </Link>
       </main>
     );
   }
