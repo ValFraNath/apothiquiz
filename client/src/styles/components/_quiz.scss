@@ -183,16 +183,18 @@ $timer-size: 100px;
 /* ---------- DuelResults ---------- */
 
 .duel-results {
-  background-color: scale-color($color-green-success, $lightness: 10%);
+  color: scale-color($color-green-success, $lightness: 10%);
+  background-color: $color-gray-wait;
   height: 2em;
+  width: fit-content;
   margin: auto;
   border-radius: $button-border-radius;
-  padding: 0.5em;
+  padding: 0.5em 1.5em;
   display: flex;
   justify-content: center;
   align-items: center;
 
   &.defeat {
-    background-color: scale-color($color-red-error, $lightness: 15%);
+    color: scale-color($color-red-error, $lightness: 15%);
   }
 }
