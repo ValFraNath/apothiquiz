@@ -2,6 +2,7 @@ import express from "express";
 
 import ApiController from "../controllers/api.js";
 import DuelController from "../controllers/duels.js";
+import ImagesController from "../controllers/imagesImporter.js";
 import ImporterController from "../controllers/moleculesImporter.js";
 import QuestionController from "../controllers/question.js";
 import UserController from "../controllers/user.js";
@@ -46,6 +47,20 @@ apiRouter.get(
   authenticationMiddleware,
   fileMiddleware,
   ImporterController.getLastImportedFile
+);
+
+apiRouter.post(
+  "import/images",
+  authenticationMiddleware,
+  fileMiddleware,
+  ImagesController.importImages
+);
+
+apiRouter.get(
+  "import/images",
+  authenticationMiddleware,
+  fileMiddleware,
+  ImagesController.getLastImportedFile
 );
 
 export default apiRouter;

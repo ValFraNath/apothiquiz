@@ -6,18 +6,13 @@ import multer from "multer";
 import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
 import { addErrorTitle } from "../global/Logger.js";
 
-const MIME_TYPES = {
-  "text/csv": "csv",
-  "application/vnd.ms-excel": "csv",
-};
-
 /**
  * Multer configuration
  */
 const storage = multer.diskStorage({
   filename: (req, file, callback) => {
     const filename = String(Date.now());
-    const extension = MIME_TYPES[file.mimetype];
+    const extension = file?.originalname?.split(".").pop();
 
     req.body._uploadedFileName = filename;
     req.body._uploadedFileExtension = extension;
