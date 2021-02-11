@@ -1,17 +1,15 @@
-import axios from "axios";
 import PropTypes from "prop-types";
 import React, { useState, useEffect } from "react";
 import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
 
 import connectionAnim from "../../images/connection_status.png";
+import { getUserInfos } from "../../utils/api-query-user";
 import Avatar from "../Avatar";
 import SpriteSheet from "../SpriteSheet";
 
-const UserBadge = ({ pseudo }) => {
-  const { data: user } = useQuery(["users", "me"], async () => {
-    return (await axios.get(`/api/v1/users/me`)).data;
-  });
+const UserBadge = ({ username }) => {
+  const { data: user } = useQuery(["user", "me"], () => getUserInfos("me"));
 
   return (
     <Link to="/profile" id={"userBadge"}>
@@ -24,13 +22,13 @@ const UserBadge = ({ pseudo }) => {
         colorBody={user?.avatar?.colorBody}
         colorBG={user?.avatar?.colorBG}
       />
-      <span>{pseudo}</span>
+      <span>{username}</span>
     </Link>
   );
 };
 
 UserBadge.propTypes = {
-  pseudo: PropTypes.string.isRequired,
+  username: PropTypes.string.isRequired,
 };
 
 const OfflineBanner = () => {
@@ -96,12 +94,12 @@ const OfflineBanner = () => {
   );
 };
 
-const TopBar = ({ user }) => {
+const TopBar = ({ username }) => {
   return (
     <nav>
-      {user ? <UserBadge pseudo={user} /> : <span></span>}
+      {username ? <UserBadge username={username} /> : <span></span>}
       <h1>
-        <Link to={user ? "/homepage" : "/"}>Guacamole</Link>
+        <Link to={username ? "/homepage" : "/"}>Guacamole</Link>
       </h1>
       <OfflineBanner />
     </nav>
@@ -109,7 +107,7 @@ const TopBar = ({ user }) => {
 };
 
 TopBar.propTypes = {
-  user: PropTypes.string,
+  username: PropTypes.string,
 };
 
 export default TopBar;

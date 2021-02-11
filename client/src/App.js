@@ -90,7 +90,7 @@ export default class App extends Component {
     return (
       <QueryClientProvider client={this.queryClient}>
         <Router>
-          <TopBar user={this.state.user} />
+          <TopBar username={this.state.user} />
           {isUpdateAvailable && (
             <button
               id="update-app"
