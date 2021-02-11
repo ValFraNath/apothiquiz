@@ -1,9 +1,11 @@
-import { ReloadIcon } from "@modulz/radix-icons";
+import { ReloadIcon, BellIcon } from "@modulz/radix-icons";
 import axios from "axios";
 import React, { Component } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 import "./styles/styles.scss";
+import ButtonFullWidth from "./components/buttons/ButtonFullWidth";
+import FullScreenMessage from "./components/FullScreenMessage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import TopBar from "./components/system/TopBar";
 import About from "./pages/About";
@@ -43,6 +45,7 @@ export default class App extends Component {
       waitingServiceWorker: null,
       isUpdateAvailable: false,
       installPromptEvent: null,
+      requireNotificationPermission: false,
       user: user,
     };
   }
@@ -71,7 +74,17 @@ export default class App extends Component {
         installPromptEvent: event,
       });
     });
+
+    // Request permission for notifications
+    if (Notification.permission === "default") {
+      this.setState({ requireNotificationPermission: true });
+    }
   }
+
+  displayBrowserNotificationPermission = () => {
+    this.setState({ requireNotificationPermission: false });
+    Notification.requestPermission();
+  };
 
   updateServiceWorker = () => {
     this.setState({ updateRequired: true });
@@ -81,7 +94,12 @@ export default class App extends Component {
   };
 
   render() {
-    const { isUpdateAvailable, installPromptEvent, updateRequired } = this.state;
+    const {
+      isUpdateAvailable,
+      installPromptEvent,
+      updateRequired,
+      requireNotificationPermission,
+    } = this.state;
 
     return (
       <Router>
@@ -95,6 +113,24 @@ export default class App extends Component {
             <ReloadIcon />
             {!updateRequired ? "Mettre à jour l'app" : "Mise à jour..."}
           </button>
+        )}
+
+        {requireNotificationPermission && (
+          <FullScreenMessage id="authorization-notification">
+            <BellIcon />
+
+            <h1>Notifications</h1>
+
+            <p>
+              Nous aimerions vous envoyer des notifications pour vous prévenir lorsque de nouveaux
+              duels sont disponibles.
+            </p>
+
+            <ButtonFullWidth onClick={this.displayBrowserNotificationPermission}>
+              Autoriser les notifications
+            </ButtonFullWidth>
+            <button onClick={this.displayBrowserNotificationPermission}>Ne pas autoriser</button>
+          </FullScreenMessage>
         )}
 
         <Switch>
