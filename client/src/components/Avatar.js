@@ -42,7 +42,7 @@ Avatar.defaultProps = {
     hands: 0,
     hat: 0,
     mouth: 0,
-    colorBody: "#0c04fc", // blue
+    colorBody: "#000000", // black
     colorBG: "#D3D3D3", // lightgray
   },
   reversed: false,
