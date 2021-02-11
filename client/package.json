@@ -59,6 +59,7 @@
       "no-duplicate-imports": "error",
       "no-else-return": "error",
       "no-unneeded-ternary": "error",
+      "no-unused-vars": "warn",
       "no-useless-rename": "error",
       "prefer-arrow-callback": "error",
       "prefer-destructuring": [
