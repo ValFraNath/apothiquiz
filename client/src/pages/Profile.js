@@ -83,7 +83,7 @@ export default class Profile extends Component {
           Me déconnecter
         </button>
 
-        <Link to="/about" className="btn btn-fw">
+        <Link to="/about" className="btn">
           À propos de l'application
         </Link>
       </main>
