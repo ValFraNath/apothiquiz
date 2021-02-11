@@ -8,7 +8,11 @@ import ImageHands from "../images/avatar/hands.png";
 import ImageHats from "../images/avatar/hats.png";
 import ImageMouthes from "../images/avatar/mouthes.png";
 
-const Avatar = function ({ size, eyes, hands, hat, mouth, colorBG, colorBody, reversed }) {
+const Avatar = function ({
+  size,
+  infos: { eyes, hands, hat, mouth, colorBG, colorBody },
+  reversed,
+}) {
   return (
     <div
       className="avatar"
@@ -33,23 +37,27 @@ const Avatar = function ({ size, eyes, hands, hat, mouth, colorBG, colorBody, re
 };
 
 Avatar.defaultProps = {
-  eyes: 0,
-  hands: 0,
-  hat: 0,
-  mouth: 0,
-  colorBody: "#0c04fc", // blue
-  colorBG: "#D3D3D3", // lightgray
+  infos: {
+    eyes: 0,
+    hands: 0,
+    hat: 0,
+    mouth: 0,
+    colorBody: "#0c04fc", // blue
+    colorBG: "#D3D3D3", // lightgray
+  },
   reversed: false,
 };
 
 Avatar.propTypes = {
   size: PropTypes.string.isRequired,
-  eyes: PropTypes.number,
-  hands: PropTypes.number,
-  hat: PropTypes.number,
-  mouth: PropTypes.number,
-  colorBody: PropTypes.string,
-  colorBG: PropTypes.string,
+  infos: PropTypes.shape({
+    eyes: PropTypes.number,
+    hands: PropTypes.number,
+    hat: PropTypes.number,
+    mouth: PropTypes.number,
+    colorBody: PropTypes.string,
+    colorBG: PropTypes.string,
+  }),
   reversed: PropTypes.bool,
 };
 

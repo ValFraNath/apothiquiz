@@ -9,6 +9,14 @@ import Avatar from "../Avatar";
 import SpriteSheet from "../SpriteSheet";
 
 class UserBadge extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      avatar: undefined,
+    };
+  }
+
   componentDidMount() {
     // TODO? Use global state?
     axios
@@ -16,12 +24,7 @@ class UserBadge extends Component {
       .then((res) => {
         const { avatar } = res.data;
         this.setState({
-          eyes: avatar.eyes,
-          hands: avatar.hands,
-          hat: avatar.hat,
-          mouth: avatar.mouth,
-          colorBody: avatar.colorBody,
-          colorBG: avatar.colorBG,
+          avatar,
         });
       })
       .catch((error) => {
@@ -34,15 +37,7 @@ class UserBadge extends Component {
   render() {
     return (
       <Link to="/profile" id={"userBadge"}>
-        <Avatar
-          size="32px"
-          eyes={this.state?.eyes}
-          hands={this.state?.hands}
-          hat={this.state?.hat}
-          mouth={this.state?.mouth}
-          colorBody={this.state?.colorBody}
-          colorBG={this.state?.colorBG}
-        />
+        <Avatar size="32px" infos={this.state.avatar} />
         <span>{this.props.pseudo}</span>
       </Link>
     );

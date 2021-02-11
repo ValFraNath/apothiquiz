@@ -9,16 +9,7 @@ import AuthService from "../services/auth.service";
 const UserBadge = ({ user, reversed }) => {
   return (
     <div className="badge">
-      <Avatar
-        size="90px"
-        eyes={user?.avatar?.eyes}
-        hands={user?.avatar?.hands}
-        hat={user?.avatar?.hat}
-        mouth={user?.avatar?.mouth}
-        colorBG={user?.avatar?.colorBG}
-        colorBody={user?.avatar?.colorBody}
-        reversed={reversed}
-      />
+      <Avatar size="90px" infos={user?.avatar} reversed={reversed} />
       <span>{user?.pseudo ?? "Pseudonyme"}</span>
     </div>
   );

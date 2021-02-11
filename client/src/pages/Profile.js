@@ -46,12 +46,14 @@ export default class Profile extends Component {
       <main id="profile">
         <Avatar
           size="256px"
-          eyes={this.state?.choiceEyes}
-          hands={this.state?.choiceHands}
-          hat={this.state?.choiceHat}
-          mouth={this.state?.choiceMouth}
-          colorBody={this.state?.choiceColorBody}
-          colorBG={this.state?.choiceColorBG}
+          infos={{
+            eyes: this.state?.choiceEyes,
+            hands: this.state?.choiceHands,
+            hat: this.state?.choiceHat,
+            mouth: this.state?.choiceMouth,
+            colorBody: this.state?.choiceColorBody,
+            colorBG: this.state?.choiceColorBG,
+          }}
         />
 
         <Collapsible.Root>
