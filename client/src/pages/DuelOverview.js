@@ -109,7 +109,8 @@ class DuelOverview extends Component {
       answers,
       currentUserScore: data.userScore,
       opponentScore: data.opponentScore,
-      inProgress: data.inProgress,
+      // eslint-disable-next-line eqeqeq
+      inProgress: data.inProgress == true,
       currentUserCanPlay,
     });
   }
