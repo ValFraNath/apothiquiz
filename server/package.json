@@ -62,6 +62,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "adm-zip": "^0.5.2",
     "autodetect-decoder-stream": "^1.0.3",
     "body-parser": "^1.19.0",
     "chai": "^4.2.0",

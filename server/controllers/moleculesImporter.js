@@ -8,6 +8,7 @@ import Logger, { addErrorTitle } from "../global/Logger.js";
 import { analyzeData } from "../global/molecules_analyzer/moleculesAnalyzer.js";
 import { createSqlToInsertAllData } from "../global/molecules_importer/moleculesImporter.js";
 import { parseMoleculesFromCsv } from "../global/molecules_parser/Parser.js";
+
 const FILES_DIR_PATH = path.resolve("files", "molecules");
 const MAX_FILE_KEPT = 15;
 
