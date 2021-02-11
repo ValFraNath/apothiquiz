@@ -50,14 +50,14 @@ apiRouter.get(
 );
 
 apiRouter.post(
-  "import/images",
+  "/import/images",
   authenticationMiddleware,
   fileMiddleware,
   ImagesController.importImages
 );
 
 apiRouter.get(
-  "import/images",
+  "/import/images",
   authenticationMiddleware,
   fileMiddleware,
   ImagesController.getLastImportedFile

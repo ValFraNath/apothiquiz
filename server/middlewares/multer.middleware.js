@@ -12,7 +12,7 @@ import { addErrorTitle } from "../global/Logger.js";
 const storage = multer.diskStorage({
   filename: (req, file, callback) => {
     const filename = String(Date.now());
-    const extension = file?.originalname?.split(".").pop();
+    const extension = file?.originalname?.split(".").slice(1).pop();
 
     req.body._uploadedFileName = filename;
     req.body._uploadedFileExtension = extension;

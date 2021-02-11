@@ -1,14 +1,13 @@
-import fs from "fs/promises";
 import path from "path";
 
 import { queryPromise } from "../db/database.js";
 import { HeaderErrors } from "../global/csv_reader/HeaderChecker.js";
+import { createDir, deleteFiles, getSortedFiles, moveFile } from "../global/Files.js";
 import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
 import Logger, { addErrorTitle } from "../global/Logger.js";
 import { analyzeData } from "../global/molecules_analyzer/moleculesAnalyzer.js";
 import { createSqlToInsertAllData } from "../global/molecules_importer/moleculesImporter.js";
 import { parseMoleculesFromCsv } from "../global/molecules_parser/Parser.js";
-
 const FILES_DIR_PATH = path.resolve("files", "molecules");
 const MAX_FILE_KEPT = 15;
 
@@ -202,69 +201,3 @@ function getLastImportedFile(req, _res) {
 }
 
 export default { importMolecules, getLastImportedFile };
-
-// ********* INTERNAL FUNCTIONS *********
-
-/**
- * Move a file
- * @param {string} oldPath
- * @param {string} newPath
- * @return {Promise}
- */
-function moveFile(oldPath, newPath) {
-  return new Promise((resolve, reject) => {
-    fs.rename(oldPath, newPath)
-      .then(resolve)
-      .catch((error) => reject(addErrorTitle(error, "Can't move the file")));
-  });
-}
-
-/**
- * Delete files
- * @param {string} filename
- * @returns {Promise}
- */
-function deleteFiles(...filenames) {
-  return new Promise((resolve, reject) => {
-    Promise.all(
-      filenames.map((filename) => {
-        fs.unlink(filename);
-      })
-    )
-      .then(resolve)
-      .catch((error) => reject(addErrorTitle(error, "Can't delete files")));
-  });
-}
-
-/**
- * Create a directory if it does not exist
- * @param {string} dirname
- * @return {Promise}
- */
-function createDir(dirname) {
-  return new Promise((resolve, reject) => {
-    fs.mkdir(dirname, { recursive: true })
-      .then(resolve)
-      .catch((error) => reject(addErrorTitle(error, "Can't create the directory")));
-  });
-}
-
-/**
- * Get an alphabetically sorted array of files in a directory
- * @param {string} dirpath
- * @return {Promise}
- */
-function getSortedFiles(dirpath) {
-  return new Promise((resolve, reject) => {
-    fs.readdir(dirpath)
-      .then((files) => {
-        resolve(files.sort().reverse());
-      })
-      .catch((error) => {
-        if (error.code === "ENOENT") {
-          resolve([]);
-        }
-        reject(addErrorTitle(error, "Can't read the directory"));
-      });
-  });
-}
