@@ -4,6 +4,7 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
 import Avatar from "../components/Avatar";
+import DuelResults from "../components/quiz/DuelResults";
 import AuthService from "../services/auth.service";
 
 const UserBadge = ({ user, reversed }) => (
@@ -136,7 +137,7 @@ class DuelOverview extends Component {
           <UserBadge user={opponent} />
         </header>
 
-        {inProgress && (
+        {inProgress ? (
           <Link
             to={`/duel/${this.props.match.params.id}/play`}
             className="btn"
@@ -144,6 +145,16 @@ class DuelOverview extends Component {
           >
             {currentUserCanPlay ? `Jouer le tour ${answers.length}` : "En attente de l'adversaire"}
           </Link>
+        ) : (
+          // Trick waiting for the login screen
+          currentUser && (
+            <DuelResults
+              user={currentUser}
+              opponent={opponent}
+              score={currentUserScore}
+              opponentScore={opponentScore}
+            />
+          )
         )}
 
         {answers.map((answer, index) => (
