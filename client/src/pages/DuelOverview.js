@@ -31,7 +31,7 @@ UserBadge.propTypes = {
 
 const ResultBricks = ({ user, answers }) => (
   <div className="result">
-    <span>{user?.pseudo ?? "Pseudo"}</span>
+    <span>{user.pseudo}</span>
     <div className="bricks">
       {answers.map((answerType, index) => (
         <span key={index} className={"brick " + answerType}></span>
@@ -39,6 +39,11 @@ const ResultBricks = ({ user, answers }) => (
     </div>
   </div>
 );
+
+ResultBricks.defaultProps = {
+  user: { pseudo: "Pseudo" },
+  answers: Array(5).fill("undefined"),
+};
 
 ResultBricks.propTypes = {
   user: PropTypes.object,
@@ -50,11 +55,13 @@ class DuelOverview extends Component {
     super(props);
 
     this.state = {
-      userScore: "-",
+      currentUserScore: "-",
       opponentScore: "-",
-      currentUser: null,
-      opponent: null,
-      rounds: [],
+      currentUser: undefined,
+      opponent: undefined,
+      inProgress: false,
+      currentUserCanPlay: false,
+      answers: [],
     };
   }
 
@@ -64,11 +71,7 @@ class DuelOverview extends Component {
     axios
       .get(`/api/v1/duels/${duelID}`)
       .then((res) => {
-        this.setState({
-          rounds: res.data.rounds,
-          userScore: res.data.userScore,
-          opponentScore: res.data.opponentScore,
-        });
+        this.parseDuelInfo(res.data);
 
         // Will be replaced by cache later
         const { opponent } = res.data;
@@ -89,62 +92,79 @@ class DuelOverview extends Component {
       });
   }
 
-  render() {
-    const { currentUser, opponent, rounds: originalRounds } = this.state;
-    const rounds = originalRounds.filter((round) => round[0].subject !== undefined);
-
-    let currentUserCanPlay = false;
-    if (rounds.length >= 1) {
-      const lastRound = rounds[rounds.length - 1];
-      const lastQuestion = lastRound[lastRound.length - 1];
-      currentUserCanPlay = lastQuestion.userAnswer === undefined;
+  parseDuelInfo(data) {
+    function isAnswerCorrect(question, answer) {
+      if (answer === undefined) return undefined;
+      return answer === question.goodAnswer;
     }
+
+    // Transform the rounds into an array of answers
+    const playedRounds = data.rounds.filter((round) => round[0].subject !== undefined);
+
+    const answers = playedRounds.map((round) => {
+      const userAnswers = round.map((question) => isAnswerCorrect(question, question?.userAnswer));
+
+      const opponentAnswers = round.map((question) =>
+        isAnswerCorrect(question, question?.opponentAnswer)
+      );
+
+      return { title: round[0].title, userAnswers, opponentAnswers };
+    });
+
+    // Can the current user play the next round?
+    const answersToLastRound = answers[answers.length - 1].userAnswers;
+    const currentUserCanPlay = answersToLastRound[answersToLastRound.length - 1] === undefined;
+
+    // Saving informations in the state
+    this.setState({
+      answers,
+      currentUserScore: data.userScore,
+      opponentScore: data.opponentScore,
+      inProgress: data.inProgress,
+      currentUserCanPlay,
+    });
+  }
+
+  render() {
+    const {
+      currentUserScore,
+      opponentScore,
+      currentUser,
+      opponent,
+      answers,
+      inProgress,
+      currentUserCanPlay,
+    } = this.state;
 
     return (
       <main id="duel-overview">
         <header>
           <UserBadge user={currentUser} reversed={true} />
           <span>
-            {this.state.userScore} — {this.state.opponentScore}
+            {currentUserScore} — {opponentScore}
           </span>
           <UserBadge user={opponent} />
         </header>
 
-        <Link
-          to={`/duel/${this.props.match.params.id}/play`}
-          className="btn"
-          disabled={!currentUserCanPlay}
-        >
-          Jouer le tour {rounds.length}
-        </Link>
+        {inProgress && (
+          <Link
+            to={`/duel/${this.props.match.params.id}/play`}
+            className="btn"
+            disabled={!currentUserCanPlay}
+          >
+            {currentUserCanPlay ? `Jouer le tour ${answers.length}` : "En attente de l'adversaire"}
+          </Link>
+        )}
 
-        {rounds.map((round, index) => {
-          const userAnswers = [];
-          const opponentAnswers = [];
-
-          round.forEach((question) => {
-            const good = question.goodAnswer;
-
-            userAnswers.push(
-              question?.userAnswer === undefined ? undefined : good === question.userAnswer
-            );
-            opponentAnswers.push(
-              question?.opponentAnswer === undefined ? undefined : good === question.opponentAnswer
-            );
-          });
-
-          return (
-            <section key={index}>
-              <h3>
-                Tour {index + 1} : <span>{round[0].title}</span>
-              </h3>
-
-              <ResultBricks user={currentUser} answers={userAnswers} />
-
-              <ResultBricks user={opponent} answers={opponentAnswers} />
-            </section>
-          );
-        })}
+        {answers.map((answer, index) => (
+          <section key={index}>
+            <h3>
+              Tour {index + 1} : <span>{answer.title}</span>
+            </h3>
+            <ResultBricks user={currentUser} answers={answer.userAnswers} />
+            <ResultBricks user={opponent} answers={answer.opponentAnswers} />
+          </section>
+        ))}
       </main>
     );
   }
