@@ -27,6 +27,7 @@
       "no-console": "off",
       "array-bracket-newline": "warn",
       "array-bracket-spacing": "warn",
+      "no-unused-vars": "warn",
       "camelcase": "warn",
       "eqeqeq": "error",
       "no-duplicate-imports": "error",
