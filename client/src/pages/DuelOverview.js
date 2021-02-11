@@ -6,14 +6,12 @@ import { Link } from "react-router-dom";
 import Avatar from "../components/Avatar";
 import AuthService from "../services/auth.service";
 
-const UserBadge = ({ user, reversed }) => {
-  return (
-    <div className="badge">
-      <Avatar size="90px" infos={user?.avatar} reversed={reversed} />
-      <span>{user?.pseudo ?? "Pseudonyme"}</span>
-    </div>
-  );
-};
+const UserBadge = ({ user, reversed }) => (
+  <div className="badge">
+    <Avatar size="90px" infos={user?.avatar} reversed={reversed} />
+    <span>{user?.pseudo ?? "Pseudonyme"}</span>
+  </div>
+);
 
 UserBadge.propTypes = {
   user: PropTypes.object,

@@ -111,17 +111,15 @@ const OfflineBanner = () => {
   );
 };
 
-const TopBar = ({ user }) => {
-  return (
-    <nav>
-      {user ? <UserBadge pseudo={user} /> : <span></span>}
-      <h1>
-        <Link to={user ? "/homepage" : "/"}>Guacamole</Link>
-      </h1>
-      <OfflineBanner />
-    </nav>
-  );
-};
+const TopBar = ({ user }) => (
+  <nav>
+    {user ? <UserBadge pseudo={user} /> : <span></span>}
+    <h1>
+      <Link to={user ? "/homepage" : "/"}>Guacamole</Link>
+    </h1>
+    <OfflineBanner />
+  </nav>
+);
 
 TopBar.propTypes = {
   user: PropTypes.string,
