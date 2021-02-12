@@ -121,9 +121,10 @@ function analyzeMolecules(molecules) {
   const closeNames = getTooCloseValues(dciList, DCI_DISTANCE_MIN);
   const tooLongNames = getTooLongValues(dciList, MAX_LENGTHS.DCI);
   const nonValidNumberValues = getNonValidNumberValue(molecules);
+  const invalidDcis = getInvalidNormalizedDci(dciList);
 
   return [
-    ...getInvalidNormalizedDci(dciList).map(
+    ...invalidDcis.map(
       (dci) =>
         new MoleculesAnalyzerWarning(
           MoleculesAnalyzerWarning.INVALID_DCI,
@@ -197,7 +198,7 @@ export const normalizeDCI = (dci) =>
  * @param {string[]} molecules The molecule's dci
  */
 export function getInvalidNormalizedDci(molecules) {
-  return molecules.map(normalizeDCI).filter((dci) => /^[a-z_]$/i.test(dci));
+  return molecules.map(normalizeDCI).filter((dci) => !/^[a-z_]+$/i.test(dci));
 }
 
 export class MoleculesAnalyzerWarning {

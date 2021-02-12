@@ -16,13 +16,23 @@
     {
       "id": 3,
       "name": "ANALOGUES NUCLEOSIDIQUES",
-      "children": [{ "id": 4, "name": "INTI (INHIBITEURS NUCLEOSIDIQUES TRANSCRIPTASE INVERSE)", "children": [] }]
+      "children": [
+        {
+          "id": 4,
+          "name": "INTI (INHIBITEURS NUCLEOSIDIQUES TRANSCRIPTASE INVERSE)",
+          "children": []
+        }
+      ]
     },
     { "id": 5, "name": "INHIBITEUR DE TERMINASE", "children": [] },
     { "id": 6, "name": "INHIBITEUR POLYMERASE NS5B", "children": [] },
     { "id": 7, "name": "INHIBITEUR NS5A", "children": [] },
     { "id": 8, "name": "INHIBITEUR PROTEINE 3A/4", "children": [] },
-    { "id": 9, "name": "INHIBITEUR DIRECT ADN polymérase virale et transcriptase inverse", "children": [] },
+    {
+      "id": 9,
+      "name": "INHIBITEUR DIRECT ADN polymérase virale et transcriptase inverse",
+      "children": []
+    },
     { "id": 10, "name": "INHIBITEURS NON NUCLEOSIDIQUES DE LA TI", "children": [] },
     {
       "id": 11,
@@ -1025,7 +1035,7 @@
     },
     {
       "id": 71,
-      "dci": "CEFOTAXIME,",
+      "dci": "CEFOTAXIME",
       "skeletalFormula": null,
       "system": 3,
       "class": 32,
@@ -1064,7 +1074,7 @@
     },
     {
       "id": 74,
-      "dci": "CEFTRIAXONE,",
+      "dci": "CEFTRIAXONE",
       "skeletalFormula": null,
       "system": 3,
       "class": 32,
@@ -1220,7 +1230,7 @@
     },
     {
       "id": 86,
-      "dci": "GENTAMICINE,",
+      "dci": "GENTAMICINE",
       "skeletalFormula": null,
       "system": 3,
       "class": 35,
@@ -1233,7 +1243,7 @@
     },
     {
       "id": 87,
-      "dci": "STREPTOMYCINE,",
+      "dci": "STREPTOMYCINE",
       "skeletalFormula": null,
       "system": 3,
       "class": 35,
@@ -1246,7 +1256,7 @@
     },
     {
       "id": 88,
-      "dci": "TOBRAMYCINE,",
+      "dci": "TOBRAMYCINE",
       "skeletalFormula": null,
       "system": 3,
       "class": 35,
@@ -1701,7 +1711,7 @@
     },
     {
       "id": 123,
-      "dci": "ISONIAZIDE,",
+      "dci": "ISONIAZIDE",
       "skeletalFormula": null,
       "system": 3,
       "class": 44,
@@ -1883,7 +1893,7 @@
     },
     {
       "id": 137,
-      "dci": "METRONIDAZOLE,",
+      "dci": "METRONIDAZOLE",
       "skeletalFormula": null,
       "system": 4,
       "class": 48,
@@ -1896,7 +1906,7 @@
     },
     {
       "id": 138,
-      "dci": "ORNIDAZOLE,",
+      "dci": "ORNIDAZOLE",
       "skeletalFormula": null,
       "system": 4,
       "class": 48,
@@ -1909,7 +1919,7 @@
     },
     {
       "id": 139,
-      "dci": "SECNIDAZOLE,",
+      "dci": "SECNIDAZOLE",
       "skeletalFormula": null,
       "system": 4,
       "class": 48,

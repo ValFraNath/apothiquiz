@@ -22,6 +22,7 @@ const files = [
       { code: MoleculesAnalyzerWarning.DUPLICATE_CLASSIFICATION_NODE, count: 0 },
       { code: MoleculesAnalyzerWarning.TOO_CLOSE_VALUES, count: 3 },
       { code: MoleculesAnalyzerWarning.INVALID_TYPE, count: 0 },
+      { code: MoleculesAnalyzerWarning.INVALID_DCI, count: 0 },
     ],
   },
   {
@@ -32,6 +33,7 @@ const files = [
       { code: MoleculesAnalyzerWarning.DUPLICATE_CLASSIFICATION_NODE, count: 2 },
       { code: MoleculesAnalyzerWarning.TOO_CLOSE_VALUES, count: 4 },
       { code: MoleculesAnalyzerWarning.INVALID_TYPE, count: 0 },
+      { code: MoleculesAnalyzerWarning.INVALID_DCI, count: 0 },
     ],
   },
   {
@@ -42,6 +44,7 @@ const files = [
       { code: MoleculesAnalyzerWarning.DUPLICATE_CLASSIFICATION_NODE, count: 0 },
       { code: MoleculesAnalyzerWarning.TOO_CLOSE_VALUES, count: 3 },
       { code: MoleculesAnalyzerWarning.INVALID_TYPE, count: 0 },
+      { code: MoleculesAnalyzerWarning.INVALID_DCI, count: 0 },
     ],
   },
   {
@@ -52,6 +55,18 @@ const files = [
       { code: MoleculesAnalyzerWarning.DUPLICATE_CLASSIFICATION_NODE, count: 2 },
       { code: MoleculesAnalyzerWarning.TOO_CLOSE_VALUES, count: 3 },
       { code: MoleculesAnalyzerWarning.INVALID_TYPE, count: 6 },
+      { code: MoleculesAnalyzerWarning.INVALID_DCI, count: 1 },
+    ],
+  },
+  {
+    name: "invalid_dci.csv",
+    warnings: [
+      { code: MoleculesAnalyzerWarning.DUPLICATE_UNIQUE_VALUE, count: 0 },
+      { code: MoleculesAnalyzerWarning.TOO_LONG_VALUE, count: 0 },
+      { code: MoleculesAnalyzerWarning.DUPLICATE_CLASSIFICATION_NODE, count: 0 },
+      { code: MoleculesAnalyzerWarning.TOO_CLOSE_VALUES, count: 3 },
+      { code: MoleculesAnalyzerWarning.INVALID_TYPE, count: 0 },
+      { code: MoleculesAnalyzerWarning.INVALID_DCI, count: 4 },
     ],
   },
   {
@@ -62,6 +77,7 @@ const files = [
       { code: MoleculesAnalyzerWarning.DUPLICATE_CLASSIFICATION_NODE, count: 1 },
       { code: MoleculesAnalyzerWarning.TOO_CLOSE_VALUES, count: 3 },
       { code: MoleculesAnalyzerWarning.INVALID_TYPE, count: 4 },
+      { code: MoleculesAnalyzerWarning.INVALID_DCI, count: 2 },
     ],
   },
 ];
@@ -92,6 +108,9 @@ describe("Molecules analyzer", () => {
 
       it("Expected warnings", async () => {
         const warnings = analyzeData(data);
+        if (file.name === "invalid_dci.csv") {
+          console.log(warnings);
+        }
         const counter = warningsCounter(warnings);
         file.warnings.forEach((warning) =>
           expect(counter(warning.code), "Type " + warning.code).equals(warning.count)

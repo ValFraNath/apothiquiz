@@ -917,7 +917,7 @@
     },
     {
       "id": 71,
-      "dci": "CEFOTAXIME,",
+      "dci": "CEFOTAXIME",
       "skeletalFormula": null,
       "system": null,
       "class": null,
@@ -956,7 +956,7 @@
     },
     {
       "id": 74,
-      "dci": "CEFTRIAXONE,",
+      "dci": "CEFTRIAXONE",
       "skeletalFormula": null,
       "system": null,
       "class": null,
@@ -1112,7 +1112,7 @@
     },
     {
       "id": 86,
-      "dci": "GENTAMICINE,",
+      "dci": "GENTAMICINE",
       "skeletalFormula": null,
       "system": null,
       "class": null,
@@ -1125,7 +1125,7 @@
     },
     {
       "id": 87,
-      "dci": "STREPTOMYCINE,",
+      "dci": "STREPTOMYCINE",
       "skeletalFormula": null,
       "system": null,
       "class": null,
@@ -1138,7 +1138,7 @@
     },
     {
       "id": 88,
-      "dci": "TOBRAMYCINE,",
+      "dci": "TOBRAMYCINE",
       "skeletalFormula": null,
       "system": null,
       "class": null,
@@ -1593,7 +1593,7 @@
     },
     {
       "id": 123,
-      "dci": "ISONIAZIDE,",
+      "dci": "ISONIAZIDE",
       "skeletalFormula": null,
       "system": null,
       "class": null,
@@ -1775,7 +1775,7 @@
     },
     {
       "id": 137,
-      "dci": "METRONIDAZOLE,",
+      "dci": "METRONIDAZOLE",
       "skeletalFormula": null,
       "system": null,
       "class": null,
@@ -1788,7 +1788,7 @@
     },
     {
       "id": 138,
-      "dci": "ORNIDAZOLE,",
+      "dci": "ORNIDAZOLE",
       "skeletalFormula": null,
       "system": null,
       "class": null,
@@ -1801,7 +1801,7 @@
     },
     {
       "id": 139,
-      "dci": "SECNIDAZOLE,",
+      "dci": "SECNIDAZOLE",
       "skeletalFormula": null,
       "system": null,
       "class": null,
