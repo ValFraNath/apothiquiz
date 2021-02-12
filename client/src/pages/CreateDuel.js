@@ -102,15 +102,7 @@ class CreateDuel extends Component {
                   onClick={() => this.chooseOpponent(user)}
                   className={opponent === user ? "selected" : ""}
                 >
-                  <Avatar
-                    size="50px"
-                    eyes={listOfUsers[user]?.avatar?.eyes}
-                    hands={listOfUsers[user]?.avatar?.hands}
-                    hat={listOfUsers[user]?.avatar?.hat}
-                    mouth={listOfUsers[user]?.avatar?.mouth}
-                    colorBG={listOfUsers[user]?.avatar?.colorBG}
-                    colorBody={listOfUsers[user]?.avatar?.colorBody}
-                  />
+                  <Avatar size="50px" infos={listOfUsers[user]?.avatar} />
                   <p>{user}</p>
                 </li>
               ))}
