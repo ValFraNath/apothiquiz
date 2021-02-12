@@ -1,5 +1,5 @@
 main#duel-overview {
-  padding-top: 20px;
+  padding: 20px 1.2em;
 
   header {
     padding: 0 2rem;
@@ -33,7 +33,7 @@ main#duel-overview {
 
   & > .btn {
     width: auto;
-    margin: 0rem 1.2rem 3rem;
+    margin: 0rem auto 3rem;
     text-align: center;
   }
 
@@ -41,7 +41,7 @@ main#duel-overview {
     $title-height: 35px;
     $color-bg-color: $color-gray;
 
-    margin: $title-height 1.2rem 1rem 1.2rem;
+    margin: $title-height auto 1rem auto;
     padding: 0.8em 0;
     background-color: $color-bg-color;
     border-radius: $button-border-radius;
