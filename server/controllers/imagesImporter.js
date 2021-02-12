@@ -1,10 +1,12 @@
+import { rejects } from "assert";
 import path from "path";
 
 import Zip from "adm-zip";
 
-import { deleteFiles } from "../global/Files.js";
+import { deleteFiles, getSortedFiles } from "../global/Files.js";
 import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
-import Logger from "../global/Logger.js";
+import { analyseImageFilenames } from "../global/ImageFilesAnalyzer.js";
+import Logger, { addErrorTitle } from "../global/Logger.js";
 
 function importImages(req, _res) {
   const res = new HttpResponseWrapper(_res);
@@ -28,18 +30,30 @@ function importImages(req, _res) {
     return;
   }
 
-  // const sendServorError = (error, title) => {
-  //   res.sendServerError(addErrorTitle(error, title));
-  //   deleteUploadedFile();
-  // };
+  const sendServorError = (error, title) => {
+    res.sendServerError(addErrorTitle(error, title));
+    deleteUploadedFile();
+  };
 
   const archive = new Zip(path.resolve(directory, filename));
 
   archive.extractAllTo(path.resolve(directory, "imagesOfMolecules"));
 
-  deleteUploadedFile();
+  getSortedFiles(path.resolve(directory, "imagesOfMolecules"))
+    .then((files) =>
+      analyseImageFilenames(files)
+        .then((warnings) =>
+          res.sendResponse(202, {
+            message: "Images tested but $&énot imported ",
+            warnings,
+            imported: false,
+          })
+        )
+        .catch((error) => sendServorError(error, "Can't analyze images"))
+    )
+    .catch((error) => sendServorError(error, "Can't get sorted files"));
 
-  res.sendResponse(200, req.body);
+  deleteUploadedFile();
 }
 
 function getLastImportedFile() {}

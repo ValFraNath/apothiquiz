@@ -11,6 +11,10 @@ export function analyseImageFilenames(filenames) {
   return new Promise((resolve, reject) => {
     const warnings = [];
 
+    filenames = filenames
+      .filter((f) => /\.(png|jpg|jpeg|svg)$/i.test(f))
+      .map((f) => f.split(".png").slice(0, -1).join(""));
+
     warnings.push(
       ...getInvalidNormalizedDci(filenames).map(
         (dci) =>
