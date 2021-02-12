@@ -1,6 +1,6 @@
 import chai from "chai";
 
-import { analyseImageFilenames } from "../../global/ImageFilesAnalyzer.js";
+import { analyseImageFilenames, ImagesAnalyzerWarning } from "../../global/ImageFilesAnalyzer.js";
 import { forceTruncateTables, insertData } from "../index.test.js";
 
 const { expect } = chai;
@@ -15,7 +15,7 @@ const tests = [
       "pibrentasvir",
       "tenofovir",
       "aciclovir",
-      "darunavir",
+      "dar-navir",
       "entécavir",
       "lamivudine",
       "raltégravir",
@@ -44,11 +44,11 @@ const tests = [
       "maraviroc",
       "saquinavir",
       "velpatasvir",
-      "'azidothymidineouzidovudineouAZT",
-      "'efavirenz",
+      "azidothymidine ou zidovudineou AZT",
+      "efavirenz",
       "ganciclovir",
       "nevirapine",
-      "sofosbuvir",
+      "sofosbuvir$",
       "voxilaprévir",
       "boceprevir",
       "elbasvir",
@@ -61,15 +61,23 @@ const tests = [
       "grazoprévir",
       "oseltamivir",
       "telaprevir",
-      "cobicistat",
+      "cobicistat,",
+      "zanamîvir",
       "entracitabine",
       "ibacitabine",
       "paritaprevir",
       "telbivudine",
     ],
-    warnings: [],
+    warnings: [
+      { code: ImagesAnalyzerWarning.DUPLICATE_IMAGES, count: 1 },
+      { code: ImagesAnalyzerWarning.UNKNOWN_MOLECULES, count: 26 },
+      { code: ImagesAnalyzerWarning.INVALID_MOLECULE, count: 3 },
+    ],
   },
 ];
+
+const warningsCounter = (warnings) => (code) =>
+  warnings.reduce((count, warning) => count + (warning.code === code), 0);
 
 describe("Analyze filenames", () => {
   before("Insert data", (done) => {
@@ -84,9 +92,11 @@ describe("Analyze filenames", () => {
   });
   tests.forEach((test, i) => {
     it(`Good expected warnings : ${i + 1}`, async () => {
-      analyseImageFilenames(test.filenames).then((warnings) => {
-        console.log(warnings, warnings.length, test.filenames.length);
-      });
+      const warnings = await analyseImageFilenames(test.filenames);
+      const counter = warningsCounter(warnings);
+      test.warnings.forEach((warning) =>
+        expect(counter(warning.code), "Type " + warning.code).equals(warning.count)
+      );
     });
   });
 });

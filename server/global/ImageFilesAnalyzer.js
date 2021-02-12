@@ -5,6 +5,7 @@ import { normalizeDCI, getInvalidNormalizedDci } from "./molecules_analyzer/mole
 /**
  * Analyze images filenames
  * @param {string[]} filenames
+ * @returns {Promise<ImagesAnalyzerWarning[]>} The warnings list
  */
 export function analyseImageFilenames(filenames) {
   return new Promise((resolve, reject) => {
@@ -59,8 +60,6 @@ function getUnknownMolecules(molecules) {
     getAllMolecules()
       .then((dbMolecules) => {
         const normalizedDbMolecules = dbMolecules.map(normalizeDCI);
-        console.log(normalizedDbMolecules);
-        console.log(molecules);
         resolve(molecules.filter((molecule) => !normalizedDbMolecules.includes(molecule)));
       })
       .catch(reject);
@@ -89,7 +88,7 @@ function getAllMolecules() {
   });
 }
 
-class ImagesAnalyzerWarning {
+export class ImagesAnalyzerWarning {
   constructor(code, message) {
     this.code = code;
     this.message = message;

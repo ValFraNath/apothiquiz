@@ -191,7 +191,7 @@ export const normalizeDCI = (dci) =>
     .normalize("NFD")
     .toLowerCase()
     .replace(/[\u0300-\u036f]/g, "")
-    .replace(/\s+/, "_");
+    .replace(/\s+/g, "_");
 
 /**
  * Get all invalid normalized dci
