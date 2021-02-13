@@ -1,13 +1,9 @@
 import axios from "axios";
+
 import PropTypes from "prop-types";
 import React, { Component } from "react";
 
 import AuthService from "../services/auth.service";
-
-const MIME_TYPES = {
-  CSV_MIME: { name: "fichier CSV", mime: ["text/csv", "application/vnd.ms-excel"] },
-  ZIP_MIME: { name: "archive ZIP", mime: ["application/zip", "application/x-zip-compressed"] },
-};
 
 class FileImporter extends Component {
   constructor(props) {
@@ -16,7 +12,7 @@ class FileImporter extends Component {
     this.state = {
       errors: [],
       warnings: [],
-      selectedFile: null,
+      selectedFiles: null,
       canConfirm: false,
       imported: false,
     };
@@ -28,10 +24,11 @@ class FileImporter extends Component {
    */
   sendSelectedFile(e) {
     e.preventDefault();
-    const file = this.state.selectedFile;
+    const files = this.state.selectedFiles;
     const requestData = new FormData();
 
-    requestData.append("file", file);
+    files.forEach((file) => requestData.append("file", file));
+
     if (this.state.canConfirm) {
       requestData.append("confirmed", "true");
     }
@@ -67,15 +64,25 @@ class FileImporter extends Component {
    * @param {Event} e
    */
   handleFileChange(e) {
-    let file = e.target.files[0] || null;
+    console.log(e.target.files[0]);
+    let files = [...e.target.files].slice(0, this.props.multiple ? undefined : 1);
     const errors = [];
 
-    if (!this.props.type.mime.includes(file.type)) {
+    files.forEach((file) => {
+      const ext = file.name.split(".").slice(-1)[0];
+      console.log(ext, this.props.extensions);
+      if (!this.props.extensions.includes(ext)) {
+        errors.push(
+          `Mauvaise extension : "${file.name}" (uniquement ${this.props.extensions.join(", ")}) `
+        );
+      }
+    });
+    if (errors.length > 0) {
+      files = null;
       e.target.parentNode.reset();
-      file = null;
-      errors.push("Le format du fichier doit être : " + this.props.type.name);
     }
-    this.setState({ selectedFile: file, canConfirm: false, errors, imported: false });
+
+    this.setState({ selectedFiles: files, canConfirm: false, errors, imported: false });
   }
 
   /**
@@ -105,10 +112,11 @@ class FileImporter extends Component {
             required
             onChange={this.handleFileChange.bind(this)}
             type="file"
+            multiple={this.props.multiple}
           />
           <input
             type="submit"
-            disabled={this.state.selectedFile === null}
+            disabled={this.state.selectedFiles === null}
             value={this.state.canConfirm ? "Confirmer" : "Envoyer"}
           />
         </form>
@@ -122,8 +130,11 @@ class FileImporter extends Component {
 
 FileImporter.propTypes = {
   endpoint: PropTypes.string.isRequired,
-  type: PropTypes.arrayOf(PropTypes.string).isRequired,
+  extensions: PropTypes.arrayOf(PropTypes.string).isRequired,
+  multiple: PropTypes.bool.isRequired,
 };
+
+FileImporter.defaultProps = { multiple: false };
 
 /**
  * Component which, on click, fetches a file and opens it.
@@ -192,7 +203,7 @@ const Admin = () => (
         filename="molecules.csv"
         endpoint="/api/v1/import/molecules"
       />
-      <FileImporter endpoint="/api/v1/import/molecules" type={MIME_TYPES.CSV_MIME} />
+      <FileImporter endpoint="/api/v1/import/molecules" extensions={["csv"]} />
     </details>
     <details>
       <summary>Importer des étudiants (WIP)</summary>
@@ -201,7 +212,7 @@ const Admin = () => (
         filename="etudiants.csv"
         endpoint="/api/v1/import/students"
       />
-      <FileImporter endpoint="/api/v1/import/students" type={MIME_TYPES.CSV_MIME} />
+      <FileImporter endpoint="/api/v1/import/students" extensions={["csv"]} />
     </details>
     <details>
       <summary>Configuration (WIP)</summary>
@@ -214,7 +225,11 @@ const Admin = () => (
         filename="images.csv"
         endpoint="/api/v1/import/images"
       />
-      <FileImporter endpoint="/api/v1/import/images" type={MIME_TYPES.ZIP_MIME} />
+      <FileImporter
+        endpoint="/api/v1/import/images"
+        multiple={true}
+        extensions={["png", "jpeg", "jpg", "svg"]}
+      />
     </details>
   </main>
 );

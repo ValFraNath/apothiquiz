@@ -13,7 +13,6 @@ const storage = multer.diskStorage({
   filename: (req, file, callback) => {
     const filename = String(Date.now());
     const extension = file?.originalname?.split(".").slice(1).pop();
-
     req.body._uploadedFileName = filename;
     req.body._uploadedFileExtension = extension;
 
@@ -37,23 +36,22 @@ const storage = multer.diskStorage({
 });
 
 /**
- * Middleware calling the next middleware / controller
- * after checking that there is no error,
- * otherwise it sends the error
+ * Create middleware to handle imported file(s)
+ * @param {boolean} multiple boolean telling if there are sevaral files to handle
  */
-function middleware(req, _res, next) {
-  function nextWrapper(error) {
-    if (error) {
-      const res = new HttpResponseWrapper(_res);
-      if (error.code === "LIMIT_UNEXPECTED_FILE") {
-        return res.sendUsageError(400, `Invalid field name : "${error.field}"`);
+export function createMiddleware(multiple = false) {
+  return (req, _res, next) => {
+    function nextWrapper(error) {
+      if (error) {
+        const res = new HttpResponseWrapper(_res);
+        if (error.code === "LIMIT_UNEXPECTED_FILE") {
+          return res.sendUsageError(400, `Invalid field name : "${error.field}"`);
+        }
+        return res.sendServerError(error);
       }
-      return res.sendServerError(error);
+      next();
     }
-    next();
-  }
 
-  return multer({ storage }).single("file")(req, _res, nextWrapper);
+    return multer({ storage })[multiple ? "single" : "array"]("file")(req, _res, nextWrapper);
+  };
 }
-
-export default middleware;
