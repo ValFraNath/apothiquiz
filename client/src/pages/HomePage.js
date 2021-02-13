@@ -93,15 +93,7 @@ class HomePage extends Component {
       <main id="homepage">
         <header>
           <div id="header-background"></div>
-          <Avatar
-            size="125px"
-            eyes={currentUser?.avatar.eyes}
-            hands={currentUser?.avatar.hands}
-            hat={currentUser?.avatar.hat}
-            mouth={currentUser?.avatar.mouth}
-            colorBG={currentUser?.avatar.colorBG}
-            colorBody={currentUser?.avatar.colorBody}
-          />
+          <Avatar size="125px" infos={currentUser?.avatar} />
 
           <div>
             <h1>{currentUser?.pseudo ?? "Pilette"}</h1>
@@ -133,15 +125,7 @@ class HomePage extends Component {
             <>
               {toPlayChallenges.map((value, index) => (
                 <article key={index}>
-                  <Avatar
-                    size="75px"
-                    eyes={usersData[value.opponent]?.avatar.eyes}
-                    hands={usersData[value.opponent]?.avatar.hands}
-                    hat={usersData[value.opponent]?.avatar.hat}
-                    mouth={usersData[value.opponent]?.avatar.mouth}
-                    colorBG={usersData[value.opponent]?.avatar.colorBG}
-                    colorBody={usersData[value.opponent]?.avatar.colorBody}
-                  />
+                  <Avatar size="75px" infos={usersData[value.opponent]?.avatar} />
                   <Link to={`/duel/${value.id}`} className="challenges-text">
                     <div>
                       <h3>{value.opponent}</h3>
@@ -169,15 +153,7 @@ class HomePage extends Component {
                     <h3>{value.opponent}</h3>
                     <p>En train de jouer le round {value.currentRound}</p>
                   </Link>
-                  <Avatar
-                    size="75px"
-                    eyes={usersData[value.opponent]?.avatar.eyes ?? 0}
-                    hands={usersData[value.opponent]?.avatar.hands ?? 0}
-                    hat={usersData[value.opponent]?.avatar.hat ?? 0}
-                    mouth={usersData[value.opponent]?.avatar.mouth ?? 0}
-                    colorBG={usersData[value.opponent]?.avatar.colorBG ?? "#d3d3d3"}
-                    colorBody={usersData[value.opponent]?.avatar.colorBody ?? "#0c04fc"}
-                  />
+                  <Avatar size="75px" infos={usersData[value.opponent]?.avatar} />
                 </article>
               ))}
             </>
@@ -190,15 +166,7 @@ class HomePage extends Component {
             <>
               {finishedChallenges.map((value, index) => (
                 <article key={index}>
-                  <Avatar
-                    size="75px"
-                    eyes={usersData[value.opponent]?.avatar.eyes}
-                    hands={usersData[value.opponent]?.avatar.hands}
-                    hat={usersData[value.opponent]?.avatar.hat}
-                    mouth={usersData[value.opponent]?.avatar.mouth}
-                    colorBG={usersData[value.opponent]?.avatar.colorBG}
-                    colorBody={usersData[value.opponent]?.avatar.colorBody}
-                  />
+                  <Avatar size="75px" infos={usersData[value.opponent]?.avatar} />
                   <Link to={`/duel/${value.id}`} className="challenges-text">
                     <h3>{value.opponent}</h3>
                     <p>{this.displayResultDuel(value.userScore, value.opponentScore)}</p>

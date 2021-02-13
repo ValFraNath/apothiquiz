@@ -21,15 +21,7 @@ const Profile = () => {
 
   return (
     <main id="profile">
-      <Avatar
-        size="256px"
-        eyes={avatar?.eyes}
-        hands={avatar?.hands}
-        hat={avatar?.hat}
-        mouth={avatar?.mouth}
-        colorBody={avatar?.colorBody}
-        colorBG={avatar?.colorBG}
-      />
+      <Avatar size="256px" infos={avatar} />
 
       <Collapsible.Root>
         <Collapsible.Button className="btn">

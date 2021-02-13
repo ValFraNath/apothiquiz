@@ -13,15 +13,7 @@ const UserBadge = ({ username }) => {
 
   return (
     <Link to="/profile" id={"userBadge"}>
-      <Avatar
-        size="32px"
-        eyes={user?.avatar?.eyes}
-        hands={user?.avatar?.hands}
-        hat={user?.avatar?.hat}
-        mouth={user?.avatar?.mouth}
-        colorBody={user?.avatar?.colorBody}
-        colorBG={user?.avatar?.colorBG}
-      />
+      <Avatar size="32px" infos={user?.avatar} />
       <span>{username}</span>
     </Link>
   );
@@ -94,17 +86,15 @@ const OfflineBanner = () => {
   );
 };
 
-const TopBar = ({ username }) => {
-  return (
-    <nav>
-      {username ? <UserBadge username={username} /> : <span></span>}
-      <h1>
-        <Link to={username ? "/homepage" : "/"}>Guacamole</Link>
-      </h1>
-      <OfflineBanner />
-    </nav>
-  );
-};
+const TopBar = ({ username }) => (
+  <nav>
+    {username ? <UserBadge pseudo={username} /> : <span></span>}
+    <h1>
+      <Link to={username ? "/homepage" : "/"}>Guacamole</Link>
+    </h1>
+    <OfflineBanner />
+  </nav>
+);
 
 TopBar.propTypes = {
   username: PropTypes.string,

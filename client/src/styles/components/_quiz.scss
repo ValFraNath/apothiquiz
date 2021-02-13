@@ -179,3 +179,22 @@ $timer-size: 100px;
     height: 100%;
   }
 }
+
+/* ---------- DuelResults ---------- */
+
+.duel-results {
+  color: scale-color($color-green-success, $lightness: 10%);
+  background-color: $color-gray-wait;
+  height: 2em;
+  width: fit-content;
+  margin: auto;
+  border-radius: $button-border-radius;
+  padding: 0.5em 1.5em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &.defeat {
+    color: scale-color($color-red-error, $lightness: 15%);
+  }
+}
