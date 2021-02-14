@@ -13,7 +13,7 @@ export function analyseImageFilenames(filenames) {
 
     filenames = filenames
       .filter((f) => /\.(png|jpg|jpeg|svg)$/i.test(f))
-      .map((f) => f.split(".png").slice(0, -1).join(""));
+      .map((f) => f.split(".").slice(0, -1).join(""));
 
     warnings.push(
       ...getInvalidNormalizedDci(filenames).map(
@@ -32,7 +32,7 @@ export function analyseImageFilenames(filenames) {
         (dup) =>
           new ImagesAnalyzerWarning(
             ImagesAnalyzerWarning.DUPLICATE_IMAGES,
-            `Plusieurs image pour la molécule "${dup}"`
+            `Plusieurs images pour la molécule "${dup}"`
           )
       )
     );

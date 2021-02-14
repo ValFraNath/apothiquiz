@@ -2,6 +2,7 @@ const IMAGE_EXTENSIONS = ["jpg", "jpeg", "png", "svg"];
 
 import { deleteFiles } from "../global/Files.js";
 import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
+import { bindImagesToMolecules } from "../global/ImageFileImporter.js";
 import { analyseImageFilenames } from "../global/ImageFilesAnalyzer.js";
 import Logger, { addErrorTitle } from "../global/Logger.js";
 
@@ -11,13 +12,15 @@ function importImages(req, _res) {
   if (req.files.length === 0) {
     return res.sendUsageError(400, "Fichiers manquants");
   }
+  const { confirmed } = req.body;
+  const ogNames = req.files.map((f) => f.originalname);
 
   const deleteUploadedFiles = () =>
     deleteFiles(...req.files.map((f) => f.path)).catch(Logger.error);
 
-  const invalidFileFormats = req.files
-    .map((f) => f.originalname)
-    .filter((f) => !new RegExp(`\\.${IMAGE_EXTENSIONS.join("|")}$`, "ig").test(f));
+  const invalidFileFormats = ogNames.filter(
+    (f) => !new RegExp(`\\.${IMAGE_EXTENSIONS.join("|")}$`, "ig").test(f)
+  );
 
   if (invalidFileFormats.length > 0) {
     res.sendUsageError(
@@ -35,17 +38,23 @@ function importImages(req, _res) {
     deleteUploadedFiles();
   };
 
-  analyseImageFilenames(req.files.map((f) => f.originalname))
-    .then((warnings) =>
-      res.sendResponse(202, {
-        message: "Images tested but not imported ",
-        warnings,
-        imported: false,
-      })
-    )
-    .catch((error) => sendServorError(error, "Can't analyze images"));
-
-  deleteUploadedFiles();
+  if (confirmed === "true") {
+    bindImagesToMolecules(ogNames).then(() => {
+      res.sendResponse(201, { message: "Images imported", warnings: [], imported: true });
+      deleteUploadedFiles();
+    });
+  } else {
+    analyseImageFilenames(ogNames)
+      .then((warnings) =>
+        res.sendResponse(202, {
+          message: "Images tested but not imported ",
+          warnings,
+          imported: false,
+        })
+      )
+      .catch((error) => sendServorError(error, "Can't analyze images"));
+    deleteUploadedFiles();
+  }
 }
 
 function getLastImportedFile() {}

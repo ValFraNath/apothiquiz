@@ -64,13 +64,11 @@ class FileImporter extends Component {
    * @param {Event} e
    */
   handleFileChange(e) {
-    console.log(e.target.files[0]);
     let files = [...e.target.files].slice(0, this.props.multiple ? undefined : 1);
     const errors = [];
 
     files.forEach((file) => {
       const ext = file.name.split(".").slice(-1)[0];
-      console.log(ext, this.props.extensions);
       if (!this.props.extensions.includes(ext)) {
         errors.push(
           `Mauvaise extension : "${file.name}" (uniquement ${this.props.extensions.join(", ")}) `
@@ -82,7 +80,13 @@ class FileImporter extends Component {
       e.target.parentNode.reset();
     }
 
-    this.setState({ selectedFiles: files, canConfirm: false, errors, imported: false });
+    this.setState({
+      selectedFiles: files,
+      canConfirm: false,
+      errors,
+      warnings: [],
+      imported: false,
+    });
   }
 
   /**
@@ -94,6 +98,7 @@ class FileImporter extends Component {
     if (array.length === 0) {
       return;
     }
+
     return (
       <ul className={className}>
         {array.map((element) => (
@@ -117,10 +122,10 @@ class FileImporter extends Component {
           <input
             type="submit"
             disabled={this.state.selectedFiles === null}
-            value={this.state.canConfirm ? "Confirmer" : "Envoyer"}
+            value={this.state.canConfirm ? "Confirmer" : "Tester"}
           />
         </form>
-        {this.state.imported && <p className="success">Le fichier a été importé avec succès</p>}
+        {this.state.imported && <p className="success">Importation réalisée avec succès</p>}
         {this.displayList(this.state.warnings, "warnings")}
         {this.displayList(this.state.errors, "errors")}
       </div>
