@@ -55,7 +55,8 @@ class FileImporter extends Component {
           });
           return;
         }
-        this.setState({ errors: [error.response?.data?.message] });
+        const message = error.response?.data?.message || "Erreur serveur";
+        this.setState({ errors: [message], imported: false });
       });
   }
 

@@ -41,7 +41,7 @@ export function bindImagesToMolecules(filenames) {
           `UPDATE molecule SET mo_image = ${mysql.escape(filename)} WHERE mo_dci = ${mysql.escape(
             matches[filename]
           )} ; `,
-        ""
+        "UPDATE molecule SET mo_image = NULL; "
       );
 
       queryPromise(sql)
