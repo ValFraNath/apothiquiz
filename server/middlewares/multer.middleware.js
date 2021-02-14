@@ -2,6 +2,7 @@ import fs from "fs/promises";
 import path from "path";
 
 import multer from "multer";
+import { v4 as uuidv4 } from "uuid";
 
 import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
 import { addErrorTitle } from "../global/Logger.js";
@@ -11,17 +12,14 @@ import { addErrorTitle } from "../global/Logger.js";
  */
 const storage = multer.diskStorage({
   filename: (req, file, callback) => {
-    const filename = String(Date.now());
-    const extension = file?.originalname?.split(".").slice(1).pop();
-    req.body._uploadedFileName = filename;
-    req.body._uploadedFileExtension = extension;
+    const extension = file.originalname.split(".").slice(1).pop();
+    const filename = `${Date.now()}.${uuidv4()}.${extension}`;
 
     callback(null, filename);
   },
 
   destination: (req, file, callback) => {
     const destination = path.resolve("uploads");
-    req.body._uploadedFileDirectory = destination;
 
     fs.mkdir(destination)
       .then(() => callback(null, destination))
@@ -39,7 +37,7 @@ const storage = multer.diskStorage({
  * Create middleware to handle imported file(s)
  * @param {boolean} multiple boolean telling if there are sevaral files to handle
  */
-export function createMiddleware(multiple = false) {
+export function createMulter(multiple = false) {
   return (req, _res, next) => {
     function nextWrapper(error) {
       if (error) {
@@ -52,6 +50,6 @@ export function createMiddleware(multiple = false) {
       next();
     }
 
-    return multer({ storage })[multiple ? "single" : "array"]("file")(req, _res, nextWrapper);
+    return multer({ storage })[multiple ? "array" : "single"]("file")(req, _res, nextWrapper);
   };
 }

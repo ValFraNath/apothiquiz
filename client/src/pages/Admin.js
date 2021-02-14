@@ -24,7 +24,7 @@ class FileImporter extends Component {
    */
   sendSelectedFile(e) {
     e.preventDefault();
-    const files = this.state.selectedFiles;
+    const files = this.state.selectedFiles || [];
     const requestData = new FormData();
 
     files.forEach((file) => requestData.append("file", file));

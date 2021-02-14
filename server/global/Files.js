@@ -1,4 +1,5 @@
 import fs from "fs/promises";
+import path from "path";
 
 import { addErrorTitle } from "../global/Logger.js";
 
@@ -23,11 +24,7 @@ export function moveFile(oldPath, newPath) {
  */
 export function deleteFiles(...filenames) {
   return new Promise((resolve, reject) => {
-    Promise.all(
-      filenames.map((filename) => {
-        fs.unlink(filename);
-      })
-    )
+    Promise.all(filenames.map((filename) => fs.unlink(filename)))
       .then(resolve)
       .catch((error) => reject(addErrorTitle(error, "Can't delete files")));
   });
@@ -54,9 +51,20 @@ export function createDir(dirname) {
 export function getSortedFiles(dirpath) {
   return new Promise((resolve, reject) => {
     fs.readdir(dirpath)
-      .then((files) => {
-        resolve(files.sort().reverse());
-      })
+      .then((files) =>
+        resolve(
+          files
+            .map(
+              (file) =>
+                new Object({
+                  name: file,
+                  time: Number(file.split(".").shift()) || 0,
+                })
+            )
+            .sort((a, b) => b.time - a.time)
+            .map((f) => f.name)
+        )
+      )
       .catch((error) => {
         if (error.code === "ENOENT") {
           resolve([]);

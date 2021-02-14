@@ -79,33 +79,29 @@ const MAX_FILE_KEPT = 15;
 function importMolecules(req, _res) {
   const res = new HttpResponseWrapper(_res);
 
-  const {
-    _uploadedFileName: filename,
-    _uploadedFileExtension: extension,
-    _uploadedFileDirectory: directory,
-    confirmed,
-  } = req.body;
+  const { confirmed } = req.body;
 
-  if (!filename) {
+  if (!req.file) {
     return res.sendUsageError(400, "Missing file");
   }
 
-  const deleteUploadedFile = () =>
-    deleteFiles(path.resolve(directory, filename)).catch(Logger.error);
+  const { path: filepath, filename, originalname } = req.file;
+
+  const deleteUploadedFile = () => deleteFiles(filepath).catch(Logger.error);
 
   const sendServorError = (error, title) => {
     res.sendServerError(addErrorTitle(error, title));
     deleteUploadedFile();
   };
 
-  if (extension !== "csv") {
+  if (!/\.csv$/i.test(originalname)) {
     res.sendUsageError(400, "Invalid file format : must be csv ");
     deleteUploadedFile();
     return;
   }
 
   let imported = false;
-  parseMoleculesFromCsv(path.resolve(directory, filename))
+  parseMoleculesFromCsv(filepath)
     .then((json) => {
       const data = JSON.parse(json);
 
@@ -115,10 +111,7 @@ function importMolecules(req, _res) {
           .then(() =>
             createDir(FILES_DIR_PATH)
               .then(() =>
-                moveFile(
-                  path.resolve(directory, filename),
-                  path.resolve("files", "molecules", `molecules_${filename}.${extension}`)
-                )
+                moveFile(filepath, path.resolve("files", "molecules", filename))
                   .then(() =>
                     getSortedFiles(FILES_DIR_PATH)
                       .then((files) =>

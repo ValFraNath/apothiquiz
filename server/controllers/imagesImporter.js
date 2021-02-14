@@ -1,6 +1,4 @@
-import path from "path";
-
-import Zip from "adm-zip";
+const IMAGE_EXTENSIONS = ["jpg", "jpeg", "png", "svg"];
 
 import { deleteFiles } from "../global/Files.js";
 import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
@@ -10,31 +8,34 @@ import Logger, { addErrorTitle } from "../global/Logger.js";
 function importImages(req, _res) {
   const res = new HttpResponseWrapper(_res);
 
-  const {
-    _uploadedFileName: filename,
-    _uploadedFileExtension: extension,
-    _uploadedFileDirectory: directory,
-  } = req.body;
-
-  if (!filename) {
-    return res.sendUsageError(400, "Missing file");
+  if (req.files.length === 0) {
+    return res.sendUsageError(400, "Fichiers manquants");
   }
 
-  const deleteUploadedFile = () =>
-    deleteFiles(path.resolve(directory, filename)).catch(Logger.error);
+  const deleteUploadedFiles = () =>
+    deleteFiles(...req.files.map((f) => f.path)).catch(Logger.error);
 
-  // if (extension !== "zip") {
-  //   res.sendUsageError(400, "Le fichier doit être une archive ZIP");
-  //   deleteUploadedFile();
-  //   return;
-  // }
+  const invalidFileFormats = req.files
+    .map((f) => f.originalname)
+    .filter((f) => !new RegExp(`\\.${IMAGE_EXTENSIONS.join("|")}$`, "ig").test(f));
+
+  if (invalidFileFormats.length > 0) {
+    res.sendUsageError(
+      400,
+      `Format invalide (uniquement ${IMAGE_EXTENSIONS.join(", ")}) : "${invalidFileFormats.join(
+        '", "'
+      )}"`
+    );
+    deleteUploadedFiles();
+    return;
+  }
 
   const sendServorError = (error, title) => {
     res.sendServerError(addErrorTitle(error, title));
-    deleteUploadedFile();
+    deleteUploadedFiles();
   };
 
-  analyseImageFilenames([])
+  analyseImageFilenames(req.files.map((f) => f.originalname))
     .then((warnings) =>
       res.sendResponse(202, {
         message: "Images tested but not imported ",
@@ -44,7 +45,7 @@ function importImages(req, _res) {
     )
     .catch((error) => sendServorError(error, "Can't analyze images"));
 
-  deleteUploadedFile();
+  deleteUploadedFiles();
 }
 
 function getLastImportedFile() {}

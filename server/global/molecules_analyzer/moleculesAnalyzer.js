@@ -185,26 +185,13 @@ function getNonValidNumberValue(molecules) {
  * Normalize a molecule DCI
  * @param {string} dci
  */
-export const normalizeDCI = (dci) => replaceSpecialChars(String(dci).trim()).toLowerCase();
-
-function replaceSpecialChars(str) {
-  const map = {
-    _: " |-",
-    a: "á|à|ã|â",
-    e: "é|è|ê",
-    i: "í|ì|î|ï",
-    o: "ó|ò|ô|õ",
-    u: "ú|ù|û|ü",
-    c: "ç",
-    n: "ñ",
-  };
-
-  for (const pattern in map) {
-    str = str.replace(new RegExp(map[pattern], "gi"), pattern);
-  }
-
-  return str;
-}
+export const normalizeDCI = (dci) =>
+  String(dci)
+    .trim()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[\s-]+/g, "_")
+    .toLowerCase();
 
 /**
  * Get all invalid normalized dci

@@ -7,7 +7,7 @@ import ImporterController from "../controllers/moleculesImporter.js";
 import QuestionController from "../controllers/question.js";
 import UserController from "../controllers/user.js";
 import authenticationMiddleware from "../middlewares/auth.middleware.js";
-import { createMiddleware } from "../middlewares/multer.middleware.js";
+import { createMulter } from "../middlewares/multer.middleware.js";
 
 const apiRouter = express.Router();
 
@@ -38,29 +38,23 @@ apiRouter.use("/files", authenticationMiddleware, express.static("files"));
 apiRouter.post(
   "/import/molecules",
   authenticationMiddleware,
-  createMiddleware(),
+  createMulter(),
   ImporterController.importMolecules
 );
 
 apiRouter.get(
   "/import/molecules",
   authenticationMiddleware,
-  createMiddleware(),
   ImporterController.getLastImportedFile
 );
 
 apiRouter.post(
   "/import/images",
   authenticationMiddleware,
-  createMiddleware(),
+  createMulter(true),
   ImagesController.importImages
 );
 
-apiRouter.get(
-  "/import/images",
-  authenticationMiddleware,
-  createMiddleware(),
-  ImagesController.getLastImportedFile
-);
+apiRouter.get("/import/images", authenticationMiddleware, ImagesController.getLastImportedFile);
 
 export default apiRouter;
