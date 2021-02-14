@@ -2,10 +2,17 @@ import mysql from "mysql";
 
 import { queryPromise } from "../db/database.js";
 
+import { removeExtension } from "./Files.js";
+
 import { addErrorTitle } from "./Logger.js";
 
 import { normalizeDCI } from "./molecules_analyzer/moleculesAnalyzer.js";
 
+/**
+ * Update the molecule image in database, folloxing the given filenames
+ * @param {string[]} filenames The list of file names
+ * @returns {Promise<strings[]>} The imported files name
+ */
 export function bindImagesToMolecules(filenames) {
   return new Promise((resolve, reject) => {
     const sql = "SELECT mo_dci FROM molecule;";
@@ -15,16 +22,15 @@ export function bindImagesToMolecules(filenames) {
         normalized: normalizeDCI(m.mo_dci),
       }));
 
-      const normalizedFilenames = filenames.map((filename) => ({
-        original: filename,
-        molecule: normalizeDCI(filename.split(".").slice(0, -1).join("")),
-        normalized: normalizeDCI(filename),
-      }));
-
-      const matches = normalizedFilenames.reduce((matches, filename) => {
-        const molecule = normalizedDbMolecules.find((m) => m.normalized === filename.molecule);
+      const imported = [];
+      const matches = filenames.reduce((matches, filename) => {
+        const normalizedFilename = normalizeDCI(filename);
+        const molecule = normalizedDbMolecules.find(
+          (m) => m.normalized === removeExtension(normalizedFilename)
+        );
         if (molecule) {
-          matches[filename.normalized] = molecule.dci;
+          matches[normalizedFilename] = molecule.dci;
+          imported.push(filename);
         }
         return matches;
       }, {});
@@ -39,7 +45,7 @@ export function bindImagesToMolecules(filenames) {
       );
 
       queryPromise(sql)
-        .then(() => resolve())
+        .then(() => resolve(imported))
         .catch((error) => reject(addErrorTitle(error, "Can't update molecules images")));
     });
   });

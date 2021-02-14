@@ -1,10 +1,14 @@
-const IMAGE_EXTENSIONS = ["jpg", "jpeg", "png", "svg"];
+import path from "path";
 
-import { deleteFiles } from "../global/Files.js";
+import { deleteFiles, getSortedFiles, moveFile } from "../global/Files.js";
 import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
 import { bindImagesToMolecules } from "../global/ImageFileImporter.js";
 import { analyseImageFilenames } from "../global/ImageFilesAnalyzer.js";
 import Logger, { addErrorTitle } from "../global/Logger.js";
+import { normalizeDCI } from "../global/molecules_analyzer/moleculesAnalyzer.js";
+
+const IMAGE_EXTENSIONS = ["jpg", "jpeg", "png", "svg"];
+const IMAGES_DIR_PATH = path.resolve("files", "images");
 
 function importImages(req, _res) {
   const res = new HttpResponseWrapper(_res);
@@ -33,16 +37,43 @@ function importImages(req, _res) {
     return;
   }
 
-  const sendServorError = (error, title) => {
+  const sendServerError = (error, title) => {
     res.sendServerError(addErrorTitle(error, title));
     deleteUploadedFiles();
   };
 
   if (confirmed === "true") {
-    bindImagesToMolecules(ogNames).then(() => {
-      res.sendResponse(201, { message: "Images imported", warnings: [], imported: true });
-      deleteUploadedFiles();
-    });
+    bindImagesToMolecules(ogNames)
+      .then((imported) => {
+        getSortedFiles(IMAGES_DIR_PATH)
+          .then((files) =>
+            deleteFiles(...files.map((f) => path.resolve(IMAGES_DIR_PATH, f)))
+              .then(() =>
+                Promise.all(
+                  imported.map((file) => {
+                    const filepath = req.files.find((f) => f.originalname === file).path;
+                    return moveFile(filepath, path.resolve(IMAGES_DIR_PATH, normalizeDCI(file)));
+                  })
+                )
+                  .then(() => {
+                    res.sendResponse(201, {
+                      message: "Images imported",
+                      warnings: [],
+                      imported: true,
+                    });
+                    deleteFiles(
+                      ...req.files
+                        .filter((f) => !imported.includes(f.originalname))
+                        .map((f) => f.path)
+                    ).catch(Logger.error);
+                  })
+                  .catch((error) => sendServerError(error, "Can't move images"))
+              )
+              .catch((error) => sendServerError(error, "Can't delete old images"))
+          )
+          .catch((error) => sendServerError(error, "Can't get files"));
+      })
+      .catch((error) => sendServerError(error, "Can't update images in database"));
   } else {
     analyseImageFilenames(ogNames)
       .then((warnings) =>
@@ -52,7 +83,7 @@ function importImages(req, _res) {
           imported: false,
         })
       )
-      .catch((error) => sendServorError(error, "Can't analyze images"));
+      .catch((error) => sendServerError(error, "Can't analyze images"));
     deleteUploadedFiles();
   }
 }

@@ -73,3 +73,12 @@ export function getSortedFiles(dirpath) {
       });
   });
 }
+
+/**
+ * Returns the filename without extension
+ * @param {string} filename
+ * @returns {string}
+ */
+export function removeExtension(filename) {
+  return filename.split(".").slice(0, -1).join("");
+}
