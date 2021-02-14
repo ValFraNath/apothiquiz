@@ -1,12 +1,12 @@
 import mysql from "mysql";
 
-import { queryPromise } from "../db/database.js";
+import { queryPromise } from "../../db/database.js";
 
-import { removeExtension } from "./Files.js";
+import { removeExtension } from "../Files.js";
 
-import { addErrorTitle } from "./Logger.js";
+import { addErrorTitle } from "../Logger.js";
 
-import { normalizeDCI } from "./molecules_analyzer/moleculesAnalyzer.js";
+import { normalizeDCI } from "../molecules_importation/moleculesAnalyzer.js";
 
 /**
  * Update the molecule image in database, folloxing the given filenames

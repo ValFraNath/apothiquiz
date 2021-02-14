@@ -2,10 +2,10 @@ import path from "path";
 
 import { deleteFiles, getSortedFiles, moveFile } from "../global/Files.js";
 import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
-import { bindImagesToMolecules } from "../global/ImageFileImporter.js";
-import { analyseImageFilenames } from "../global/ImageFilesAnalyzer.js";
+import { analyseImageFilenames } from "../global/images_importation/imagesAnayzer.js";
+import { bindImagesToMolecules } from "../global/images_importation/imagesImporter.js";
 import Logger, { addErrorTitle } from "../global/Logger.js";
-import { normalizeDCI } from "../global/molecules_analyzer/moleculesAnalyzer.js";
+import { normalizeDCI } from "../global/molecules_importation/moleculesAnalyzer.js";
 
 const IMAGE_EXTENSIONS = ["jpg", "jpeg", "png", "svg"];
 const IMAGES_DIR_PATH = path.resolve("files", "images");

@@ -1,13 +1,16 @@
-import { queryPromise } from "../db/database.js";
-import { addErrorTitle } from "../global/Logger.js";
+import { queryPromise } from "../../db/database.js";
+import { addErrorTitle } from "../Logger.js";
 
-import { normalizeDCI, getInvalidNormalizedDci } from "./molecules_analyzer/moleculesAnalyzer.js";
+import {
+  normalizeDCI,
+  getInvalidNormalizedDci,
+} from "../molecules_importation/moleculesAnalyzer.js";
 /**
  * Analyze images filenames
  * @param {string[]} filenames
  * @returns {Promise<ImagesAnalyzerWarning[]>} The warnings list
  */
-export function analyseImageFilenames(filenames) {
+export function analyseImagesFilenames(filenames) {
   return new Promise((resolve, reject) => {
     const warnings = [];
 

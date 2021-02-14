@@ -9,7 +9,7 @@ const { describe, it, before } = mocha;
 chai.use(deepEqualAnyOrder);
 
 import { queryPromise } from "../../db/database.js";
-import { parseAndCreateSqlToInsertAllData } from "../../global/molecules_importer/moleculesImporter.js";
+import { parseAndCreateSqlToInsertAllData } from "../../global/molecules_importation/moleculesImporter.js";
 import { forceTruncateTables } from "../index.test.js";
 
 import { expectations } from "./expectations.js";

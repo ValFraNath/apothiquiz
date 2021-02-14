@@ -1,6 +1,9 @@
 import chai from "chai";
 
-import { analyseImageFilenames, ImagesAnalyzerWarning } from "../../global/ImageFilesAnalyzer.js";
+import {
+  analyseImageFilenames,
+  ImagesAnalyzerWarning,
+} from "../../global/images_importation/imagesAnayzer.js";
 import { forceTruncateTables, insertData } from "../index.test.js";
 
 const { expect } = chai;

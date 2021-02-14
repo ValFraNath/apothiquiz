@@ -2,7 +2,7 @@ import mysql from "mysql";
 
 import Logger from "../Logger.js";
 
-import { parseMoleculesFromCsv } from "../molecules_parser/Parser.js";
+import { parseMoleculesFromCsv } from "./moleculesParser.js";
 
 export const MAX_LENGTHS = {
   DCI: 128,
