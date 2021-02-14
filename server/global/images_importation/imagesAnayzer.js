@@ -5,9 +5,10 @@ import {
   normalizeDCI,
   getInvalidNormalizedDci,
 } from "../molecules_importation/moleculesAnalyzer.js";
+
 /**
  * Analyze images filenames
- * @param {string[]} filenames
+ * @param {string[]} filenames The list of images filenames
  * @returns {Promise<ImagesAnalyzerWarning[]>} The warnings list
  */
 export function analyseImagesFilenames(filenames) {

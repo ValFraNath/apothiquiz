@@ -1,7 +1,7 @@
 import chai from "chai";
 
 import {
-  analyseImageFilenames,
+  analyseImagesFilenames,
   ImagesAnalyzerWarning,
 } from "../../global/images_importation/imagesAnayzer.js";
 import { forceTruncateTables, insertData } from "../index.test.js";
@@ -95,7 +95,7 @@ describe("Analyze filenames", () => {
   });
   tests.forEach((test, i) => {
     it(`Good expected warnings : ${i + 1}`, async () => {
-      const warnings = await analyseImageFilenames(test.filenames);
+      const warnings = await analyseImagesFilenames(test.filenames);
       const counter = warningsCounter(warnings);
       test.warnings.forEach((warning) =>
         expect(counter(warning.code), "Type " + warning.code).equals(warning.count)

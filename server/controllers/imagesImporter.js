@@ -2,7 +2,7 @@ import path from "path";
 
 import { deleteFiles, getSortedFiles, moveFile } from "../global/Files.js";
 import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
-import { analyseImageFilenames } from "../global/images_importation/imagesAnayzer.js";
+import { analyseImagesFilenames } from "../global/images_importation/imagesAnayzer.js";
 import { bindImagesToMolecules } from "../global/images_importation/imagesImporter.js";
 import Logger, { addErrorTitle } from "../global/Logger.js";
 import { normalizeDCI } from "../global/molecules_importation/moleculesAnalyzer.js";
@@ -75,7 +75,7 @@ function importImages(req, _res) {
       })
       .catch((error) => sendServerError(error, "Can't update images in database"));
   } else {
-    analyseImageFilenames(ogNames)
+    analyseImagesFilenames(ogNames)
       .then((warnings) =>
         res.sendResponse(202, {
           message: "Images tested but not imported ",
