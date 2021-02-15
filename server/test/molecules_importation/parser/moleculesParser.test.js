@@ -5,10 +5,10 @@ import chai from "chai";
 import deepEqualAnyOrder from "deep-equal-in-any-order";
 import mocha from "mocha";
 
-import { HeaderErrors } from "../../global/csv_reader/HeaderChecker.js";
+import { HeaderErrors } from "../../../global/csv_reader/HeaderChecker.js";
 // eslint-disable-next-line no-unused-vars
-import { ClassificationNode } from "../../global/molecules_importation/MoleculesClassification.js";
-import { parseMoleculesFromCsv } from "../../global/molecules_importation/moleculesParser.js";
+import { ClassificationNode } from "../../../global/molecules_importation/MoleculesClassification.js";
+import { parseMoleculesFromCsv } from "../../../global/molecules_importation/moleculesParser.js";
 
 import { expectations } from "./expectations.js";
 
@@ -16,9 +16,9 @@ chai.use(deepEqualAnyOrder);
 const { before } = mocha;
 const { expect } = chai;
 
-const filesFolderPath = path.resolve("test", "molecules_parser", "files");
+const filesFolderPath = path.resolve("test", "molecules_importation", "parser", "files");
 const badFilesFolderPath = path.resolve(filesFolderPath, "bad_formatted_files");
-const snapshotsFolderPath = path.resolve("test", "molecules_parser", "snapshots");
+const snapshotsFolderPath = path.resolve("test", "molecules_importation", "parser", "snapshots");
 
 describe("Test if values are well imported", function () {
   const files = [

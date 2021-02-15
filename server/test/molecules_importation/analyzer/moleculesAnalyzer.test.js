@@ -2,14 +2,14 @@ import path from "path";
 
 import chai from "chai";
 
-import { queryPromise } from "../../db/database.js";
+import { queryPromise } from "../../../db/database.js";
 import {
   analyzeData,
   MoleculesAnalyzerWarning,
-} from "../../global/molecules_importation/moleculesAnalyzer.js";
-import { createSqlToInsertAllData } from "../../global/molecules_importation/moleculesImporter.js";
-import { parseMoleculesFromCsv } from "../../global/molecules_importation/moleculesParser.js";
-import { forceTruncateTables } from "../index.test.js";
+} from "../../../global/molecules_importation/moleculesAnalyzer.js";
+import { createSqlToInsertAllData } from "../../../global/molecules_importation/moleculesImporter.js";
+import { parseMoleculesFromCsv } from "../../../global/molecules_importation/moleculesParser.js";
+import { forceTruncateTables } from "../../index.test.js";
 
 const { expect } = chai;
 
@@ -82,7 +82,7 @@ const files = [
   },
 ];
 
-const FILES_DIR = path.resolve("test", "molecules_analyzer", "files");
+const FILES_DIR = path.resolve("test", "molecules_importation", "analyzer", "files");
 
 const warningsCounter = (warnings) => (code) =>
   warnings.reduce((count, warning) => count + (warning.code === code), 0);

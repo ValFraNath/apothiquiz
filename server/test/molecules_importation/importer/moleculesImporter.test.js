@@ -8,9 +8,9 @@ const { expect } = chai;
 const { describe, it, before } = mocha;
 chai.use(deepEqualAnyOrder);
 
-import { queryPromise } from "../../db/database.js";
-import { parseAndCreateSqlToInsertAllData } from "../../global/molecules_importation/moleculesImporter.js";
-import { forceTruncateTables } from "../index.test.js";
+import { queryPromise } from "../../../db/database.js";
+import { parseAndCreateSqlToInsertAllData } from "../../../global/molecules_importation/moleculesImporter.js";
+import { forceTruncateTables } from "../../index.test.js";
 
 import { expectations } from "./expectations.js";
 
@@ -33,7 +33,7 @@ for (let file of files) {
         "system"
       ).then(() =>
         parseAndCreateSqlToInsertAllData(
-          path.resolve("test", "molecules_importer", "files", file.name)
+          path.resolve("test", "molecules_importation", "importer", "files", file.name)
         ).then((script) => {
           queryPromise(script).then(() => done());
         })

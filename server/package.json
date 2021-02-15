@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "NODE_ENV=test mocha ./test/* --exit",
+    "test": "NODE_ENV=test mocha \"test/**/*.test.js\" --exit",
     "start": "node .",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
