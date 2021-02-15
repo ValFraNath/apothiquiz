@@ -14,7 +14,7 @@ const { describe, it, before } = mocha;
 chai.use(chaiHttp);
 
 const __dirname = path.resolve("test", "molecules_importation", "importation_route");
-
+// TODO test import with non admin user
 describe("Import molecule", () => {
   let mytoken;
   before("Insert users data & get token", (done) => {

@@ -73,7 +73,13 @@ function getLastImportedFile(req, _res) {
   const res = new HttpResponseWrapper(_res);
 
   archiveImages()
-    .then((archiveName) => res.sendResponse(200, { url: `/api/v1/files/images/${archiveName}` }))
+    .then((archiveName) =>
+      res.sendResponse(200, {
+        url: `${req.protocol}://${req.get("host")}/api/v1/files/images/${archiveName}`,
+        shortpath: `/api/v1/files/images/${archiveName}`,
+        filename: archiveName,
+      })
+    )
     .catch((error) => res.sendServerError(addErrorTitle(error, "Can't archive the images")));
 }
 
