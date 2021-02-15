@@ -15,7 +15,7 @@
   & > div > svg {
     width: 33%;
     height: auto;
-    margin-bottom: 4rem;
+    margin-bottom: 3.5rem;
   }
 
   h1 {
@@ -40,9 +40,9 @@
 
 #authorization-notification {
   & > div > svg {
-    padding: 1.2rem;
+    padding: 1.8rem;
     border-radius: 50%;
     color: white;
-    background-color: $mascot-blue-light;
+    background: linear-gradient(100deg, $mascot-blue-light 50%, $mascot-blue-dark);
   }
 }

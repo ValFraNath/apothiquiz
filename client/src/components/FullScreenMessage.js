@@ -13,7 +13,7 @@ const FullScreenMessage = ({ id, children }) => {
 
 FullScreenMessage.propTypes = {
   id: PropTypes.string.isRequired,
-  children: PropTypes.object.isRequired,
+  children: PropTypes.array.isRequired,
 };
 
 export default FullScreenMessage;

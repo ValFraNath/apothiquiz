@@ -78,8 +78,6 @@ export default class App extends Component {
     // Request permission for notifications
     if (Notification.permission === "default") {
       this.setState({ requireNotificationPermission: true });
-    } else if (Notification.permission === "granted") {
-      new Notification("Hello, World!");
     }
   }
 
