@@ -78,12 +78,16 @@ export default class App extends Component {
     // Request permission for notifications
     if (Notification.permission === "default") {
       this.setState({ requireNotificationPermission: true });
+    } else if (Notification.permission === "granted") {
+      new Notification("Hello, World!");
     }
   }
 
   displayBrowserNotificationPermission = () => {
-    this.setState({ requireNotificationPermission: false });
-    Notification.requestPermission();
+    Notification.requestPermission()
+      .then(() => {
+        this.setState({ requireNotificationPermisson: false });
+      });
   };
 
   updateServiceWorker = () => {
