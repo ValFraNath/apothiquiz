@@ -7,7 +7,6 @@ import { bindImagesToMolecules } from "../global/images_importation/imagesImport
 import Logger, { addErrorTitle } from "../global/Logger.js";
 import { normalizeDCI } from "../global/molecules_importation/moleculesAnalyzer.js";
 
-const IMAGE_EXTENSIONS = ["jpg", "jpeg", "png", "svg"];
 const IMAGES_DIR_PATH = path.resolve("files", "images");
 
 function importImages(req, _res) {
@@ -21,21 +20,6 @@ function importImages(req, _res) {
 
   const deleteUploadedFiles = () =>
     deleteFiles(...req.files.map((f) => f.path)).catch(Logger.error);
-
-  const invalidFileFormats = ogNames.filter(
-    (f) => !new RegExp(`\\.${IMAGE_EXTENSIONS.join("|")}$`, "ig").test(f)
-  );
-
-  if (invalidFileFormats.length > 0) {
-    res.sendUsageError(
-      400,
-      `Format invalide (uniquement ${IMAGE_EXTENSIONS.join(", ")}) : "${invalidFileFormats.join(
-        '", "'
-      )}"`
-    );
-    deleteUploadedFiles();
-    return;
-  }
 
   const sendServerError = (error, title) => {
     res.sendServerError(addErrorTitle(error, title));

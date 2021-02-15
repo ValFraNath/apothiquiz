@@ -1,10 +1,15 @@
 import { queryPromise } from "../../db/database.js";
+import { removeExtension } from "../Files.js";
 import { addErrorTitle } from "../Logger.js";
 
 import {
   normalizeDCI,
   getInvalidNormalizedDci,
 } from "../molecules_importation/moleculesAnalyzer.js";
+
+const VALID_FORMATS = ["jpeg", "jpg", "svg", "png"];
+export const isFormatValid = (filename) =>
+  new RegExp(`\\.${VALID_FORMATS.join("|")}\\s*$`, "i").test(filename);
 
 /**
  * Analyze images filenames
@@ -15,12 +20,27 @@ export function analyseImagesFilenames(filenames) {
   return new Promise((resolve, reject) => {
     const warnings = [];
 
-    filenames = filenames
-      .filter((f) => /\.(png|jpg|jpeg|svg)$/i.test(f))
-      .map((f) => f.split(".").slice(0, -1).join(""));
+    const invalidFormats = filenames.filter((f) => !isFormatValid(f));
 
     warnings.push(
-      ...getInvalidNormalizedDci(filenames).map(
+      ...invalidFormats.map(
+        (f) =>
+          new ImagesAnalyzerWarning(
+            ImagesAnalyzerWarning.BAD_FORMAT,
+            `Format invalide : "${f}" (uniquement ${VALID_FORMATS.join(", ")})`
+          )
+      )
+    );
+
+    let normalizedMolecules = filenames
+      .filter((f) => !invalidFormats.includes(f))
+      .map(removeExtension)
+      .map(normalizeDCI);
+
+    const invalidMolecules = getInvalidNormalizedDci(normalizedMolecules);
+
+    warnings.push(
+      ...invalidMolecules.map(
         (dci) =>
           new ImagesAnalyzerWarning(
             ImagesAnalyzerWarning.INVALID_MOLECULE,
@@ -29,10 +49,10 @@ export function analyseImagesFilenames(filenames) {
       )
     );
 
-    const normalizedFilenames = filenames.map(normalizeDCI);
+    normalizedMolecules = normalizedMolecules.filter((m) => !invalidMolecules.includes(m));
 
     warnings.push(
-      ...getDuplicates(normalizedFilenames).map(
+      ...getDuplicates(normalizedMolecules).map(
         (dup) =>
           new ImagesAnalyzerWarning(
             ImagesAnalyzerWarning.DUPLICATE_IMAGES,
@@ -41,7 +61,7 @@ export function analyseImagesFilenames(filenames) {
       )
     );
 
-    getUnknownMolecules(normalizedFilenames)
+    getUnknownMolecules(normalizedMolecules)
       .then((molecules) =>
         resolve([
           ...warnings,
@@ -76,11 +96,11 @@ function getUnknownMolecules(molecules) {
 
 /**
  * Returns values that appear more than once in the list
- * @param {any[]} values
+ * @param {any[]} filenames
  * @returns {any[]} non-unique values
  */
-function getDuplicates(values) {
-  return [...new Set(values.filter((value, i) => values.slice(i + 1).includes(value)))];
+function getDuplicates(filenames) {
+  return [...new Set(filenames.filter((value, i) => filenames.slice(i + 1).includes(value)))];
 }
 
 /**
@@ -106,3 +126,4 @@ export class ImagesAnalyzerWarning {
 ImagesAnalyzerWarning.DUPLICATE_IMAGES = 1;
 ImagesAnalyzerWarning.UNKNOWN_MOLECULES = 2;
 ImagesAnalyzerWarning.INVALID_MOLECULE = 3;
+ImagesAnalyzerWarning.BAD_FORMAT = 4;

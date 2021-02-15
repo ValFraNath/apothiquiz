@@ -79,5 +79,9 @@ export function getSortedFiles(dirpath) {
  * @returns {string}
  */
 export function removeExtension(filename) {
-  return filename.split(".").slice(0, -1).join("");
+  const splitted = filename.split(".");
+  if (splitted.length === 1) {
+    return filename;
+  }
+  return splitted.slice(0, -1).join("");
 }

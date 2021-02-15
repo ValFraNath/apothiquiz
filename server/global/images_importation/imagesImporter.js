@@ -8,6 +8,8 @@ import { addErrorTitle } from "../Logger.js";
 
 import { normalizeDCI } from "../molecules_importation/moleculesAnalyzer.js";
 
+import { isFormatValid } from "./imagesAnayzer.js";
+
 /**
  * Update the molecule image in database, folloxing the given filenames
  * @param {string[]} filenames The list of file names
@@ -15,6 +17,8 @@ import { normalizeDCI } from "../molecules_importation/moleculesAnalyzer.js";
  */
 export function bindImagesToMolecules(filenames) {
   return new Promise((resolve, reject) => {
+    filenames = filenames.filter(isFormatValid);
+
     const sql = "SELECT mo_dci FROM molecule;";
     queryPromise(sql).then((dbMolecules) => {
       const normalizedDbMolecules = dbMolecules.map((m) => ({
@@ -22,6 +26,7 @@ export function bindImagesToMolecules(filenames) {
         normalized: normalizeDCI(m.mo_dci),
       }));
 
+      // Get all filename corresponding to a molecule
       const imported = [];
       const matches = filenames.reduce((matches, filename) => {
         const normalizedFilename = normalizeDCI(filename);
@@ -35,6 +40,7 @@ export function bindImagesToMolecules(filenames) {
         return matches;
       }, {});
 
+      // Update molecules images in database
       const sql = Object.keys(matches).reduce(
         (sql, filename) =>
           sql +
