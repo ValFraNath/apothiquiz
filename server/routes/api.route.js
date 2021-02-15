@@ -33,7 +33,9 @@ apiRouter.get("/duels/:id", authenticationMiddleware, DuelController.fetch);
 
 apiRouter.post("/duels/:id/:round", authenticationMiddleware, DuelController.play);
 
-apiRouter.use("/files", authenticationMiddleware, express.static("files"));
+apiRouter.use("/files/molecules", authenticationMiddleware, express.static("files/molecules"));
+
+apiRouter.use("/files/images", express.static("files/images"));
 
 apiRouter.post(
   "/import/molecules",

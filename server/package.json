@@ -19,11 +19,15 @@
       "mocha": true,
       "es6": true
     },
-    "extends": "eslint:recommended",
+    "extends": [
+      "eslint:recommended"
+    ],
     "plugins": [
-      "import"
+      "import",
+      "promise"
     ],
     "rules": {
+      "promise/catch-or-return": "error",
       "no-console": "off",
       "array-bracket-newline": "warn",
       "array-bracket-spacing": "warn",
@@ -52,6 +56,16 @@
         }
       ]
     },
+    "overrides": [
+      {
+        "files": [
+          "test/**"
+        ],
+        "rules": {
+          "promise/catch-or-return": "off"
+        }
+      }
+    ],
     "parserOptions": {
       "ecmaVersion": 2020,
       "sourceType": "module"
@@ -83,6 +97,7 @@
   "devDependencies": {
     "eslint": "^7.17.0",
     "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-promise": "^4.3.1",
     "prettier": "^2.1.2"
   }
 }

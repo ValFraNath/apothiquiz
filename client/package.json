@@ -15,7 +15,6 @@
     "dirty-chai": "^2.0.1",
     "dotenv": "^8.2.0",
     "find-config": "^1.0.0",
-    "jszip": "^3.6.0",
     "node-sass": "^4.14.1",
     "path": "^0.12.7",
     "prop-types": "^15.7.2",
