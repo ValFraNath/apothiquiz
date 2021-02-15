@@ -1,4 +1,6 @@
 .fullscreen-message {
+  display: flex;
+  align-items: center;
   box-sizing: border-box;
   position: fixed;
   top: 0;
@@ -10,9 +12,10 @@
   text-align: center;
   padding: 2rem;
 
-  & > svg {
+  & > div > svg {
     width: 33%;
     height: auto;
+    margin-bottom: 4rem;
   }
 
   h1 {
@@ -24,15 +27,19 @@
     background-color: transparent;
     border: none;
     font-size: .9rem;
-    padding: 0.3rem 1rem;
-    margin-top: 0.5rem;
+    padding: .4rem 1rem;
+    margin-top: .6rem;
+  }
+
+  p:last-of-type {
+    margin-bottom: 3rem;
   }
 }
 
 /* ----- Notification Permission ----- */
 
 #authorization-notification {
-  & > svg {
+  & > div > svg {
     padding: 1.2rem;
     border-radius: 50%;
     color: white;

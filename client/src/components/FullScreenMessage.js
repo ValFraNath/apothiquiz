@@ -4,7 +4,9 @@ import React from "react";
 const FullScreenMessage = ({ id, children }) => {
   return (
     <section className="fullscreen-message" id={id}>
-      {children}
+      <div>
+        {children}
+      </div>
     </section>
   );
 };
