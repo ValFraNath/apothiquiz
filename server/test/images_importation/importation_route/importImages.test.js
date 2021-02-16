@@ -93,6 +93,11 @@ describe("Images importation", () => {
     expect(images).to.have.length(3);
     expect(images).deep.equalInAnyOrder(["daclatasvir.png", "doravirine.png", "dolutegravir.svg"]);
   });
+
+  it("Can download images", async () => {
+    const res = await requestAPI("files/images/daclatasvir.png");
+    expect(res.status).equals(200);
+  });
 });
 
 /**
