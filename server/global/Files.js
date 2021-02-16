@@ -37,7 +37,7 @@ export function deleteFiles(...filenames) {
 export function createDir(dirname) {
   return new Promise((resolve, reject) => {
     fs.mkdir(dirname, { recursive: true })
-      .then(resolve)
+      .then(() => resolve())
       .catch((error) => reject(addErrorTitle(error, "Can't create the directory")));
   });
 }

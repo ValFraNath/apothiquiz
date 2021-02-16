@@ -1,23 +1,26 @@
-import { throws } from "assert";
 import fs from "fs";
 
 import path from "path";
 
+import Zip from "adm-zip";
 import chai from "chai";
 import chaiHttp from "chai-http";
-import request from "request";
+import equalInAnyOrder from "deep-equal-in-any-order";
 
-import { getSortedFiles } from "../../../global/Files.js";
+import { createDir, deleteFiles, getSortedFiles } from "../../../global/Files.js";
 import app from "../../../index.js";
 import { forceTruncateTables, getToken, insertData, requestAPI } from "../../index.test.js";
 
 const { expect } = chai;
 chai.use(chaiHttp);
+chai.use(equalInAnyOrder);
 
 const FILES_DIR = path.resolve("test", "images_importation", "importation_route", "files");
+const TMP_DIR = path.resolve("test", "tmp");
 
 describe("Images importation", () => {
   let token;
+  const tempFiles = [];
 
   before("Get token", (done) => {
     forceTruncateTables("user").then(() =>
@@ -28,6 +31,14 @@ describe("Images importation", () => {
         })
       )
     );
+  });
+
+  before("Create tmp test directory", (done) => {
+    createDir(TMP_DIR).then(() => done());
+  });
+
+  after("Delete temporary files", (done) => {
+    deleteFiles(...tempFiles.map((f) => path.resolve(TMP_DIR, f))).then(() => done());
   });
 
   it("Can import (not confirmed)", async () => {
@@ -56,11 +67,11 @@ describe("Images importation", () => {
     expect(res.body.imported).to.be.true;
   });
 
-  it("Can get the archive", async (done) => {
+  it("Can get the archive", async () => {
     let res = await requestAPI("/import/images", { token, method: "get" });
     expect(res.status).equals(200);
-    const { shortpath, url } = res.body;
-    console.log(res.body);
+    const { shortpath } = res.body;
+
     res = await new Promise((resolve) =>
       chai
         .request(app)
@@ -72,11 +83,15 @@ describe("Images importation", () => {
     );
 
     expect(res.status).equals(200);
-    request({ url, encoding: null }, (err, res, body) => {
-      if (err) throw err;
-      fs.writeFileSync("zip.zip", body);
-      done();
-    });
+
+    const archiveName = "images.zip";
+    tempFiles.push(archiveName);
+    res = await downloadZipArchive(shortpath, token, archiveName);
+
+    const archive = new Zip(path.resolve(TMP_DIR, archiveName));
+    const images = archive.getEntries().map((e) => e.entryName);
+    expect(images).to.have.length(3);
+    expect(images).deep.equalInAnyOrder(["daclatasvir.png", "doravirine.png", "dolutegravir.svg"]);
   });
 });
 
@@ -109,4 +124,23 @@ function importImages(dir, confirmed = "", token = "") {
       })
       .catch(reject);
   });
+}
+
+/**
+ * Download the images archive and save it in the tmp directory
+ * @param {string} shortpath The file path in the server
+ * @param {string} token The user token
+ * @param {string} output The archive name
+ * @returns {Promise<strings>} The archive path
+ */
+function downloadZipArchive(shortpath, token, output) {
+  return new Promise((resolve) =>
+    chai
+      .request(app)
+      .get(shortpath)
+      .set("Content-Type", "application/x-www-form-urlencoded")
+      .set("Authorization", "Barear " + token)
+      .pipe(fs.createWriteStream(path.resolve(TMP_DIR, output)))
+      .on("close", () => resolve())
+  );
 }
