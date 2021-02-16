@@ -11,6 +11,54 @@ import { normalizeDCI } from "../global/molecules_importation/moleculesAnalyzer.
 
 const IMAGES_DIR_PATH = path.resolve("files", "images");
 
+/**
+ * @api {post} /import/images Import molecules images
+ * @apiName ImportImages
+ * @apiGroup Import
+ * 
+ * @apiPermission LoggedIn
+ * @apiPermission Admin
+ * @apiDescription Import images to bind them to molecules; the format of the request must be multipart/form-data! 
+ * 
+ * @apiParam  {File} file The images
+ * @apiParam {string} confirmed If "true", the images will be imported, otherwise they will be only tested
+ * 
+ * @apiSuccess (201 | 202) {string} message Message explaining what has been done
+ * @apiSuccess (201 | 202) {object[]} warnings Array of warnings
+ * @apiSuccess (201 | 202) {object} warnings.warning A warning
+ * @apiSuccess (201 | 202) {number} warnings.warning.code The warning code
+ * @apiSuccess (201 | 202) {string} warnings.warning.message The warning message
+ * @apiSuccess (201 | 202) {boolean} imported Boolean telling if images are imported
+ *
+ * @apiSuccessExample Success-Response:
+ *  {
+      "message": "Images tested but not imported",
+      "warnings": [
+        {
+          "code": 3,
+          "message": "Molécule invalide : \"$zanamivir_copie\" "
+        },
+        {
+          "code": 1,
+          "message": "Plusieurs images pour la molécule \"abacavir\""
+        },
+        {
+          "code" : 2,
+          "message" : "Molécule inconnue : \"aseltamivir\""
+        }
+      ],
+      "imported": false
+    }
+  
+ * 
+ * @apiError (400) MissingFile No file provided
+ * @apiErrorExample 400 Error-Response:
+  {
+    "message" : "Fichier manquant"
+  }
+ * @apiUse ErrorServer
+ *
+ */
 function importImages(req, _res) {
   const res = new HttpResponseWrapper(_res);
 
@@ -75,6 +123,28 @@ function importImages(req, _res) {
   }
 }
 
+/**
+ *
+ * @api {get} /import/images Get the last imported images
+ * @apiName GetLastImportedImages
+ * @apiGroup Import
+ * @apiPermission LoggedIn 
+ * @apiPermission Admin 
+ *
+ * @apiSuccess (200) {string} url The url to the images archive
+ * @apiSuccess (200) {string} shortpath The path to the archive in the server
+ * @apiSuccess (200) {string} file The archive name
+ *
+ *
+ * @apiSuccessExample Success-Response:
+ *  {
+      "url": "https://glowing-octo-guacamole.com/api/v1/files/images/images-archive.zip",
+      "shortpath" : "/api/v1/files/images/images-archive.zip",
+      "file" : "images-archive.zip"
+    }
+ *
+ *
+ */
 function getLastImportedFile(req, _res) {
   const res = new HttpResponseWrapper(_res);
 

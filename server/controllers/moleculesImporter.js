@@ -37,11 +37,11 @@ const MAX_FILE_KEPT = 15;
       "message": "File tested but not imported",
       "warnings": [
         {
-          "type": 3,
+          "code": 3,
           "message": "Ces valeurs de \"classes\" sont très proches : \"PENICILLINES A\", \"PENICILLINES\""
         },
         {
-          "type": 3,
+          "code": 3,
           "message": "Ces valeurs de \"indications\" sont très proches : \"VIH\", \"VHB\""
         }
       ],
@@ -167,7 +167,7 @@ function importMolecules(req, _res) {
 /**
  *
  * @api {get} /import/molecules Get the last imported file
- * @apiName GetLastImported
+ * @apiName GetLastImportedMolecules
  * @apiGroup Import
  * @apiPermission LoggedIn 
  * @apiPermission Admin 
@@ -180,7 +180,7 @@ function importMolecules(req, _res) {
  * @apiSuccessExample Success-Response:
  *  {
       "url": "https://glowing-octo-guacamole.com/files/molecules/molecules_1612279095021.csv",
-      "shortpath" : "files/molecules/molecules_1612279095021.csv",
+      "shortpath" : "/files/molecules/molecules_1612279095021.csv",
       "file" : "molecules_1612279095021.csv"
     }
  *
