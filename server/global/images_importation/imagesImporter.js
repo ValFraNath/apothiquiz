@@ -11,7 +11,7 @@ import { normalizeDCI } from "../molecules_importation/moleculesAnalyzer.js";
 import { isFormatValid } from "./imagesAnayzer.js";
 
 /**
- * Update the molecule image in database, folloxing the given filenames
+ * Update the molecule image in database, following the given filenames
  * @param {string[]} filenames The list of file names
  * @returns {Promise<strings[]>} The imported files name
  */
