@@ -2,7 +2,7 @@ import path from "path";
 
 import Zip from "adm-zip";
 
-import { deleteFiles, getSortedFiles, moveFile } from "../global/Files.js";
+import { createDir, deleteFiles, getSortedFiles, moveFile } from "../global/Files.js";
 import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
 import { analyseImagesFilenames } from "../global/images_importation/imagesAnayzer.js";
 import { bindImagesToMolecules } from "../global/images_importation/imagesImporter.js";
@@ -29,32 +29,38 @@ function importImages(req, _res) {
   };
 
   if (confirmed === "true") {
-    bindImagesToMolecules(ogNames)
-      .then((imported) => {
-        deletePreviousImages()
-          .then(() =>
-            Promise.all(
-              imported.map((file) => {
-                const filepath = req.files.find((f) => f.originalname === file).path;
-                return moveFile(filepath, path.resolve(IMAGES_DIR_PATH, normalizeDCI(file)));
-              })
-            )
-              .then(() => {
-                res.sendResponse(201, {
-                  message: "Images imported",
-                  warnings: [],
-                  imported: true,
-                });
+    createDir(IMAGES_DIR_PATH)
+      .then(() =>
+        bindImagesToMolecules(ogNames)
+          .then((imported) => {
+            deletePreviousImages()
+              .then(() =>
+                Promise.all(
+                  imported.map((file) => {
+                    const filepath = req.files.find((f) => f.originalname === file).path;
+                    return moveFile(filepath, path.resolve(IMAGES_DIR_PATH, normalizeDCI(file)));
+                  })
+                )
+                  .then(() => {
+                    res.sendResponse(201, {
+                      message: "Images imported",
+                      warnings: [],
+                      imported: true,
+                    });
 
-                deleteFiles(
-                  ...req.files.filter((f) => !imported.includes(f.originalname)).map((f) => f.path)
-                ).catch(Logger.error);
-              })
-              .catch((error) => sendServerError(error, "Can't move images"))
-          )
-          .catch((error) => sendServerError(error, "Can't delete old images"));
-      })
-      .catch((error) => sendServerError(error, "Can't update images in database"));
+                    deleteFiles(
+                      ...req.files
+                        .filter((f) => !imported.includes(f.originalname))
+                        .map((f) => f.path)
+                    ).catch(Logger.error);
+                  })
+                  .catch((error) => sendServerError(error, "Can't move images"))
+              )
+              .catch((error) => sendServerError(error, "Can't delete old images"));
+          })
+          .catch((error) => sendServerError(error, "Can't update images in database"))
+      )
+      .catch((error) => sendServerError(error, "Can't create the image directory"));
   } else {
     analyseImagesFilenames(ogNames)
       .then((warnings) =>
