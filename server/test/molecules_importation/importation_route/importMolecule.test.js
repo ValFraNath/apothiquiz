@@ -133,22 +133,18 @@ describe("Import molecule", () => {
 });
 
 /**
- * Get a file
- * @param {string} filename
- * @returns {Buffer} The file
- */
-function getFile(filename) {
-  return fs.readFileSync(`${__dirname}/files/${filename}`);
-}
-
-/**
  * Make a request with a file
  * @param {string} filename The file name
- * @param {boolean} confirmed Tell if the request is confirmed
+ * @param {string} confirmed Tell if the request is confirmed
  * @param {string} token The token
  * @returns {Promise}
  */
-function uploadFile(filename, confirmed, token = "") {
+export function uploadFile(
+  filename,
+  confirmed,
+  token = "",
+  dir = path.resolve(__dirname, "files")
+) {
   return new Promise((resolve, reject) => {
     chai
       .request(app)
@@ -156,7 +152,7 @@ function uploadFile(filename, confirmed, token = "") {
       .set("Authorization", token ? "Bearer " + token : "")
       .set("Content-Type", "text/csv")
       .field("confirmed", confirmed)
-      .attach("file", getFile(filename), filename)
+      .attach("file", fs.readFileSync(path.resolve(dir, filename)), filename)
       .end(async (err, res) => {
         if (err) {
           return reject(err);

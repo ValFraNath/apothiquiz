@@ -7,9 +7,11 @@ import chai from "chai";
 import chaiHttp from "chai-http";
 import equalInAnyOrder from "deep-equal-in-any-order";
 
+import { queryPromise } from "../../../db/database.js";
 import { createDir, deleteFiles, getSortedFiles } from "../../../global/Files.js";
 import app from "../../../index.js";
 import { forceTruncateTables, getToken, insertData, requestAPI } from "../../index.test.js";
+import { uploadFile } from "../../molecules_importation/importation_route/importMolecule.test.js";
 
 const { expect } = chai;
 chai.use(chaiHttp);
@@ -97,6 +99,33 @@ describe("Images importation", () => {
   it("Can download images", async () => {
     const res = await requestAPI("files/images/daclatasvir.png");
     expect(res.status).equals(200);
+  });
+
+  it("Images binded in database", async () => {
+    const moleculesHavingImage = (
+      await queryPromise("SELECT mo_dci, mo_image FROM molecule WHERE mo_image IS NOT NULL;")
+    ).map((row) => ({ dci: row.mo_dci, image: row.mo_image }));
+
+    expect(moleculesHavingImage).to.have.length(3);
+    expect(moleculesHavingImage).to.be.deep.equalInAnyOrder([
+      { dci: "DACLATASVIR", image: "daclatasvir.png" },
+      { dci: "DORAVIRINE", image: "doravirine.png" },
+      { dci: "DOLUTEGRAVIR", image: "dolutegravir.svg" },
+    ]);
+  });
+
+  it("Images still binded in database after importing new molecules", async () => {
+    await uploadFile("molecules.csv", "true", token, FILES_DIR);
+
+    const moleculesHavingImage = (
+      await queryPromise("SELECT mo_dci, mo_image FROM molecule WHERE mo_image IS NOT NULL;")
+    ).map((row) => ({ dci: row.mo_dci, image: row.mo_image }));
+
+    expect(moleculesHavingImage).to.have.length(2);
+    expect(moleculesHavingImage).to.be.deep.equalInAnyOrder([
+      { dci: "DACLATASVIR", image: "daclatasvir.png" },
+      { dci: "DOLUTEGRAVIR", image: "dolutegravir.svg" },
+    ]);
   });
 });
 

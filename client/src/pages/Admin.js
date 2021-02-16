@@ -227,8 +227,8 @@ const Admin = () => (
     <details>
       <summary>Importer des images (WIP)</summary>
       <FileDownloader
-        text="Télécharger le dernier fichier importé"
-        filename="images.csv"
+        text="Télécharger les dernières images importées"
+        filename="images-molecules.csv"
         endpoint="/api/v1/import/images"
       />
       <FileImporter

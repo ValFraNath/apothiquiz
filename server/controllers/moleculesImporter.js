@@ -4,6 +4,7 @@ import { queryPromise } from "../db/database.js";
 import { HeaderErrors } from "../global/csv_reader/HeaderChecker.js";
 import { createDir, deleteFiles, getSortedFiles, moveFile } from "../global/Files.js";
 import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
+import { bindImagesToMolecules } from "../global/images_importation/imagesImporter.js";
 import Logger, { addErrorTitle } from "../global/Logger.js";
 import { analyzeData } from "../global/molecules_importation/moleculesAnalyzer.js";
 import { createSqlToInsertAllData } from "../global/molecules_importation/moleculesImporter.js";
@@ -109,21 +110,27 @@ function importMolecules(req, _res) {
         const sql = createSqlToInsertAllData(data);
         queryPromise(sql)
           .then(() =>
-            createDir(FILES_DIR_PATH)
+            bindAlreadyExistingImages()
               .then(() =>
-                moveFile(filepath, path.resolve("files", "molecules", filename))
+                createDir(FILES_DIR_PATH)
                   .then(() =>
-                    getSortedFiles(FILES_DIR_PATH)
-                      .then((files) =>
-                        deleteFiles(
-                          ...files.slice(MAX_FILE_KEPT).map((file) => `${FILES_DIR_PATH}/${file}`)
-                        )
-                          .then(() =>
-                            res.sendResponse(201, {
-                              message: "File imported",
-                              warnings: [],
-                              imported: true,
-                            })
+                    moveFile(filepath, path.resolve("files", "molecules", filename))
+                      .then(() =>
+                        getSortedFiles(FILES_DIR_PATH)
+                          .then((files) =>
+                            deleteFiles(
+                              ...files
+                                .slice(MAX_FILE_KEPT)
+                                .map((file) => `${FILES_DIR_PATH}/${file}`)
+                            )
+                              .then(() =>
+                                res.sendResponse(201, {
+                                  message: "File imported",
+                                  warnings: [],
+                                  imported: true,
+                                })
+                              )
+                              .catch(sendServorError)
                           )
                           .catch(sendServorError)
                       )
@@ -195,3 +202,17 @@ function getLastImportedFile(req, _res) {
 }
 
 export default { importMolecules, getLastImportedFile };
+
+// ****** INTERNAL FUNCTIONS ******
+
+/**
+ * Make sure molecules with an image before import always have one after
+ * @returns {Promise}
+ */
+function bindAlreadyExistingImages() {
+  return new Promise((resolve, reject) => {
+    getSortedFiles(path.resolve("files", "images"))
+      .then((images) => bindImagesToMolecules(images).then(() => resolve()))
+      .catch(reject);
+  });
+}
