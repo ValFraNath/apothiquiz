@@ -13,3 +13,20 @@ import sinonChai from "sinon-chai";
 
 chai.use(dirtyChai).use(createChaiJestDiff()).use(createChaiEnzyme()).use(sinonChai);
 configureEnzyme({ adapter: new Adapter() });
+
+/* Mock global variables */
+
+const Notification = {
+  permission: "granted",
+};
+
+const serviceWorker = {
+  getRegistration() {
+    return new Promise((resolve) => {
+      resolve(undefined);
+    });
+  },
+};
+
+global.Notification = Notification;
+global.navigator.serviceWorker = serviceWorker;

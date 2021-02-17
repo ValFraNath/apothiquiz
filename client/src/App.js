@@ -79,13 +79,28 @@ export default class App extends Component {
     if (Notification.permission === "default") {
       this.setState({ requireNotificationPermission: true });
     }
+
+    if (Notification.permission === "granted") {
+      navigator.serviceWorker.getRegistration().then((reg) => {
+        if (reg === undefined) return;
+        reg
+          .showNotification("Nouvau défi disponible", {
+            body: "nhoun vient de jouer le round 2",
+            icon: "favicon.ico",
+            data: {
+              type: "new_duel",
+              duelId: 3,
+            },
+          })
+          .catch(() => console.error("Can't send notification"));
+      });
+    }
   }
 
   displayBrowserNotificationPermission = () => {
-    Notification.requestPermission()
-      .then(() => {
-        this.setState({ requireNotificationPermisson: false });
-      });
+    Notification.requestPermission().then(() => {
+      this.setState({ requireNotificationPermission: false });
+    });
   };
 
   updateServiceWorker = () => {

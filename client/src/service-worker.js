@@ -65,7 +65,7 @@ self.addEventListener("fetch", (e) => {
         const newResource = r.clone();
         caches.open(cacheName).then((cache) => {
           console.info(`[Service Worker] Caching new resource: ${e.request.url}`);
-          cache.put(e.request, newResource);
+          cache.put(e.request, newResource).catch(() => console.error("Can't cache new resource"));
         });
         return r;
       });
@@ -73,8 +73,18 @@ self.addEventListener("fetch", (e) => {
   );
 });
 
+/**
+ * Message sent from the client to the service-worker
+ */
 self.addEventListener("message", (e) => {
   if (e.data.type && e.data.type === "SKIP_WAITING") {
     self.skipWaiting();
   }
+});
+
+/**
+ * Handle user click on a notification
+ */
+self.addEventListener("notificationclick", () => {
+  console.log("Hello, World!");
 });
