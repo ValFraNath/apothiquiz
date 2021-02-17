@@ -77,14 +77,28 @@ self.addEventListener("fetch", (e) => {
  * Message sent from the client to the service-worker
  */
 self.addEventListener("message", (e) => {
+  // User wants to use the new sw
   if (e.data.type && e.data.type === "SKIP_WAITING") {
-    self.skipWaiting();
+    self.skipWaiting().catch(() => console.error("Can't skip waiting"));
   }
 });
 
 /**
  * Handle user click on a notification
  */
-self.addEventListener("notificationclick", () => {
-  console.log("Hello, World!");
+self.addEventListener("notificationclick", (e) => {
+  const { notification, action } = e;
+  if (action === "close") {
+    notification.close();
+    return;
+  }
+
+  const { data } = notification;
+  if (data.type === "new_duel" && data.duelId !== undefined) {
+    // eslint-disable-next-line no-undef
+    clients
+      .openWindow(`/duel/${data.duelId}`)
+      .catch(() => console.log("Can't open window after the user clicks on a notification"));
+    notification.close();
+  }
 });
