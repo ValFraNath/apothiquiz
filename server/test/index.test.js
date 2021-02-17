@@ -67,3 +67,20 @@ export function requestAPI(endpoint, { body = {}, token = "", method = "get" } =
       });
   });
 }
+
+/**
+ * Get a token for a user
+ * @param {string} username The user login
+ * @param {string} password The user password
+ * @returns {Promise<string>} The token
+ */
+export function getToken(username, password = "1234") {
+  return new Promise((resolve, reject) => {
+    requestAPI("users/login", {
+      body: { userPseudo: username, userPassword: password },
+      method: "post",
+    })
+      .then((res) => resolve(res.body.token))
+      .catch(reject);
+  });
+}

@@ -237,34 +237,36 @@ function play(req, _res) {
     return res.sendUsageError(400, "Invalid or missing duel id");
   }
 
-  getDuel(id, username).then((duel) => {
-    if (!duel) {
-      return res.sendUsageError(404, "Duel not found");
-    }
+  getDuel(id, username)
+    .then((duel) => {
+      if (!duel) {
+        return res.sendUsageError(404, "Duel not found");
+      }
 
-    if (!duel.inProgress) {
-      return res.sendUsageError(400, "This duel is finished");
-    }
+      if (!duel.inProgress) {
+        return res.sendUsageError(400, "This duel is finished");
+      }
 
-    if (duel.currentRound !== round) {
-      return res.sendUsageError(400, "Invalid duel round");
-    }
-    if (duel.rounds[round - 1][0].userAnswer !== undefined) {
-      return res.sendUsageError(400, "You can only play a round once");
-    }
+      if (duel.currentRound !== round) {
+        return res.sendUsageError(400, "Invalid duel round");
+      }
+      if (duel.rounds[round - 1][0].userAnswer !== undefined) {
+        return res.sendUsageError(400, "You can only play a round once");
+      }
 
-    if (answers.length !== duel.rounds[round - 1].length) {
-      return res.sendUsageError(400, "Incorrect number of answers");
-    }
+      if (answers.length !== duel.rounds[round - 1].length) {
+        return res.sendUsageError(400, "Incorrect number of answers");
+      }
 
-    insertResultInDatabase(id, username, answers)
-      .then((newDuel) =>
-        updateDuelState(newDuel, username)
-          .then((duel) => res.sendResponse(200, duel))
-          .catch(res.sendServerError)
-      )
-      .catch(res.sendServerError);
-  });
+      insertResultInDatabase(id, username, answers)
+        .then((newDuel) =>
+          updateDuelState(newDuel, username)
+            .then((duel) => res.sendResponse(200, duel))
+            .catch(res.sendServerError)
+        )
+        .catch(res.sendServerError);
+    })
+    .catch(res.sendServerError);
 }
 
 let mockedDuelsRounds;
