@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "NODE_ENV=test mocha ./test/* --exit",
+    "test": "NODE_ENV=test DB_DATABASE=gogTest PORT=5036 mocha ./test/* --exit",
     "start": "node .",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
