@@ -188,8 +188,8 @@ function getNonValidNumberValue(molecules) {
 export const normalizeDCI = (dci) =>
   String(dci)
     .trim()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
+    .normalize("NFD") // The unicode normal form Decomposes the combined graphemes into a combination of simple graphemes. 'è' => 'e' + '`'
+    .replace(/[\u0300-\u036f]/g, "") // Remove all special graphemes : 'e' + '`' => 'e'
     .replace(/[\s-]+/g, "_")
     .toLowerCase();
 

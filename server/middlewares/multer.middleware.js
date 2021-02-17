@@ -12,7 +12,7 @@ import { addErrorTitle } from "../global/Logger.js";
  */
 const storage = multer.diskStorage({
   filename: (req, file, callback) => {
-    const extension = file.originalname.split(".").slice(1).pop();
+    const extension = path.parse(file.originalname).ext.substr(1);
     const filename = `${Date.now()}.${uuidv4()}.${extension}`;
 
     callback(null, filename);

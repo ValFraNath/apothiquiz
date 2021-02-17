@@ -8,8 +8,9 @@ import {
 } from "../molecules_importation/moleculesAnalyzer.js";
 
 const VALID_FORMATS = ["jpeg", "jpg", "svg", "png"];
-export const isFormatValid = (filename) =>
-  new RegExp(`\\.${VALID_FORMATS.join("|")}\\s*$`, "i").test(filename);
+const VALID_FORMATS_REGEX = new RegExp(`\\.${VALID_FORMATS.join("|")}\\s*$`, "i");
+
+export const isFormatValid = (filename) => VALID_FORMATS_REGEX.test(filename);
 
 /**
  * Analyze images filenames

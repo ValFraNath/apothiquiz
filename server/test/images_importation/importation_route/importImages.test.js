@@ -44,27 +44,27 @@ describe("Images importation", () => {
   });
 
   it("Can import (not confirmed)", async () => {
-    const res = await importImages("default", false, token);
+    const res = await importImagesViaAPI("default", false, token);
     expect(res.status).equals(202);
     expect(res.body.imported).to.be.false;
     expect(res.body.warnings).to.have.length(0);
   });
 
   it("Can import (not confirmed with warnings)", async () => {
-    const res = await importImages("warnings", false, token);
+    const res = await importImagesViaAPI("warnings", false, token);
     expect(res.status).equals(202);
     expect(res.body.imported).to.be.false;
     expect(res.body.warnings).to.have.length(4);
   });
 
   it("Can import (confirmed)", async () => {
-    const res = await importImages("default", "true", token);
+    const res = await importImagesViaAPI("default", "true", token);
     expect(res.status).equals(201);
     expect(res.body.imported).to.be.true;
   });
 
   it("Can import (confirmed twice)", async () => {
-    const res = await importImages("warnings", "true", token);
+    const res = await importImagesViaAPI("warnings", "true", token);
     expect(res.status).equals(201);
     expect(res.body.imported).to.be.true;
   });
@@ -135,7 +135,7 @@ describe("Images importation", () => {
  * @param {string} confirmed Tell if the importation is confirmed
  * @param {string} token The user token
  */
-function importImages(dir, confirmed = "", token = "") {
+function importImagesViaAPI(dir, confirmed = "", token = "") {
   return new Promise((resolve, reject) => {
     const req = chai
       .request(app)

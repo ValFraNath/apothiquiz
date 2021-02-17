@@ -1,4 +1,5 @@
 import fs from "fs/promises";
+import path from "path";
 
 import { addErrorTitle } from "../global/Logger.js";
 
@@ -75,13 +76,9 @@ export function getSortedFiles(dirpath) {
 
 /**
  * Returns the filename without extension
- * @param {string} filename
- * @returns {string}
+ * @param {string} filename The file name
+ * @returns {string} The file name without extension
  */
 export function removeExtension(filename) {
-  const splitted = filename.split(".");
-  if (splitted.length === 1) {
-    return filename;
-  }
-  return splitted.slice(0, -1).join("");
+  return path.parse(filename).name;
 }
