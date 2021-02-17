@@ -52,6 +52,7 @@ describe("Check the database structure", function () {
         "mo_ntr",
         "mo_class",
         "mo_system",
+        "mo_image",
       ],
     },
     {

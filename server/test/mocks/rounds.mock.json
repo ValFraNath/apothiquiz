@@ -36,7 +36,7 @@
       "subject": "ANTIPARASITAIRE",
       "title": "1 système - 4 molécules",
       "goodAnswer": 0,
-      "answers": ["ORNIDAZOLE,", "COLISTINE", "OXACILLINE", "SULFAMETHOXAZOLE"],
+      "answers": ["ORNIDAZOLE", "COLISTINE", "OXACILLINE", "SULFAMETHOXAZOLE"],
       "type": 3,
       "wording": "Quelle molécule appartient au système 'ANTIPARASITAIRE' ?"
     }
@@ -46,7 +46,12 @@
       "subject": "ZANAMIVIR",
       "title": "1 molécule - 4 classes",
       "goodAnswer": 0,
-      "answers": ["INHIBITEURS DE NEURAMINISASE", "INHIBITEUR POLYMERASE NS5B", "PHENICOLES", "OXAZOLIDINONES"],
+      "answers": [
+        "INHIBITEURS DE NEURAMINISASE",
+        "INHIBITEUR POLYMERASE NS5B",
+        "PHENICOLES",
+        "OXAZOLIDINONES"
+      ],
       "type": 2,
       "wording": "À quelle classe appartient la molécule 'ZANAMIVIR' ?"
     },
@@ -54,7 +59,12 @@
       "subject": "ATAZANAVIR",
       "title": "1 molécule - 4 classes",
       "goodAnswer": 2,
-      "answers": ["AMINOSIDE", "INHIBITEUR PROTEINE 3A/4", "INHIBITEUR DE PROTEASE", "INHIBITEUR DE FUSION"],
+      "answers": [
+        "AMINOSIDE",
+        "INHIBITEUR PROTEINE 3A/4",
+        "INHIBITEUR DE PROTEASE",
+        "INHIBITEUR DE FUSION"
+      ],
       "type": 2,
       "wording": "À quelle classe appartient la molécule 'ATAZANAVIR' ?"
     },
@@ -70,7 +80,12 @@
       "subject": "SOFOSBUVIR",
       "title": "1 molécule - 4 classes",
       "goodAnswer": 0,
-      "answers": ["INHIBITEUR POLYMERASE NS5B", "INHIBITEUR PROTEINE 3A/4", "AMINOSIDE", "MONOBACTAM"],
+      "answers": [
+        "INHIBITEUR POLYMERASE NS5B",
+        "INHIBITEUR PROTEINE 3A/4",
+        "AMINOSIDE",
+        "MONOBACTAM"
+      ],
       "type": 2,
       "wording": "À quelle classe appartient la molécule 'SOFOSBUVIR' ?"
     },
@@ -104,7 +119,7 @@
       "subject": "oesophagite",
       "title": "1 effet indésirable - 4 molécules",
       "goodAnswer": 1,
-      "answers": ["STREPTOMYCINE,", "OXYTETRACYCLINE", "BICTEGRAVIR", "DALBAVANCINE"],
+      "answers": ["STREPTOMYCINE", "OXYTETRACYCLINE", "BICTEGRAVIR", "DALBAVANCINE"],
       "type": 6,
       "wording": "Quelle molécule a comme effet indésirable 'oesophagite' ?"
     },
@@ -172,7 +187,12 @@
       "subject": "ROXITHROMYCINE",
       "title": "1 molécule - 4 effets indésirables",
       "goodAnswer": 2,
-      "answers": ["Nephrotoxicité", "hypotension orthostatique", "Torsade de pointe", "Diminution seuil epileptogene"],
+      "answers": [
+        "Nephrotoxicité",
+        "hypotension orthostatique",
+        "Torsade de pointe",
+        "Diminution seuil epileptogene"
+      ],
       "type": 9,
       "wording": "Quel effet indésirable a la molécule 'ROXITHROMYCINE' ?"
     },
@@ -193,12 +213,17 @@
       "subject": "AMIKACINE",
       "title": "1 molécule - 4 effets indésirables",
       "goodAnswer": 0,
-      "answers": ["Nephrotoxicité", "Décoloration dents", "Diminution seuil epileptogene", "Hypoplasie email dentaire"],
+      "answers": [
+        "Nephrotoxicité",
+        "Décoloration dents",
+        "Diminution seuil epileptogene",
+        "Hypoplasie email dentaire"
+      ],
       "type": 9,
       "wording": "Quel effet indésirable a la molécule 'AMIKACINE' ?"
     },
     {
-      "subject": "GENTAMICINE,",
+      "subject": "GENTAMICINE",
       "title": "1 molécule - 4 effets indésirables",
       "goodAnswer": 0,
       "answers": [
@@ -214,7 +239,12 @@
       "subject": "DOXYCYCLINE",
       "title": "1 molécule - 4 effets indésirables",
       "goodAnswer": 2,
-      "answers": ["Toxicite hematologique", "Diminution seuil epileptogene", "Décoloration dents", "Ototoxicité"],
+      "answers": [
+        "Toxicite hematologique",
+        "Diminution seuil epileptogene",
+        "Décoloration dents",
+        "Ototoxicité"
+      ],
       "type": 9,
       "wording": "Quel effet indésirable a la molécule 'DOXYCYCLINE' ?"
     }
