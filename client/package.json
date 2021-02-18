@@ -64,7 +64,7 @@
       "no-useless-rename": "error",
       "prefer-arrow-callback": "error",
       "prefer-destructuring": [
-        "error",
+        "warn",
         {
           "object": true,
           "array": false

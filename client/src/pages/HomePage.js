@@ -1,6 +1,7 @@
 import { ChevronRightIcon } from "@modulz/radix-icons";
 import axios from "axios";
 import React, { Component } from "react";
+import { useQuery } from "react-query";
 
 import { Link } from "react-router-dom";
 
@@ -9,6 +10,10 @@ import Plural from "../components/Plural";
 import WaitPilette from "../images/attente.png";
 import FightPilette from "../images/fight.png";
 import AuthService from "../services/auth.service";
+
+function UseQuery({ children, requestKey, callback, options }) {
+  return children(useQuery(requestKey, callback, options));
+}
 
 class HomePage extends Component {
   constructor(props) {
@@ -22,53 +27,38 @@ class HomePage extends Component {
     };
   }
 
-  componentDidMount() {
-    axios
-      .get("/api/v1/duels/")
-      .then((res) => {
-        const toPlay = [],
-          pending = [],
-          finished = [];
+  async getDuels() {
+    const { data: duelData } = await axios.get("/api/v1/duels/");
 
-        const listOfUsers = [];
-        res.data.forEach((val) => {
-          if (val.inProgress === 0) {
-            finished.push(val);
-          } else if (val.rounds[val.currentRound - 1][0].userAnswer !== undefined) {
-            pending.push(val);
-          } else {
-            toPlay.push(val);
-          }
+    const parsedData = {
+      finishedChallenges: [],
+      pendingChallenges: [],
+      toPlayChallenges: [],
+    };
 
-          if (!listOfUsers.includes(val.opponent)) {
-            listOfUsers.push(val.opponent);
-          }
-        });
+    const currentUserPseudo = AuthService.getCurrentUser().pseudo;
 
-        this.setState({
-          toPlayChallenges: toPlay,
-          pendingChallenges: pending,
-          finishedChallenges: finished,
-        });
+    const listOfUsers = [currentUserPseudo];
+    duelData.forEach((val) => {
+      if (val.inProgress === 0) {
+        parsedData.toPlayChallenges.push(val);
+      } else if (val.rounds[val.currentRound - 1][0].userAnswer !== undefined) {
+        parsedData.pendingChallenges.push(val);
+      } else {
+        parsedData.toPlayChallenges.push(val);
+      }
 
-        this.getUsersData(listOfUsers);
-      })
-      .catch((err) => console.error(err));
-  }
+      if (!listOfUsers.includes(val.opponent)) {
+        listOfUsers.push(val.opponent);
+      }
+    });
 
-  getUsersData(otherUsers) {
-    const currentUser = AuthService.getCurrentUser();
-    const listOfUsers = [currentUser.pseudo, ...otherUsers];
+    const { data: usersData } = await axios.post("/api/v1/users/", listOfUsers);
 
-    axios
-      .post("/api/v1/users/", listOfUsers)
-      .then((res) => {
-        this.setState({
-          currentUser: res.data[currentUser.pseudo],
-          usersData: res.data,
-        });
-      })
-      .catch((err) => console.error(err));
+    parsedData.currentUser = usersData[currentUserPseudo];
+    parsedData.usersData = usersData;
+
+    return parsedData;
   }
 
   displayResultDuel(user, opponent) {
@@ -78,105 +68,125 @@ class HomePage extends Component {
   }
 
   render() {
-    const {
-      currentUser,
-      usersData,
-      toPlayChallenges,
-      pendingChallenges,
-      finishedChallenges,
-    } = this.state;
-
-    const cuVictories = currentUser?.victories ?? "-";
-    const cuDefeats = currentUser?.defeats ?? "-";
-
     return (
-      <main id="homepage">
-        <header>
-          <div id="header-background"></div>
-          <Avatar size="125px" infos={currentUser?.avatar} />
+      <UseQuery requestKey="duels" callback={() => this.getDuels()} options={{ staleTime: 10000 }}>
+        {({ data, isLoading }) => {
+          let toPlayChallenges = [],
+            pendingChallenges = [],
+            finishedChallenges = [],
+            currentUser = undefined,
+            usersData = [];
 
-          <div>
-            <h1>{currentUser?.pseudo ?? "Pilette"}</h1>
-            <p>
-              {cuVictories} <Plural word="victoire" count={cuVictories} />
-            </p>
-            <p>
-              {cuDefeats} <Plural word="défaite" count={cuDefeats} />
-            </p>
-          </div>
-        </header>
+          if (!isLoading) {
+            // eslint-disable-next-line prefer-destructuring
+            toPlayChallenges = data.toPlayChallenges;
+            // eslint-disable-next-line prefer-destructuring
+            pendingChallenges = data.pendingChallenges;
+            // eslint-disable-next-line prefer-destructuring
+            finishedChallenges = data.finishedChallenges;
+            // eslint-disable-next-line prefer-destructuring
+            currentUser = data.currentUser;
+            // eslint-disable-next-line prefer-destructuring
+            usersData = data.usersData;
+          }
 
-        <div id="links">
-          <Link to="/train" className="btn">
-            Entraînement
-          </Link>
-          <Link to="/createduel" className="btn">
-            Nouveau duel
-          </Link>
-        </div>
+          const cuVictories = currentUser?.victories ?? "-";
+          const cuDefeats = currentUser?.defeats ?? "-";
 
-        <section>
-          <h2>
-            <img src={FightPilette} alt="Pilette est prête à affronter ses adversaires" /> Ton tour
-          </h2>
-          {toPlayChallenges.length === 0 ? (
-            <p>Aucun défi à relever pour le moment.</p>
-          ) : (
-            <>
-              {toPlayChallenges.map((value, index) => (
-                <article key={index}>
-                  <Avatar size="75px" infos={usersData[value.opponent]?.avatar} />
-                  <Link to={`/duel/${value.id}`} className="challenges-text">
-                    <div>
-                      <h3>{value.opponent}</h3>
-                      <p>Vous pouvez jouer le round {value.currentRound}</p>
-                    </div>
-                    <ChevronRightIcon />
-                  </Link>
-                </article>
-              ))}
-            </>
-          )}
-        </section>
+          return (
+            <main id="homepage">
+              <header>
+                <div id="header-background"></div>
+                <Avatar size="125px" infos={currentUser?.avatar} />
 
-        <section>
-          <h2>
-            <img src={WaitPilette} alt="Pilette is waiting" /> En attente
-          </h2>
-          {pendingChallenges.length === 0 ? (
-            <p>Aucun défi à en attente pour le moment.</p>
-          ) : (
-            <>
-              {pendingChallenges.map((value, index) => (
-                <article key={index}>
-                  <Link to={`/duel/${value.id}`} className="challenges-text">
-                    <h3>{value.opponent}</h3>
-                    <p>En train de jouer le round {value.currentRound}</p>
-                  </Link>
-                  <Avatar size="75px" infos={usersData[value.opponent]?.avatar} />
-                </article>
-              ))}
-            </>
-          )}
-        </section>
-
-        {finishedChallenges.length > 0 && (
-          <section>
-            <h2>Terminés</h2>
-            <>
-              {finishedChallenges.map((value, index) => (
-                <article key={index}>
-                  <Avatar size="75px" infos={usersData[value.opponent]?.avatar} />
-                  <Link to={`/duel/${value.id}`} className="challenges-text">
-                    <h3>{value.opponent}</h3>
-                    <p>{this.displayResultDuel(value.userScore, value.opponentScore)}</p>
-                  </Link>
-                </article>
-              ))}
-            </>
-          </section>
-        )}
-      </main>
+                <div>
+                  <h1>{currentUser?.pseudo ?? "Pilette"}</h1>
+                  <p>
+                    {cuVictories} <Plural word="victoire" count={cuVictories} />
+                  </p>
+                  <p>
+                    {cuDefeats} <Plural word="défaite" count={cuDefeats} />
+                  </p>
+                </div>
+              </header>
+              <div id="links">
+                <Link to="/train" className="btn">
+                  Entraînement
+                </Link>
+                <Link to="/createduel" className="btn">
+                  Nouveau duel
+                </Link>
+              </div>
+              {isLoading ? (
+                <h2>Chargement...</h2>
+              ) : (
+                <>
+                  <section>
+                    <h2>
+                      <img src={FightPilette} alt="Pilette est prête à affronter ses adversaires" />{" "}
+                      Ton tour
+                    </h2>
+                    {toPlayChallenges.length === 0 ? (
+                      <p>Aucun défi à relever pour le moment.</p>
+                    ) : (
+                      <>
+                        {toPlayChallenges.map((value, index) => (
+                          <article key={index}>
+                            <Avatar size="75px" infos={usersData[value.opponent]?.avatar} />
+                            <Link to={`/duel/${value.id}`} className="challenges-text">
+                              <div>
+                                <h3>{value.opponent}</h3>
+                                <p>Vous pouvez jouer le round {value.currentRound}</p>
+                              </div>
+                              <ChevronRightIcon />
+                            </Link>
+                          </article>
+                        ))}
+                      </>
+                    )}
+                  </section>
+                  <section>
+                    <h2>
+                      <img src={WaitPilette} alt="Pilette is waiting" /> En attente
+                    </h2>
+                    {pendingChallenges.length === 0 ? (
+                      <p>Aucun défi à en attente pour le moment.</p>
+                    ) : (
+                      <>
+                        {pendingChallenges.map((value, index) => (
+                          <article key={index}>
+                            <Link to={`/duel/${value.id}`} className="challenges-text">
+                              <h3>{value.opponent}</h3>
+                              <p>En train de jouer le round {value.currentRound}</p>
+                            </Link>
+                            <Avatar size="75px" infos={usersData[value.opponent]?.avatar} />
+                          </article>
+                        ))}
+                      </>
+                    )}
+                  </section>
+                  {finishedChallenges.length > 0 && (
+                    <section>
+                      <h2>Terminés</h2>
+                      <>
+                        {finishedChallenges.map((value, index) => (
+                          <article key={index}>
+                            <Avatar size="75px" infos={usersData[value.opponent]?.avatar} />
+                            <Link to={`/duel/${value.id}`} className="challenges-text">
+                              <h3>{value.opponent}</h3>
+                              <p>{this.displayResultDuel(value.userScore, value.opponentScore)}</p>
+                            </Link>
+                          </article>
+                        ))}
+                      </>
+                    </section>
+                  )}
+                </>
+              )}
+            </main>
+          );
+        }}
+      </UseQuery>
     );
   }
 }

@@ -110,7 +110,11 @@ function getAll(_, _res) {
 function severalGetInfos(req, _res) {
   const res = new HttpResponseWrapper(_res);
   const listOfUsers = req.body;
-  if (!Array.isArray(listOfUsers) || listOfUsers.length === 0) {
+  if (
+    !Array.isArray(listOfUsers) ||
+    listOfUsers.length === 0 ||
+    listOfUsers.some((user) => typeof user !== "string")
+  ) {
     return res.sendUsageError(401, "Bad request format.");
   }
 
