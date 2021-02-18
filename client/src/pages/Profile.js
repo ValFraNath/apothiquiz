@@ -2,22 +2,32 @@ import { CaretSortIcon } from "@modulz/radix-icons";
 import * as Collapsible from "@radix-ui/react-collapsible";
 
 import React, { useState } from "react";
-import {
-  // useQuery,
-  useQueryClient,
-} from "react-query";
+import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
 
 import Avatar from "../components/Avatar";
-import ChooseAvatar from "../components/ChooseAvatar";
+import AvatarChooser from "../components/AvatarChooser";
 import AuthService from "../services/auth.service";
+import { getUserInfos } from "../utils/api-query-user";
 
 const Profile = () => {
-  const queryClient = useQueryClient();
-  const user = queryClient.getQueryData(["user", "me"]);
+  const [initialised, setInitialised] = useState(false);
+  const [avatar, setAvatar] = useState();
 
-  // TODO: fails to initalise when you arrive directly on this page
-  const [avatar, setAvatar] = useState(user?.avatar);
+  const { data, isLoading } = useQuery(["user", "me"], () => getUserInfos("me"));
+
+  if (isLoading) {
+    return <span>Chargement</span>;
+  }
+
+  if (!initialised) {
+    setAvatar(data.avatar);
+    setInitialised(true);
+  }
+
+  function updateValue(valueName, newValue) {
+    setAvatar((prevAvatar) => ({ ...prevAvatar, [valueName]: newValue }));
+  }
 
   return (
     <main id="profile">
@@ -29,19 +39,19 @@ const Profile = () => {
           <CaretSortIcon height="20px" width="20px" style={{ marginLeft: "10px" }} />
         </Collapsible.Button>
         <Collapsible.Content>
-          <ChooseAvatar
+          <AvatarChooser
             choiceEyes={avatar?.eyes}
             choiceHands={avatar?.hands}
             choiceHat={avatar?.hat}
             choiceMouth={avatar?.mouth}
             choiceColorBody={avatar?.colorBody}
             choiceColorBG={avatar?.colorBG}
-            handleInputEyes={(val) => setAvatar({ eyes: parseInt(val) })}
-            handleInputHands={(val) => setAvatar({ hands: parseInt(val) })}
-            handleInputHat={(val) => setAvatar({ hat: parseInt(val) })}
-            handleInputMouth={(val) => setAvatar({ mouth: parseInt(val) })}
-            handleInputColorBody={(val) => setAvatar({ colorBody: val })}
-            handleInputColorBG={(val) => setAvatar({ colorBG: val })}
+            handleInputEyes={(val) => updateValue("eyes", parseInt(val))}
+            handleInputHands={(val) => updateValue("hands", parseInt(val))}
+            handleInputHat={(val) => updateValue("hat", parseInt(val))}
+            handleInputMouth={(val) => updateValue("mouth", parseInt(val))}
+            handleInputColorBody={(val) => updateValue("colorBody", val)}
+            handleInputColorBG={(val) => updateValue("colorBG", val)}
           />
         </Collapsible.Content>
       </Collapsible.Root>
