@@ -62,9 +62,15 @@ class HomePage extends Component {
               parsedData.usersData = usersData;
               resolve(parsedData);
             })
-            .catch(reject);
+            .catch((error) => {
+              console.error(error); // TODO handle error
+              reject();
+            });
         })
-        .catch(reject);
+        .catch((error) => {
+          console.error(error); // TODO handle error
+          reject();
+        });
     });
   }
 
