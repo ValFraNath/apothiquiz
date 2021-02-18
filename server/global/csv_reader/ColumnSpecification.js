@@ -29,7 +29,7 @@ export class ColumnSpecifications {
    */
   matchTitle(value) {
     let title = this.title.replace("n", "(\\d+)");
-    return new RegExp(title).test(value);
+    return new RegExp(`^${title}$`).test(value);
   }
 
   /**

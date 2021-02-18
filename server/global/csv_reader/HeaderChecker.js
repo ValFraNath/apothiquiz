@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-unused-vars
-import { ColumnSpecifications } from "./ParserSpecifications.js";
+import { ColumnSpecifications } from "./ColumnSpecification.js";
 
 /**
  * Header Checker reads the header of the file and verifies it is formatted correctly
