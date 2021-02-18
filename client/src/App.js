@@ -85,12 +85,12 @@ export default class App extends Component {
   };
 
   render() {
-    const { isUpdateAvailable, installPromptEvent, updateRequired } = this.state;
+    const { user, isUpdateAvailable, installPromptEvent, updateRequired } = this.state;
 
     return (
       <QueryClientProvider client={this.queryClient}>
         <Router>
-          <TopBar username={this.state.user} />
+          <TopBar username={user} />
           {isUpdateAvailable && (
             <button
               id="update-app"

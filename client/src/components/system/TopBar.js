@@ -88,14 +88,13 @@ const OfflineBanner = () => {
 
 const TopBar = ({ username }) => (
   <nav>
-    {username ? <UserBadge pseudo={username} /> : <span></span>}
+    {username ? <UserBadge username={username} /> : <span></span>}
     <h1>
       <Link to={username ? "/homepage" : "/"}>Guacamole</Link>
     </h1>
     <OfflineBanner />
   </nav>
 );
-
 TopBar.propTypes = {
   username: PropTypes.string,
 };
