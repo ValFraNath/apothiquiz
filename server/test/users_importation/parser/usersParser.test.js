@@ -32,7 +32,6 @@ for (const test of tests) {
     before("Parse file", (done) => {
       parseUsersFromCsv(path.resolve(FILES_DIR, test.file)).then((list) => {
         users = JSON.parse(list);
-        console.log(users);
         done();
       });
     });
