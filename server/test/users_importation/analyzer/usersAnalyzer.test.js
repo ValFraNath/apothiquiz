@@ -57,6 +57,15 @@ const tests = [
       { code: UsersAnalyzerWarning.INVALID_ADMIN, count: 0 },
     ],
   },
+  {
+    file: "worst.csv",
+    warnings: [
+      { code: UsersAnalyzerWarning.DUPLICATE_LOGIN, count: 1 },
+      { code: UsersAnalyzerWarning.INVALID_LOGIN, count: 3 },
+      { code: UsersAnalyzerWarning.TOO_CLOSE_LOGIN, count: 1 },
+      { code: UsersAnalyzerWarning.INVALID_ADMIN, count: 2 },
+    ],
+  },
 ];
 
 const warningsCounter = (warnings, code) =>

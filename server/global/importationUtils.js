@@ -1,14 +1,17 @@
 import levenshtein from "js-levenshtein";
+import mysql from "mysql";
+
+// ***** DATA ANALYZE *****
 
 /**
- * Test if a variable if a string
+ * Test if a variable is a string
  * @param {*} v
  * @returns {boolean}
  */
 export const isString = (v) => typeof v === "string" || v instanceof String;
 
 /**
- * Test if a variable if a number
+ * Test if a variable is a number
  * @param {*} v
  * @returns {boolean}
  */
@@ -72,4 +75,23 @@ export function getTooCloseValues(values, maxDistance) {
  */
 export function getTooLongValues(values, maxLength) {
   return values.filter((value) => isString(value) && value.length > maxLength);
+}
+
+// ***** DATABASE IMPORT *****
+
+/**
+ * Create an sql insertion command (curryfied)
+ * @param {string} table The table name
+ * @returns {function(...string):function(...string):string}
+ */
+export function createSqlToInsertInto(table) {
+  let sql = `INSERT INTO ${table} `;
+  return function columns(...columns) {
+    if (columns.length > 0) {
+      sql += `(${columns.join(", ")}) `;
+    }
+    return function values(...values) {
+      return sql + `VALUES (${values.map(mysql.escape).join(", ")});\n`;
+    };
+  };
 }

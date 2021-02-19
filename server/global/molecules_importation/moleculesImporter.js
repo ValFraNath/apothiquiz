@@ -1,5 +1,4 @@
-import mysql from "mysql";
-
+import { createSqlToInsertInto } from "../importationUtils.js";
 import Logger from "../Logger.js";
 
 import { parseMoleculesFromCsv } from "./moleculesParser.js";
@@ -57,23 +56,6 @@ export function createSqlToInsertAllData(data) {
   script += createSqlToInsertAllMolecules(data.molecules);
   script += "COMMIT; SET AUTOCOMMIT=1;";
   return script;
-}
-
-/**
- * Create an sql insertion command (curryfied)
- * @param {string} table The table name
- * @returns {function(...string):function(...string):string}
- */
-function createSqlToInsertInto(table) {
-  let sql = `INSERT INTO ${table} `;
-  return function columns(...columns) {
-    if (columns.length > 0) {
-      sql += `(${columns.join(", ")}) `;
-    }
-    return function values(...values) {
-      return sql + `VALUES (${values.map(mysql.escape).join(", ")});\n`;
-    };
-  };
 }
 
 /**
@@ -226,7 +208,7 @@ class FormattedMolecule {
     this.skeletalFormula = molecule.skeletalFormula
       ? String(molecule.skeletalFormula).substr(0, MOLECULES_MAX_LENGTHS.SKELETAL_FORMULA)
       : "";
-    this.difficulty = molecule.levelEasy ? "EASY" : "HARD";
+    this.difficulty = molecule.levelHard ? "HARD" : "EASY";
     this.properties = Object.create(null);
     this.properties.indications = molecule.indications.slice();
     this.properties.sideEffects = molecule.sideEffects.slice();

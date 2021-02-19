@@ -83,7 +83,7 @@ export function analyzeUsers(list) {
  * @param {{login,admin}[]} users
  */
 function getInvalidAdminProperties(users) {
-  return users.filter(({ admin }) => admin && (!isNumber(admin) || admin < 0 || admin > 1));
+  return users.filter(({ admin }) => !isAdminPropertyValid(admin));
 }
 
 /**
@@ -92,7 +92,25 @@ function getInvalidAdminProperties(users) {
  * @returns {any[]} The invalid logins
  */
 function getInvalidLogins(logins) {
-  return logins.filter((login) => !isString(login) || !/^[a-z]+$/i.test(login));
+  return logins.filter((login) => !isLoginValid(login));
+}
+
+/**
+ * Test if a login is valid
+ * @param {*} login
+ * @returns {boolean}
+ */
+export function isLoginValid(login) {
+  return isString(login) && /^[a-z]+$/i.test(login);
+}
+
+/**
+ * Test if a admin property is valid
+ * @param {*} value
+ * @return boolean
+ */
+export function isAdminPropertyValid(value) {
+  return !value || (isNumber(value) && value >= 0 && value <= 1);
 }
 
 export class UsersAnalyzerWarning {

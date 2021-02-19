@@ -20,9 +20,8 @@ const tests = [
       { login: "vperigno", admin: 0 },
       { login: "pwater", admin: null },
       { login: "fdadeau", admin: 1 },
-      { login: "alclairet", admin: "molecules" },
+      { login: "alclairet", admin: 0 },
       { login: "mpudlo", admin: 1 },
-      { login: "fpoguet", admin: 1 },
     ],
   },
 ];
@@ -33,6 +32,7 @@ for (const test of tests) {
     before("Parse file", (done) => {
       parseUsersFromCsv(path.resolve(FILES_DIR, test.file)).then((list) => {
         users = JSON.parse(list);
+        console.log(users);
         done();
       });
     });
