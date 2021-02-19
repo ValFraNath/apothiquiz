@@ -1,6 +1,14 @@
 import levenshtein from "js-levenshtein";
 
-import { MAX_LENGTHS } from "./moleculesImporter.js";
+import {
+  isString,
+  isNumber,
+  getDuplicates,
+  getTooLongValues,
+  getTooCloseValues,
+} from "../importationUtils.js";
+
+import { MOLECULES_MAX_LENGTHS } from "./moleculesImporter.js";
 
 const DCI_DISTANCE_MIN = 1;
 const PROPERTY_VALUE_MIN_DISTANCE = 2;
@@ -34,7 +42,7 @@ export function analyzeData(data) {
  */
 function analyzeProperty(property, values) {
   const names = values.map((v) => v.name);
-  const tooLongValues = getTooLongValues(names, MAX_LENGTHS.PROPERTY_VALUE);
+  const tooLongValues = getTooLongValues(names, MOLECULES_MAX_LENGTHS.PROPERTY_VALUE);
   const closeValues = getTooCloseValues(names, PROPERTY_VALUE_MIN_DISTANCE);
   const noStringValue = names.filter((name) => !isString(name));
 
@@ -43,7 +51,7 @@ function analyzeProperty(property, values) {
       (value) =>
         new MoleculesAnalyzerWarning(
           MoleculesAnalyzerWarning.TOO_LONG_VALUE,
-          `La valeur "${value}" de la propriété "${property}" est trop longue (max ${MAX_LENGTHS.PROPERTY_VALUE})`
+          `La valeur "${value}" de la propriété "${property}" est trop longue (max ${MOLECULES_MAX_LENGTHS.PROPERTY_VALUE})`
         )
     ),
     ...closeValues.map(
@@ -72,7 +80,7 @@ function analyzeProperty(property, values) {
 function analyzeClassification(classification, nodes) {
   const names = flattenClassification(nodes).map((n) => n.name);
   const closeValues = getTooCloseValues(names, CLASSIFICATION_VALUE_MIN_DISTANCE);
-  const tooLongValues = getTooLongValues(names, MAX_LENGTHS.CLASSIFICATION_VALUE);
+  const tooLongValues = getTooLongValues(names, MOLECULES_MAX_LENGTHS.CLASSIFICATION_VALUE);
   const nodesHavingSeveralParents = findNodeWithDifferentsParents(nodes);
   const noStringValue = names.filter((name) => !isString(name));
 
@@ -97,7 +105,7 @@ function analyzeClassification(classification, nodes) {
       (value) =>
         new MoleculesAnalyzerWarning(
           MoleculesAnalyzerWarning.TOO_LONG_VALUE,
-          `La valeur de "${classification}" "${value}" est trop longue (max ${MAX_LENGTHS.CLASSIFICATION_VALUE})`
+          `La valeur de "${classification}" "${value}" est trop longue (max ${MOLECULES_MAX_LENGTHS.CLASSIFICATION_VALUE})`
         )
     ),
     ...noStringValue.map(
@@ -119,8 +127,8 @@ function analyzeMolecules(molecules) {
   const dciList = molecules.map((m) => m.dci);
   const duplicates = getDuplicates(dciList);
   const closeNames = getTooCloseValues(dciList, DCI_DISTANCE_MIN);
-  const tooLongNames = getTooLongValues(dciList, MAX_LENGTHS.DCI);
-  const nonValidNumberValues = getNonValidNumberValue(molecules);
+  const tooLongNames = getTooLongValues(dciList, MOLECULES_MAX_LENGTHS.DCI);
+  const nonValidNumberValues = getNonValidNumberValues(molecules);
   const invalidDcis = getInvalidNormalizedDci(dciList);
 
   return [
@@ -149,7 +157,7 @@ function analyzeMolecules(molecules) {
       (dci) =>
         new MoleculesAnalyzerWarning(
           MoleculesAnalyzerWarning.TOO_LONG_VALUE,
-          `La DCI "${dci}" est trop longue (max ${MAX_LENGTHS.DCI})`
+          `La DCI "${dci}" est trop longue (max ${MOLECULES_MAX_LENGTHS.DCI})`
         )
     ),
     ...nonValidNumberValues.map(
@@ -163,11 +171,11 @@ function analyzeMolecules(molecules) {
 }
 
 /**
- * Get all invalid value of number property
+ * Get all invalid values of number property
  * @param {object[]} molecules The molecule list
  * @returns {{molecule : string, property : string, value : string}[]}
  */
-function getNonValidNumberValue(molecules) {
+function getNonValidNumberValues(molecules) {
   return molecules.reduce(
     (noNumberValues, molecule) =>
       ["levelEasy", "levelHard", "ntr"].reduce((noNumberValues, prop) => {
@@ -214,61 +222,6 @@ MoleculesAnalyzerWarning.TOO_CLOSE_VALUES = 3;
 MoleculesAnalyzerWarning.DUPLICATE_CLASSIFICATION_NODE = 4;
 MoleculesAnalyzerWarning.INVALID_TYPE = 5;
 MoleculesAnalyzerWarning.INVALID_DCI = 6;
-
-/**
- * Returns values that appear more than once in the list
- * @param {any[]} values
- * @returns {any[]} non-unique values
- */
-function getDuplicates(values) {
-  return [...new Set(values.filter((value, i) => values.slice(i + 1).includes(value)))];
-}
-
-/**
- * Get all values which are longer that the max length
- * @param {string[]} values
- * @param {number} maxlength
- * @returns {string[]} The list a too long values
- */
-function getTooLongValues(values, maxlength) {
-  return values.filter((value) => value.length > maxlength);
-}
-
-/**
- * Returns all groups of values that have a distance less than a given one
- * @param {string[]} values The values
- * @param {number} minDistance The maximum distance
- * @returns {string[][]}
- */
-function getTooCloseValues(values, minDistance) {
-  values = values.slice();
-  const groups = [];
-
-  values.forEach((value) => {
-    if (!isString(value)) {
-      return;
-    }
-    const group = values.filter((other) => {
-      if (!isString(other)) {
-        return;
-      }
-      const distance = levenshtein(other, value);
-      return distance <= minDistance && distance > 0;
-    });
-
-    const existingGroup = groups.find((egroup) => egroup.some((e) => group.includes(e)));
-    if (existingGroup) {
-      existingGroup.push(...group, value);
-      return;
-    }
-
-    if (group.length > 0) {
-      groups.push([...group, value]);
-    }
-  });
-
-  return groups.map((group) => [...new Set(group)]);
-}
 
 /**
  * Find nodes with the same name but a different parent
@@ -319,6 +272,3 @@ function flattenClassification(classification) {
   }
   return res;
 }
-
-const isString = (v) => typeof v === "string" || v instanceof String;
-const isNumber = (v) => typeof v === "number" || v instanceof Number;

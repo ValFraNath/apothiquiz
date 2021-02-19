@@ -21,6 +21,42 @@ const tests = [
       { code: UsersAnalyzerWarning.INVALID_ADMIN, count: 0 },
     ],
   },
+  {
+    file: "invalid_admin.csv",
+    warnings: [
+      { code: UsersAnalyzerWarning.DUPLICATE_LOGIN, count: 0 },
+      { code: UsersAnalyzerWarning.INVALID_LOGIN, count: 0 },
+      { code: UsersAnalyzerWarning.TOO_CLOSE_LOGIN, count: 0 },
+      { code: UsersAnalyzerWarning.INVALID_ADMIN, count: 3 },
+    ],
+  },
+  {
+    file: "invalid_login.csv",
+    warnings: [
+      { code: UsersAnalyzerWarning.DUPLICATE_LOGIN, count: 0 },
+      { code: UsersAnalyzerWarning.INVALID_LOGIN, count: 3 },
+      { code: UsersAnalyzerWarning.TOO_CLOSE_LOGIN, count: 0 },
+      { code: UsersAnalyzerWarning.INVALID_ADMIN, count: 0 },
+    ],
+  },
+  {
+    file: "duplicates_login.csv",
+    warnings: [
+      { code: UsersAnalyzerWarning.DUPLICATE_LOGIN, count: 2 },
+      { code: UsersAnalyzerWarning.INVALID_LOGIN, count: 0 },
+      { code: UsersAnalyzerWarning.TOO_CLOSE_LOGIN, count: 0 },
+      { code: UsersAnalyzerWarning.INVALID_ADMIN, count: 0 },
+    ],
+  },
+  {
+    file: "close_logins.csv",
+    warnings: [
+      { code: UsersAnalyzerWarning.DUPLICATE_LOGIN, count: 0 },
+      { code: UsersAnalyzerWarning.INVALID_LOGIN, count: 0 },
+      { code: UsersAnalyzerWarning.TOO_CLOSE_LOGIN, count: 3 },
+      { code: UsersAnalyzerWarning.INVALID_ADMIN, count: 0 },
+    ],
+  },
 ];
 
 const warningsCounter = (warnings, code) =>
