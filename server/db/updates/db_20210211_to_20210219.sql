@@ -3,7 +3,7 @@ ADD `us_admin` BOOLEAN NOT NULL DEFAULT FALSE
 AFTER `us_login`; 
 
 ALTER TABLE `user` 
-CHANGE `us_avatar` `us_avatar` LONGTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '\'[]\''; 
+CHANGE `us_avatar` `us_avatar` JSON NOT NULL DEFAULT '[]'; 
 
 CREATE TRIGGER `before_user_delete` 
 BEFORE DELETE ON `user` 
