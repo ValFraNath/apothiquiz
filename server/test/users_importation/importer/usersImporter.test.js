@@ -80,7 +80,20 @@ describe("Users deleted after new import", () => {
     await queryPromise(script);
   });
 
-  // TODO create full duels
+  before("Create duels", (done) => {
+    const users = ["nhoun", "vperigno", "fdadeau", "fpoguet", "mpudlo"];
+    Promise.all(
+      users.map((user, i) =>
+        Promise.all(
+          users
+            .slice(i + 1)
+            .map((other) =>
+              queryPromise("CALL createDuel(?,?,?);", [user, other, JSON.stringify(["questions"])])
+            )
+        )
+      )
+    ).then(() => done());
+  });
 
   it("Good deleted users", async () => {
     const script = await parseAndCreateSqlToInsertAllUsers(path.resolve(FILES_DIR, "small.csv"));
@@ -92,7 +105,26 @@ describe("Users deleted after new import", () => {
 
     const deleted = res.filter((u) => u.us_deleted).map((u) => u.us_login);
     expect(deleted).deep.equalInAnyOrder(["pwater", "mpudlo"]);
+
+    const isAdmin = (
+      await queryPromise("SELECT us_admin FROM user WHERE us_login = ?", ["mpudlo"])
+    )[0].us_admin;
+
+    expect(isAdmin).equals(0);
   });
 
-  // TODO test deleted duels
+  it("Duel deleted with users", async () => {
+    let res = await queryPromise("CALL getDuelsOf(?)", ["pwater"]);
+    expect(res[0]).to.have.length(0);
+
+    res = await queryPromise("SELECT COUNT(*) as count FROM results WHERE us_login = 'mpudlo'");
+    expect(res[0].count).equals(0);
+
+    res = await queryPromise("CALL getDuelsOf(?)", ["nhoun"]);
+    expect(res[0]).to.have.length(6);
+
+    res = await queryPromise("SELECT COUNT(*) AS count FROM duel");
+
+    expect(res[0].count).equals(6);
+  });
 });
