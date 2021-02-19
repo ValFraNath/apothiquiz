@@ -1,7 +1,24 @@
 import dateFormat from "dateformat";
 import mysql from "mysql";
 
-export const LOGIN_MAX_LENGTH = 64;
+import { parseUsersFromCsv } from "./usersParser.js";
+
+export const LOGIN_MAX_LENGTH = 32;
+
+/**
+ * Parse a file and create script to import all users
+ * @param {string} filepath The file to parse
+ * @returns {Promise<string>} The script
+ */
+export function parseAndCreateSqlToInsertAllUsers(filepath) {
+  return new Promise((resolve, reject) => {
+    parseUsersFromCsv(filepath)
+      .then((json) => {
+        resolve(createSqlToInsertAllUsers(JSON.parse(json)));
+      })
+      .catch(reject);
+  });
+}
 
 /**
  * Create script to import new users
@@ -26,7 +43,7 @@ export function createSqlToInsertAllUsers(users) {
  */
 function createSqlToClearRemovedUsers(users) {
   let logins = users
-    .map(({ login }) => mysql.escape(String(login).substr(0, LOGIN_MAX_LENGTH)))
+    .map(({ login }) => mysql.escape(String(login).substr(0, LOGIN_MAX_LENGTH).toLowerCase()))
     .join(", ");
 
   if (logins.length === 0) {
@@ -63,7 +80,7 @@ function createSqlToInsertOrUpdateUsers(users) {
   return users
     .map(({ login, admin }) => {
       admin = mysql.escape(admin === 1 ? 1 : 0);
-      login = mysql.escape(String(login).substr(0, LOGIN_MAX_LENGTH));
+      login = mysql.escape(String(login).substr(0, LOGIN_MAX_LENGTH).toLowerCase());
       return `INSERT INTO user (us_login,us_admin,us_avatar) \
               VALUES (${login},${admin},${defaultAvatar}) \
               ON DUPLICATE KEY UPDATE us_admin = ${admin}, us_deleted = NULL; `;
