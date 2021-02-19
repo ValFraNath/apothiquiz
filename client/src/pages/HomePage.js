@@ -27,38 +27,51 @@ class HomePage extends Component {
     };
   }
 
-  async getDuels() {
-    const { data: duelData } = await axios.get("/api/v1/duels/");
+  getDuels() {
+    return new Promise((resolve, reject) => {
+      axios
+        .get("/api/v1/duels/")
+        .then(({ data: duelData }) => {
+          const parsedData = {
+            finishedChallenges: [],
+            pendingChallenges: [],
+            toPlayChallenges: [],
+          };
 
-    const parsedData = {
-      finishedChallenges: [],
-      pendingChallenges: [],
-      toPlayChallenges: [],
-    };
+          const currentUserPseudo = AuthService.getCurrentUser().pseudo;
 
-    const currentUserPseudo = AuthService.getCurrentUser().pseudo;
+          const listOfUsers = [currentUserPseudo];
+          duelData.forEach((val) => {
+            if (val.inProgress === 0) {
+              parsedData.finishedChallenges.push(val);
+            } else if (val.rounds[val.currentRound - 1][0].userAnswer !== undefined) {
+              parsedData.pendingChallenges.push(val);
+            } else {
+              parsedData.toPlayChallenges.push(val);
+            }
 
-    const listOfUsers = [currentUserPseudo];
-    duelData.forEach((val) => {
-      if (val.inProgress === 0) {
-        parsedData.toPlayChallenges.push(val);
-      } else if (val.rounds[val.currentRound - 1][0].userAnswer !== undefined) {
-        parsedData.pendingChallenges.push(val);
-      } else {
-        parsedData.toPlayChallenges.push(val);
-      }
+            if (!listOfUsers.includes(val.opponent)) {
+              listOfUsers.push(val.opponent);
+            }
+          });
 
-      if (!listOfUsers.includes(val.opponent)) {
-        listOfUsers.push(val.opponent);
-      }
+          axios
+            .post("/api/v1/users/", listOfUsers)
+            .then(({ data: usersData }) => {
+              parsedData.currentUser = usersData[currentUserPseudo];
+              parsedData.usersData = usersData;
+              resolve(parsedData);
+            })
+            .catch((error) => {
+              console.error(error); // TODO handle error
+              reject();
+            });
+        })
+        .catch((error) => {
+          console.error(error); // TODO handle error
+          reject();
+        });
     });
-
-    const { data: usersData } = await axios.post("/api/v1/users/", listOfUsers);
-
-    parsedData.currentUser = usersData[currentUserPseudo];
-    parsedData.usersData = usersData;
-
-    return parsedData;
   }
 
   displayResultDuel(user, opponent) {
@@ -69,7 +82,7 @@ class HomePage extends Component {
 
   render() {
     return (
-      <UseQuery requestKey="duels" callback={() => this.getDuels()} options={{ staleTime: 10000 }}>
+      <UseQuery requestKey="duels" callback={this.getDuels} options={{ staleTime: 10000 }}>
         {({ data, isLoading }) => {
           let toPlayChallenges = [],
             pendingChallenges = [],
