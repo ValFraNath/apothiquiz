@@ -296,7 +296,8 @@ function doUsersExist(...users) {
   return new Promise((resolve, reject) => {
     const sql = ` SELECT us_login \
                   FROM user \
-                  WHERE us_login IN (${Array(users.length).fill("?").join(",")});`;
+                  WHERE us_login IN (${Array(users.length).fill("?").join(",")})
+                  AND us_deleted IS NULL;`;
 
     queryPromise(sql, users)
       .then((sqlRes) => {
