@@ -84,7 +84,7 @@ describe("Users analyzer", () => {
 
       it("Expected warnings", (done) => {
         const warnings = analyzeUsers(users);
-        console.log(warnings);
+
         test.warnings.forEach((warning) =>
           expect(warningsCounter(warnings, warning.code), "Type " + warning.code).equals(
             warning.count
