@@ -26,17 +26,17 @@ export function analyzeUsers(list) {
   const invalidAdmins = getInvalidAdminProperties(list);
 
   if (loginList.length === 0) {
-    // TODO test this
     warnings.push(
       new UsersAnalyzerWarning(UsersAnalyzerWarning.NO_USERS, `Aucun utilisateur importé`)
     );
   }
 
   if (!list.find((user) => user.admin === 1)) {
-    // TODO test this
     warnings.push(
-      new UsersAnalyzerWarning.NO_ADMIN(),
-      `Aucun utilisateur n'est désigné comme admin`
+      new UsersAnalyzerWarning(
+        UsersAnalyzerWarning.NO_ADMIN,
+        `Aucun utilisateur n'est désigné comme admin`
+      )
     );
   }
 
@@ -116,7 +116,7 @@ function getInvalidLogins(logins) {
  * @returns {boolean}
  */
 export function isLoginValid(login) {
-  return isString(login) && /^[a-z]+$/i.test(login);
+  return isString(login) && /^[a-z\d]+$/i.test(login);
 }
 
 /**
