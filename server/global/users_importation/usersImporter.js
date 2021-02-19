@@ -1,8 +1,14 @@
+import dateFormat from "dateformat";
 import mysql from "mysql";
 
 export const LOGIN_MAX_LENGTH = 64;
 
-function createSqlToInsertAllUsers(users) {
+/**
+ * Create script to import new users
+ * @param {{login,admin}[]} users The imported users list
+ * @returns {string} The sql script
+ */
+export function createSqlToInsertAllUsers(users) {
   let script = "START TRANSACTION; SET AUTOCOMMIT=0; ";
 
   script += createSqlToClearRemovedUsers(users);
@@ -14,17 +20,33 @@ function createSqlToInsertAllUsers(users) {
 }
 
 /**
- *
- * @param {{login, admin}[]} users
+ * Create script to delete all users that have not been reimported
+ * @param {{login, admin}[]} users The imported users list
+ * @returns {string} The sql script
  */
 function createSqlToClearRemovedUsers(users) {
-  const logins = users.map(({ login }) => mysql.escape(login)).join(", ");
-  return `DELETE FROM user WHERE us_login NOT IN (${logins}); `;
+  let logins = users
+    .map(({ login }) => mysql.escape(String(login).substr(0, LOGIN_MAX_LENGTH)))
+    .join(", ");
+
+  if (logins.length === 0) {
+    logins = ["''"];
+  }
+  const date = mysql.escape(dateFormat(new Date(), "yyyy-mm-dd"));
+  return `  DELETE FROM duel \
+            WHERE EXISTS (  SELECT * \
+                            FROM results \
+                            WHERE results.du_id = duel.du_id \
+                            AND results.us_login NOT IN (${logins}) ); \
+            UPDATE user \
+            SET us_deleted = ${date}, us_admin = 0 \
+            WHERE us_login NOT IN (${logins}); `;
 }
 
 /**
- *
- * @param {{login, admin}[]} users
+ * Create sql script to insert or update in database all imported users
+ * @param {{login, admin}[]} users The imported users list
+ * @returns {string} The sql script
  */
 function createSqlToInsertOrUpdateUsers(users) {
   const defaultAvatar = mysql.escape(
@@ -41,21 +63,10 @@ function createSqlToInsertOrUpdateUsers(users) {
   return users
     .map(({ login, admin }) => {
       admin = mysql.escape(admin === 1 ? 1 : 0);
-      login = mysql.escape(login);
+      login = mysql.escape(String(login).substr(0, LOGIN_MAX_LENGTH));
       return `INSERT INTO user (us_login,us_admin,us_avatar) \
               VALUES (${login},${admin},${defaultAvatar}) \
-              ON DUPLICATE KEY UPDATE us_admin = ${admin}; `;
+              ON DUPLICATE KEY UPDATE us_admin = ${admin}, us_deleted = NULL; `;
     })
     .join("");
 }
-
-const users = [
-  { login: "fpoguet", admin: 0 },
-  { login: "nhoun", admin: 0 },
-  { login: "vperigno", admin: 0 },
-  { login: "pwater", admin: null },
-  { login: "fdadeau", admin: 1 },
-  { login: "alclairet", admin: 0 },
-  { login: "mpudlo", admin: 1 },
-];
-console.log(createSqlToInsertAllUsers(users));

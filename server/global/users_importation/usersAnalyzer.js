@@ -25,6 +25,21 @@ export function analyzeUsers(list) {
   const tooLongLogins = getTooLongValues(loginList, LOGIN_MAX_LENGTH);
   const invalidAdmins = getInvalidAdminProperties(list);
 
+  if (loginList.length === 0) {
+    // TODO test this
+    warnings.push(
+      new UsersAnalyzerWarning(UsersAnalyzerWarning.NO_USERS, `Aucun utilisateur importé`)
+    );
+  }
+
+  if (!list.find((user) => user.admin === 1)) {
+    // TODO test this
+    warnings.push(
+      new UsersAnalyzerWarning.NO_ADMIN(),
+      `Aucun utilisateur n'est désigné comme admin`
+    );
+  }
+
   warnings.push(
     ...duplicatesLogin.map(
       (login) =>
@@ -124,3 +139,5 @@ UsersAnalyzerWarning.DUPLICATE_LOGIN = 1;
 UsersAnalyzerWarning.TOO_CLOSE_LOGIN = 2;
 UsersAnalyzerWarning.INVALID_LOGIN = 3;
 UsersAnalyzerWarning.INVALID_ADMIN = 4;
+UsersAnalyzerWarning.NO_ADMIN = 5;
+UsersAnalyzerWarning.NO_USERS = 6;
