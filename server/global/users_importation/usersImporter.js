@@ -26,13 +26,11 @@ export function parseAndCreateSqlToInsertAllUsers(filepath) {
  * @returns {string} The sql script
  */
 export function createSqlToInsertAllUsers(users) {
-  let script = "START TRANSACTION; SET AUTOCOMMIT=0; ";
+  const script = "START TRANSACTION; SET AUTOCOMMIT=0; "
+    + createSqlToClearRemovedUsers(users)
+    + createSqlToInsertOrUpdateUsers(users)
+    + "COMMIT; SET AUTOCOMMIT=1; ";
 
-  script += createSqlToClearRemovedUsers(users);
-
-  script += createSqlToInsertOrUpdateUsers(users);
-
-  script += "COMMIT; SET AUTOCOMMIT=1; ";
   return script;
 }
 
