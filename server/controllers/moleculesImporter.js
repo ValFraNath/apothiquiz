@@ -165,7 +165,7 @@ function importMolecules(req, _res) {
 
 /**
  *
- * @api {get} /import/molecules Get the last imported file
+ * @api {get} /import/molecules Get the last imported molecules
  * @apiName GetLastImportedMolecules
  * @apiGroup Import
  * @apiPermission LoggedIn 
@@ -174,7 +174,7 @@ function importMolecules(req, _res) {
  * @apiSuccess (200) {string} url The url to the file
  * @apiSuccess (200) {string} shortpath The path to the file in the server
  * @apiSuccess (200) {string} file The file name
- *
+ * @apiError (404) NoImportedFile No file was previously imported
  *
  * @apiSuccessExample Success-Response:
  *  {
@@ -191,8 +191,12 @@ function getLastImportedFile(req, _res) {
     .then((files) => {
       const last = files[0];
 
+      if (!last) {
+        return res.sendUsageError(404, "Aucune molécule n'a déjà été importée");
+      }
+
       res.sendResponse(200, {
-        url: last ? `${req.protocol}://${req.get("host")}/api/v1/files/molecules/${last}` : null,
+        url: `${req.protocol}://${req.get("host")}/api/v1/files/molecules/${last}`,
         shortpath: `/api/v1/files/molecules/${last}`,
         file: last,
       });
