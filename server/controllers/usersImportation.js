@@ -77,7 +77,7 @@ function importUsers(req, _res) {
   };
 
   if (!/\.csv$/i.test(originalname)) {
-    res.sendUsageError(400, "Invalid file format : must be csv ");
+    res.sendUsageError(400, "Invalid file format: must be csv ");
     deleteUploadedFile();
     return;
   }
