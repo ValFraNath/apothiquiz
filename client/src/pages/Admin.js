@@ -208,7 +208,7 @@ const Admin = () => (
     <details open>
       <summary>Importer des molécules</summary>
       <FileDownloader
-        text="Télécharger le dernier fichier importé"
+        text="Télécharger les dernières molécules importées"
         filename="molecules.csv"
         endpoint="/api/v1/import/molecules"
       />
@@ -217,7 +217,7 @@ const Admin = () => (
     <details>
       <summary>Importer des utilisateurs</summary>
       <FileDownloader
-        text="Télécharger le dernier fichier importé"
+        text="Télécharger les derniers utilisateurs importés"
         filename="utilisateurs.csv"
         endpoint="/api/v1/import/users"
       />
