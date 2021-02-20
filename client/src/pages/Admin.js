@@ -212,20 +212,20 @@ const Admin = () => (
       <FileImporter endpoint="/api/v1/import/molecules" extensions={["csv"]} />
     </details>
     <details>
-      <summary>Importer des étudiants (WIP)</summary>
+      <summary>Importer des étudiants</summary>
       <FileDownloader
         text="Télécharger le dernier fichier importé"
-        filename="etudiants.csv"
-        endpoint="/api/v1/import/students"
+        filename="utilisateurs.csv"
+        endpoint="/api/v1/import/users"
       />
-      <FileImporter endpoint="/api/v1/import/students" extensions={["csv"]} />
+      <FileImporter endpoint="/api/v1/import/users" extensions={["csv"]} />
     </details>
     <details>
       <summary>Configuration (WIP)</summary>
       <Configuration />
     </details>
     <details>
-      <summary>Importer des images (WIP)</summary>
+      <summary>Importer des images</summary>
       <FileDownloader
         text="Télécharger les dernières images importées"
         filename="images-molecules.csv"

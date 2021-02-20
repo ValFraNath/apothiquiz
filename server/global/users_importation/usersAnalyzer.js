@@ -55,7 +55,7 @@ export function analyzeUsers(list) {
       (login) =>
         new UsersAnalyzerWarning(
           UsersAnalyzerWarning.INVALID_LOGIN,
-          `Le login ne doit comporter que des lettres : "${login}"`
+          `Le login ne doit comporter que des lettres et des chiffres : "${login}"`
         )
     )
   );
@@ -115,7 +115,7 @@ function getInvalidLogins(logins) {
  * @param {*} login
  * @returns {boolean}
  */
-export function isLoginValid(login) {
+function isLoginValid(login) {
   return isString(login) && /^[a-z\d]+$/i.test(login);
 }
 
@@ -124,7 +124,7 @@ export function isLoginValid(login) {
  * @param {*} value
  * @return boolean
  */
-export function isAdminPropertyValid(value) {
+function isAdminPropertyValid(value) {
   return !value || (isNumber(value) && value >= 0 && value <= 1);
 }
 
