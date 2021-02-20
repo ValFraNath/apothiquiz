@@ -9,7 +9,10 @@ import { bindImagesToMolecules } from "../global/images_importation/imagesImport
 import Logger, { addErrorTitle } from "../global/Logger.js";
 import { normalizeDCI } from "../global/molecules_importation/moleculesAnalyzer.js";
 
-const IMAGES_DIR_PATH = path.resolve("files", "images");
+const IMAGES_DIR_PATH = path.resolve(
+  process.env.NODE_ENV === "test" ? "files-test" : "file",
+  "images"
+);
 
 /**
  * @api {post} /import/images Import molecules images

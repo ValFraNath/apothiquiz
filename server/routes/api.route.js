@@ -34,11 +34,17 @@ apiRouter.get("/duels/:id", authenticationMiddleware, DuelController.fetch);
 
 apiRouter.post("/duels/:id/:round", authenticationMiddleware, DuelController.play);
 
-apiRouter.use("/files/molecules", authenticationMiddleware, express.static("files/molecules"));
+const FILES_DIR = process.env.NODE_ENV === "test" ? "files-test" : "files";
 
-apiRouter.use("/files/users", authenticationMiddleware, express.static("files/users"));
+apiRouter.use(
+  "/files/molecules",
+  authenticationMiddleware,
+  express.static(`${FILES_DIR}/molecules`)
+);
 
-apiRouter.use("/files/images", express.static("files/images"));
+apiRouter.use("/files/users", authenticationMiddleware, express.static(`${FILES_DIR}/users`));
+
+apiRouter.use("/files/images", express.static(`${FILES_DIR}/images`));
 
 apiRouter.post(
   "/import/molecules",

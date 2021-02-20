@@ -55,7 +55,6 @@ describe("Import molecule", () => {
     expect(countMolecules[0].count).equals(11);
 
     res = await requestAPI("import/molecules", { method: "get", token: mytoken });
-
     res = await new Promise((resolve) =>
       chai
         .request(app)

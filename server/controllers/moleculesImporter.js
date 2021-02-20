@@ -10,7 +10,8 @@ import { analyzeData } from "../global/molecules_importation/moleculesAnalyzer.j
 import { createSqlToInsertAllData } from "../global/molecules_importation/moleculesImporter.js";
 import { parseMoleculesFromCsv } from "../global/molecules_importation/moleculesParser.js";
 
-const FILES_DIR_PATH = path.resolve("files", "molecules");
+const FILES_DIR = process.env.NODE_ENV === "test" ? "files-test" : "files";
+const IMAGES_DIR = path.resolve(FILES_DIR, "molecules");
 const MAX_FILE_KEPT = 15;
 
 /**
@@ -112,16 +113,14 @@ function importMolecules(req, _res) {
           .then(() =>
             bindAlreadyExistingImages()
               .then(() =>
-                createDir(FILES_DIR_PATH)
+                createDir(IMAGES_DIR)
                   .then(() =>
-                    moveFile(filepath, path.resolve("files", "molecules", filename))
+                    moveFile(filepath, path.resolve(IMAGES_DIR, filename))
                       .then(() =>
-                        getSortedFiles(FILES_DIR_PATH)
+                        getSortedFiles(IMAGES_DIR)
                           .then((files) =>
                             deleteFiles(
-                              ...files
-                                .slice(MAX_FILE_KEPT)
-                                .map((file) => `${FILES_DIR_PATH}/${file}`)
+                              ...files.slice(MAX_FILE_KEPT).map((file) => `${IMAGES_DIR}/${file}`)
                             )
                               .then(() =>
                                 res.sendResponse(201, {
@@ -188,7 +187,7 @@ function importMolecules(req, _res) {
  */
 function getLastImportedFile(req, _res) {
   const res = new HttpResponseWrapper(_res);
-  getSortedFiles(path.resolve("files", "molecules"))
+  getSortedFiles(IMAGES_DIR)
     .then((files) => {
       const last = files[0];
 
@@ -211,7 +210,7 @@ export default { importMolecules, getLastImportedFile };
  */
 function bindAlreadyExistingImages() {
   return new Promise((resolve, reject) => {
-    getSortedFiles(path.resolve("files", "images"))
+    getSortedFiles(path.resolve(FILES_DIR, "images"))
       .then((images) => bindImagesToMolecules(images).then(() => resolve()))
       .catch(reject);
   });

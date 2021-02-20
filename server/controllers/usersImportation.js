@@ -9,7 +9,8 @@ import { analyzeUsers } from "../global/users_importation/usersAnalyzer.js";
 import { createSqlToInsertAllUsers } from "../global/users_importation/usersImporter.js";
 import { parseUsersFromCsv } from "../global/users_importation/usersParser.js";
 
-const FILES_DIR_PATH = path.resolve("files", "users");
+const FILES_DIR = process.env.NODE_ENV === "test" ? "files-test" : "files";
+const USERS_DIR = path.resolve(FILES_DIR, "users");
 const MAX_FILE_KEPT = 15;
 
 function importUsers(req, _res) {
@@ -45,14 +46,14 @@ function importUsers(req, _res) {
         const insertionScript = createSqlToInsertAllUsers(data);
         queryPromise(insertionScript)
           .then(() =>
-            createDir(FILES_DIR_PATH)
+            createDir(USERS_DIR)
               .then(() =>
-                moveFile(filepath, path.resolve(FILES_DIR_PATH, filename))
+                moveFile(filepath, path.resolve(USERS_DIR, filename))
                   .then(() =>
-                    getSortedFiles(FILES_DIR_PATH)
+                    getSortedFiles(USERS_DIR)
                       .then((files) =>
                         deleteFiles(
-                          ...files.slice(MAX_FILE_KEPT).map((file) => `${FILES_DIR_PATH}/${file}`)
+                          ...files.slice(MAX_FILE_KEPT).map((file) => `${USERS_DIR}/${file}`)
                         )
                           .then(() =>
                             res.sendResponse(201, {
@@ -96,7 +97,7 @@ function importUsers(req, _res) {
 function getLastImportedUsers(req, _res) {
   const res = new HttpResponseWrapper(_res);
 
-  getSortedFiles(FILES_DIR_PATH)
+  getSortedFiles(USERS_DIR)
     .then((files) => {
       const last = files[0];
 
