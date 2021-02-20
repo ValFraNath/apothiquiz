@@ -1,5 +1,3 @@
-import levenshtein from "js-levenshtein";
-
 import {
   isString,
   isNumber,
