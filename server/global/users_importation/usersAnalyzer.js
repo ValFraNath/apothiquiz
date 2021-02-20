@@ -120,7 +120,7 @@ function isLoginValid(login) {
 }
 
 /**
- * Test if a admin property is valid
+ * Test if an admin property is valid
  * @param {*} value
  * @return boolean
  */
