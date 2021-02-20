@@ -26,10 +26,11 @@ export function parseAndCreateSqlToInsertAllUsers(filepath) {
  * @returns {string} The sql script
  */
 export function createSqlToInsertAllUsers(users) {
-  const script = "START TRANSACTION; SET AUTOCOMMIT=0; "
-    + createSqlToClearRemovedUsers(users)
-    + createSqlToInsertOrUpdateUsers(users)
-    + "COMMIT; SET AUTOCOMMIT=1; ";
+  const script =
+    "START TRANSACTION; SET AUTOCOMMIT=0; " +
+    createSqlToClearRemovedUsers(users) +
+    createSqlToInsertOrUpdateUsers(users) +
+    "COMMIT; SET AUTOCOMMIT=1; ";
 
   return script;
 }
@@ -70,8 +71,8 @@ function createSqlToInsertOrUpdateUsers(users) {
       hands: 0,
       hat: 0,
       mouth: 0,
-      colorBody: "#0c04fc",
-      colorBG: "#D3D3D3",
+      colorBody: "#0c04fc", // navy
+      colorBG: "#D3D3D3", // grey
     })
   );
 

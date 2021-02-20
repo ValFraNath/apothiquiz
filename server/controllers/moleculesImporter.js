@@ -11,7 +11,7 @@ import { createSqlToInsertAllData } from "../global/molecules_importation/molecu
 import { parseMoleculesFromCsv } from "../global/molecules_importation/moleculesParser.js";
 
 const FILES_DIR = process.env.NODE_ENV === "test" ? "files-test" : "files";
-const IMAGES_DIR = path.resolve(FILES_DIR, "molecules");
+const MOLECULES_DIR = path.resolve(FILES_DIR, "molecules");
 const MAX_FILE_KEPT = 15;
 
 /**
@@ -113,14 +113,16 @@ function importMolecules(req, _res) {
           .then(() =>
             bindAlreadyExistingImages()
               .then(() =>
-                createDir(IMAGES_DIR)
+                createDir(MOLECULES_DIR)
                   .then(() =>
-                    moveFile(filepath, path.resolve(IMAGES_DIR, filename))
+                    moveFile(filepath, path.resolve(MOLECULES_DIR, filename))
                       .then(() =>
-                        getSortedFiles(IMAGES_DIR)
+                        getSortedFiles(MOLECULES_DIR)
                           .then((files) =>
                             deleteFiles(
-                              ...files.slice(MAX_FILE_KEPT).map((file) => `${IMAGES_DIR}/${file}`)
+                              ...files
+                                .slice(MAX_FILE_KEPT)
+                                .map((file) => `${MOLECULES_DIR}/${file}`)
                             )
                               .then(() =>
                                 res.sendResponse(201, {
@@ -187,7 +189,7 @@ function importMolecules(req, _res) {
  */
 function getLastImportedFile(req, _res) {
   const res = new HttpResponseWrapper(_res);
-  getSortedFiles(IMAGES_DIR)
+  getSortedFiles(MOLECULES_DIR)
     .then((files) => {
       const last = files[0];
 
