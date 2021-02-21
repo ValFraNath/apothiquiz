@@ -2,7 +2,7 @@ import mysql from "mysql";
 
 import { queryPromise } from "../../db/database.js";
 
-import { removeExtension } from "../Files.js";
+import { removeExtension } from "../files.js";
 
 import { addErrorTitle } from "../Logger.js";
 

@@ -1,11 +1,11 @@
+import ColumnSpecifications from "../csv_reader/ColumnSpecification.js";
 import FileStructure from "../csv_reader/FileStructure.js";
 
 import HeaderChecker, {
   // eslint-disable-next-line no-unused-vars
   HeaderErrors,
 } from "../csv_reader/HeaderChecker.js";
-import ColumnSpecifications from "../csv_reader/ParserSpecifications.js";
-import { readCSV, extractColumns } from "../csv_reader/Reader.js";
+import { readCSV, extractColumns } from "../csv_reader/reader.js";
 
 import MoleculeList from "./MoleculeList.js";
 import Classification from "./MoleculesClassification.js";
