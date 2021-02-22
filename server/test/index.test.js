@@ -12,7 +12,7 @@ chai.use(chaiHttp);
 /**
  * Wait until the server and the database are ready to run tests
  */
-before((done) => {
+before("Wait until the database is ready", (done) => {
   app.waitReady(() => done());
 });
 
