@@ -76,7 +76,11 @@ export default class App extends Component {
     });
 
     // Request permission for notifications
-    if (Notification.permission === "default") {
+    if (
+      "Notification" in window &&
+      navigator.serviceWorker &&
+      Notification.permission === "default"
+    ) {
       this.setState({ requireNotificationPermission: true });
     }
   }
@@ -90,7 +94,7 @@ export default class App extends Component {
   updateServiceWorker = () => {
     this.setState({ updateRequired: true });
 
-    this.state.waitingServiceWorker.postMessage({ type: "SKIP_WAITING" });
+    this.state.waitingServiceWorker.postMessagRe({ type: "SKIP_WAITING" });
     window.location.reload();
   };
 

@@ -102,3 +102,18 @@ self.addEventListener("notificationclick", (e) => {
     notification.close();
   }
 });
+
+/**
+ * Push message
+ */
+self.addEventListener("push", (e) => {
+  const options = {
+    body: "Test notification",
+    data: {
+      type: "new_duel",
+      duelId: "2",
+    },
+  };
+
+  e.waitUntil(self.registration.showNotification("Hello, World!", options));
+});
