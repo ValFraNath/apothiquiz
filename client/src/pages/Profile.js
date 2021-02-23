@@ -13,7 +13,6 @@ import { getUserInfos } from "../utils/api-query-user";
 const Profile = () => {
   const [initialised, setInitialised] = useState(false);
   const [avatar, setAvatar] = useState();
-
   const { data, isLoading } = useQuery(["user", "me"], () => getUserInfos("me"));
 
   if (isLoading) {
@@ -66,7 +65,7 @@ const Profile = () => {
         Me déconnecter
       </button>
 
-      <Link to="/about" className="btn btn-fw">
+      <Link to="/about" className="btn">
         À propos de l'application
       </Link>
     </main>

@@ -160,7 +160,7 @@ class HomePage extends Component {
                   </section>
                   <section>
                     <h2>
-                      <img src={WaitPilette} alt="Pilette is waiting" /> En attente
+                      <img src={WaitPilette} alt="Pilette attend patiemment" /> En attente
                     </h2>
                     {pendingChallenges.length === 0 ? (
                       <p>Aucun défi à en attente pour le moment.</p>
