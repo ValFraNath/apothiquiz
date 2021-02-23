@@ -118,6 +118,12 @@ async function generateQuestion(req, _res) {
 
 export default { generateQuestion };
 
+/**
+ * Get all questions types
+ * @returns {number[]}
+ */
+export const getAllQuestionTypes = () => Object.keys(generatorInfosByType).map(Number);
+
 // ***** Internal functions *****
 
 const scriptsFolderPath = path.resolve("global", "question_generator_scripts");

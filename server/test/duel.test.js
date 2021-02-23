@@ -6,11 +6,7 @@ import chai from "chai";
 import chaiHttp from "chai-http";
 import mocha from "mocha";
 
-import {
-  NUMBER_OF_QUESTIONS_IN_ROUND,
-  NUMBER_OF_ROUNDS_IN_DUEL,
-  _initMockedDuelRounds,
-} from "../controllers/duels.js";
+import { DEFAULT_CONFIG, _initMockedDuelRounds } from "../controllers/duels.js";
 
 import { forceTruncateTables, getToken, insertData, requestAPI } from "./index.test.js";
 
@@ -109,8 +105,10 @@ describe("Duels", () => {
       });
 
       it("Good number of rounds & questions", (done) => {
-        expect(duel.rounds).to.have.length(NUMBER_OF_ROUNDS_IN_DUEL);
-        duel.rounds.forEach((round) => expect(round).to.have.length(NUMBER_OF_QUESTIONS_IN_ROUND));
+        expect(duel.rounds).to.have.length(DEFAULT_CONFIG.ROUNDS_PER_DUEL);
+        duel.rounds.forEach((round) =>
+          expect(round).to.have.length(DEFAULT_CONFIG.QUESTIONS_PER_ROUNDS)
+        );
         done();
       });
 
@@ -119,7 +117,7 @@ describe("Duels", () => {
         types = types.map((type) => [...new Set(type)]);
         types.forEach((type) => expect(type).to.have.length(1));
         types = [...new Set(types.map((type) => type[0]))];
-        expect(types).to.have.length(NUMBER_OF_ROUNDS_IN_DUEL);
+        expect(types).to.have.length(DEFAULT_CONFIG.ROUNDS_PER_DUEL);
         done();
       });
     });
@@ -171,7 +169,7 @@ describe("Duels", () => {
         const duel = (await requestAPI("duels/" + ids[0], { token: tokens.fpoguet })).body;
         expect(duel.currentRound).equals(1);
         expect(duel.opponent).equals("nhoun");
-        expect(duel.rounds).to.have.length(NUMBER_OF_ROUNDS_IN_DUEL);
+        expect(duel.rounds).to.have.length(DEFAULT_CONFIG.ROUNDS_PER_DUEL);
         duel.rounds.forEach((round, i) =>
           round.forEach((question) => {
             expectHaveProperties(question, "title", "type");
@@ -182,14 +180,16 @@ describe("Duels", () => {
             }
           })
         );
-        duel.rounds.forEach((round) => expect(round).to.have.length(NUMBER_OF_QUESTIONS_IN_ROUND));
+        duel.rounds.forEach((round) =>
+          expect(round).to.have.length(DEFAULT_CONFIG.QUESTIONS_PER_ROUNDS)
+        );
       });
 
       it("Get by opponent", async () => {
         const duel = (await requestAPI("duels/" + ids[0], { token: tokens.nhoun })).body;
         expect(duel.currentRound).equals(1);
         expect(duel.opponent).equals("fpoguet");
-        expect(duel.rounds).to.have.length(NUMBER_OF_ROUNDS_IN_DUEL);
+        expect(duel.rounds).to.have.length(DEFAULT_CONFIG.ROUNDS_PER_DUEL);
 
         duel.rounds.forEach((round, i) =>
           round.forEach((question) => {
@@ -201,7 +201,9 @@ describe("Duels", () => {
             }
           })
         );
-        duel.rounds.forEach((round) => expect(round).to.have.length(NUMBER_OF_QUESTIONS_IN_ROUND));
+        duel.rounds.forEach((round) =>
+          expect(round).to.have.length(DEFAULT_CONFIG.QUESTIONS_PER_ROUNDS)
+        );
       });
 
       it("Get by other user", async () => {
@@ -219,7 +221,7 @@ describe("Duels", () => {
         expect(duels).to.have.length(1);
       });
 
-      for (let i = 1; i <= NUMBER_OF_ROUNDS_IN_DUEL; ++i) {
+      for (let i = 1; i <= DEFAULT_CONFIG.ROUNDS_PER_DUEL; ++i) {
         describe("Play : turn " + i, () => {
           it("Play : fpoguet", async () => {
             const duel = (
@@ -323,7 +325,7 @@ describe("Duels", () => {
               })
             ).body;
 
-            if (i !== NUMBER_OF_ROUNDS_IN_DUEL) {
+            if (i !== DEFAULT_CONFIG.ROUNDS_PER_DUEL) {
               expect(duel.currentRound).equals(i + 1);
               expect(Boolean(duel.inProgress)).to.be.true;
             }

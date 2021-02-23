@@ -2,11 +2,14 @@ import { queryPromise } from "../db/database.js";
 import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
 import Logger, { addErrorTitle } from "../global/Logger.js";
 
-import { createGeneratorOfType, NotEnoughDataError } from "./question.js";
+import { createGeneratorOfType, NotEnoughDataError, getAllQuestionTypes } from "./question.js";
 
-export const MAX_QUESTION_TYPE = 10;
-export const NUMBER_OF_ROUNDS_IN_DUEL = 5;
-export const NUMBER_OF_QUESTIONS_IN_ROUND = 5;
+export const DEFAULT_CONFIG = {
+  ROUNDS_PER_DUEL: 5,
+  QUESTIONS_PER_ROUNDS: 5,
+  QUESTION_TIMER_DURATION: 10,
+};
+
 /**
  *
  * @api {post} /duel/new Create a new duel
@@ -33,7 +36,6 @@ export const NUMBER_OF_QUESTIONS_IN_ROUND = 5;
  */
 function create(req, _res) {
   const res = new HttpResponseWrapper(_res);
-
   const username = req.body.authUser;
   const { opponent } = req.body;
 
@@ -50,21 +52,25 @@ function create(req, _res) {
       if (!yes) {
         return res.sendUsageError(404, "Opponent not found");
       }
-      createRounds()
-        .then((rounds) =>
-          createDuelInDatabase(username, opponent, rounds)
-            .then((id) => res.sendResponse(201, { id }))
-            .catch(res.sendServerError)
-        )
+      getConfig()
+        .then((config) =>
+          createRounds(config)
+            .then((rounds) =>
+              createDuelInDatabase(username, opponent, rounds)
+                .then((id) => res.sendResponse(201, { id }))
+                .catch(res.sendServerError)
+            )
 
-        .catch((error) => {
-          if (NotEnoughDataError.isInstance(error)) {
-            return res.sendUsageError(422, "Not enough data to generate the duel", {
-              code: error.code,
-            });
-          }
-          return res.sendServerError(error);
-        });
+            .catch((error) => {
+              if (NotEnoughDataError.isInstance(error)) {
+                return res.sendUsageError(422, "Not enough data to generate the duel", {
+                  code: error.code,
+                });
+              }
+              return res.sendServerError(error);
+            })
+        )
+        .catch(res.sendServerError);
     })
     .catch(res.sendServerError);
 }
@@ -334,7 +340,7 @@ function createDuelInDatabase(player1, player2, rounds) {
  * This function can be mocked : @see _initMockedDuelRounds
  * @return {Promise<object[][]|NotEnoughDataError>}
  */
-function createRounds() {
+function createRounds(config) {
   return new Promise((resolve, reject) => {
     if (mockedDuelsRounds) {
       resolve(mockedDuelsRounds);
@@ -347,9 +353,9 @@ function createRounds() {
         reject(new NotEnoughDataError());
       }
 
-      createRound(types.pop())
+      createRound(types.pop(), config)
         .then((round) => {
-          if (rounds.push(round) === NUMBER_OF_ROUNDS_IN_DUEL) {
+          if (rounds.push(round) === config.roundsPerDuel) {
             resolve(rounds);
           } else {
             createRoundsRecursively();
@@ -371,10 +377,10 @@ function createRounds() {
  * @param {number} type The question type
  * @returns {Promise<object[]>} The list of questions
  */
-function createRound(type) {
+function createRound(type, config) {
   return new Promise((resolve, reject) => {
     const generateQuestion = createGeneratorOfType(type);
-    const questions = [...Array(NUMBER_OF_QUESTIONS_IN_ROUND)].map(generateQuestion);
+    const questions = [...Array(config.questionsPerRounds)].map(generateQuestion);
 
     Promise.all(questions)
       .then((questions) => {
@@ -389,7 +395,7 @@ function createRound(type) {
  * @returns {number[]}
  */
 function createShuffledQuestionTypesArray() {
-  const types = [...Array(MAX_QUESTION_TYPE)].map((_, i) => i + 1);
+  const types = getAllQuestionTypes();
 
   for (let i = types.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -459,6 +465,8 @@ function formatDuel(duel, username) {
   const currentRound = duel[0].du_currentRound;
   const rounds = JSON.parse(duel[0].du_content);
   const inProgress = duel[0].du_inProgress;
+  const questionTimerDuration =
+    Number(duel[0].questionTimerDuration) || DEFAULT_CONFIG.QUESTION_TIMER_DURATION;
 
   const userAnswers = JSON.parse(duel.find((player) => player.us_login === username).re_answers);
   const opponentAnswers = JSON.parse(
@@ -507,6 +515,7 @@ function formatDuel(duel, username) {
     currentRound,
     inProgress,
     rounds: formattedRound,
+    questionTimerDuration,
   };
 
   const scores = computeScores(formattedDuel);
@@ -618,4 +627,28 @@ function computeScores(duel) {
     },
     { user: 0, opponent: 0 }
   );
+}
+
+/**
+ * Get the duel configuration in the database
+ * @returns {Promise<object>} The config object
+ */
+function getConfig() {
+  return new Promise((resolve, reject) => {
+    const sql = "SELECT * FROM server_informations WHERE server_informations.key LIKE 'config%';";
+
+    queryPromise(sql)
+      .then((res) => {
+        const { QUESTIONS_PER_ROUNDS, QUESTION_TIMER_DURATION, ROUNDS_PER_DUEL } = DEFAULT_CONFIG;
+        const getValue = (key) => Number(res.find((row) => row.key === key)?.value);
+
+        resolve({
+          questionsPerRounds: getValue("config_duel_questions_per_round") || QUESTIONS_PER_ROUNDS,
+          roundsPerDuel: getValue("config_duel_rounds_per_duel") || ROUNDS_PER_DUEL,
+          questionTimerDuration:
+            getValue("config_question_timer_duration") || QUESTION_TIMER_DURATION,
+        });
+      })
+      .catch(reject);
+  });
 }
