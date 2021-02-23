@@ -377,7 +377,7 @@ function createRounds(config) {
 function createRound(type, config) {
   return new Promise((resolve, reject) => {
     const generateQuestion = createGeneratorOfType(type);
-    const questions = [...Array(config.questionsPerRounds)].map(generateQuestion);
+    const questions = [...Array(config.questionsPerRound)].map(generateQuestion);
 
     Promise.all(questions)
       .then((questions) => {
