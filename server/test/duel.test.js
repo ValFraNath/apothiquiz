@@ -6,7 +6,8 @@ import chai from "chai";
 import chaiHttp from "chai-http";
 import mocha from "mocha";
 
-import { DEFAULT_CONFIG, _initMockedDuelRounds } from "../controllers/duels.js";
+import { DEFAULT_CONFIG } from "../controllers/config.js";
+import { _initMockedDuelRounds } from "../controllers/duels.js";
 
 import { forceTruncateTables, getToken, insertData, requestAPI } from "./index.test.js";
 

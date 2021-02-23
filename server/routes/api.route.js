@@ -1,6 +1,7 @@
 import express from "express";
 
 import ApiController from "../controllers/api.js";
+import ConfigController from "../controllers/config.js";
 import DuelController from "../controllers/duels.js";
 import ImagesImporterController from "../controllers/imagesImporter.js";
 import MoleculesImporterController from "../controllers/moleculesImporter.js";
@@ -85,5 +86,9 @@ apiRouter.get(
   createMulter(),
   UsersImporterController.getLastImportedUsers
 );
+
+apiRouter.get("/config", authenticationMiddleware, ConfigController.getConfig);
+
+apiRouter.post("/config", authenticationMiddleware, ConfigController.updateConfig);
 
 export default apiRouter;
