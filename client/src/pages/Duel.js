@@ -16,7 +16,6 @@ class Duel extends Component {
       currentQuestionNum: 1,
       inProgress: true,
       lastClicked: "",
-      timer: Duel.TIMER_DURATION,
       userAnswers: [],
     };
   }
@@ -74,7 +73,6 @@ class Duel extends Component {
 
     this.setState({
       inProgress: inProgress,
-      timer: value,
       userAnswers: userAnswers,
     });
   };
@@ -111,7 +109,6 @@ class Duel extends Component {
     this.setState({
       inProgress: true,
       currentQuestionNum: currentQuestionNum + 1,
-      timer: Duel.TIMER_DURATION,
     });
   };
 
@@ -148,9 +145,10 @@ class Duel extends Component {
       return <p>Chargement en cours</p>;
     }
 
-    const { duelData, currentQuestionNum, inProgress, lastClicked, timer } = this.state;
+    const { duelData, currentQuestionNum, inProgress, lastClicked } = this.state;
     const currentRound = this.getCurrentRound();
     const currentQuestion = this.getCurrentQuestion();
+    const { questionTimerDuration: timerDuration } = duelData;
 
     return (
       <main id="duel">
@@ -174,7 +172,7 @@ class Duel extends Component {
         />
 
         {inProgress ? (
-          <Timer inProgress={inProgress} duration={timer} updateParent={this.updateTimer} />
+          <Timer inProgress={inProgress} duration={timerDuration} updateParent={this.updateTimer} />
         ) : (
           <div id="next-btn">
             <ButtonCircle onClick={this.nextQuestion}>
@@ -202,7 +200,5 @@ class Duel extends Component {
 Duel.propTypes = {
   match: PropTypes.object.isRequired,
 };
-
-Duel.TIMER_DURATION = 10;
 
 export default Duel;
