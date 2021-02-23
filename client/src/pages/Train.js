@@ -36,7 +36,6 @@ class PlayView extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      questionNum: 1,
       inProgress: true,
       lastClicked: "",
     };
@@ -84,7 +83,6 @@ class PlayView extends Component {
     if (this.props.questionNum !== prevProps.questionNum) {
       this.setState({
         inProgress: true,
-        questionNum: this.state.questionNum + 1,
         lastClicked: "",
       });
     }
