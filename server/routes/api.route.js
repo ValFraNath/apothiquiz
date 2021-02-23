@@ -87,8 +87,8 @@ apiRouter.get(
   UsersImporterController.getLastImportedUsers
 );
 
-apiRouter.get("/config", authenticationMiddleware, ConfigController.getConfig);
+apiRouter.get("/config", authenticationMiddleware, ConfigController.fetchConfig);
 
-apiRouter.post("/config", authenticationMiddleware, ConfigController.updateConfig);
+apiRouter.patch("/config", authenticationMiddleware, ConfigController.setConfig);
 
 export default apiRouter;
