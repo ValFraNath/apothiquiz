@@ -87,4 +87,32 @@ main#administration {
       margin: 0.5rem 1rem;
     }
   }
+
+  .number-input {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: max-content;
+    margin: 1rem;
+    user-select: none;
+
+    svg {
+      width: 1.5rem;
+      height: 1.5rem;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    span {
+      font-size: 1.5rem;
+      cursor: default;
+      margin: 0 0.3rem;
+    }
+
+    label {
+      font-size: 1.2rem;
+      margin-left: 1rem;
+    }
+  }
 }

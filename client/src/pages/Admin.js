@@ -1,7 +1,7 @@
+import { ArrowDownIcon, ArrowUpIcon } from "@modulz/radix-icons";
 import axios from "axios";
-
 import PropTypes from "prop-types";
-import React, { Component } from "react";
+import React, { Component, useEffect, useState } from "react";
 
 import AuthService from "../services/auth.service";
 
@@ -183,23 +183,98 @@ FileDownloader.propTypes = {
 };
 
 const Configuration = () => {
+  const [config, setConfig] = useState({
+    roundsPerDuel: 0,
+    questionsPerRound: 0,
+    questionTimerDuration: 0,
+  });
+
+  const updateConfig = (newConfig) => {
+    setConfig({ ...config, ...newConfig });
+  };
+
+  useEffect(() => {
+    axios
+      .get("/api/v1/config")
+      .then((res) => setConfig(res.data))
+      .catch(console.error);
+  }, []);
+
   function saveConfig(e) {
     e.preventDefault();
-    // TODO update config in the server
+
+    axios
+      .patch("/api/v1/config/", config)
+      .then((res) => setConfig(res.data))
+      .catch(console.error);
   }
+  console.log(config);
   return (
     <form className="configuration" onSubmit={saveConfig}>
-      <label>
-        <input type="number" min="2" max="10" defaultValue="5" />
-        Nombre de questions dans une manche
-      </label>
-      <label>
-        <input type="number" min="2" max="10" defaultValue="5" />
-        Nombre de manches dans un duel
-      </label>
+      <NumberInput
+        label="Durée du timer de réponse"
+        defaultValue={config.questionTimerDuration}
+        onChange={(value) => updateConfig({ questionTimerDuration: value })}
+        min={2}
+        max={20}
+      />
+
+      <NumberInput
+        label="Nombre de questions dans une manche"
+        defaultValue={config.questionsPerRound}
+        onChange={(value) => updateConfig({ questionsPerRound: value })}
+        min={2}
+        max={10}
+      />
+
+      <NumberInput
+        label="Nombre de manches dans un duel"
+        defaultValue={config.roundsPerDuel}
+        onChange={(value) => updateConfig({ roundsPerDuel: value })}
+        min={2}
+        max={10}
+      />
+
       <input type="submit" value="Enregistrer" />
     </form>
   );
+};
+
+const NumberInput = ({ defaultValue, label, onChange, min, max }) => {
+  const [value, setValue] = useState(defaultValue);
+
+  useEffect(() => {
+    setValue(defaultValue);
+  }, [defaultValue]);
+
+  function handleChange(newValue) {
+    if (newValue <= max && newValue >= min) {
+      onChange(newValue);
+    }
+  }
+
+  return (
+    <div className="number-input">
+      <ArrowUpIcon
+        onClick={() => handleChange(value + 1)}
+        color={value === max ? "grey" : "black"}
+      />
+      <span>{value}</span>
+      <ArrowDownIcon
+        onClick={() => handleChange(value - 1)}
+        color={value === min ? "grey" : "black"}
+      />
+      <label>{label}</label>
+    </div>
+  );
+};
+
+NumberInput.propTypes = {
+  defaultValue: PropTypes.number.isRequired,
+  label: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
+  max: PropTypes.number.isRequired,
+  min: PropTypes.number.isRequired,
 };
 
 const Admin = () => (

@@ -32,6 +32,8 @@ function setConfig(req, _res) {
     },
   };
 
+  console.log(req.body);
+
   for (const key in req.body) {
     if (!(key in keys)) {
       res.sendUsageError(400, `Attribut "${key}" inconnu `);
@@ -90,7 +92,7 @@ export function fetchConfigFromDB() {
         const getValue = (key) => Number(res.find((row) => row.key === key)?.value) || null;
 
         resolve({
-          questionsPerRounds: getValue("config_duel_questions_per_round") || QUESTIONS_PER_ROUNDS,
+          questionsPerRound: getValue("config_duel_questions_per_round") || QUESTIONS_PER_ROUNDS,
           roundsPerDuel: getValue("config_duel_rounds_per_duel") || ROUNDS_PER_DUEL,
           questionTimerDuration:
             getValue("config_question_timer_duration") || QUESTION_TIMER_DURATION,
