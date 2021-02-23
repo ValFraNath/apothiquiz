@@ -39,7 +39,6 @@ class PlayView extends Component {
       questionNum: 1,
       inProgress: true,
       lastClicked: "",
-      timer: Train.TIMER_DURATION,
     };
   }
 
@@ -58,7 +57,6 @@ class PlayView extends Component {
 
     this.setState({
       inProgress: inProgress,
-      timer: value,
     });
   };
 
@@ -80,17 +78,21 @@ class PlayView extends Component {
    */
   nextQuestion = () => {
     this.props.getNewQuestion();
-    this.setState({
-      questionNum: this.state.questionNum + 1,
-      inProgress: true,
-      lastClicked: "",
-      timer: Train.TIMER_DURATION,
-    });
   };
 
+  componentDidUpdate(prevProps) {
+    if (this.props.questionNum !== prevProps.questionNum) {
+      this.setState({
+        inProgress: true,
+        questionNum: this.state.questionNum + 1,
+        lastClicked: "",
+      });
+    }
+  }
+
   render() {
-    const { questionNum, inProgress, timer, lastClicked } = this.state;
-    const { result, question, displaySummury } = this.props;
+    const { inProgress, lastClicked } = this.state;
+    const { result, questionNum, question, displaySummury, timer } = this.props;
 
     return (
       <>
@@ -140,6 +142,8 @@ PlayView.propTypes = {
   getNewQuestion: PropTypes.func.isRequired,
   addUserAnswer: PropTypes.func.isRequired,
   displaySummury: PropTypes.func.isRequired,
+  timer: PropTypes.number.isRequired,
+  questionNum: PropTypes.number.isRequired,
 };
 
 /* ---------- Summury view ---------- */
@@ -212,6 +216,7 @@ class Train extends Component {
       question: { answers: [], goodAnswerIndex: -1, subject: "", type: 0 },
       result: { good: [], bad: [] },
       error: null,
+      questionNum: 0,
     };
   }
 
@@ -232,8 +237,9 @@ class Train extends Component {
           question: res.data,
           inProgress: true,
           lastClicked: "",
-          timer: 10,
+          timer: res.data.timerDuration,
           error: null,
+          questionNum: this.state.questionNum + 1,
         });
       })
       .catch((error) => {
@@ -291,6 +297,8 @@ class Train extends Component {
             getNewQuestion={this.getNewQuestion}
             addUserAnswer={this.addUserAnswer}
             displaySummury={this.displaySummury}
+            timer={this.state.timer}
+            questionNum={this.state.questionNum}
           />
         );
       case Train.STATE_SUMMARY:
