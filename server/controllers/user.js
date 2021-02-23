@@ -79,7 +79,8 @@ function getAll(_, _res) {
             us_victories AS victories, \
             us_defeats AS defeats, \
             us_avatar AS avatar \
-      FROM user";
+      FROM user \
+      WHERE us_deleted IS NULL;";
   queryPromise(sql)
     .then((sqlRes) => {
       const usersData = {};
@@ -124,7 +125,8 @@ function severalGetInfos(req, _res) {
                       us_defeats AS defeats,
                       us_avatar AS avatar
                FROM user
-               WHERE ${sqlWhere.join(" OR ")}`;
+               WHERE us_deleted IS NULL
+               AND (${sqlWhere.join(" OR ")})`;
 
   queryPromise(sql, listOfUsers)
     .then((sqlRes) => {
@@ -255,7 +257,8 @@ function doesUserExist(login) {
   return new Promise((resolve, reject) => {
     const sql = `SELECT COUNT(*) as found 
                   FROM user                
-                  WHERE us_login = ?`;
+                  WHERE us_login = ?
+                  AND us_deleted IS NULL;`;
     queryPromise(sql, [login])
       .then((res) => resolve(res[0].found > 0))
       .catch((error) => reject(addErrorTitle(error, "Can't check if the user exists")));
@@ -297,7 +300,8 @@ function getUserInformations(pseudo) {
                   us_defeats AS defeats, 
                   us_avatar AS avatar 
                 FROM user             
-                WHERE us_login = ?`;
+                WHERE us_login = ?
+                AND us_deleted IS NULL;`;
 
     queryPromise(sql, [pseudo])
       .then((res) => {

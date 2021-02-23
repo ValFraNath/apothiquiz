@@ -1,10 +1,9 @@
-import mysql from "mysql";
-
+import { createSqlToInsertInto } from "../importationUtils.js";
 import Logger from "../Logger.js";
 
 import { parseMoleculesFromCsv } from "./moleculesParser.js";
 
-export const MAX_LENGTHS = {
+export const MOLECULES_MAX_LENGTHS = {
   DCI: 128,
   PROPERTY_VALUE: 64,
   CLASSIFICATION_VALUE: 128,
@@ -60,23 +59,6 @@ export function createSqlToInsertAllData(data) {
 }
 
 /**
- * Create an sql insertion command (curryfied)
- * @param {string} table The table name
- * @returns {function(...string):function(...string):string}
- */
-function createSqlToInsertInto(table) {
-  let sql = `INSERT INTO ${table} `;
-  return function columns(...columns) {
-    if (columns.length > 0) {
-      sql += `(${columns.join(", ")}) `;
-    }
-    return function values(...values) {
-      return sql + `VALUES (${values.map(mysql.escape).join(", ")});\n`;
-    };
-  };
-}
-
-/**
  * Create the script to insert all values of classification
  * @param {string} name The classification table
  * @param {object[]} classification The list of higher nodes
@@ -94,7 +76,7 @@ function createSqlToInsertClassification(name, classification) {
  */
 function createClassificationNodeInserter(classification) {
   function insertNode(id, name, higher, level) {
-    name = String(name).substr(0, MAX_LENGTHS.CLASSIFICATION_VALUE);
+    name = String(name).substr(0, MOLECULES_MAX_LENGTHS.CLASSIFICATION_VALUE);
     return createSqlToInsertInto(classification)()([id, name, higher, level]);
   }
 
@@ -125,7 +107,7 @@ function createSqlToInsertProperty(name, values) {
       sql +
       createSqlToInsertInto("property_value")("pv_id", "pv_name", "pv_property")(
         valueId,
-        String(value.name).substr(0, MAX_LENGTHS.PROPERTY_VALUE),
+        String(value.name).substr(0, MOLECULES_MAX_LENGTHS.PROPERTY_VALUE),
         id
       )
     );
@@ -219,14 +201,14 @@ class FormattedMolecule {
    */
   constructor(molecule) {
     this.id = Number(molecule.id);
-    this.dci = String(molecule.dci).substr(0, MAX_LENGTHS.DCI);
+    this.dci = String(molecule.dci).substr(0, MOLECULES_MAX_LENGTHS.DCI);
     this.ntr = Number(molecule.ntr) || 0;
     this.system = molecule.system;
     this.class = molecule.class;
     this.skeletalFormula = molecule.skeletalFormula
-      ? String(molecule.skeletalFormula).substr(0, MAX_LENGTHS.SKELETAL_FORMULA)
+      ? String(molecule.skeletalFormula).substr(0, MOLECULES_MAX_LENGTHS.SKELETAL_FORMULA)
       : "";
-    this.difficulty = molecule.levelEasy ? "EASY" : "HARD";
+    this.difficulty = molecule.levelHard ? "HARD" : "EASY";
     this.properties = Object.create(null);
     this.properties.indications = molecule.indications.slice();
     this.properties.sideEffects = molecule.sideEffects.slice();

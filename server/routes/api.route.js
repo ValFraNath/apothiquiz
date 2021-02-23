@@ -2,10 +2,11 @@ import express from "express";
 
 import ApiController from "../controllers/api.js";
 import DuelController from "../controllers/duels.js";
-import ImagesController from "../controllers/imagesImporter.js";
-import ImporterController from "../controllers/moleculesImporter.js";
+import ImagesImporterController from "../controllers/imagesImporter.js";
+import MoleculesImporterController from "../controllers/moleculesImporter.js";
 import QuestionController from "../controllers/question.js";
 import UserController from "../controllers/user.js";
+import UsersImporterController from "../controllers/usersImportation.js";
 import authenticationMiddleware from "../middlewares/auth.middleware.js";
 import { createMulter } from "../middlewares/multer.middleware.js";
 
@@ -33,30 +34,56 @@ apiRouter.get("/duels/:id", authenticationMiddleware, DuelController.fetch);
 
 apiRouter.post("/duels/:id/:round", authenticationMiddleware, DuelController.play);
 
-apiRouter.use("/files/molecules", authenticationMiddleware, express.static("files/molecules"));
+const FILES_DIR = process.env.NODE_ENV === "test" ? "files-test" : "files";
 
-apiRouter.use("/files/images", express.static("files/images"));
+apiRouter.use(
+  "/files/molecules",
+  authenticationMiddleware,
+  express.static(`${FILES_DIR}/molecules`)
+);
+
+apiRouter.use("/files/users", authenticationMiddleware, express.static(`${FILES_DIR}/users`));
+
+apiRouter.use("/files/images", express.static(`${FILES_DIR}/images`));
 
 apiRouter.post(
   "/import/molecules",
   authenticationMiddleware,
   createMulter(),
-  ImporterController.importMolecules
+  MoleculesImporterController.importMolecules
 );
 
 apiRouter.get(
   "/import/molecules",
   authenticationMiddleware,
-  ImporterController.getLastImportedFile
+  MoleculesImporterController.getLastImportedFile
 );
 
 apiRouter.post(
   "/import/images",
   authenticationMiddleware,
   createMulter(true),
-  ImagesController.importImages
+  ImagesImporterController.importImages
 );
 
-apiRouter.get("/import/images", authenticationMiddleware, ImagesController.getLastImportedFile);
+apiRouter.get(
+  "/import/images",
+  authenticationMiddleware,
+  ImagesImporterController.getLastImportedFile
+);
+
+apiRouter.post(
+  "/import/users",
+  authenticationMiddleware,
+  createMulter(),
+  UsersImporterController.importUsers
+);
+
+apiRouter.get(
+  "/import/users",
+  authenticationMiddleware,
+  createMulter(),
+  UsersImporterController.getLastImportedUsers
+);
 
 export default apiRouter;

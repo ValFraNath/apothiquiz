@@ -17,7 +17,7 @@ const files = [
   {
     name: "duplicatesMolecules.csv",
     warnings: [
-      { code: MoleculesAnalyzerWarning.DUPLICATE_UNIQUE_VALUE, count: 1 },
+      { code: MoleculesAnalyzerWarning.DUPLICATE_UNIQUE_VALUE, count: 2 },
       { code: MoleculesAnalyzerWarning.TOO_LONG_VALUE, count: 0 },
       { code: MoleculesAnalyzerWarning.DUPLICATE_CLASSIFICATION_NODE, count: 0 },
       { code: MoleculesAnalyzerWarning.TOO_CLOSE_VALUES, count: 3 },

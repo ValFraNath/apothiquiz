@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-unused-vars
-import { ColumnSpecifications } from "./ParserSpecifications.js";
+import { ColumnSpecifications } from "./ColumnSpecification.js";
 
 /**
  * Class representing the structure of the CSV file, i.e. which column correspond to which property.

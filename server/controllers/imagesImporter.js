@@ -2,14 +2,17 @@ import path from "path";
 
 import Zip from "adm-zip";
 
-import { createDir, deleteFiles, getSortedFiles, moveFile } from "../global/Files.js";
+import { createDir, deleteFiles, getSortedFiles, moveFile } from "../global/files.js";
 import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
 import { analyseImagesFilenames } from "../global/images_importation/imagesAnayzer.js";
 import { bindImagesToMolecules } from "../global/images_importation/imagesImporter.js";
 import Logger, { addErrorTitle } from "../global/Logger.js";
 import { normalizeDCI } from "../global/molecules_importation/moleculesAnalyzer.js";
 
-const IMAGES_DIR_PATH = path.resolve("files", "images");
+const IMAGES_DIR_PATH = path.resolve(
+  process.env.NODE_ENV === "test" ? "files-test" : "files",
+  "images"
+);
 
 /**
  * @api {post} /import/images Import molecules images
@@ -134,7 +137,7 @@ function importImages(req, _res) {
  * @apiSuccess (200) {string} url The url to the images archive
  * @apiSuccess (200) {string} shortpath The path to the archive in the server
  * @apiSuccess (200) {string} file The archive name
- *
+ * @apiError (404) NoImportedFile No file was previously imported
  *
  * @apiSuccessExample Success-Response:
  *  {
@@ -149,13 +152,16 @@ function getLastImportedFile(req, _res) {
   const res = new HttpResponseWrapper(_res);
 
   archiveImages()
-    .then((archiveName) =>
+    .then((archiveName) => {
+      if (!archiveName) {
+        return res.sendUsageError(404, "Aucune image n'a déjà été importée");
+      }
       res.sendResponse(200, {
         url: `${req.protocol}://${req.get("host")}/api/v1/files/images/${archiveName}`,
         shortpath: `/api/v1/files/images/${archiveName}`,
         filename: archiveName,
-      })
-    )
+      });
+    })
     .catch((error) => res.sendServerError(addErrorTitle(error, "Can't archive the images")));
 }
 
@@ -169,6 +175,9 @@ function archiveImages() {
 
     getSortedFiles(IMAGES_DIR_PATH)
       .then((files) => {
+        if (files.length === 0) {
+          return resolve(null);
+        }
         files
           .filter((f) => !f.endsWith(".zip"))
           .forEach((file) => archive.addLocalFile(path.resolve(IMAGES_DIR_PATH, file)));

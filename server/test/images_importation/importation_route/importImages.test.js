@@ -8,7 +8,7 @@ import chaiHttp from "chai-http";
 import equalInAnyOrder from "deep-equal-in-any-order";
 
 import { queryPromise } from "../../../db/database.js";
-import { createDir, deleteFiles, getSortedFiles } from "../../../global/Files.js";
+import { createDir, deleteFiles, getSortedFiles } from "../../../global/files.js";
 import app from "../../../index.js";
 import { forceTruncateTables, getToken, insertData, requestAPI } from "../../index.test.js";
 import { uploadFile } from "../../molecules_importation/importation_route/importMolecule.test.js";

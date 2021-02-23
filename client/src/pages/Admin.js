@@ -127,6 +127,9 @@ class FileImporter extends Component {
           />
         </form>
         {this.state.imported && <p className="success">Importation réalisée avec succès</p>}
+        {this.state.canConfirm && this.state.warnings.length === 0 && (
+          <p className="success">Aucun problème détecté</p>
+        )}
         {this.displayList(this.state.warnings, "warnings")}
         {this.displayList(this.state.errors, "errors")}
       </div>
@@ -205,27 +208,23 @@ const Admin = () => (
     <details open>
       <summary>Importer des molécules</summary>
       <FileDownloader
-        text="Télécharger le dernier fichier importé"
+        text="Télécharger les dernières molécules importées"
         filename="molecules.csv"
         endpoint="/api/v1/import/molecules"
       />
       <FileImporter endpoint="/api/v1/import/molecules" extensions={["csv"]} />
     </details>
     <details>
-      <summary>Importer des étudiants (WIP)</summary>
+      <summary>Importer des utilisateurs</summary>
       <FileDownloader
-        text="Télécharger le dernier fichier importé"
-        filename="etudiants.csv"
-        endpoint="/api/v1/import/students"
+        text="Télécharger les derniers utilisateurs importés"
+        filename="utilisateurs.csv"
+        endpoint="/api/v1/import/users"
       />
-      <FileImporter endpoint="/api/v1/import/students" extensions={["csv"]} />
+      <FileImporter endpoint="/api/v1/import/users" extensions={["csv"]} />
     </details>
     <details>
-      <summary>Configuration (WIP)</summary>
-      <Configuration />
-    </details>
-    <details>
-      <summary>Importer des images (WIP)</summary>
+      <summary>Importer des images</summary>
       <FileDownloader
         text="Télécharger les dernières images importées"
         filename="images-molecules.csv"
@@ -236,6 +235,10 @@ const Admin = () => (
         multiple={true}
         extensions={["png", "jpeg", "jpg", "svg"]}
       />
+    </details>
+    <details>
+      <summary>Configuration (WIP)</summary>
+      <Configuration />
     </details>
   </main>
 );
