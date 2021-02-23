@@ -9,7 +9,13 @@ import mocha from "mocha";
 import { DEFAULT_CONFIG } from "../controllers/config.js";
 import { _initMockedDuelRounds } from "../controllers/duels.js";
 
-import { forceTruncateTables, getToken, insertData, requestAPI } from "./index.test.js";
+import {
+  forceTruncateTables,
+  getToken,
+  insertData,
+  requestAPI,
+  resetConfig,
+} from "./index.test.js";
 
 chai.use(chaiHttp);
 const { expect } = chai;
@@ -58,7 +64,11 @@ describe("Duels", () => {
         "molecule_property",
         "class",
         "system"
-      ).then(() => insertData("users.sql").then(() => insertData("molecules.sql").then(done)));
+      ).then(() =>
+        insertData("users.sql").then(() =>
+          insertData("molecules.sql").then(() => resetConfig().then(() => done()))
+        )
+      );
     });
 
     describe("Error cases", () => {
