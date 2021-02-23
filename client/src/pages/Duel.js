@@ -16,6 +16,7 @@ class Duel extends Component {
       currentQuestionNum: 1,
       inProgress: true,
       lastClicked: "",
+      timer: null,
       userAnswers: [],
     };
   }
@@ -31,6 +32,7 @@ class Duel extends Component {
         }
         this.setState({
           duelData: res.data,
+          timer: res.data.questionTimerDuration,
         });
 
         // Can't access to a round already played
@@ -73,6 +75,7 @@ class Duel extends Component {
 
     this.setState({
       inProgress: inProgress,
+      timer: value,
       userAnswers: userAnswers,
     });
   };
@@ -109,6 +112,7 @@ class Duel extends Component {
     this.setState({
       inProgress: true,
       currentQuestionNum: currentQuestionNum + 1,
+      timer: this.state.duelData.questionTimerDuration,
     });
   };
 
@@ -145,10 +149,9 @@ class Duel extends Component {
       return <p>Chargement en cours</p>;
     }
 
-    const { duelData, currentQuestionNum, inProgress, lastClicked } = this.state;
+    const { duelData, currentQuestionNum, inProgress, lastClicked, timer } = this.state;
     const currentRound = this.getCurrentRound();
     const currentQuestion = this.getCurrentQuestion();
-    const { questionTimerDuration: timerDuration } = duelData;
 
     return (
       <main id="duel">
@@ -172,7 +175,7 @@ class Duel extends Component {
         />
 
         {inProgress ? (
-          <Timer inProgress={inProgress} duration={timerDuration} updateParent={this.updateTimer} />
+          <Timer inProgress={inProgress} duration={timer} updateParent={this.updateTimer} />
         ) : (
           <div id="next-btn">
             <ButtonCircle onClick={this.nextQuestion}>

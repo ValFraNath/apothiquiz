@@ -38,6 +38,7 @@ class PlayView extends Component {
     this.state = {
       inProgress: true,
       lastClicked: "",
+      timer: props.question.timerDuration,
     };
   }
 
@@ -56,6 +57,7 @@ class PlayView extends Component {
 
     this.setState({
       inProgress: inProgress,
+      timer: value,
     });
   };
 
@@ -84,13 +86,14 @@ class PlayView extends Component {
       this.setState({
         inProgress: true,
         lastClicked: "",
+        timer: this.props.question.timerDuration,
       });
     }
   }
 
   render() {
-    const { inProgress, lastClicked } = this.state;
-    const { result, questionNum, question, displaySummury, timer } = this.props;
+    const { inProgress, lastClicked, timer } = this.state;
+    const { result, questionNum, question, displaySummury } = this.props;
 
     return (
       <>
@@ -235,7 +238,6 @@ class Train extends Component {
           question: res.data,
           inProgress: true,
           lastClicked: "",
-          timer: res.data.timerDuration,
           error: null,
           questionNum: this.state.questionNum + 1,
         });
@@ -295,7 +297,6 @@ class Train extends Component {
             getNewQuestion={this.getNewQuestion}
             addUserAnswer={this.addUserAnswer}
             displaySummury={this.displaySummury}
-            timer={this.state.timer}
             questionNum={this.state.questionNum}
           />
         );
