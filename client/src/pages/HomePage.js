@@ -103,6 +103,7 @@ const HomePage = () => {
 
   const { isLoading, data, isError } = useQuery("duels", getDuels, {
     staleTime: 60 * 1000,
+    refetchOnMount: "always",
   });
 
   if (isLoading) {
