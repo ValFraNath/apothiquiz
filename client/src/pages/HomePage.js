@@ -84,10 +84,12 @@ const HomePage = () => {
               resolve(parsedData);
             })
             .catch((error) => {
+              console.error("Oh non !", error);
               reject(error);
             });
         })
         .catch((error) => {
+          console.error("Oh non !", error);
           reject(error);
         });
     });
@@ -99,7 +101,7 @@ const HomePage = () => {
     return "Vous avez perdu";
   }
 
-  const { isLoading, data, isError, error } = useQuery("duels", getDuels, {
+  const { isLoading, data, isError } = useQuery("duels", getDuels, {
     staleTime: 60 * 1000,
     retry: 1,
   });
@@ -109,7 +111,6 @@ const HomePage = () => {
   }
 
   if (isError) {
-    console.error("Oh non !", error);
     return <PageError message="Erreur lors du chargement de la page" />;
   }
 
