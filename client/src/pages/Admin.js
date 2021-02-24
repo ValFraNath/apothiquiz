@@ -189,8 +189,16 @@ const Configuration = () => {
     questionTimerDuration: 0,
   });
 
-  const updateConfig = (newConfig) => {
-    setConfig({ ...config, ...newConfig });
+  const [saved, setSaved] = useState(false);
+
+  const updateConfig = (key, value) => {
+    const newKey = { ...config[key], ...{ value } };
+    config[key] = newKey;
+
+    const newConfig = Object.create(null);
+    Object.assign(newConfig, config);
+
+    setConfig(newConfig);
   };
 
   useEffect(() => {
@@ -202,40 +210,55 @@ const Configuration = () => {
 
   function saveConfig(e) {
     e.preventDefault();
+    const body = Object.keys(config).reduce((body, key) => {
+      body[key] = config[key].value;
+      return body;
+    }, Object.create(null));
 
     axios
-      .patch("/api/v1/config/", config)
-      .then((res) => setConfig(res.data))
+      .patch("/api/v1/config/", body)
+      .then((res) => {
+        setConfig(res.data);
+        setSaved(true);
+      })
       .catch(console.error);
   }
 
   return (
     <form className="configuration" onSubmit={saveConfig}>
-      <NumberInput
-        label="Durée du timer de réponse"
-        defaultValue={config.questionTimerDuration.value}
-        onChange={(value) => updateConfig({ questionTimerDuration: value })}
-        min={2}
-        max={20}
-      />
+      {config.roundsPerDuel.max < 1 ? (
+        <p className="notEnoughData">
+          Il n'y a pas assez de données dans la base de données pour générer des duels{" "}
+        </p>
+      ) : (
+        <>
+          <NumberInput
+            label="Durée du timer de réponse"
+            defaultValue={config.questionTimerDuration.value}
+            onChange={(value) => updateConfig("questionTimerDuration", value)}
+            min={config.questionTimerDuration.min}
+            max={config.questionTimerDuration.max}
+          />
 
-      <NumberInput
-        label="Nombre de questions dans une manche"
-        defaultValue={config.questionsPerRound.value}
-        onChange={(value) => updateConfig({ questionsPerRound: value })}
-        min={2}
-        max={10}
-      />
+          <NumberInput
+            label="Nombre de questions dans une manche"
+            defaultValue={config.questionsPerRound.value}
+            onChange={(value) => updateConfig("questionsPerRound", value)}
+            min={config.questionsPerRound.min}
+            max={config.questionsPerRound.max}
+          />
 
-      <NumberInput
-        label="Nombre de manches dans un duel"
-        defaultValue={config.roundsPerDuel.value}
-        onChange={(value) => updateConfig({ roundsPerDuel: value })}
-        min={2}
-        max={10}
-      />
-
-      <input type="submit" value="Enregistrer" />
+          <NumberInput
+            label="Nombre de manches dans un duel"
+            defaultValue={config.roundsPerDuel.value}
+            onChange={(value) => updateConfig("roundsPerDuel", value)}
+            min={config.roundsPerDuel.min}
+            max={config.roundsPerDuel.max}
+          />
+          <input type="submit" value="Enregistrer" />
+        </>
+      )}
+      {saved && <p className="success">Configuration sauvegardée avec succès</p>}
     </form>
   );
 };
@@ -270,11 +293,11 @@ const NumberInput = ({ defaultValue, label, onChange, min, max }) => {
 };
 
 NumberInput.propTypes = {
-  defaultValue: PropTypes.number.isRequired,
+  defaultValue: PropTypes.number,
   label: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
-  max: PropTypes.number.isRequired,
-  min: PropTypes.number.isRequired,
+  max: PropTypes.number,
+  min: PropTypes.number,
 };
 
 const Admin = () => (
@@ -312,7 +335,7 @@ const Admin = () => (
       />
     </details>
     <details>
-      <summary>Configuration (WIP)</summary>
+      <summary>Configuration</summary>
       <Configuration />
     </details>
   </main>
