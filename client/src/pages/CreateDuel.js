@@ -1,123 +1,113 @@
 import axios from "axios";
-import React, { Component } from "react";
+import React, { useState } from "react";
+import { useQuery, useQueryClient } from "react-query";
 
 import Avatar from "../components/Avatar";
 import ButtonFullWidth from "../components/buttons/ButtonFullWidth";
+import Loading from "../components/Loading";
 import AuthService from "../services/auth.service";
 
-class CreateDuel extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      listOfUsers: {},
-      opponent: null,
-      search: "",
-    };
-  }
-
-  componentDidMount() {
+function getDefiableUsers() {
+  return new Promise((resolve, reject) => {
     axios
       .get("/api/v1/users")
       .then((resUsers) => {
+        const currentUser = AuthService.getCurrentUser();
         axios
           .get("/api/v1/duels")
           .then((resDuels) => {
             const usersToDisplay = resUsers.data;
-            for (let duel of resDuels.data) {
-              if (duel.opponent in usersToDisplay && duel.inProgress === 1) {
+
+            delete usersToDisplay[currentUser.pseudo];
+            for (const duel of resDuels.data) {
+              if (duel.inProgress === 1) {
                 delete usersToDisplay[duel.opponent];
               }
             }
-            this.setState({
-              listOfUsers: usersToDisplay,
-            });
+
+            resolve(usersToDisplay);
           })
-          .catch((err) => console.error(err));
+          .catch((err) => {
+            console.error(err);
+            reject(err);
+          });
       })
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        console.error(err);
+        reject(err);
+      });
+  });
+}
+
+const CreateDuel = () => {
+  const [searchRegex, setSearchRegex] = useState(null);
+  const [selected, setSelected] = useState(null);
+  const queryClient = useQueryClient();
+
+  const { data: listOfUsers, isLoading } = useQuery(["users", "defiable"], getDefiableUsers, {
+    staleTime: 60 * 60 * 1000,
+    refetchOnMount: false,
+  });
+
+  if (isLoading) {
+    return <Loading />;
   }
 
-  /**
-   * Select an opponent
-   * @param {string} name Username of the opponent
-   */
-  chooseOpponent(name) {
-    let newValue = name;
-    if (this.state.opponent === name) {
-      newValue = null;
-    }
-    this.setState({
-      opponent: newValue,
-    });
-  }
-
-  /**
-   * Create a duel with the chosen opponent
-   */
-  createDuel = () => {
+  function createDuel(opponent) {
     axios
       .post("/api/v1/duels/new", {
-        opponent: this.state.opponent,
+        opponent: opponent,
       })
       .then((res) => {
+        queryClient.invalidate(["users", "defiable"]);
         document.location.replace(`/duel/${res.data.id}`);
       })
       .catch((err) => console.error(err));
-  };
-
-  /**
-   * Search for a user
-   * @param {*} event
-   */
-  handleSearch = (event) => {
-    this.setState({
-      search: event.target.value,
-    });
-  };
-
-  render() {
-    const { listOfUsers, opponent, search } = this.state;
-    const currentUser = AuthService.getCurrentUser();
-
-    return (
-      <main id="create-duel">
-        <section>
-          <h1>Créer un nouveau duel</h1>
-          <input
-            type="text"
-            placeholder="Rechercher un utilisateur"
-            onChange={this.handleSearch}
-          ></input>
-        </section>
-        <section>
-          <ul>
-            {Object.keys(listOfUsers)
-              .filter((user) => {
-                let searchBoolean = search !== "" ? new RegExp(search, "i").test(user) : true;
-                return user !== currentUser.pseudo && searchBoolean;
-              })
-              .map((user, index) => (
-                <li
-                  key={index}
-                  onClick={() => this.chooseOpponent(user)}
-                  className={opponent === user ? "selected" : ""}
-                >
-                  <Avatar size="50px" infos={listOfUsers[user]?.avatar} />
-                  <p>{user}</p>
-                </li>
-              ))}
-          </ul>
-        </section>
-        <section>
-          {opponent !== null ? (
-            <ButtonFullWidth onClick={this.createDuel}>Lancer le défi</ButtonFullWidth>
-          ) : (
-            <p>Veuillez choisir un adversaire</p>
-          )}
-        </section>
-      </main>
-    );
   }
-}
+
+  return (
+    <main id="create-duel">
+      <section>
+        <h1>Créer un nouveau duel</h1>
+        <input
+          type="text"
+          placeholder="Rechercher un utilisateur"
+          onChange={(event) => {
+            setSelected(null);
+            setSearchRegex(new RegExp(event.target.value, "i"));
+          }}
+        ></input>
+      </section>
+
+      <section>
+        <ul>
+          {Object.keys(listOfUsers)
+            .filter((pseudo) => !searchRegex || searchRegex.test(pseudo))
+            .map((pseudo) => {
+              const user = listOfUsers[pseudo];
+              return (
+                <li
+                  key={user.pseudo}
+                  onClick={() => setSelected(user.pseudo)}
+                  className={selected === user.pseudo ? "selected" : ""}
+                >
+                  <Avatar size="50px" infos={user.avatar} />
+                  <p>{user.pseudo}</p>
+                </li>
+              );
+            })}
+        </ul>
+      </section>
+
+      <section>
+        {selected ? (
+          <ButtonFullWidth onClick={() => createDuel(selected)}>Lancer le duel</ButtonFullWidth>
+        ) : (
+          <p>Veuillez choisir un adversaire</p>
+        )}
+      </section>
+    </main>
+  );
+};
 
 export default CreateDuel;
