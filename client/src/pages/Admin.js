@@ -213,7 +213,7 @@ const Configuration = () => {
     <form className="configuration" onSubmit={saveConfig}>
       <NumberInput
         label="Durée du timer de réponse"
-        defaultValue={config.questionTimerDuration}
+        defaultValue={config.questionTimerDuration.value}
         onChange={(value) => updateConfig({ questionTimerDuration: value })}
         min={2}
         max={20}
@@ -221,7 +221,7 @@ const Configuration = () => {
 
       <NumberInput
         label="Nombre de questions dans une manche"
-        defaultValue={config.questionsPerRound}
+        defaultValue={config.questionsPerRound.value}
         onChange={(value) => updateConfig({ questionsPerRound: value })}
         min={2}
         max={10}
@@ -229,7 +229,7 @@ const Configuration = () => {
 
       <NumberInput
         label="Nombre de manches dans un duel"
-        defaultValue={config.roundsPerDuel}
+        defaultValue={config.roundsPerDuel.value}
         onChange={(value) => updateConfig({ roundsPerDuel: value })}
         min={2}
         max={10}

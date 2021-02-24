@@ -6,6 +6,7 @@ const { expect } = chai;
 
 describe("Configuration tests", () => {
   before("Clear & insert data", (done) => {
+    console.log(Date.now());
     forceTruncateTables(
       "molecule",
       "class",
@@ -17,7 +18,12 @@ describe("Configuration tests", () => {
       "duel",
       "results"
     ).then(() =>
-      insertData("molecules.sql").then(() => insertData("users.sql").then(() => done()))
+      insertData("molecules.sql").then(() =>
+        insertData("users.sql").then(() => {
+          console.log(Date.now());
+          done();
+        })
+      )
     );
   });
 
