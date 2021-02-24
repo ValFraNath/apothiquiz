@@ -75,26 +75,53 @@ export default class App extends Component {
       });
     });
 
-    // Request permission for notifications
-    if (
-      "Notification" in window &&
-      navigator.serviceWorker &&
-      Notification.permission === "default"
-    ) {
-      this.setState({ requireNotificationPermission: true });
+    // Request permission for notifications and subscribe to push
+    if (this.state.user && "Notification" in window && navigator.serviceWorker) {
+      switch (Notification.permission) {
+        case "granted":
+          this.subscribeUserPush();
+          break;
+        case "denied":
+          this.setState({ requireNotificationPermission: true });
+          break;
+      }
     }
   }
 
   displayBrowserNotificationPermission = () => {
     Notification.requestPermission().then(() => {
       this.setState({ requireNotificationPermission: false });
+      if (Notification.permission === "granted") {
+        this.subscribeUserPush();
+      }
     });
+  };
+
+  subscribeUserPush = () => {
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.ready.then((reg) => {
+        reg.pushManager
+          .subscribe({
+            userVisibleOnly: true,
+          })
+          .then((sub) => {
+            console.log("Sub", sub);
+          })
+          .catch((e) => {
+            if (Notification.permission === "denied") {
+              console.warn("Permission for notifications was denied");
+            } else {
+              console.error("Unable to subscribe to push", e);
+            }
+          });
+      });
+    }
   };
 
   updateServiceWorker = () => {
     this.setState({ updateRequired: true });
 
-    this.state.waitingServiceWorker.postMessagRe({ type: "SKIP_WAITING" });
+    this.state.waitingServiceWorker.postMessage({ type: "SKIP_WAITING" });
     window.location.reload();
   };
 

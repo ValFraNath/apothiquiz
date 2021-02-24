@@ -104,7 +104,7 @@ self.addEventListener("notificationclick", (e) => {
 });
 
 /**
- * Push message
+ * Push message handling
  */
 self.addEventListener("push", (e) => {
   const options = {
