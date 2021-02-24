@@ -11,6 +11,61 @@ export const DEFAULT_CONFIG = {
   QUESTION_TIMER_DURATION: 10,
 };
 
+/**
+ * @api       {post}        /config   Update the duels configuration
+ * @apiName   UpdateConfig
+ * @apiGroup  Config
+ *
+ * @apiParam {string} roundsPerDuel       The number of round in a duel
+ * @apiParam {string} questionsPerRound   The number of question in a round
+ * @apiParam {string} questionsTimerDuration   The duration of the question timer
+ *
+ * @apiParamExample  {string} Request-Example:
+ *  {
+       "questionsPerRound": 5,
+       "roundsPerDuel" : 6,
+       "questionTimerDuration" : 12
+    }
+ *
+ * @apiSuccess (200) {object} roundsPerDuel
+ * @apiSuccess (200) {string} roundsPerDuel.value  The number of round in a duel
+ * @apiSuccess (200) {string} roundsPerDuel.min    The minimum number of round in a duel
+ * @apiSuccess (200) {string} roundsPerDuel.max    The maximun number of round in a duel
+ *
+ * @apiSuccess (200) {object} questionsPerRound
+ * @apiSuccess (200) {string} questionsPerRound.value  The number of question in a round
+ * @apiSuccess (200) {string} questionsPerRound.min    The minimum number of question in a round
+ * @apiSuccess (200) {string} questionsPerRound.max    The maximun number of question in a round
+ *
+ * @apiSuccess (200) {object} questionTimerDuration
+ * @apiSuccess (200) {string} questionTimerDuration.value  The question timer duration
+ * @apiSuccess (200) {string} questionTimerDuration.min    The minimum question timer duration
+ * @apiSuccess (200) {string} questionTimerDuration.max    The maximun question timer duration
+ * 
+ * @apiSuccessExample Success-Response:
+ *  {  
+      questionsPerRound: {
+        "value" : 5
+        "min": 1,
+        "max": 10,
+      },
+      questionTimerDuration: {
+        "value" : 12
+        "min": 2,
+        "max": 20,
+      },
+      roundsPerDuel: {
+        "value" : 6
+        "min": 1,
+        "max": maxRoundsPerDuel,
+      },
+    }
+ *
+ * @apiPermission LoggedIn
+ * @apiPermission Admin
+ *
+ * @apiUse ErrorServer
+ */
 function setConfig(req, _res) {
   const res = new HttpResponseWrapper(_res);
 
