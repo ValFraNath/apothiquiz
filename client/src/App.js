@@ -81,7 +81,7 @@ export default class App extends Component {
         case "granted":
           this.subscribeUserPush();
           break;
-        case "denied":
+        case "default":
           this.setState({ requireNotificationPermission: true });
           break;
       }
