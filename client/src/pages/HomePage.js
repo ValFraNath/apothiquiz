@@ -101,10 +101,13 @@ const HomePage = () => {
     return "Vous avez perdu";
   }
 
-  const { isLoading, data, isError } = useQuery("duels", getDuels, {
+  const test = useQuery("duels", getDuels, {
     staleTime: 60 * 1000,
-    retry: 1,
   });
+
+  console.debug(test);
+
+  const { isLoading, data, isError } = test;
 
   if (isLoading) {
     return <Loading />;

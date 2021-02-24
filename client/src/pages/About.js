@@ -26,7 +26,7 @@ const TestConnection = () => {
   }
 
   const [isEnabled, setIsEnabled] = useState(false);
-  const { isLoading, data, isError } = useQuery("duels", getServerInformations, {
+  const { isLoading, data, isError } = useQuery("server-informations", getServerInformations, {
     enabled: isEnabled,
   });
 
