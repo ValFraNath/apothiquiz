@@ -462,8 +462,9 @@ function formatDuel(duel, username) {
   const currentRound = duel[0].du_currentRound;
   const rounds = JSON.parse(duel[0].du_content);
   const inProgress = duel[0].du_inProgress;
+
   const questionTimerDuration =
-    Number(duel[0].questionTimerDuration) || DEFAULT_CONFIG.QUESTION_TIMER_DURATION;
+    Number(duel[0].du_questionTimerDuration) || DEFAULT_CONFIG.QUESTION_TIMER_DURATION;
 
   const userAnswers = JSON.parse(duel.find((player) => player.us_login === username).re_answers);
   const opponentAnswers = JSON.parse(

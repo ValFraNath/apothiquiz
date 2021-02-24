@@ -6,7 +6,6 @@ const { expect } = chai;
 
 describe("Configuration tests", () => {
   before("Clear & insert data", (done) => {
-    console.log(Date.now());
     forceTruncateTables(
       "molecule",
       "class",
@@ -18,12 +17,7 @@ describe("Configuration tests", () => {
       "duel",
       "results"
     ).then(() =>
-      insertData("molecules.sql").then(() =>
-        insertData("users.sql").then(() => {
-          console.log(Date.now());
-          done();
-        })
-      )
+      insertData("molecules.sql").then(() => insertData("users.sql").then(() => done()))
     );
   });
 
@@ -79,7 +73,7 @@ describe("Configuration tests", () => {
     const { id } = res.body;
 
     res = await requestAPI("duels/" + id, { token });
-
+    console.log(res.body);
     expect(res.status).equal(200);
     expect(res.body.rounds).to.have.length(8);
     res.body.rounds.forEach((round) => expect(round).to.have.length(10));
