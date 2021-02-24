@@ -5,51 +5,28 @@ import { useQuery, useQueryClient } from "react-query";
 import Avatar from "../components/Avatar";
 import ButtonFullWidth from "../components/buttons/ButtonFullWidth";
 import Loading from "../components/Loading";
-import AuthService from "../services/auth.service";
-
-function getDefiableUsers() {
-  return new Promise((resolve, reject) => {
-    axios
-      .get("/api/v1/users")
-      .then((resUsers) => {
-        const currentUser = AuthService.getCurrentUser();
-        axios
-          .get("/api/v1/duels")
-          .then((resDuels) => {
-            const usersToDisplay = resUsers.data;
-
-            delete usersToDisplay[currentUser.pseudo];
-            for (const duel of resDuels.data) {
-              if (duel.inProgress === 1) {
-                delete usersToDisplay[duel.opponent];
-              }
-            }
-
-            resolve(usersToDisplay);
-          })
-          .catch((err) => {
-            console.error(err);
-            reject(err);
-          });
-      })
-      .catch((err) => {
-        console.error(err);
-        reject(err);
-      });
-  });
-}
+import PageError from "../components/PageError";
+import { getChallengeableUsers } from "../utils/apiQueries";
 
 const CreateDuel = () => {
   const [searchRegex, setSearchRegex] = useState(null);
   const [selected, setSelected] = useState(null);
   const queryClient = useQueryClient();
 
-  const { data: listOfUsers, isLoading } = useQuery(["users", "defiable"], getDefiableUsers, {
-    staleTime: 60 * 60 * 1000,
-    refetchOnMount: false,
-  });
+  const { data: listOfUsers, isSuccess, isError } = useQuery(
+    ["users", "challengeable"],
+    getChallengeableUsers,
+    {
+      staleTime: 60 * 60 * 1000,
+      refetchOnMount: false,
+    }
+  );
 
-  if (isLoading) {
+  if (isError) {
+    return <PageError message="Erreur lors du chargement de la page" />;
+  }
+
+  if (!isSuccess) {
     return <Loading />;
   }
 
@@ -59,7 +36,7 @@ const CreateDuel = () => {
         opponent: opponent,
       })
       .then((res) => {
-        queryClient.invalidate(["users", "defiable"]);
+        queryClient.invalidate(["users", "challengeable"]);
         document.location.replace(`/duel/${res.data.id}`);
       })
       .catch((err) => console.error(err));

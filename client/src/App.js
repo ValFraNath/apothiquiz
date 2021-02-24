@@ -1,7 +1,7 @@
 import { ReloadIcon } from "@modulz/radix-icons";
 import axios from "axios";
 import React, { Component } from "react";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
@@ -20,6 +20,7 @@ import Profile from "./pages/Profile";
 import Train from "./pages/Train";
 import AuthService from "./services/auth.service";
 import * as serviceWorker from "./serviceWorker";
+import { queryClient } from "./utils/apiQueries";
 
 /**
  * Set up the authorization header in all request if the user is logged in
@@ -47,8 +48,6 @@ export default class App extends Component {
       installPromptEvent: null,
       user: user,
     };
-
-    this.queryClient = new QueryClient();
   }
 
   componentDidMount() {
@@ -88,7 +87,7 @@ export default class App extends Component {
     const { user, isUpdateAvailable, installPromptEvent, updateRequired } = this.state;
 
     return (
-      <QueryClientProvider client={this.queryClient}>
+      <QueryClientProvider client={queryClient}>
         <Router>
           <TopBar username={user} />
           {isUpdateAvailable && (

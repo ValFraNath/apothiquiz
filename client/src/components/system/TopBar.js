@@ -4,12 +4,11 @@ import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
 
 import connectionAnim from "../../images/connection_status.png";
-import { getUserInfos } from "../../utils/api-query-user";
 import Avatar from "../Avatar";
 import SpriteSheet from "../SpriteSheet";
 
 const UserBadge = ({ username }) => {
-  const { data: user } = useQuery(["user", "me"], () => getUserInfos("me"));
+  const { data: user } = useQuery(["user", "me"]);
 
   return (
     <Link to="/profile" id={"userBadge"}>

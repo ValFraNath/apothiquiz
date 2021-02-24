@@ -8,12 +8,11 @@ import { Link } from "react-router-dom";
 import Avatar from "../components/Avatar";
 import AvatarChooser from "../components/AvatarChooser";
 import AuthService from "../services/auth.service";
-import { getUserInfos } from "../utils/api-query-user";
 
 const Profile = () => {
   const [initialised, setInitialised] = useState(false);
   const [avatar, setAvatar] = useState();
-  const { data, isLoading } = useQuery(["user", "me"], () => getUserInfos("me"));
+  const { data, isLoading } = useQuery(["user", "me"]);
 
   if (isLoading) {
     return <span>Chargement</span>;
