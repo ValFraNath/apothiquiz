@@ -208,7 +208,7 @@ const Configuration = () => {
       .then((res) => setConfig(res.data))
       .catch(console.error);
   }
-  console.log(config);
+
   return (
     <form className="configuration" onSubmit={saveConfig}>
       <NumberInput
