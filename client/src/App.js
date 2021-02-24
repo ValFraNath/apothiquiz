@@ -1,5 +1,7 @@
 import { ReloadIcon, BellIcon } from "@modulz/radix-icons";
 import axios from "axios";
+import firebase from "firebase/app";
+import "firebase/messaging";
 import React, { Component } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
@@ -77,6 +79,7 @@ export default class App extends Component {
 
     // Request permission for notifications and subscribe to push
     if (this.state.user && "Notification" in window && navigator.serviceWorker) {
+      this.installFirebase();
       switch (Notification.permission) {
         case "granted":
           this.subscribeUserPush();
@@ -86,6 +89,27 @@ export default class App extends Component {
           break;
       }
     }
+  }
+
+  installFirebase() {
+    const firebaseConfig = {
+      apiKey: "AIzaSyCtGrFY1_UOzWAFn1xt1CRPNGZ40JZcaJw",
+      authDomain: "guacamole-31ba0.firebaseapp.com",
+      projectId: "guacamole-31ba0",
+      storageBucket: "guacamole-31ba0.appspot.com",
+      messagingSenderId: "46062321146",
+      appId: "1:46062321146:web:bcd9f8b8caf30c2aacf843",
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    const messaging = firebase.messaging();
+    navigator.serviceWorker.getRegistration().then((reg) => {
+      messaging.getToken({
+        vapidKey:
+          "BFW2K4Eu0CFRDsJFJTVrdXbwalM7iIiL4t_BVzbgqPik9WJvHUgzedh5baLT0ukRsm1WG_BGT7A_5KygJ_WLfYs",
+        serviceWorkerRegistration: reg,
+      });
+    });
   }
 
   displayBrowserNotificationPermission = () => {
@@ -103,9 +127,12 @@ export default class App extends Component {
         reg.pushManager
           .subscribe({
             userVisibleOnly: true,
+            applicationServerKey: this.urlBase64ToUint8Array(
+              "BFW2K4Eu0CFRDsJFJTVrdXbwalM7iIiL4t_BVzbgqPik9WJvHUgzedh5baLT0ukRsm1WG_BGT7A_5KygJ_WLfYs"
+            ),
           })
           .then((sub) => {
-            console.log("Sub", sub);
+            console.log("Sub", sub.endpoint);
           })
           .catch((e) => {
             if (Notification.permission === "denied") {
@@ -117,6 +144,19 @@ export default class App extends Component {
       });
     }
   };
+
+  urlBase64ToUint8Array(base64String) {
+    const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+    const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
+
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+
+    for (let i = 0; i < rawData.length; ++i) {
+      outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+  }
 
   updateServiceWorker = () => {
     this.setState({ updateRequired: true });
