@@ -20,7 +20,7 @@ import Profile from "./pages/Profile";
 import Train from "./pages/Train";
 import AuthService from "./services/auth.service";
 import * as serviceWorker from "./serviceWorker";
-import { queryClient } from "./utils/apiQueries";
+import queryClient from "./utils/configuredQueryClient";
 
 /**
  * Set up the authorization header in all request if the user is logged in
