@@ -80,82 +80,42 @@ export default class App extends Component {
     // Request permission for notifications and subscribe to push
     if (this.state.user && "Notification" in window && navigator.serviceWorker) {
       this.installFirebase();
-      switch (Notification.permission) {
-        case "granted":
-          this.subscribeUserPush();
-          break;
-        case "default":
-          this.setState({ requireNotificationPermission: true });
-          break;
-      }
     }
   }
 
   installFirebase() {
-    const firebaseConfig = {
+    firebase.initializeApp({
       apiKey: "AIzaSyCtGrFY1_UOzWAFn1xt1CRPNGZ40JZcaJw",
       authDomain: "guacamole-31ba0.firebaseapp.com",
       projectId: "guacamole-31ba0",
       storageBucket: "guacamole-31ba0.appspot.com",
       messagingSenderId: "46062321146",
       appId: "1:46062321146:web:bcd9f8b8caf30c2aacf843",
-    };
-    firebase.initializeApp(firebaseConfig);
+    });
 
     const messaging = firebase.messaging();
     navigator.serviceWorker.getRegistration().then((reg) => {
-      messaging.getToken({
-        vapidKey:
-          "BFW2K4Eu0CFRDsJFJTVrdXbwalM7iIiL4t_BVzbgqPik9WJvHUgzedh5baLT0ukRsm1WG_BGT7A_5KygJ_WLfYs",
-        serviceWorkerRegistration: reg,
-      });
+      messaging
+        .getToken({
+          vapidKey:
+            "BFW2K4Eu0CFRDsJFJTVrdXbwalM7iIiL4t_BVzbgqPik9WJvHUgzedh5baLT0ukRsm1WG_BGT7A_5KygJ_WLfYs",
+          serviceWorkerRegistration: reg,
+        })
+        .then((currentToken) => {
+          if (currentToken) {
+            console.info(`User token: ${currentToken}`);
+          } else {
+            this.displayBrowserNotificationPermission();
+          }
+        })
+        .catch((err) => console.error("Can't retrieve token.", err));
     });
   }
 
-  displayBrowserNotificationPermission = () => {
+  displayBrowserNotificationPermission() {
     Notification.requestPermission().then(() => {
       this.setState({ requireNotificationPermission: false });
-      if (Notification.permission === "granted") {
-        this.subscribeUserPush();
-      }
     });
-  };
-
-  subscribeUserPush = () => {
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.ready.then((reg) => {
-        reg.pushManager
-          .subscribe({
-            userVisibleOnly: true,
-            applicationServerKey: this.urlBase64ToUint8Array(
-              "BFW2K4Eu0CFRDsJFJTVrdXbwalM7iIiL4t_BVzbgqPik9WJvHUgzedh5baLT0ukRsm1WG_BGT7A_5KygJ_WLfYs"
-            ),
-          })
-          .then((sub) => {
-            console.log("Sub", sub.endpoint);
-          })
-          .catch((e) => {
-            if (Notification.permission === "denied") {
-              console.warn("Permission for notifications was denied");
-            } else {
-              console.error("Unable to subscribe to push", e);
-            }
-          });
-      });
-    }
-  };
-
-  urlBase64ToUint8Array(base64String) {
-    const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
-    const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
-
-    const rawData = window.atob(base64);
-    const outputArray = new Uint8Array(rawData.length);
-
-    for (let i = 0; i < rawData.length; ++i) {
-      outputArray[i] = rawData.charCodeAt(i);
-    }
-    return outputArray;
   }
 
   updateServiceWorker = () => {

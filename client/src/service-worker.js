@@ -1,10 +1,25 @@
 /* eslint-disable no-restricted-globals */
 
+// Import Firebase scripts
+import firebase from "firebase";
+
+self.importScripts("https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js");
+self.importScripts("https://www.gstatic.com/firebasejs/8.2.9/firebase-messaging.js");
+
 let cacheName = "guacamolePWA-v1";
 caches.has(cacheName).then((res) => {
   if (res) {
     cacheName = "guacamolePWA-v2";
   }
+});
+
+firebase.initializeApp({
+  apiKey: "AIzaSyCtGrFY1_UOzWAFn1xt1CRPNGZ40JZcaJw",
+  authDomain: "guacamole-31ba0.firebaseapp.com",
+  projectId: "guacamole-31ba0",
+  storageBucket: "guacamole-31ba0.appspot.com",
+  messagingSenderId: "46062321146",
+  appId: "1:46062321146:web:bcd9f8b8caf30c2aacf843",
 });
 
 /**
@@ -84,6 +99,21 @@ self.addEventListener("message", (e) => {
 });
 
 /**
+ * Push message handling
+ */
+const messaging = firebase.messaging();
+messaging.onBackgroundMessage((payload) => {
+  const { title } = payload.notification ?? "Hello, World";
+  const options = {
+    body: payload.notification.body,
+    icon: payload.notification.image ?? "",
+    data: payload.data,
+  };
+
+  self.registration.showNotification(title, options);
+});
+
+/**
  * Handle user click on a notification
  */
 self.addEventListener("notificationclick", (e) => {
@@ -101,19 +131,4 @@ self.addEventListener("notificationclick", (e) => {
       .catch(() => console.log("Can't open window after the user clicks on a notification"));
     notification.close();
   }
-});
-
-/**
- * Push message handling
- */
-self.addEventListener("push", (e) => {
-  const options = {
-    body: "Test notification",
-    data: {
-      type: "new_duel",
-      duelId: "2",
-    },
-  };
-
-  e.waitUntil(self.registration.showNotification("Hello, World!", options));
 });
