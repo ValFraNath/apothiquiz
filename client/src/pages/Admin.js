@@ -280,12 +280,12 @@ const NumberInput = ({ defaultValue, label, onChange, min, max }) => {
     <div className="number-input">
       <ArrowUpIcon
         onClick={() => handleChange(value + 1)}
-        color={value === max ? "grey" : "black"}
+        color={value >= max ? "grey" : "black"}
       />
       <span>{value}</span>
       <ArrowDownIcon
         onClick={() => handleChange(value - 1)}
-        color={value === min ? "grey" : "black"}
+        color={value <= min ? "grey" : "black"}
       />
       <label>{label}</label>
     </div>

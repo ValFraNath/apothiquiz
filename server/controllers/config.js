@@ -2,6 +2,7 @@ import mysql from "mysql";
 
 import { queryPromise } from "../db/database.js";
 import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
+import { addErrorTitle } from "../global/Logger.js";
 
 import { getAllQuestionTypes, createGeneratorOfType, NotEnoughDataError } from "./question.js";
 
@@ -21,10 +22,10 @@ export const DEFAULT_CONFIG = {
  * @apiParam {string} questionsTimerDuration   The duration of the question timer
  *
  * @apiParamExample  {string} Request-Example:
- *  {
-       "questionsPerRound": 5,
-       "roundsPerDuel" : 6,
-       "questionTimerDuration" : 12
+    {
+      "questionsPerRound": 5,
+      "roundsPerDuel" : 6,
+      "questionTimerDuration" : 12,
     }
  *
  * @apiSuccess (200) {object} roundsPerDuel
@@ -43,21 +44,21 @@ export const DEFAULT_CONFIG = {
  * @apiSuccess (200) {string} questionTimerDuration.max    The maximun question timer duration
  * 
  * @apiSuccessExample Success-Response:
- *  {  
-      questionsPerRound: {
+    {  
+      "questionsPerRound": {
         "value" : 5
         "min": 1,
         "max": 10,
       },
-      questionTimerDuration: {
+      "questionTimerDuration": {
         "value" : 12
         "min": 2,
         "max": 20,
       },
-      roundsPerDuel: {
+      "roundsPerDuel": {
         "value" : 6
         "min": 1,
-        "max": maxRoundsPerDuel,
+        "max": 8,
       },
     }
  *
@@ -137,13 +138,14 @@ export function fetchConfigFromDB() {
     queryPromise(sql)
       .then((res) => {
         const { QUESTIONS_PER_ROUNDS, QUESTION_TIMER_DURATION, ROUNDS_PER_DUEL } = DEFAULT_CONFIG;
-        const getValue = (key) => Number(res.find((row) => row.key === key)?.value) || null;
+        const toNumber = (x) => (Number.isNaN(Number(x)) ? null : Number(x));
+        const getValue = (key) => toNumber(res.find((row) => row.key === key)?.value);
 
         resolve({
-          questionsPerRound: getValue("config_duel_questions_per_round") || QUESTIONS_PER_ROUNDS,
-          roundsPerDuel: getValue("config_duel_rounds_per_duel") || ROUNDS_PER_DUEL,
+          questionsPerRound: getValue("config_duel_questions_per_round") ?? QUESTIONS_PER_ROUNDS,
+          roundsPerDuel: getValue("config_duel_rounds_per_duel") ?? ROUNDS_PER_DUEL,
           questionTimerDuration:
-            getValue("config_question_timer_duration") || QUESTION_TIMER_DURATION,
+            getValue("config_question_timer_duration") ?? QUESTION_TIMER_DURATION,
         });
       })
       .catch(reject);
@@ -216,6 +218,27 @@ function getNumberOfQuestionTypesAvailable() {
       )
     )
       .then((types) => resolve(types.reduce((sum, type) => sum + type)))
+      .catch(reject);
+  });
+}
+
+/**
+ * If the number of available question types decreases after a new import, the value also
+ * @return {Promise}
+ */
+export function updateNumberOfRoundsPerDuel() {
+  return new Promise((resolve, reject) => {
+    getNumberOfQuestionTypesAvailable()
+      .then((number) => {
+        const sql = `UPDATE server_informations \
+                      SET server_informations.value = ${number} \
+                      WHERE server_informations.key = "config_duel_rounds_per_duel" AND \
+                      server_informations.value > ${number}`;
+
+        queryPromise(sql)
+          .then(() => resolve())
+          .catch((error) => addErrorTitle(error, "Can't update configuration"));
+      })
       .catch(reject);
   });
 }

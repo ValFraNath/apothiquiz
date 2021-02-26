@@ -1,8 +1,13 @@
+import path from "path";
+
 import chai from "chai";
 
-import { forceTruncateTables, getToken, insertData, requestAPI } from "./index.test.js";
+import { forceTruncateTables, getToken, insertData, requestAPI } from "../index.test.js";
+import { uploadFile } from "../molecules_importation/importation_route/importMolecule.test.js";
 
 const { expect } = chai;
+
+const FILES_DIR = path.resolve("test", "config", "files");
 
 describe("Configuration tests", () => {
   before("Clear & insert data", (done) => {
@@ -115,5 +120,27 @@ describe("Configuration tests", () => {
 
     res = await requestAPI("config", { token, method: "get" });
     expect(res.body).deep.equal(configBeforeUpdate);
+  });
+
+  it("Config value decreased after a new smaller import", async () => {
+    await requestAPI("config", {
+      body: { roundsPerDuel: 8 },
+      token,
+      method: "patch",
+    });
+
+    await uploadFile("molecules_little_sample.csv", true, token, FILES_DIR);
+
+    const res = await requestAPI("config", { token, method: "get" });
+    expect(res.body.roundsPerDuel.value).equal(6);
+    expect(res.body.roundsPerDuel.max).equal(6);
+  });
+
+  it("Value to 0 after empty import", async () => {
+    await uploadFile("molecules_empty.csv", true, token, FILES_DIR);
+
+    const res = await requestAPI("config", { token, method: "get" });
+    expect(res.body.roundsPerDuel.value).equal(0);
+    expect(res.body.roundsPerDuel.max).equal(0);
   });
 });
