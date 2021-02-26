@@ -76,6 +76,7 @@ const DuelOverview = ({
   },
 }) => {
   const { isLoading, data, isError } = useQuery(["duel", duelId], makeGetDuelDetails(duelId));
+  const { data: currentUser } = useQuery(["user", "me"]);
 
   const answers = useMemo(() => roundsToAnswers(data?.rounds), [data?.rounds]);
 
@@ -87,7 +88,7 @@ const DuelOverview = ({
     return <PageError message="Échec du chargement du duel" />;
   }
 
-  const { currentUserScore, opponentScore, currentUser, opponent, inProgress } = data;
+  const { currentUserScore, opponentScore, opponent, inProgress } = data;
 
   // Can the current user play the current round?
   const answersToLastRound = answers[answers.length - 1].user;

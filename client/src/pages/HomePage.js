@@ -54,6 +54,7 @@ const HomePage = () => {
   }
 
   const { isLoading, data: duels, isError } = useQuery("duels");
+  const { data: currentUser } = useQuery(["user", "me"]);
 
   if (isLoading) {
     return <Loading />;
@@ -63,7 +64,7 @@ const HomePage = () => {
     return <PageError message="Erreur lors du chargement de la page" />;
   }
 
-  const { currentUser, usersData } = duels;
+  const { usersData } = duels;
 
   return (
     <main id="homepage">

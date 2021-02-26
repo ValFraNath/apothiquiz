@@ -36,7 +36,6 @@ export function getAllDuels() {
         axios
           .post("/api/v1/users/", [...listDefiedOfUsers])
           .then(({ data: usersData }) => {
-            duels.currentUser = usersData[AuthService.getCurrentUser().pseudo];
             duels.usersData = usersData;
             resolve(duels);
           })
@@ -71,7 +70,6 @@ export function makeGetDuelDetails(duelId) {
           const currentUser = AuthService.getCurrentUser();
           axios.post("/api/v1/users/", [currentUser.pseudo, opponent]).then((usersRes) => {
             resolve({
-              currentUser: usersRes.data[currentUser.pseudo],
               opponent: usersRes.data[opponent],
               currentUserScore: res.data.userScore,
               opponentScore: res.data.opponentScore,

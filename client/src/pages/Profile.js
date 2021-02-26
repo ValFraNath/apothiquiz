@@ -12,9 +12,9 @@ import AuthService from "../services/auth.service";
 const Profile = () => {
   const [initialised, setInitialised] = useState(false);
   const [avatar, setAvatar] = useState();
-  const { data, isLoading } = useQuery(["user", "me"]);
+  const { data, isPlaceholderData } = useQuery(["user", "me"]);
 
-  if (isLoading) {
+  if (isPlaceholderData) {
     return <span>Chargement</span>;
   }
 
