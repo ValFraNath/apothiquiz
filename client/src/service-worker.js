@@ -103,14 +103,22 @@ self.addEventListener("message", (e) => {
  */
 const messaging = firebase.messaging();
 messaging.onBackgroundMessage((payload) => {
-  const { title } = payload.notification ?? "Hello, World";
+  console.log(payload);
+  if (!payload.data.title) {
+    console.error("Can't display notification without title");
+    return;
+  }
+
+  const { title } = payload.data;
   const options = {
-    body: payload.notification.body,
-    icon: payload.notification.image ?? "",
+    body: payload.data.body,
+    icon: payload.data.image,
     data: payload.data,
   };
 
-  self.registration.showNotification(title, options);
+  self.registration
+    .showNotification(title, options)
+    .catch((err) => console.error("Can't send notification: ", err));
 });
 
 /**

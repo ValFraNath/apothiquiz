@@ -1,14 +1,35 @@
-import * as admin from "firebase-admin";
-import * as serviceAccount from "files/";
+import admin from "firebase-admin";
 
-function sendNotificationToOneDevice(data, target) {
+import saKey from "../files/serviceAccountKey.json";
+
+/* Initialize firebase */
+admin.initializeApp({
+  credential: admin.credential.cert(saKey),
+});
+
+/* Users tokens */
+const subscribedUsers = {};
+
+export function sendNotificationToOneDevice(username, data) {
   const message = {
     data: data,
-    token: target,
+    token: subscribedUsers[username],
   };
 
   admin
     .messaging()
     .send(message)
-    .catch((err) => console.warn("error", err));
+    .catch((err) => console.error("Can't send notification to a single device", err));
+}
+
+export function sendNotificationToAllDevices(data) {
+  const message = {
+    data: data,
+    tokens: Object.values(subscribedUsers),
+  };
+
+  admin
+    .messaging()
+    .sendMulticast(message)
+    .catch((err) => console.error("Can't send notification to several devices", err));
 }
