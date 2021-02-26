@@ -5,6 +5,12 @@ import { makeGetUserInfo } from "./queryUsers";
 
 const queryClient = new QueryClient();
 
+queryClient.setDefaultOptions({
+  queries: {
+    cacheTime: 1000 * 60 * 10, // Keep informations in cache for ten minutes
+  },
+});
+
 // Here we define the defaults functions for general queries
 
 queryClient.setQueryDefaults(["user", "me"], {
