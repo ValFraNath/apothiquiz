@@ -1,6 +1,6 @@
 import { QueryClient } from "react-query";
 
-import { getDuels } from "./queryDuels";
+import { getAllDuels } from "./queryDuels";
 import { makeGetUserInfo } from "./queryUsers";
 
 const queryClient = new QueryClient();
@@ -13,7 +13,7 @@ queryClient.setQueryDefaults(["user", "me"], {
 });
 
 queryClient.setQueryDefaults("duels", {
-  queryFn: getDuels,
+  queryFn: getAllDuels,
   staleTime: 60 * 1000,
   refetchOnMount: "always",
 });

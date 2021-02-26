@@ -7,7 +7,7 @@ import AuthService from "../services/auth.service";
  *
  * @return {Promise<Object>} An object with finished, pending, toPlay
  */
-export function getDuels() {
+export function getAllDuels() {
   return new Promise((resolve, reject) => {
     axios
       .get("/api/v1/duels/")
@@ -50,4 +50,40 @@ export function getDuels() {
         reject(error);
       });
   });
+}
+
+/**
+ * Get all informations about a duel
+ *
+ * @param {Number} duelId The duel ID in the database
+ * @return // TODO
+ */
+export function makeGetDuelDetails(duelId) {
+  return function () {
+    return new Promise((resolve, reject) => {
+      axios
+        .get(`/api/v1/duels/${duelId}`)
+        .then((res) => {
+          // TODO : move this user information request into
+          // TODO > the request duel request body to prevent request chaining
+          const { opponent } = res.data;
+
+          const currentUser = AuthService.getCurrentUser();
+          axios.post("/api/v1/users/", [currentUser.pseudo, opponent]).then((usersRes) => {
+            resolve({
+              currentUser: usersRes.data[currentUser.pseudo],
+              opponent: usersRes.data[opponent],
+              currentUserScore: res.data.userScore,
+              opponentScore: res.data.opponentScore,
+              // eslint-disable-next-line eqeqeq
+              inProgress: res.data.inProgress == true,
+              rounds: res.data.rounds,
+            });
+          });
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  };
 }
