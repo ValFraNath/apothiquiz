@@ -54,7 +54,7 @@ const HomePage = () => {
   }
 
   const { isLoading, data: duels, isError } = useQuery("duels");
-  const { data: currentUser } = useQuery(["user", "me"]);
+  const { data: currentUser } = useQuery(["user", "me"], { refetchOnMount: "always" });
 
   if (isLoading) {
     return <Loading />;
