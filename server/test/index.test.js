@@ -12,7 +12,8 @@ chai.use(chaiHttp);
 /**
  * Wait until the server and the database are ready to run tests
  */
-before((done) => {
+before("Wait until the database is ready", function (done) {
+  this.timeout(10000);
   app.waitReady(() => done());
 });
 
