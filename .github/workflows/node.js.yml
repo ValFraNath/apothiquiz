@@ -55,7 +55,7 @@ jobs:
         uses: getong/mariadb-action@v1.1
         with:
           mariadb version: "10.4.10"
-          mysql database: "glowingOctoGuacamole"
+          mysql database: "gogTest"
           mysql user: "glowing-octo-guacamole"
           mysql password: ${{ secrets.CI_DATABASE_PASS }}
 

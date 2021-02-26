@@ -13,6 +13,8 @@ import reactRouter from "./routes/react.route.js";
 dotenv.config();
 
 const PORT = process.env.PORT || 5035;
+const FILES_DIR = process.env.NODE_ENV === "test" ? "files-test" : "files";
+
 const app = express();
 app.isReady = false;
 
@@ -23,7 +25,7 @@ if (!process.env.TOKEN_PRIVATE_KEY) {
   process.exit(1);
 }
 
-fs.mkdirSync("files", { recursive: true });
+fs.mkdirSync(FILES_DIR, { recursive: true });
 
 app.use(bodyParser.json());
 app.use(express.static("../client/build/"));

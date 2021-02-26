@@ -52,6 +52,7 @@ describe("Check the database structure", function () {
         "mo_ntr",
         "mo_class",
         "mo_system",
+        "mo_image",
       ],
     },
     {
@@ -68,7 +69,7 @@ describe("Check the database structure", function () {
     },
     {
       name: "user",
-      fields: ["us_login", "us_victories", "us_defeats", "us_avatar"],
+      fields: ["us_login", "us_admin", "us_deleted", "us_victories", "us_defeats", "us_avatar"],
     },
     {
       name: "duel",

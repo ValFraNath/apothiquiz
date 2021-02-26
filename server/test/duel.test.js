@@ -12,7 +12,7 @@ import {
   _initMockedDuelRounds,
 } from "../controllers/duels.js";
 
-import { forceTruncateTables, insertData, requestAPI } from "./index.test.js";
+import { forceTruncateTables, getToken, insertData, requestAPI } from "./index.test.js";
 
 chai.use(chaiHttp);
 const { expect } = chai;
@@ -24,16 +24,10 @@ describe("Duels", () => {
   let tokens;
 
   before("Get users tokens", (done) => {
-    Promise.all(
-      ["vperigno", "nhoun", "fpoguet"].map((user) =>
-        requestAPI("users/login", {
-          body: { userPseudo: user, userPassword: "1234" },
-          method: "post",
-        })
-      )
-    ).then((res) => {
-      tokens = res.reduce((tokens, res) => {
-        tokens[res.body.pseudo] = res.body.token;
+    const users = ["vperigno", "nhoun", "fpoguet"];
+    Promise.all(users.map((user) => getToken(user))).then((usersToken) => {
+      tokens = usersToken.reduce((tokens, token, i) => {
+        tokens[users[i]] = token;
         return tokens;
       }, Object.create(null));
       done();

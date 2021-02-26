@@ -1,13 +1,9 @@
 import axios from "axios";
+
 import PropTypes from "prop-types";
 import React, { Component } from "react";
 
 import AuthService from "../services/auth.service";
-
-const MIME_TYPES = {
-  CSV_MIME: { name: "fichier CSV", mime: ["text/csv", "application/vnd.ms-excel"] },
-  ZIP_MIME: { name: "archive ZIP", mime: ["application/zip", "application/x-zip-compressed"] },
-};
 
 class FileImporter extends Component {
   constructor(props) {
@@ -16,7 +12,7 @@ class FileImporter extends Component {
     this.state = {
       errors: [],
       warnings: [],
-      selectedFile: null,
+      selectedFiles: null,
       canConfirm: false,
       imported: false,
     };
@@ -28,10 +24,11 @@ class FileImporter extends Component {
    */
   sendSelectedFile(e) {
     e.preventDefault();
-    const file = this.state.selectedFile;
+    const files = this.state.selectedFiles || [];
     const requestData = new FormData();
 
-    requestData.append("file", file);
+    files.forEach((file) => requestData.append("file", file));
+
     if (this.state.canConfirm) {
       requestData.append("confirmed", "true");
     }
@@ -58,7 +55,8 @@ class FileImporter extends Component {
           });
           return;
         }
-        this.setState({ errors: [error.response?.data?.message] });
+        const message = error.response?.data?.message || "Erreur serveur";
+        this.setState({ errors: [message], imported: false });
       });
   }
 
@@ -67,15 +65,29 @@ class FileImporter extends Component {
    * @param {Event} e
    */
   handleFileChange(e) {
-    let file = e.target.files[0] || null;
+    let files = [...e.target.files].slice(0, this.props.multiple ? undefined : 1);
     const errors = [];
 
-    if (!this.props.type.mime.includes(file.type)) {
+    files.forEach((file) => {
+      const ext = file.name.split(".").slice(-1)[0];
+      if (!this.props.extensions.includes(ext)) {
+        errors.push(
+          `Mauvaise extension : "${file.name}" (uniquement ${this.props.extensions.join(", ")}) `
+        );
+      }
+    });
+    if (errors.length > 0) {
+      files = null;
       e.target.parentNode.reset();
-      file = null;
-      errors.push("Le format du fichier doit être : " + this.props.type.name);
     }
-    this.setState({ selectedFile: file, canConfirm: false, errors, imported: false });
+
+    this.setState({
+      selectedFiles: files,
+      canConfirm: false,
+      errors,
+      warnings: [],
+      imported: false,
+    });
   }
 
   /**
@@ -87,6 +99,7 @@ class FileImporter extends Component {
     if (array.length === 0) {
       return;
     }
+
     return (
       <ul className={className}>
         {array.map((element) => (
@@ -105,14 +118,18 @@ class FileImporter extends Component {
             required
             onChange={this.handleFileChange.bind(this)}
             type="file"
+            multiple={this.props.multiple}
           />
           <input
             type="submit"
-            disabled={this.state.selectedFile === null}
-            value={this.state.canConfirm ? "Confirmer" : "Envoyer"}
+            disabled={this.state.selectedFiles === null}
+            value={this.state.canConfirm ? "Confirmer" : "Tester"}
           />
         </form>
-        {this.state.imported && <p className="success">Le fichier a été importé avec succès</p>}
+        {this.state.imported && <p className="success">Importation réalisée avec succès</p>}
+        {this.state.canConfirm && this.state.warnings.length === 0 && (
+          <p className="success">Aucun problème détecté</p>
+        )}
         {this.displayList(this.state.warnings, "warnings")}
         {this.displayList(this.state.errors, "errors")}
       </div>
@@ -122,8 +139,11 @@ class FileImporter extends Component {
 
 FileImporter.propTypes = {
   endpoint: PropTypes.string.isRequired,
-  type: PropTypes.arrayOf(PropTypes.string).isRequired,
+  extensions: PropTypes.arrayOf(PropTypes.string).isRequired,
+  multiple: PropTypes.bool.isRequired,
 };
+
+FileImporter.defaultProps = { multiple: false };
 
 /**
  * Component which, on click, fetches a file and opens it.
@@ -188,33 +208,37 @@ const Admin = () => (
     <details open>
       <summary>Importer des molécules</summary>
       <FileDownloader
-        text="Télécharger le dernier fichier importé"
+        text="Télécharger les dernières molécules importées"
         filename="molecules.csv"
         endpoint="/api/v1/import/molecules"
       />
-      <FileImporter endpoint="/api/v1/import/molecules" type={MIME_TYPES.CSV_MIME} />
+      <FileImporter endpoint="/api/v1/import/molecules" extensions={["csv"]} />
     </details>
     <details>
-      <summary>Importer des étudiants (WIP)</summary>
+      <summary>Importer des utilisateurs</summary>
       <FileDownloader
-        text="Télécharger le dernier fichier importé"
-        filename="etudiants.csv"
-        endpoint="/api/v1/import/students"
+        text="Télécharger les derniers utilisateurs importés"
+        filename="utilisateurs.csv"
+        endpoint="/api/v1/import/users"
       />
-      <FileImporter endpoint="/api/v1/import/students" type={MIME_TYPES.CSV_MIME} />
+      <FileImporter endpoint="/api/v1/import/users" extensions={["csv"]} />
+    </details>
+    <details>
+      <summary>Importer des images</summary>
+      <FileDownloader
+        text="Télécharger les dernières images importées"
+        filename="images-molecules.csv"
+        endpoint="/api/v1/import/images"
+      />
+      <FileImporter
+        endpoint="/api/v1/import/images"
+        multiple={true}
+        extensions={["png", "jpeg", "jpg", "svg"]}
+      />
     </details>
     <details>
       <summary>Configuration (WIP)</summary>
       <Configuration />
-    </details>
-    <details>
-      <summary>Importer des images (WIP)</summary>
-      <FileDownloader
-        text="Télécharger le dernier fichier importé"
-        filename="images.csv"
-        endpoint="/api/v1/import/images"
-      />
-      <FileImporter endpoint="/api/v1/import/images" type={MIME_TYPES.ZIP_MIME} />
     </details>
   </main>
 );

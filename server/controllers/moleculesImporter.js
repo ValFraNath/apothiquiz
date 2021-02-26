@@ -1,15 +1,17 @@
-import fs from "fs/promises";
 import path from "path";
 
 import { queryPromise } from "../db/database.js";
 import { HeaderErrors } from "../global/csv_reader/HeaderChecker.js";
+import { createDir, deleteFiles, getSortedFiles, moveFile } from "../global/files.js";
 import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
+import { bindImagesToMolecules } from "../global/images_importation/imagesImporter.js";
 import Logger, { addErrorTitle } from "../global/Logger.js";
-import { analyzeData } from "../global/molecules_analyzer/moleculesAnalyzer.js";
-import { createSqlToInsertAllData } from "../global/molecules_importer/moleculesImporter.js";
-import { parseMoleculesFromCsv } from "../global/molecules_parser/Parser.js";
+import { analyzeData } from "../global/molecules_importation/moleculesAnalyzer.js";
+import { createSqlToInsertAllData } from "../global/molecules_importation/moleculesImporter.js";
+import { parseMoleculesFromCsv } from "../global/molecules_importation/moleculesParser.js";
 
-const FILES_DIR_PATH = path.resolve("files", "molecules");
+const FILES_DIR = process.env.NODE_ENV === "test" ? "files-test" : "files";
+const MOLECULES_DIR = path.resolve(FILES_DIR, "molecules");
 const MAX_FILE_KEPT = 15;
 
 /**
@@ -36,11 +38,11 @@ const MAX_FILE_KEPT = 15;
       "message": "File tested but not imported",
       "warnings": [
         {
-          "type": 3,
+          "code": 3,
           "message": "Ces valeurs de \"classes\" sont très proches : \"PENICILLINES A\", \"PENICILLINES\""
         },
         {
-          "type": 3,
+          "code": 3,
           "message": "Ces valeurs de \"indications\" sont très proches : \"VIH\", \"VHB\""
         }
       ],
@@ -79,33 +81,29 @@ const MAX_FILE_KEPT = 15;
 function importMolecules(req, _res) {
   const res = new HttpResponseWrapper(_res);
 
-  const {
-    _uploadedFileName: filename,
-    _uploadedFileExtension: extension,
-    _uploadedFileDirectory: directory,
-    confirmed,
-  } = req.body;
+  const { confirmed } = req.body;
 
-  if (!filename) {
+  if (!req.file) {
     return res.sendUsageError(400, "Missing file");
   }
 
-  const deleteUploadedFile = () =>
-    deleteFiles(path.resolve(directory, filename)).catch(Logger.error);
+  const { path: filepath, filename, originalname } = req.file;
+
+  const deleteUploadedFile = () => deleteFiles(filepath).catch(Logger.error);
 
   const sendServorError = (error, title) => {
     res.sendServerError(addErrorTitle(error, title));
     deleteUploadedFile();
   };
 
-  if (extension !== "csv") {
+  if (!/\.csv$/i.test(originalname)) {
     res.sendUsageError(400, "Invalid file format : must be csv ");
     deleteUploadedFile();
     return;
   }
 
   let imported = false;
-  parseMoleculesFromCsv(path.resolve(directory, filename))
+  parseMoleculesFromCsv(filepath)
     .then((json) => {
       const data = JSON.parse(json);
 
@@ -113,24 +111,27 @@ function importMolecules(req, _res) {
         const sql = createSqlToInsertAllData(data);
         queryPromise(sql)
           .then(() =>
-            createDir(FILES_DIR_PATH)
+            bindAlreadyExistingImages()
               .then(() =>
-                moveFile(
-                  path.resolve(directory, filename),
-                  path.resolve("files", "molecules", `molecules_${filename}.${extension}`)
-                )
+                createDir(MOLECULES_DIR)
                   .then(() =>
-                    getSortedFiles(FILES_DIR_PATH)
-                      .then((files) =>
-                        deleteFiles(
-                          ...files.slice(MAX_FILE_KEPT).map((file) => `${FILES_DIR_PATH}/${file}`)
-                        )
-                          .then(() =>
-                            res.sendResponse(201, {
-                              message: "File imported",
-                              warnings: [],
-                              imported: true,
-                            })
+                    moveFile(filepath, path.resolve(MOLECULES_DIR, filename))
+                      .then(() =>
+                        getSortedFiles(MOLECULES_DIR)
+                          .then((files) =>
+                            deleteFiles(
+                              ...files
+                                .slice(MAX_FILE_KEPT)
+                                .map((file) => `${MOLECULES_DIR}/${file}`)
+                            )
+                              .then(() =>
+                                res.sendResponse(201, {
+                                  message: "File imported",
+                                  warnings: [],
+                                  imported: true,
+                                })
+                              )
+                              .catch(sendServorError)
                           )
                           .catch(sendServorError)
                       )
@@ -166,8 +167,8 @@ function importMolecules(req, _res) {
 
 /**
  *
- * @api {get} /import/molecules Get the last imported file
- * @apiName GetLastImported
+ * @api {get} /import/molecules Get the last imported molecules
+ * @apiName GetLastImportedMolecules
  * @apiGroup Import
  * @apiPermission LoggedIn 
  * @apiPermission Admin 
@@ -175,12 +176,12 @@ function importMolecules(req, _res) {
  * @apiSuccess (200) {string} url The url to the file
  * @apiSuccess (200) {string} shortpath The path to the file in the server
  * @apiSuccess (200) {string} file The file name
- *
+ * @apiError (404) NoImportedFile No file was previously imported
  *
  * @apiSuccessExample Success-Response:
  *  {
       "url": "https://glowing-octo-guacamole.com/files/molecules/molecules_1612279095021.csv",
-      "shortpath" : "files/molecules/molecules_1612279095021.csv",
+      "shortpath" : "/files/molecules/molecules_1612279095021.csv",
       "file" : "molecules_1612279095021.csv"
     }
  *
@@ -188,12 +189,16 @@ function importMolecules(req, _res) {
  */
 function getLastImportedFile(req, _res) {
   const res = new HttpResponseWrapper(_res);
-  getSortedFiles(path.resolve("files", "molecules"))
+  getSortedFiles(MOLECULES_DIR)
     .then((files) => {
       const last = files[0];
 
+      if (!last) {
+        return res.sendUsageError(404, "Aucune molécule n'a déjà été importée");
+      }
+
       res.sendResponse(200, {
-        url: last ? `${req.protocol}://${req.get("host")}/api/v1/files/molecules/${last}` : null,
+        url: `${req.protocol}://${req.get("host")}/api/v1/files/molecules/${last}`,
         shortpath: `/api/v1/files/molecules/${last}`,
         file: last,
       });
@@ -203,68 +208,16 @@ function getLastImportedFile(req, _res) {
 
 export default { importMolecules, getLastImportedFile };
 
-// ********* INTERNAL FUNCTIONS *********
+// ****** INTERNAL FUNCTIONS ******
 
 /**
- * Move a file
- * @param {string} oldPath
- * @param {string} newPath
- * @return {Promise}
- */
-function moveFile(oldPath, newPath) {
-  return new Promise((resolve, reject) => {
-    fs.rename(oldPath, newPath)
-      .then(resolve)
-      .catch((error) => reject(addErrorTitle(error, "Can't move the file")));
-  });
-}
-
-/**
- * Delete files
- * @param {string} filename
+ * Make sure molecules with an image before import always have one after
  * @returns {Promise}
  */
-function deleteFiles(...filenames) {
+function bindAlreadyExistingImages() {
   return new Promise((resolve, reject) => {
-    Promise.all(
-      filenames.map((filename) => {
-        fs.unlink(filename);
-      })
-    )
-      .then(resolve)
-      .catch((error) => reject(addErrorTitle(error, "Can't delete files")));
-  });
-}
-
-/**
- * Create a directory if it does not exist
- * @param {string} dirname
- * @return {Promise}
- */
-function createDir(dirname) {
-  return new Promise((resolve, reject) => {
-    fs.mkdir(dirname, { recursive: true })
-      .then(resolve)
-      .catch((error) => reject(addErrorTitle(error, "Can't create the directory")));
-  });
-}
-
-/**
- * Get an alphabetically sorted array of files in a directory
- * @param {string} dirpath
- * @return {Promise}
- */
-function getSortedFiles(dirpath) {
-  return new Promise((resolve, reject) => {
-    fs.readdir(dirpath)
-      .then((files) => {
-        resolve(files.sort().reverse());
-      })
-      .catch((error) => {
-        if (error.code === "ENOENT") {
-          resolve([]);
-        }
-        reject(addErrorTitle(error, "Can't read the directory"));
-      });
+    getSortedFiles(path.resolve(FILES_DIR, "images"))
+      .then((images) => bindImagesToMolecules(images).then(() => resolve()))
+      .catch(reject);
   });
 }

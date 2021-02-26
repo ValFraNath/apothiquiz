@@ -7,4 +7,6 @@ rapport-guacamole/
 server/logs/
 server/files/
 uploads/
+server/files-test/
+tmp/
 serviceAccountKey.json
