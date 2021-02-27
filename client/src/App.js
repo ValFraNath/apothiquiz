@@ -83,7 +83,13 @@ export default class App extends Component {
     }
   }
 
+  /**
+   * Install Firebase
+   * Set up push notifications: either display the authorization request or subscribe the user to
+   * the push service if he accepts notifications
+   */
   installFirebase() {
+    // Information available in the firebase console
     firebase.initializeApp({
       apiKey: "AIzaSyCtGrFY1_UOzWAFn1xt1CRPNGZ40JZcaJw",
       authDomain: "guacamole-31ba0.firebaseapp.com",
@@ -122,12 +128,18 @@ export default class App extends Component {
     });
   }
 
+  /**
+   * Display the notification authorization request
+   */
   displayBrowserNotificationPermission() {
     Notification.requestPermission().then(() => {
       this.setState({ requireNotificationPermission: false });
     });
   }
 
+  /**
+   * Send a message to the service-worker to request the new version
+   */
   updateServiceWorker = () => {
     this.setState({ updateRequired: true });
 
