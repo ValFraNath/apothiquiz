@@ -57,12 +57,6 @@ function create(req, _res) {
           createDuelInDatabase(username, opponent, rounds)
             .then((id) => res.sendResponse(201, { id }))
             .catch(res.sendServerError);
-
-          const messageHandler = MessagingHandlerFactory.getInstance();
-          messageHandler.sendNotificationToOneDevice(opponent, {
-            title: "Tu as un nouveau défi à jouer !",
-            body: `${opponent} te propose de jouer un duel.`,
-          });
         })
 
         .catch((error) => {

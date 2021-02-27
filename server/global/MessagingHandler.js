@@ -29,10 +29,8 @@ class MessagingHandler {
   sendNotificationToOneDevice(user, data) {
     this.app
       .then((appInstance) => {
-        console.log("YES");
         this._getUserMessagingToken(user)
           .then((token) => {
-            console.log("TOKEN:", token);
             const message = {
               data: data,
               token: token,
@@ -41,11 +39,15 @@ class MessagingHandler {
             appInstance
               .messaging()
               .send(message)
-              .catch((err) => addErrorTitle(err, "Can't send notification to one device", true));
+              .catch((err) =>
+                console.error(addErrorTitle(err, "Can't send notification to one device", true))
+              );
           })
-          .catch((err) => console.error("BOOM", err));
+          .catch((err) =>
+            console.error(addErrorTitle(err, "Can't get messaging token from user", true))
+          );
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.error(addErrorTitle(err, "Can't get firebase instance", true)));
   }
 
   async _initializeApp() {
