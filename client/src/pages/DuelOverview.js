@@ -4,9 +4,9 @@ import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
 
 import Avatar from "../components/Avatar";
-import Loading from "../components/Loading";
-import PageError from "../components/PageError";
 import DuelResults from "../components/quiz/DuelResults";
+import Loading from "../components/status/Loading";
+import PageError from "../components/status/PageError";
 import { makeGetDuelDetails } from "../utils/queryDuels";
 
 const UserBadge = ({ user, reversed }) => (

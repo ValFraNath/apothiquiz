@@ -5,9 +5,9 @@ import AuthService from "../services/auth.service";
 import queryClient from "./configuredQueryClient";
 
 /**
- * Get a user informations
+ * Get a user information
  * @param {string} username The user name
- * @returns {Promise<Object>} The user informations
+ * @returns {Promise<Object>} The user information
  */
 export function makeGetUserInfo(username) {
   return function () {

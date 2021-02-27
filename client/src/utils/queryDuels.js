@@ -52,7 +52,7 @@ export function getAllDuels() {
 }
 
 /**
- * Get all informations about a duel
+ * Get all information about a duel
  *
  * @param {Number} duelId The duel ID in the database
  * @return // TODO

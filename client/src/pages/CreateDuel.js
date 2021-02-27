@@ -4,8 +4,8 @@ import { useQuery, useQueryClient } from "react-query";
 
 import Avatar from "../components/Avatar";
 import ButtonFullWidth from "../components/buttons/ButtonFullWidth";
-import Loading from "../components/Loading";
-import PageError from "../components/PageError";
+import Loading from "../components/status/Loading";
+import PageError from "../components/status/PageError";
 import { getChallengeableUsers } from "../utils/queryUsers";
 
 const CreateDuel = () => {

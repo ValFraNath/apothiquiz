@@ -4,8 +4,8 @@ import GitInfo from "react-git-info/macro";
 import { useQuery } from "react-query";
 
 import Button from "../components/buttons/ButtonFullWidth";
-import Loading from "../components/Loading";
-import PageError from "../components/PageError";
+import Loading from "../components/status/Loading";
+import PageError from "../components/status/PageError";
 
 const TestConnection = () => {
   function getServerInformations() {
