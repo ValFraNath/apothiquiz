@@ -2,6 +2,8 @@ import { queryPromise } from "../db/database.js";
 import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
 import Logger, { addErrorTitle } from "../global/Logger.js";
 
+import MessagingHandlerFactory from "../global/MessagingHandler.js";
+
 import { createGeneratorOfType, NotEnoughDataError } from "./question.js";
 
 export const MAX_QUESTION_TYPE = 10;
@@ -51,11 +53,17 @@ function create(req, _res) {
         return res.sendUsageError(404, "Opponent not found");
       }
       createRounds()
-        .then((rounds) =>
+        .then((rounds) => {
           createDuelInDatabase(username, opponent, rounds)
             .then((id) => res.sendResponse(201, { id }))
-            .catch(res.sendServerError)
-        )
+            .catch(res.sendServerError);
+
+          const messageHandler = MessagingHandlerFactory.getInstance();
+          messageHandler.sendNotificationToOneDevice(opponent, {
+            title: "Tu as un nouveau défi à jouer !",
+            body: `${opponent} te propose de jouer un duel.`,
+          });
+        })
 
         .catch((error) => {
           if (NotEnoughDataError.isInstance(error)) {
@@ -265,6 +273,13 @@ function play(req, _res) {
             .catch(res.sendServerError)
         )
         .catch(res.sendServerError);
+
+      const MessageHandler = MessagingHandlerFactory.getInstance();
+      console.log(duel);
+      MessageHandler.sendNotificationToOneDevice(duel.opponent, {
+        title: `${username} vient de jouer`,
+        body: "Tu peux jouer le round suivant.",
+      });
     })
     .catch(res.sendServerError);
 }

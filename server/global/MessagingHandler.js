@@ -1,9 +1,11 @@
-import fs from "fs";
+import fs from "fs/promises";
 import path from "path";
 
 import admin from "firebase-admin";
 
-import { addErrorTitle } from "./Logger";
+import { queryPromise } from "../db/database.js";
+
+import { addErrorTitle } from "./Logger.js";
 
 /* Create singleton class */
 const MessagingHandlerFactory = (function () {
@@ -21,31 +23,50 @@ const MessagingHandlerFactory = (function () {
 
 class MessagingHandler {
   constructor() {
-    fs.readFile(
-      path.resolve(fs.realpathSync("."), MessagingHandler.SERVICE_ACCOUNT_KEY_FILE),
-      "utf-8",
-      (err, data) => {
-        if (err) {
-          console.error(addErrorTitle(err, "Can't read service account key file", true));
-          return;
-        }
-        admin.initializeApp({
-          credential: admin.credential.cert(JSON.parse(data)),
-        });
-      }
-    );
+    this.app = this._initializeApp();
   }
 
-  sendNotificationToOneDevice(targetToken, data) {
-    const message = {
-      data: data,
-      token: targetToken,
-    };
+  sendNotificationToOneDevice(user, data) {
+    this.app
+      .then((appInstance) => {
+        console.log("YES");
+        this._getUserMessagingToken(user)
+          .then((token) => {
+            console.log("TOKEN:", token);
+            const message = {
+              data: data,
+              token: token,
+            };
 
-    admin
-      .messaging()
-      .send(message)
-      .catch((err) => addErrorTitle(err, "Can't send notification to one device", true));
+            appInstance
+              .messaging()
+              .send(message)
+              .catch((err) => addErrorTitle(err, "Can't send notification to one device", true));
+          })
+          .catch((err) => console.error("BOOM", err));
+      })
+      .catch((err) => console.log(err));
+  }
+
+  async _initializeApp() {
+    const data = await fs.readFile(
+      path.resolve(process.cwd(), MessagingHandler.SERVICE_ACCOUNT_KEY_FILE),
+      "utf-8"
+    );
+    return admin.initializeApp({
+      credential: admin.credential.cert(JSON.parse(data)),
+    });
+  }
+
+  _getUserMessagingToken(user) {
+    return new Promise((resolve, reject) => {
+      const sql = `SELECT us_messaging_token
+                   FROM user
+                   WHERE us_login = ?`;
+      queryPromise(sql, [user])
+        .then((res) => resolve(res[0].us_messaging_token))
+        .catch((err) => reject(addErrorTitle(err, "Can't get messaging token", true)));
+    });
   }
 }
 
