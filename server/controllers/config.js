@@ -223,21 +223,31 @@ function getNumberOfQuestionTypesAvailable() {
 }
 
 /**
- * If the number of available question types decreases after a new import, the value also
+ * Update the configuration after a new import if needed :
+ * - If the number of available question types decreases, the value is also decreased
+ * - If the current value is 0 and new question types are available, the value is increased
  * @return {Promise}
  */
 export function updateNumberOfRoundsPerDuel() {
   return new Promise((resolve, reject) => {
     getNumberOfQuestionTypesAvailable()
-      .then((number) => {
-        const sql = `UPDATE server_informations \
-                      SET server_informations.value = ${number} \
+      .then((max) => {
+        const sql = ` UPDATE server_informations \
+                      SET server_informations.value = ${max} \
                       WHERE server_informations.key = "config_duel_rounds_per_duel" AND \
-                      server_informations.value > ${number}`;
+                      server_informations.value > ${max};\
+
+                      UPDATE server_informations 
+                      SET server_informations.value = ${Math.min(
+                        max,
+                        DEFAULT_CONFIG.ROUNDS_PER_DUEL
+                      )} 
+                      WHERE server_informations.key = "config_duel_rounds_per_duel" 
+                      AND server_informations.value = 0;`;
 
         queryPromise(sql)
           .then(() => resolve())
-          .catch((error) => addErrorTitle(error, "Can't update configuration"));
+          .catch((error) => reject(addErrorTitle(error, "Can't update configuration")));
       })
       .catch(reject);
   });

@@ -43,6 +43,9 @@ class FileImporter extends Component {
           canConfirm: !this.state.canConfirm,
           imported: res.data.imported,
         });
+        if (res.data.imported && this.props.onImport) {
+          this.props.onImport();
+        }
       })
       .catch((error) => {
         if (error.response?.status === 422) {
@@ -141,6 +144,7 @@ FileImporter.propTypes = {
   endpoint: PropTypes.string.isRequired,
   extensions: PropTypes.arrayOf(PropTypes.string).isRequired,
   multiple: PropTypes.bool.isRequired,
+  onImport: PropTypes.func,
 };
 
 FileImporter.defaultProps = { multiple: false };
@@ -182,7 +186,7 @@ FileDownloader.propTypes = {
   text: PropTypes.string.isRequired,
 };
 
-const Configuration = () => {
+const Configuration = ({ lastImport }) => {
   const [config, setConfig] = useState({
     roundsPerDuel: 0,
     questionsPerRound: 0,
@@ -204,9 +208,12 @@ const Configuration = () => {
   useEffect(() => {
     axios
       .get("/api/v1/config")
-      .then((res) => setConfig(res.data))
+      .then((res) => {
+        setConfig(res.data);
+        setSaved(false);
+      })
       .catch(console.error);
-  }, []);
+  }, [lastImport]);
 
   function saveConfig(e) {
     e.preventDefault();
@@ -263,6 +270,10 @@ const Configuration = () => {
   );
 };
 
+Configuration.propTypes = {
+  lastImport: PropTypes.number.isRequired,
+};
+
 const NumberInput = ({ defaultValue, label, onChange, min, max }) => {
   const [value, setValue] = useState(defaultValue);
 
@@ -300,46 +311,56 @@ NumberInput.propTypes = {
   min: PropTypes.number,
 };
 
-const Admin = () => (
-  <main id="administration">
-    <h1>Espace Administration</h1>
-    <details open>
-      <summary>Importer des molécules</summary>
-      <FileDownloader
-        text="Télécharger les dernières molécules importées"
-        filename="molecules.csv"
-        endpoint="/api/v1/import/molecules"
-      />
-      <FileImporter endpoint="/api/v1/import/molecules" extensions={["csv"]} />
-    </details>
-    <details>
-      <summary>Importer des utilisateurs</summary>
-      <FileDownloader
-        text="Télécharger les derniers utilisateurs importés"
-        filename="utilisateurs.csv"
-        endpoint="/api/v1/import/users"
-      />
-      <FileImporter endpoint="/api/v1/import/users" extensions={["csv"]} />
-    </details>
-    <details>
-      <summary>Importer des images</summary>
-      <FileDownloader
-        text="Télécharger les dernières images importées"
-        filename="images-molecules.csv"
-        endpoint="/api/v1/import/images"
-      />
-      <FileImporter
-        endpoint="/api/v1/import/images"
-        multiple={true}
-        extensions={["png", "jpeg", "jpg", "svg"]}
-      />
-    </details>
-    <details>
-      <summary>Configuration</summary>
-      <Configuration />
-    </details>
-  </main>
-);
+const Admin = () => {
+  // used to update the configuration component after a new import
+  const [lastImport, setLastImport] = useState(Date.now());
+
+  return (
+    <main id="administration">
+      <h1>Espace Administration</h1>
+      <details open>
+        <summary>Importer des molécules</summary>
+        <FileDownloader
+          text="Télécharger les dernières molécules importées"
+          filename="molecules.csv"
+          endpoint="/api/v1/import/molecules"
+        />
+        <FileImporter
+          endpoint="/api/v1/import/molecules"
+          extensions={["csv"]}
+          onImport={() => setLastImport(Date.now())}
+        />
+      </details>
+      <details>
+        <summary>Importer des utilisateurs</summary>
+        <FileDownloader
+          text="Télécharger les derniers utilisateurs importés"
+          filename="utilisateurs.csv"
+          endpoint="/api/v1/import/users"
+        />
+        <FileImporter endpoint="/api/v1/import/users" extensions={["csv"]} />
+      </details>
+      <details>
+        <summary>Importer des images</summary>
+        <FileDownloader
+          text="Télécharger les dernières images importées"
+          filename="images-molecules.csv"
+          endpoint="/api/v1/import/images"
+        />
+        <FileImporter
+          endpoint="/api/v1/import/images"
+          multiple={true}
+          extensions={["png", "jpeg", "jpg", "svg"]}
+          onImport={() => setLastImport(Date.now())}
+        />
+      </details>
+      <details>
+        <summary>Configuration</summary>
+        <Configuration lastImport={lastImport} />
+      </details>
+    </main>
+  );
+};
 
 export default Admin;
 
