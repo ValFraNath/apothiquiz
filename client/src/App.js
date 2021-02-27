@@ -103,7 +103,17 @@ export default class App extends Component {
         })
         .then((currentToken) => {
           if (currentToken) {
-            console.info(`User token: ${currentToken}`);
+            const savedToken = localStorage.getItem("messagingToken");
+            if (savedToken !== currentToken) {
+              axios
+                .put("/api/v1/messaging/token/add", {
+                  user: this.state.user,
+                  messagingToken: currentToken,
+                })
+                .catch((err) => console.error(err));
+            }
+
+            localStorage.setItem("messagingToken", currentToken);
           } else {
             this.displayBrowserNotificationPermission();
           }
