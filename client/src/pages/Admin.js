@@ -235,7 +235,7 @@ const Configuration = ({ lastImport }) => {
     <form className="configuration" onSubmit={saveConfig}>
       {config.roundsPerDuel.max < 1 ? (
         <p className="notEnoughData">
-          Il n'y a pas assez de données dans la base de données pour générer des duels{" "}
+          Il n'y a pas assez de données dans la base de données pour générer des duels
         </p>
       ) : (
         <>
