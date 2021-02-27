@@ -1,6 +1,7 @@
 import { CaretSortIcon } from "@modulz/radix-icons";
 import * as Collapsible from "@radix-ui/react-collapsible";
 
+import { PropTypes } from "prop-types";
 import React, { useState } from "react";
 import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
@@ -9,7 +10,7 @@ import Avatar from "../components/Avatar";
 import AvatarChooser from "../components/AvatarChooser";
 import AuthService from "../services/auth.service";
 
-const Profile = () => {
+const Profile = ({ history }) => {
   const [isInitialized, setIsInitialized] = useState(false);
   const [avatar, setAvatar] = useState();
   const { data, isPlaceholderData } = useQuery(["user", "me"]);
@@ -58,7 +59,7 @@ const Profile = () => {
         className="btn"
         onClick={() => {
           AuthService.logout();
-          document.location.replace("/");
+          history.push("/");
         }}
       >
         Me déconnecter
@@ -69,6 +70,10 @@ const Profile = () => {
       </Link>
     </main>
   );
+};
+
+Profile.propTypes = {
+  history: PropTypes.object.isRequired,
 };
 
 export default Profile;

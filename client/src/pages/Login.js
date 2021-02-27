@@ -1,10 +1,12 @@
+import { PropTypes } from "prop-types";
 import React, { Component } from "react";
+import { Redirect } from "react-router-dom";
 
 import AuthService from "../services/auth.service";
 
 class Login extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       isLogged: true,
     };
@@ -19,7 +21,7 @@ class Login extends Component {
     AuthService.login(pseudoInput.value.trim(), passwordInput.value)
       .then((user) => {
         console.info(`User ${user} successfully logged in`);
-        document.location.replace("/homepage");
+        this.props.history.push("/homepage");
       })
       .catch((error) => {
         console.error(`An error has occurred : ${error}`);
@@ -28,19 +30,19 @@ class Login extends Component {
   }
 
   componentDidMount() {
-    if (AuthService.getCurrentUser() !== null) {
-      document.location.replace("/homepage");
-    } else {
-      this.setState({
-        isLogged: false,
-      });
-    }
+    this.setState({
+      isLogged: false,
+    });
   }
 
   render() {
+    if (AuthService.getCurrentUser() !== null) {
+      return <Redirect to="/homepage" />;
+    }
+
     return (
       this.state.isLogged || (
-        <main id={"login"}>
+        <main id="login">
           <h1>Connexion</h1>
           <h2>(Page temporaire en attendant le CAS)</h2>
           <details>
@@ -52,9 +54,9 @@ class Login extends Component {
             </ul>
           </details>
           <form onSubmit={this.handleFormSubmit}>
-            <input type={"text"} id={"pseudoInput"} placeholder="Nom d'utilisateur" required />
-            <input type={"password"} id={"passwordInput"} placeholder="Mot de passe" required />
-            <input type={"submit"} value="Se connecter" />
+            <input type="text" id="pseudoInput" placeholder="Nom d'utilisateur" required />
+            <input type="password" id="passwordInput" placeholder="Mot de passe" required />
+            <input type="submit" value="Se connecter" />
           </form>
 
           {this.state.error && <p className="error">{this.state.error}</p>}
@@ -63,5 +65,9 @@ class Login extends Component {
     );
   }
 }
+
+Login.propTypes = {
+  history: PropTypes.object.isRequired,
+};
 
 export default Login;

@@ -1,4 +1,5 @@
 import axios from "axios";
+import { PropTypes } from "prop-types";
 import React, { useState } from "react";
 import { useQuery, useQueryClient } from "react-query";
 
@@ -8,7 +9,7 @@ import Loading from "../components/status/Loading";
 import PageError from "../components/status/PageError";
 import { getChallengeableUsers } from "../utils/queryUsers";
 
-const DuelCreate = () => {
+const DuelCreate = ({ history }) => {
   const [searchRegex, setSearchRegex] = useState(null);
   const [selected, setSelected] = useState(null);
   const queryClient = useQueryClient();
@@ -36,9 +37,8 @@ const DuelCreate = () => {
         opponent,
       })
       .then((res) => {
-        console.log(queryClient)
         queryClient.invalidateQueries(["users", "challengeable"]);
-        document.location.replace(`/duel/${res.data.id}`);
+        history.push(`/duel/${res.data.id}`);
       })
       .catch((err) => console.error(err));
   }
@@ -86,6 +86,10 @@ const DuelCreate = () => {
       </section>
     </main>
   );
+};
+
+DuelCreate.propTypes = {
+  history: PropTypes.object.isRequired,
 };
 
 export default DuelCreate;
