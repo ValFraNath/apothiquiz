@@ -1,18 +1,47 @@
+import fs from "fs";
+import path from "path";
+
 import admin from "firebase-admin";
 
-import { queryPromise } from "../db/database";
-import saKey from "../files/serviceAccountKey.json";
-import HttpResponseWrapper from "../global/HttpResponseWrapper";
-import { addErrorTitle } from "../global/Logger";
+import { queryPromise } from "../db/database.js";
+import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
+import { addErrorTitle } from "../global/Logger.js";
 
 /* Initialize firebase */
-admin.initializeApp({
-  credential: admin.credential.cert(saKey),
-});
+fs.readFile(
+  path.resolve(fs.realpathSync("."), "./files/serviceAccountKey.json"),
+  "utf-8",
+  (err, data) => {
+    if (err) {
+      console.error("Can't read service account file.", err);
+      return;
+    }
+    admin.initializeApp({
+      credential: admin.credential.cert(JSON.parse(data)),
+    });
+  }
+);
 
 /**
  *
- * @api {patch} /messaging/token/
+ * @api {get} /messaging
+ * @apiName GetUsersRegistratedPushUsers
+ *
+ * @apiSuccess (200) {array} List of users token
+ *
+ * @apiUse ErrorServer
+ */
+function getUsersRegistratedPush(req, _res) {
+  const res = new HttpResponseWrapper(_res);
+
+  getAllUsersRegistrated()
+    .then((data) => res.sendResponse(200, data))
+    .catch(res.sendServerError);
+}
+
+/**
+ *
+ * @api {put} /messaging/token/
  * @apiName SaveUserToken
  * @apiGroup Messaging
  *
@@ -30,8 +59,9 @@ admin.initializeApp({
  * @apiUse ErrorServer
  * @apiError (400) InvalidUser The user is not valid
  * @apiError (400) InvalidToken The token is not valid
+ * @apiError (404) NotFound User not found
  */
-export function updateToken(req, _res) {
+function updateToken(req, _res) {
   const res = new HttpResponseWrapper(_res);
 
   const { user, messagingToken } = req.body;
@@ -43,12 +73,18 @@ export function updateToken(req, _res) {
     return res.sendUsageError(400, "Missing messaging token");
   }
 
-  saveMessagingTokenInDatabase()
-    .then((res) => console.log("RES -->", res))
+  saveMessagingTokenInDatabase(user, messagingToken)
+    .then((isUpdated) => {
+      if (isUpdated) {
+        res.sendResponse(200, messagingToken);
+      } else {
+        res.sendUsageError(404, "User not found");
+      }
+    })
     .catch(res.sendServerError);
 }
 
-export function sendNotificationToOneDevice(targetToken, data) {
+function sendNotificationToOneDevice(targetToken, data) {
   const message = {
     data: data,
     token: targetToken,
@@ -60,6 +96,8 @@ export function sendNotificationToOneDevice(targetToken, data) {
     .catch((err) => console.error("Can't send notification to a single device", err));
 }
 
+export default { updateToken, getUsersRegistratedPush, sendNotificationToOneDevice };
+
 // ***** INTERNAL FUNCTIONS *****
 
 function saveMessagingTokenInDatabase(user, messagingToken) {
@@ -68,7 +106,24 @@ function saveMessagingTokenInDatabase(user, messagingToken) {
                  SET us_messaging_token = ?
                  WHERE us_login = ?`;
     queryPromise(sql, [messagingToken, user])
-      .then((res) => resolve(res))
+      .then((res) => {
+        if (res.affectedRows === 0) {
+          resolve(false);
+        } else {
+          resolve(true);
+        }
+      })
       .catch((error) => reject(addErrorTitle(error, "Can't update messaging token", true)));
+  });
+}
+
+function getAllUsersRegistrated() {
+  return new Promise((resolve, reject) => {
+    const sql = `SELECT us_messaging_token
+                 FROM user
+                 WHERE us_messaging_token IS NOT NULL`;
+    queryPromise(sql)
+      .then((res) => resolve(res.map((value) => value.us_messaging_token)))
+      .catch((error) => reject(addErrorTitle(error, "Can't get all registrated push users", true)));
   });
 }

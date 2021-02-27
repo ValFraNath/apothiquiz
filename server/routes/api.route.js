@@ -3,6 +3,7 @@ import express from "express";
 import ApiController from "../controllers/api.js";
 import DuelController from "../controllers/duels.js";
 import ImagesImporterController from "../controllers/imagesImporter.js";
+import MessagingController from "../controllers/messaging.js";
 import MoleculesImporterController from "../controllers/moleculesImporter.js";
 import QuestionController from "../controllers/question.js";
 import UserController from "../controllers/user.js";
@@ -85,5 +86,9 @@ apiRouter.get(
   createMulter(),
   UsersImporterController.getLastImportedUsers
 );
+
+apiRouter.put("/messaging/token", authenticationMiddleware, MessagingController.updateToken);
+
+apiRouter.get("/messaging", authenticationMiddleware, MessagingController.getUsersRegistratedPush);
 
 export default apiRouter;
