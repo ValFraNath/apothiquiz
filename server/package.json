@@ -7,6 +7,7 @@
   "scripts": {
     "test": "NODE_ENV=test DB_DATABASE=gogTest PORT=5036 mocha \"test/**/*.test.js\" --exit",
     "start": "node .",
+    "start:watch": "nodemon .",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "format": "prettier --check .",
@@ -100,6 +101,7 @@
     "eslint": "^7.17.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-promise": "^4.3.1",
+    "nodemon": "^2.0.7",
     "prettier": "^2.1.2"
   }
 }

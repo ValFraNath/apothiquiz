@@ -1,11 +1,13 @@
-import axios from "axios";
 import { PropTypes } from "prop-types";
-import React, { Component } from "react";
+import React, { useMemo } from "react";
+import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
 
 import Avatar from "../components/Avatar";
 import DuelResults from "../components/quiz/DuelResults";
-import AuthService from "../services/auth.service";
+import Loading from "../components/status/Loading";
+import PageError from "../components/status/PageError";
+import { makeGetDuelDetails } from "../utils/queryDuels";
 
 const UserBadge = ({ user, reversed }) => (
   <div className="badge">
@@ -30,146 +32,103 @@ const ResultBricks = ({ user, answers }) => (
   </div>
 );
 
-ResultBricks.defaultProps = {
-  user: { pseudo: "Pseudo" },
-  answers: Array(5).fill("undefined"),
-};
-
 ResultBricks.propTypes = {
   user: PropTypes.object,
-  answers: PropTypes.array,
+  answers: PropTypes.arrayOf(PropTypes.bool),
 };
 
-class DuelOverview extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      currentUserScore: "-",
-      opponentScore: "-",
-      currentUser: undefined,
-      opponent: undefined,
-      inProgress: false,
-      currentUserCanPlay: false,
+/**
+ * Transform an array of rounds into an array of answers
+ * For each rounds, answers are given for each user with true, false or undefined
+ *
+ * @param {Array<Array<Object>>}   rounds
+ *
+ * @return {Array<Array<Boolean>>}
+ */
+function roundsToAnswers(rounds) {
+  if (rounds === undefined) {
+    return {
       answers: [],
+      userCanPlay: false,
     };
   }
 
-  componentDidMount() {
-    const duelID = this.props.match.params.id;
+  const parseAnswer = (question, answer) => {
+    if (answer === undefined) return undefined;
+    return answer === question.goodAnswer;
+  };
 
-    axios
-      .get(`/api/v1/duels/${duelID}`)
-      .then((res) => {
-        this.parseDuelInfo(res.data);
+  const playedRounds = rounds.filter((round) => round[0].subject !== undefined);
 
-        // Will be replaced by cache later
-        const { opponent } = res.data;
-        const currentUser = AuthService.getCurrentUser();
-        axios
-          .post("/api/v1/users/", [currentUser.pseudo, opponent])
-          .then((res) => {
-            this.setState({
-              currentUser: res.data[currentUser.pseudo],
-              opponent: res.data[opponent],
-            });
-          })
-          .catch((err) => console.error(err));
-      })
-      .catch((err) => {
-        console.error("Error retrieving the duel", err);
-        document.location.replace("/homepage");
-      });
-  }
+  const answers = playedRounds.map((round) => {
+    const user = round.map((question) => parseAnswer(question, question?.userAnswer));
+    const opponent = round.map((questions) => parseAnswer(questions, questions?.opponentAnswer));
 
-  parseDuelInfo(data) {
-    function isAnswerCorrect(question, answer) {
-      if (answer === undefined) return undefined;
-      return answer === question.goodAnswer;
-    }
+    return { title: round[0].title, user, opponent };
+  });
 
-    // Transform the rounds into an array of answers
-    const playedRounds = data.rounds.filter((round) => round[0].subject !== undefined);
-
-    const answers = playedRounds.map((round) => {
-      const userAnswers = round.map((question) => isAnswerCorrect(question, question?.userAnswer));
-
-      const opponentAnswers = round.map((question) =>
-        isAnswerCorrect(question, question?.opponentAnswer)
-      );
-
-      return { title: round[0].title, userAnswers, opponentAnswers };
-    });
-
-    // Can the current user play the next round?
-    const answersToLastRound = answers[answers.length - 1].userAnswers;
-    const currentUserCanPlay = answersToLastRound[answersToLastRound.length - 1] === undefined;
-
-    // Saving informations in the state
-    this.setState({
-      answers,
-      currentUserScore: data.userScore,
-      opponentScore: data.opponentScore,
-      // eslint-disable-next-line eqeqeq
-      inProgress: data.inProgress == true,
-      currentUserCanPlay,
-    });
-  }
-
-  render() {
-    const {
-      currentUserScore,
-      opponentScore,
-      currentUser,
-      opponent,
-      answers,
-      inProgress,
-      currentUserCanPlay,
-    } = this.state;
-
-    return (
-      <main id="duel-overview">
-        <header>
-          <UserBadge user={currentUser} reversed={true} />
-          <span>
-            {currentUserScore} — {opponentScore}
-          </span>
-          <UserBadge user={opponent} />
-        </header>
-
-        {inProgress ? (
-          <Link
-            to={`/duel/${this.props.match.params.id}/play`}
-            className="btn"
-            disabled={!currentUserCanPlay}
-          >
-            {currentUserCanPlay ? `Jouer le tour ${answers.length}` : "En attente de l'adversaire"}
-          </Link>
-        ) : (
-          // Trick waiting for the login screen
-          currentUser && (
-            <DuelResults
-              user={currentUser}
-              opponent={opponent}
-              score={currentUserScore}
-              opponentScore={opponentScore}
-            />
-          )
-        )}
-
-        {answers.map((answer, index) => (
-          <section key={index}>
-            <h3>
-              Tour {index + 1} : <span>{answer.title}</span>
-            </h3>
-            <ResultBricks user={currentUser} answers={answer.userAnswers} />
-            <ResultBricks user={opponent} answers={answer.opponentAnswers} />
-          </section>
-        ))}
-      </main>
-    );
-  }
+  return answers;
 }
+
+const DuelOverview = ({
+  match: {
+    params: { id: duelId },
+  },
+}) => {
+  const { isLoading, data, isError } = useQuery(["duel", duelId], makeGetDuelDetails(duelId));
+  const { data: currentUser } = useQuery(["user", "me"]);
+
+  const answers = useMemo(() => roundsToAnswers(data?.rounds), [data?.rounds]);
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  if (isError) {
+    return <PageError message="Échec du chargement du duel" />;
+  }
+
+  const { currentUserScore, opponentScore, opponent, inProgress } = data;
+
+  // Can the current user play the current round?
+  const answersToLastRound = answers[answers.length - 1].user;
+  const userCanPlay = answersToLastRound[answersToLastRound.length - 1] === undefined;
+
+  return (
+    <main id="duel-overview">
+      <header>
+        <UserBadge user={currentUser} reversed={true} />
+        <span>
+          {currentUserScore} — {opponentScore}
+        </span>
+        <UserBadge user={opponent} reversed={false} />
+      </header>
+
+      {inProgress ? (
+        <Link to={`/duel/${duelId}/play`} className="btn" disabled={!userCanPlay}>
+          {userCanPlay ? `Jouer le tour ${answers.length}` : "En attente de l'adversaire"}
+        </Link>
+      ) : (
+        <DuelResults
+          user={currentUser}
+          opponent={opponent}
+          score={currentUserScore}
+          opponentScore={opponentScore}
+        />
+      )}
+
+      {answers.map((answer, index) => (
+        <section key={index}>
+          <h3>
+            Tour {index + 1} : <span>{answer.title}</span>
+          </h3>
+          <ResultBricks user={currentUser} answers={answer.user} />
+          <ResultBricks user={opponent} answers={answer.opponent} />
+        </section>
+      ))}
+    </main>
+  );
+};
 
 DuelOverview.propTypes = {
   match: PropTypes.object.isRequired,
