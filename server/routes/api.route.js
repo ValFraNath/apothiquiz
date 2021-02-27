@@ -87,8 +87,10 @@ apiRouter.get(
   UsersImporterController.getLastImportedUsers
 );
 
-apiRouter.put("/messaging/token", authenticationMiddleware, MessagingController.updateToken);
-
 apiRouter.get("/messaging", authenticationMiddleware, MessagingController.getUsersRegistratedPush);
+
+apiRouter.put("/messaging/token/add", authenticationMiddleware, MessagingController.updateToken);
+
+apiRouter.put("/messaging/token/remove", authenticationMiddleware, MessagingController.removeToken);
 
 export default apiRouter;

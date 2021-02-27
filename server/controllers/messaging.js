@@ -41,13 +41,13 @@ function getUsersRegistratedPush(req, _res) {
 
 /**
  *
- * @api {put} /messaging/token/
+ * @api {put} /messaging/token/add
  * @apiName SaveUserToken
  * @apiGroup Messaging
  *
  * @apiParam {string} messaging The messaging token
  *
- * @apiSuccess (200) {string} New messaging token
+ * @apiSuccess (200) {object} New messaging token
  *
  * @apiParamExample {object} Request-Example:
  * {
@@ -65,7 +65,6 @@ function updateToken(req, _res) {
   const res = new HttpResponseWrapper(_res);
 
   const { user, messagingToken } = req.body;
-
   if (!user) {
     return res.sendUsageError(400, "Missing user");
   }
@@ -76,7 +75,32 @@ function updateToken(req, _res) {
   saveMessagingTokenInDatabase(user, messagingToken)
     .then((isUpdated) => {
       if (isUpdated) {
-        res.sendResponse(200, messagingToken);
+        res.sendResponse(200, {
+          user: user,
+          messagingToken: messagingToken,
+        });
+      } else {
+        res.sendUsageError(404, "User not found");
+      }
+    })
+    .catch(res.sendServerError);
+}
+
+function removeToken(req, _res) {
+  const res = new HttpResponseWrapper(_res);
+
+  const { user } = req.body;
+  if (!user) {
+    return res.sendUsageError(400, "Missing user");
+  }
+
+  saveMessagingTokenInDatabase(user)
+    .then((isUpdated) => {
+      if (isUpdated) {
+        res.sendResponse(200, {
+          user: user,
+          messagingToken: "NULL",
+        });
       } else {
         res.sendUsageError(404, "User not found");
       }
@@ -96,16 +120,17 @@ function sendNotificationToOneDevice(targetToken, data) {
     .catch((err) => console.error("Can't send notification to a single device", err));
 }
 
-export default { updateToken, getUsersRegistratedPush, sendNotificationToOneDevice };
+export default { updateToken, removeToken, getUsersRegistratedPush, sendNotificationToOneDevice };
 
 // ***** INTERNAL FUNCTIONS *****
 
-function saveMessagingTokenInDatabase(user, messagingToken) {
+function saveMessagingTokenInDatabase(user, messagingToken = undefined) {
   return new Promise((resolve, reject) => {
     const sql = `UPDATE user
-                 SET us_messaging_token = ?
+                 SET us_messaging_token = ${messagingToken ? "?" : "NULL"}
                  WHERE us_login = ?`;
-    queryPromise(sql, [messagingToken, user])
+    const arrayOfValues = messagingToken ? [messagingToken, user] : [user];
+    queryPromise(sql, arrayOfValues)
       .then((res) => {
         if (res.affectedRows === 0) {
           resolve(false);
