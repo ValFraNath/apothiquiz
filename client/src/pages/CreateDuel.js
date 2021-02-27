@@ -33,7 +33,7 @@ const CreateDuel = () => {
   function createDuel(opponent) {
     axios
       .post("/api/v1/duels/new", {
-        opponent: opponent,
+        opponent,
       })
       .then((res) => {
         queryClient.invalidate(["users", "challengeable"]);

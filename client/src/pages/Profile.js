@@ -10,7 +10,7 @@ import AvatarChooser from "../components/AvatarChooser";
 import AuthService from "../services/auth.service";
 
 const Profile = () => {
-  const [initialised, setInitialised] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
   const [avatar, setAvatar] = useState();
   const { data, isPlaceholderData } = useQuery(["user", "me"]);
 
@@ -18,9 +18,9 @@ const Profile = () => {
     return <span>Chargement</span>;
   }
 
-  if (!initialised) {
+  if (!isInitialized) {
     setAvatar(data.avatar);
-    setInitialised(true);
+    setIsInitialized(true);
   }
 
   function updateValue(valueName, newValue) {
