@@ -8,7 +8,7 @@ import Loading from "../components/status/Loading";
 import PageError from "../components/status/PageError";
 import { getChallengeableUsers } from "../utils/queryUsers";
 
-const CreateDuel = () => {
+const DuelCreate = () => {
   const [searchRegex, setSearchRegex] = useState(null);
   const [selected, setSelected] = useState(null);
   const queryClient = useQueryClient();
@@ -36,7 +36,8 @@ const CreateDuel = () => {
         opponent,
       })
       .then((res) => {
-        queryClient.invalidate(["users", "challengeable"]);
+        console.log(queryClient)
+        queryClient.invalidateQueries(["users", "challengeable"]);
         document.location.replace(`/duel/${res.data.id}`);
       })
       .catch((err) => console.error(err));
@@ -87,4 +88,4 @@ const CreateDuel = () => {
   );
 };
 
-export default CreateDuel;
+export default DuelCreate;
