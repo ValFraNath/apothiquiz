@@ -94,6 +94,7 @@ const TopBar = ({ username }) => (
     <OfflineBanner />
   </nav>
 );
+
 TopBar.propTypes = {
   username: PropTypes.string,
 };
