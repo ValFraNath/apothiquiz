@@ -1,26 +1,28 @@
 import { ReloadIcon } from "@modulz/radix-icons";
 import axios from "axios";
-import React, { Component } from "react";
+import React, { lazy, Suspense, Component } from "react";
 import { QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 import "./styles/styles.scss";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Loading from "./components/status/Loading";
 import TopBar from "./components/system/TopBar";
-import About from "./pages/About";
-import Admin from "./pages/Admin";
-import CreateDuel from "./pages/CreateDuel";
-import Duel from "./pages/Duel";
-import DuelOverview from "./pages/DuelOverview";
 import HomePage from "./pages/HomePage";
-import Login from "./pages/Login";
 import Menu from "./pages/Menu";
-import Profile from "./pages/Profile";
-import Train from "./pages/Train";
 import AuthService from "./services/auth.service";
 import * as serviceWorker from "./serviceWorker";
 import queryClient from "./utils/configuredQueryClient";
+
+const About = lazy(() => import("./pages/About"));
+const Admin = lazy(() => import("./pages/Admin"));
+const CreateDuel = lazy(() => import("./pages/CreateDuel"));
+const Duel = lazy(() => import("./pages/Duel"));
+const DuelOverview = lazy(() => import("./pages/DuelOverview"));
+const Login = lazy(() => import("./pages/Login"));
+const Profile = lazy(() => import("./pages/Profile"));
+const Train = lazy(() => import("./pages/Train"));
 
 /**
  * Set up the authorization header in all request if the user is logged in
@@ -101,20 +103,22 @@ export default class App extends Component {
             </button>
           )}
 
-          <Switch>
-            <Route path="/" exact Menu>
-              <Menu user={this.state.user} installPromptEvent={installPromptEvent} />
-            </Route>
-            <Route path="/about" exact component={About} />
-            <Route path="/train" exact component={Train} />
-            <Route path="/login" exact component={Login} />
-            <ProtectedRoute path="/profile" exact component={Profile} />
-            <ProtectedRoute path="/homepage" exact component={HomePage} />
-            <ProtectedRoute path="/createduel" exact component={CreateDuel} />
-            <ProtectedRoute path="/duel/:id" exact component={DuelOverview} />
-            <ProtectedRoute path="/duel/:id/play" exact component={Duel} />
-            <ProtectedRoute path="/admin" exact component={Admin} />
-          </Switch>
+          <Suspense fallback={<Loading />}>
+            <Switch>
+              <Route path="/" exact>
+                <Menu user={this.state.user} installPromptEvent={installPromptEvent} />
+              </Route>
+              <Route path="/about" exact component={About} />
+              <Route path="/train" exact component={Train} />
+              <Route path="/login" exact component={Login} />
+              <ProtectedRoute path="/profile" exact component={Profile} />
+              <ProtectedRoute path="/homepage" exact component={HomePage} />
+              <ProtectedRoute path="/createduel" exact component={CreateDuel} />
+              <ProtectedRoute path="/duel/:id" exact component={DuelOverview} />
+              <ProtectedRoute path="/duel/:id/play" exact component={Duel} />
+              <ProtectedRoute path="/admin" exact component={Admin} />
+            </Switch>
+          </Suspense>
         </Router>
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
