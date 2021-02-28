@@ -73,13 +73,13 @@ apiRouter.post(
   "/import/images",
   authenticationMiddleware,
   createMulter(true),
-  ImagesImporterController.importImages
+  HttpControllerWrapper(ImagesImporterController.importImages)
 );
 
 apiRouter.get(
   "/import/images",
   authenticationMiddleware,
-  ImagesImporterController.getLastImportedFile
+  HttpControllerWrapper(ImagesImporterController.getLastImportedFile)
 );
 
 apiRouter.post(
