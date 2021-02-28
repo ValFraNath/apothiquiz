@@ -1,7 +1,5 @@
 import { ReloadIcon, BellIcon } from "@modulz/radix-icons";
 import axios from "axios";
-import firebase from "firebase/app";
-import "firebase/messaging";
 import React, { Component } from "react";
 import { QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
@@ -25,6 +23,7 @@ import Train from "./pages/Train";
 import AuthService from "./services/auth.service";
 import * as serviceWorker from "./serviceWorker";
 import queryClient from "./utils/configuredQueryClient";
+import * as Messaging from "./utils/messaging";
 
 /**
  * Set up the authorization header in all request if the user is logged in
@@ -96,46 +95,11 @@ export default class App extends Component {
   }
 
   /**
-   * Install Firebase
-   * Set up push notifications: either display the authorization request or subscribe the user to
-   * the push service if he accepts notifications
+   * Install Firebase and save token
    */
   installFirebase = () => {
-    // Information available in the firebase console
-    firebase.initializeApp({
-      apiKey: "AIzaSyCtGrFY1_UOzWAFn1xt1CRPNGZ40JZcaJw",
-      authDomain: "guacamole-31ba0.firebaseapp.com",
-      projectId: "guacamole-31ba0",
-      storageBucket: "guacamole-31ba0.appspot.com",
-      messagingSenderId: "46062321146",
-      appId: "1:46062321146:web:bcd9f8b8caf30c2aacf843",
-    });
-
-    const messaging = firebase.messaging();
-    navigator.serviceWorker.getRegistration().then((reg) => {
-      messaging
-        .getToken({
-          vapidKey:
-            "BFW2K4Eu0CFRDsJFJTVrdXbwalM7iIiL4t_BVzbgqPik9WJvHUgzedh5baLT0ukRsm1WG_BGT7A_5KygJ_WLfYs",
-          serviceWorkerRegistration: reg,
-        })
-        .then((currentToken) => {
-          if (currentToken) {
-            const savedToken = localStorage.getItem("messagingToken");
-            if (savedToken !== currentToken) {
-              axios
-                .put("/api/v1/messaging/token/add", {
-                  user: this.state.user,
-                  messagingToken: currentToken,
-                })
-                .catch((err) => console.error(err));
-            }
-
-            localStorage.setItem("messagingToken", currentToken);
-          }
-        })
-        .catch((err) => console.error("Can't retrieve token.", err));
-    });
+    Messaging.installFirebase();
+    Messaging.saveToken();
   };
 
   /**
