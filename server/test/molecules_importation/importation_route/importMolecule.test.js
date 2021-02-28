@@ -17,7 +17,8 @@ const __dirname = path.resolve("test", "molecules_importation", "importation_rou
 // TODO test import with non admin user
 describe("Import molecule", () => {
   let mytoken;
-  before("Insert users data & get token", (done) => {
+  before("Insert users data & get token", function (done) {
+    this.timeout(10000);
     forceTruncateTables("user").then(() =>
       insertData("users.sql").then(async () => {
         const res = await requestAPI("users/login", {

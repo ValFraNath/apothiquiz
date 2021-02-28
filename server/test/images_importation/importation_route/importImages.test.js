@@ -24,7 +24,8 @@ describe("Images importation", () => {
   let token;
   const tempFiles = [];
 
-  before("Get token", (done) => {
+  before("Get token", function (done) {
+    this.timeout(10000);
     forceTruncateTables("user").then(() =>
       insertData("users.sql").then(() =>
         getToken("fpoguet").then((t) => {

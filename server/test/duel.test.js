@@ -35,7 +35,8 @@ describe("Duels", () => {
   });
 
   describe("Without data", () => {
-    before("Clear data", (done) => {
+    before("Clear data", function (done) {
+      this.timeout(10000);
       forceTruncateTables("molecule").then(done);
     });
     it("Not enough data", async () => {
@@ -50,7 +51,8 @@ describe("Duels", () => {
   });
 
   describe("Default", () => {
-    before("Clear duels & results", (done) => {
+    before("Clear duels & results", function (done) {
+      this.timeout(10000);
       forceTruncateTables(
         "duel",
         "results",
@@ -127,7 +129,8 @@ describe("Duels", () => {
     describe("Mocked rounds", () => {
       const ids = [];
 
-      before("Cleat duels", (done) => {
+      before("Cleat duels", function (done) {
+        this.timeout(10000);
         forceTruncateTables("duel", "results").then(done);
       });
 
