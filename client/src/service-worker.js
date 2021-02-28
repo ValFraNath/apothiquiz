@@ -99,11 +99,10 @@ self.addEventListener("message", (e) => {
 });
 
 /**
- * Push message handling
+ * Push message handling (app on background)
  */
 const messaging = firebase.messaging();
 messaging.onBackgroundMessage((payload) => {
-  console.log(payload);
   if (!payload.data.title) {
     console.error("Can't display notification without title");
     return;

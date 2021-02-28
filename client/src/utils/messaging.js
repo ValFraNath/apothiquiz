@@ -4,7 +4,6 @@ import "firebase/messaging";
 
 class MessagingHandler {
   constructor() {
-    console.log("create");
     // Information available in the firebase console
     this.app = firebase.initializeApp({
       apiKey: "AIzaSyCtGrFY1_UOzWAFn1xt1CRPNGZ40JZcaJw",
@@ -14,6 +13,10 @@ class MessagingHandler {
       messagingSenderId: "46062321146",
       appId: "1:46062321146:web:bcd9f8b8caf30c2aacf843",
     });
+  }
+
+  getMessaging() {
+    return this.app.messaging();
   }
 
   saveToken() {

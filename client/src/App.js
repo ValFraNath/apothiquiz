@@ -52,10 +52,7 @@ export default class App extends Component {
       installPromptEvent: null,
       requireNotificationPermission: false,
       user: user,
-      foregroundNotification: {
-        title: "Nouveau duel",
-        body: "A toi de jouer",
-      },
+      foregroundNotification: null,
     };
   }
 
@@ -101,6 +98,17 @@ export default class App extends Component {
         messaging.removeToken();
       }
     }
+
+    // Listen for notifications (in foreground)
+    messaging.getMessaging().onMessage((payload) => {
+      if (!payload.data.title) {
+        console.error("Can't display notification without title");
+        return;
+      }
+
+      const { title, body } = payload.data;
+      this.setState({ foregroundNotification: { title: title, body: body } });
+    });
   }
 
   /**
