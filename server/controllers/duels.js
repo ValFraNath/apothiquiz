@@ -268,6 +268,8 @@ function play(req, _res) {
               let messagingPayload = {
                 title: `${username} vient de jouer !`,
                 body: "C'est à ton tour de jouer.",
+                type: "duel",
+                duelId: `${id}`,
               };
               if (duel.currentRound === 1 && newDuel.currentRound === 1) {
                 messagingPayload.title = `${username} te propose un duel !`;

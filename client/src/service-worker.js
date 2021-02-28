@@ -115,6 +115,8 @@ messaging.onBackgroundMessage((payload) => {
     data: payload.data,
   };
 
+  console.log(payload);
+
   self.registration
     .showNotification(title, options)
     .catch((err) => console.error("Can't send notification: ", err));
@@ -131,11 +133,11 @@ self.addEventListener("notificationclick", (e) => {
   }
 
   const { data } = notification;
-  if (data.type === "new_duel" && data.duelId !== undefined) {
+  if (data.type === "duel" && data.duelId) {
     // eslint-disable-next-line no-undef
     clients
       .openWindow(`/duel/${data.duelId}`)
-      .catch(() => console.log("Can't open window after the user clicks on a notification"));
+      .catch(() => console.error("Can't open window after the user clicks on a notification"));
     notification.close();
   }
 });

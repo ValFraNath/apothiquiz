@@ -12,6 +12,10 @@
   overflow: hidden;
   z-index: 100;
 
+  @media screen and (min-width: $screen-desktop) {
+    width: 500px;
+  }
+
   #indicator {
     position: absolute;
     top: 0;
