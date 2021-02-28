@@ -14,6 +14,20 @@ main#administration {
     margin: 1rem 0;
   }
 
+  p.notEnoughData {
+    margin: 1rem;
+    &::before {
+      content: "❌  ";
+    }
+  }
+
+  p.success {
+    margin: 1rem;
+    &::before {
+      content: "✔️ ";
+    }
+  }
+
   button,
   input[type="file"],
   input[type="submit"] {
@@ -69,13 +83,6 @@ main#administration {
         }
       }
     }
-
-    p.success {
-      margin: 1rem;
-      &::before {
-        content: "✔️";
-      }
-    }
   }
 
   form.configuration {
@@ -85,6 +92,34 @@ main#administration {
     input[type="number"] {
       width: 50px;
       margin: 0.5rem 1rem;
+    }
+  }
+
+  .number-input {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: max-content;
+    margin: 1rem;
+    user-select: none;
+
+    svg {
+      width: 1.5rem;
+      height: 1.5rem;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    span {
+      font-size: 1.5rem;
+      cursor: default;
+      margin: 0 0.3rem;
+    }
+
+    label {
+      font-size: 1.2rem;
+      margin-left: 1rem;
     }
   }
 }

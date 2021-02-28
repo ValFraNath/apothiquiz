@@ -1,6 +1,7 @@
 import fs from "fs/promises";
 import path from "path";
 
+import { fetchConfigFromDB } from "../controllers/config.js";
 import { queryPromise } from "../db/database.js";
 import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
 import { addErrorTitle } from "../global/Logger.js";
@@ -100,23 +101,40 @@ async function generateQuestion(req, _res) {
     res.sendUsageError(404, "Incorrect type of question");
     return;
   }
-
-  generateQuestion()
-    .then(({ type, title, subject, goodAnswer, answers, wording }) => {
-      res.sendResponse(200, { type, title, subject, goodAnswer, answers, wording });
-    })
-    .catch((error) => {
-      if (NotEnoughDataError.isInstance(error)) {
-        res.sendUsageError(422, "Not enough data to generate this type of question", {
-          code: error.code,
-        });
-        return;
-      }
-      res.sendServerError(error);
-    });
+  fetchConfigFromDB()
+    .then((config) =>
+      generateQuestion()
+        .then(({ type, title, subject, goodAnswer, answers, wording }) => {
+          res.sendResponse(200, {
+            type,
+            title,
+            subject,
+            goodAnswer,
+            answers,
+            wording,
+            timerDuration: config.questionTimerDuration,
+          });
+        })
+        .catch((error) => {
+          if (NotEnoughDataError.isInstance(error)) {
+            res.sendUsageError(422, "Not enough data to generate this type of question", {
+              code: error.code,
+            });
+            return;
+          }
+          res.sendServerError(error);
+        })
+    )
+    .catch(res.sendServerError);
 }
 
 export default { generateQuestion };
+
+/**
+ * Get all questions types
+ * @returns {number[]}
+ */
+export const getAllQuestionTypes = () => Object.keys(generatorInfosByType).map(Number);
 
 // ***** Internal functions *****
 
