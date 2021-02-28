@@ -34,13 +34,11 @@ export class HttpResponseWrapper {
   }
 }
 
-export default (controller) => {
-  return async (req, res, next) => {
-    const wrappedResponse = new HttpResponseWrapper(res);
-    try {
-      await controller(req, wrappedResponse, next);
-    } catch (e) {
-      wrappedResponse.sendServerError(e);
-    }
-  };
+export default (controller) => async (req, res, next) => {
+  const wrappedResponse = new HttpResponseWrapper(res);
+  try {
+    await controller(req, wrappedResponse, next);
+  } catch (e) {
+    wrappedResponse.sendServerError(e);
+  }
 };
