@@ -17,6 +17,10 @@ before("Wait until the database is ready", function (done) {
   app.waitReady(() => done());
 });
 
+before("Insert configuration data", (done) => {
+  resetConfig().then(() => done());
+});
+
 /**
  * Truncate the given table
  * @param  {...string} tables The tables to truncate
@@ -82,6 +86,23 @@ export function getToken(username, password = "1234") {
       method: "post",
     })
       .then((res) => resolve(res.body.token))
+      .catch(reject);
+  });
+}
+
+/**
+ * Reset the configuration data in database
+ * @returns {Promise}
+ */
+export function resetConfig() {
+  return new Promise((resolve, reject) => {
+    const sql = `DELETE FROM server_informations WHERE server_informations.key LIKE 'config%'; `;
+    queryPromise(sql)
+      .then(() =>
+        insertData("config.sql")
+          .then(() => resolve())
+          .catch(reject)
+      )
       .catch(reject);
   });
 }

@@ -1,7 +1,7 @@
+import { ArrowDownIcon, ArrowUpIcon } from "@modulz/radix-icons";
 import axios from "axios";
-
 import PropTypes from "prop-types";
-import React, { Component } from "react";
+import React, { Component, useEffect, useState } from "react";
 
 import AuthService from "../services/auth.service";
 
@@ -43,6 +43,9 @@ class FileImporter extends Component {
           canConfirm: !this.state.canConfirm,
           imported: res.data.imported,
         });
+        if (res.data.imported && this.props.onImport) {
+          this.props.onImport();
+        }
       })
       .catch((error) => {
         if (error.response?.status === 422) {
@@ -141,6 +144,7 @@ FileImporter.propTypes = {
   endpoint: PropTypes.string.isRequired,
   extensions: PropTypes.arrayOf(PropTypes.string).isRequired,
   multiple: PropTypes.bool.isRequired,
+  onImport: PropTypes.func,
 };
 
 FileImporter.defaultProps = { multiple: false };
@@ -182,66 +186,178 @@ FileDownloader.propTypes = {
   text: PropTypes.string.isRequired,
 };
 
-const Configuration = () => {
+const Configuration = ({ lastImport }) => {
+  const [config, setConfig] = useState({
+    roundsPerDuel: 0,
+    questionsPerRound: 0,
+    questionTimerDuration: 0,
+  });
+
+  const [isSaved, setIsSaved] = useState(false);
+
+  const updateConfig = (key, value) => {
+    setConfig((oldConfig) => ({
+      ...oldConfig,
+      [key]: { ...oldConfig[key], ...{ value } },
+    }));
+  };
+
+  useEffect(() => {
+    axios
+      .get("/api/v1/config")
+      .then((res) => {
+        setConfig(res.data);
+        setIsSaved(false);
+      })
+      .catch(console.error);
+  }, [lastImport]);
+
   function saveConfig(e) {
     e.preventDefault();
-    // TODO update config in the server
+    const body = Object.keys(config).reduce((body, key) => {
+      body[key] = config[key].value;
+      return body;
+    }, Object.create(null));
+
+    axios
+      .patch("/api/v1/config/", body)
+      .then((res) => {
+        setConfig(res.data);
+        setIsSaved(true);
+      })
+      .catch(console.error);
   }
+
   return (
     <form className="configuration" onSubmit={saveConfig}>
-      <label>
-        <input type="number" min="2" max="10" defaultValue="5" />
-        Nombre de questions dans une manche
-      </label>
-      <label>
-        <input type="number" min="2" max="10" defaultValue="5" />
-        Nombre de manches dans un duel
-      </label>
-      <input type="submit" value="Enregistrer" />
+      {config.roundsPerDuel.max < 1 ? (
+        <p className="notEnoughData">
+          Il n'y a pas assez de données dans la base de données pour générer des duels
+        </p>
+      ) : (
+        <>
+          <NumberInput
+            label="Durée du timer de réponse"
+            defaultValue={config.questionTimerDuration.value}
+            onChange={(value) => updateConfig("questionTimerDuration", value)}
+            min={config.questionTimerDuration.min}
+            max={config.questionTimerDuration.max}
+          />
+
+          <NumberInput
+            label="Nombre de questions dans une manche"
+            defaultValue={config.questionsPerRound.value}
+            onChange={(value) => updateConfig("questionsPerRound", value)}
+            min={config.questionsPerRound.min}
+            max={config.questionsPerRound.max}
+          />
+
+          <NumberInput
+            label="Nombre de manches dans un duel"
+            defaultValue={config.roundsPerDuel.value}
+            onChange={(value) => updateConfig("roundsPerDuel", value)}
+            min={config.roundsPerDuel.min}
+            max={config.roundsPerDuel.max}
+          />
+          <input type="submit" value="Enregistrer" />
+        </>
+      )}
+      {isSaved && <p className="success">Configuration sauvegardée avec succès</p>}
     </form>
   );
 };
 
-const Admin = () => (
-  <main id="administration">
-    <h1>Espace Administration</h1>
-    <details open>
-      <summary>Importer des molécules</summary>
-      <FileDownloader
-        text="Télécharger les dernières molécules importées"
-        filename="molecules.csv"
-        endpoint="/api/v1/import/molecules"
+Configuration.propTypes = {
+  lastImport: PropTypes.number.isRequired,
+};
+
+const NumberInput = ({ defaultValue, label, onChange, min, max }) => {
+  const [value, setValue] = useState(defaultValue);
+
+  useEffect(() => {
+    setValue(defaultValue);
+  }, [defaultValue]);
+
+  function handleChange(newValue) {
+    if (newValue <= max && newValue >= min) {
+      onChange(newValue);
+    }
+  }
+
+  return (
+    <div className="number-input">
+      <ArrowUpIcon
+        onClick={() => handleChange(value + 1)}
+        color={value >= max ? "grey" : "black"}
       />
-      <FileImporter endpoint="/api/v1/import/molecules" extensions={["csv"]} />
-    </details>
-    <details>
-      <summary>Importer des utilisateurs</summary>
-      <FileDownloader
-        text="Télécharger les derniers utilisateurs importés"
-        filename="utilisateurs.csv"
-        endpoint="/api/v1/import/users"
+      <span>{value}</span>
+      <ArrowDownIcon
+        onClick={() => handleChange(value - 1)}
+        color={value <= min ? "grey" : "black"}
       />
-      <FileImporter endpoint="/api/v1/import/users" extensions={["csv"]} />
-    </details>
-    <details>
-      <summary>Importer des images</summary>
-      <FileDownloader
-        text="Télécharger les dernières images importées"
-        filename="images-molecules.csv"
-        endpoint="/api/v1/import/images"
-      />
-      <FileImporter
-        endpoint="/api/v1/import/images"
-        multiple={true}
-        extensions={["png", "jpeg", "jpg", "svg"]}
-      />
-    </details>
-    <details>
-      <summary>Configuration (WIP)</summary>
-      <Configuration />
-    </details>
-  </main>
-);
+      <label>{label}</label>
+    </div>
+  );
+};
+
+NumberInput.propTypes = {
+  defaultValue: PropTypes.number,
+  label: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
+  max: PropTypes.number,
+  min: PropTypes.number,
+};
+
+const Admin = () => {
+  // used to update the configuration component after a new import
+  const [lastImport, setLastImport] = useState(Date.now());
+
+  return (
+    <main id="administration">
+      <h1>Espace Administration</h1>
+      <details open>
+        <summary>Importer des molécules</summary>
+        <FileDownloader
+          text="Télécharger les dernières molécules importées"
+          filename="molecules.csv"
+          endpoint="/api/v1/import/molecules"
+        />
+        <FileImporter
+          endpoint="/api/v1/import/molecules"
+          extensions={["csv"]}
+          onImport={() => setLastImport(Date.now())}
+        />
+      </details>
+      <details>
+        <summary>Importer des utilisateurs</summary>
+        <FileDownloader
+          text="Télécharger les derniers utilisateurs importés"
+          filename="utilisateurs.csv"
+          endpoint="/api/v1/import/users"
+        />
+        <FileImporter endpoint="/api/v1/import/users" extensions={["csv"]} />
+      </details>
+      <details>
+        <summary>Importer des images</summary>
+        <FileDownloader
+          text="Télécharger les dernières images importées"
+          filename="images-molecules.csv"
+          endpoint="/api/v1/import/images"
+        />
+        <FileImporter
+          endpoint="/api/v1/import/images"
+          multiple={true}
+          extensions={["png", "jpeg", "jpg", "svg"]}
+          onImport={() => setLastImport(Date.now())}
+        />
+      </details>
+      <details>
+        <summary>Configuration</summary>
+        <Configuration lastImport={lastImport} />
+      </details>
+    </main>
+  );
+};
 
 export default Admin;
 

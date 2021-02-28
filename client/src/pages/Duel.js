@@ -16,7 +16,7 @@ class Duel extends Component {
       currentQuestionNum: 1,
       inProgress: true,
       lastClicked: "",
-      timer: Duel.TIMER_DURATION,
+      timer: null,
       userAnswers: [],
     };
   }
@@ -32,6 +32,7 @@ class Duel extends Component {
         }
         this.setState({
           duelData: res.data,
+          timer: res.data.questionTimerDuration,
         });
 
         // Can't access to a round already played
@@ -111,7 +112,7 @@ class Duel extends Component {
     this.setState({
       inProgress: true,
       currentQuestionNum: currentQuestionNum + 1,
-      timer: Duel.TIMER_DURATION,
+      timer: this.state.duelData.questionTimerDuration,
     });
   };
 
@@ -202,7 +203,5 @@ class Duel extends Component {
 Duel.propTypes = {
   match: PropTypes.object.isRequired,
 };
-
-Duel.TIMER_DURATION = 10;
 
 export default Duel;

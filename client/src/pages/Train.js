@@ -36,10 +36,9 @@ class PlayView extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      questionNum: 1,
       inProgress: true,
       lastClicked: "",
-      timer: Train.TIMER_DURATION,
+      timer: props.question.timerDuration,
     };
   }
 
@@ -80,17 +79,21 @@ class PlayView extends Component {
    */
   nextQuestion = () => {
     this.props.getNewQuestion();
-    this.setState({
-      questionNum: this.state.questionNum + 1,
-      inProgress: true,
-      lastClicked: "",
-      timer: Train.TIMER_DURATION,
-    });
   };
 
+  componentDidUpdate(prevProps) {
+    if (this.props.questionNum !== prevProps.questionNum) {
+      this.setState({
+        inProgress: true,
+        lastClicked: "",
+        timer: this.props.question.timerDuration,
+      });
+    }
+  }
+
   render() {
-    const { questionNum, inProgress, timer, lastClicked } = this.state;
-    const { result, question, displaySummury } = this.props;
+    const { inProgress, lastClicked, timer } = this.state;
+    const { result, questionNum, question, displaySummury } = this.props;
 
     return (
       <>
@@ -140,6 +143,8 @@ PlayView.propTypes = {
   getNewQuestion: PropTypes.func.isRequired,
   addUserAnswer: PropTypes.func.isRequired,
   displaySummury: PropTypes.func.isRequired,
+  timer: PropTypes.number.isRequired,
+  questionNum: PropTypes.number.isRequired,
 };
 
 /* ---------- Summury view ---------- */
@@ -212,6 +217,7 @@ class Train extends Component {
       question: { answers: [], goodAnswerIndex: -1, subject: "", type: 0 },
       result: { good: [], bad: [] },
       error: null,
+      questionNum: 0,
     };
   }
 
@@ -232,8 +238,8 @@ class Train extends Component {
           question: res.data,
           inProgress: true,
           lastClicked: "",
-          timer: 10,
           error: null,
+          questionNum: this.state.questionNum + 1,
         });
       })
       .catch((error) => {
@@ -291,6 +297,7 @@ class Train extends Component {
             getNewQuestion={this.getNewQuestion}
             addUserAnswer={this.addUserAnswer}
             displaySummury={this.displaySummury}
+            questionNum={this.state.questionNum}
           />
         );
       case Train.STATE_SUMMARY:

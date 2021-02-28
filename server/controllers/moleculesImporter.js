@@ -10,6 +10,8 @@ import { analyzeData } from "../global/molecules_importation/moleculesAnalyzer.j
 import { createSqlToInsertAllData } from "../global/molecules_importation/moleculesImporter.js";
 import { parseMoleculesFromCsv } from "../global/molecules_importation/moleculesParser.js";
 
+import { updateNumberOfRoundsPerDuel } from "./config.js";
+
 const FILES_DIR = process.env.NODE_ENV === "test" ? "files-test" : "files";
 const MOLECULES_DIR = path.resolve(FILES_DIR, "molecules");
 const MAX_FILE_KEPT = 15;
@@ -125,11 +127,15 @@ function importMolecules(req, _res) {
                                 .map((file) => `${MOLECULES_DIR}/${file}`)
                             )
                               .then(() =>
-                                res.sendResponse(201, {
-                                  message: "File imported",
-                                  warnings: [],
-                                  imported: true,
-                                })
+                                updateNumberOfRoundsPerDuel()
+                                  .then(() =>
+                                    res.sendResponse(201, {
+                                      message: "File imported",
+                                      warnings: [],
+                                      imported: true,
+                                    })
+                                  )
+                                  .catch(sendServorError)
                               )
                               .catch(sendServorError)
                           )
