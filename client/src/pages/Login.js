@@ -1,4 +1,3 @@
-import { PropTypes } from "prop-types";
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
 
@@ -21,7 +20,7 @@ class Login extends Component {
     AuthService.login(pseudoInput.value.trim(), passwordInput.value)
       .then((user) => {
         console.info(`User ${user} successfully logged in`);
-        this.props.history.push("/homepage");
+        document.location.replace("/homepage");
       })
       .catch((error) => {
         console.error(`An error has occurred : ${error}`);
@@ -65,9 +64,5 @@ class Login extends Component {
     );
   }
 }
-
-Login.propTypes = {
-  history: PropTypes.object.isRequired,
-};
 
 export default Login;

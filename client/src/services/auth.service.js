@@ -36,7 +36,7 @@ AuthService.login = async function (pseudo, password) {
 
 AuthService.logout = function () {
   localStorage.removeItem(LOCAL_STORAGE_KEY);
-  queryClient.invalidateQueries();
+  queryClient.clear();
 };
 
 AuthService.getCurrentUser = function () {
