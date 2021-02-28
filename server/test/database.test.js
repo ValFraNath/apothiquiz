@@ -73,7 +73,13 @@ describe("Check the database structure", function () {
     },
     {
       name: "duel",
-      fields: ["du_id", "du_content", "du_currentRound", "du_inProgress"],
+      fields: [
+        "du_id",
+        "du_content",
+        "du_currentRound",
+        "du_inProgress",
+        "du_questionTimerDuration",
+      ],
     },
     {
       name: "results",
