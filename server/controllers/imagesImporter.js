@@ -9,6 +9,8 @@ import { bindImagesToMolecules } from "../global/images_importation/imagesImport
 import Logger, { addErrorTitle } from "../global/Logger.js";
 import { normalizeDCI } from "../global/molecules_importation/moleculesAnalyzer.js";
 
+import { updateNumberOfRoundsPerDuel } from "./config.js";
+
 const IMAGES_DIR_PATH = path.resolve(
   process.env.NODE_ENV === "test" ? "files-test" : "files",
   "images"
@@ -98,6 +100,8 @@ function importImages(req, _res) {
                       warnings: [],
                       imported: true,
                     });
+
+                    updateNumberOfRoundsPerDuel().catch(Logger.error);
 
                     deleteFiles(
                       ...req.files
