@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 
 import { queryPromise } from "../db/database.js";
-import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
+import { HttpResponseWrapper } from "../global/HttpControllerWrapper.js";
 import { addErrorTitle } from "../global/Logger.js";
 
 dotenv.config();

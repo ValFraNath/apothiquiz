@@ -3,7 +3,7 @@ import path from "path";
 import { queryPromise } from "../db/database.js";
 import { HeaderErrors } from "../global/csv_reader/HeaderChecker.js";
 import { createDir, deleteFiles, getSortedFiles, moveFile } from "../global/files.js";
-import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
+import { HttpResponseWrapper } from "../global/HttpControllerWrapper.js";
 import { bindImagesToMolecules } from "../global/images_importation/imagesImporter.js";
 import Logger, { addErrorTitle } from "../global/Logger.js";
 import { analyzeData } from "../global/molecules_importation/moleculesAnalyzer.js";

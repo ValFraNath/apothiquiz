@@ -3,7 +3,7 @@ import path from "path";
 
 import { fetchConfigFromDB } from "../controllers/config.js";
 import { queryPromise } from "../db/database.js";
-import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
+import { HttpResponseWrapper } from "../global/HttpControllerWrapper.js";
 import { addErrorTitle } from "../global/Logger.js";
 
 const generatorInfosByType = {

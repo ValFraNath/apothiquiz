@@ -3,7 +3,7 @@ import path from "path";
 import Zip from "adm-zip";
 
 import { createDir, deleteFiles, getSortedFiles, moveFile } from "../global/files.js";
-import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
+import { HttpResponseWrapper } from "../global/HttpControllerWrapper.js";
 import { analyseImagesFilenames } from "../global/images_importation/imagesAnayzer.js";
 import { bindImagesToMolecules } from "../global/images_importation/imagesImporter.js";
 import Logger, { addErrorTitle } from "../global/Logger.js";

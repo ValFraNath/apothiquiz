@@ -1,7 +1,7 @@
 import mysql from "mysql";
 
 import { queryPromise } from "../db/database.js";
-import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
+import { HttpResponseWrapper } from "../global/HttpControllerWrapper.js";
 import { addErrorTitle } from "../global/Logger.js";
 
 import { getAllQuestionTypes, createGeneratorOfType, NotEnoughDataError } from "./question.js";

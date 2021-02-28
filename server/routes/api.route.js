@@ -8,12 +8,13 @@ import MoleculesImporterController from "../controllers/moleculesImporter.js";
 import QuestionController from "../controllers/question.js";
 import UserController from "../controllers/user.js";
 import UsersImporterController from "../controllers/usersImportation.js";
+import HttpControllerWrapper from "../global/HttpControllerWrapper.js";
 import authenticationMiddleware from "../middlewares/auth.middleware.js";
 import { createMulter } from "../middlewares/multer.middleware.js";
 
 const apiRouter = express.Router();
 
-apiRouter.get("/status", ApiController.status);
+apiRouter.get("/status", HttpControllerWrapper(ApiController.status));
 
 apiRouter.get("/question/:type", QuestionController.generateQuestion);
 
@@ -27,13 +28,21 @@ apiRouter.get("/users/:pseudo", authenticationMiddleware, UserController.getInfo
 
 apiRouter.patch("/users/:pseudo", authenticationMiddleware, UserController.saveInfos);
 
-apiRouter.post("/duels/new", authenticationMiddleware, DuelController.create);
+apiRouter.post(
+  "/duels/new",
+  authenticationMiddleware,
+  HttpControllerWrapper(DuelController.create)
+);
 
-apiRouter.get("/duels/", authenticationMiddleware, DuelController.fetchAll);
+apiRouter.get("/duels/", authenticationMiddleware, HttpControllerWrapper(DuelController.fetchAll));
 
-apiRouter.get("/duels/:id", authenticationMiddleware, DuelController.fetch);
+apiRouter.get("/duels/:id", authenticationMiddleware, HttpControllerWrapper(DuelController.fetch));
 
-apiRouter.post("/duels/:id/:round", authenticationMiddleware, DuelController.play);
+apiRouter.post(
+  "/duels/:id/:round",
+  authenticationMiddleware,
+  HttpControllerWrapper(DuelController.play)
+);
 
 const FILES_DIR = process.env.NODE_ENV === "test" ? "files-test" : "files";
 
