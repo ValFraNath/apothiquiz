@@ -9,6 +9,7 @@ import "./styles/styles.scss";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Loading from "./components/status/Loading";
 import TopBar from "./components/system/TopBar";
+
 import HomePage from "./pages/HomePage";
 import Menu from "./pages/Menu";
 import AuthService from "./services/auth.service";
@@ -17,8 +18,8 @@ import queryClient from "./utils/configuredQueryClient";
 
 const About = lazy(() => import("./pages/About"));
 const Admin = lazy(() => import("./pages/Admin"));
-const CreateDuel = lazy(() => import("./pages/CreateDuel"));
 const Duel = lazy(() => import("./pages/Duel"));
+const DuelCreate = lazy(() => import("./pages/DuelCreate"));
 const DuelOverview = lazy(() => import("./pages/DuelOverview"));
 const Login = lazy(() => import("./pages/Login"));
 const Profile = lazy(() => import("./pages/Profile"));
@@ -113,7 +114,7 @@ export default class App extends Component {
               <Route path="/login" exact component={Login} />
               <ProtectedRoute path="/profile" exact component={Profile} />
               <ProtectedRoute path="/homepage" exact component={HomePage} />
-              <ProtectedRoute path="/createduel" exact component={CreateDuel} />
+              <ProtectedRoute path="/duel/create" exact component={DuelCreate} />
               <ProtectedRoute path="/duel/:id" exact component={DuelOverview} />
               <ProtectedRoute path="/duel/:id/play" exact component={Duel} />
               <ProtectedRoute path="/admin" exact component={Admin} />
