@@ -74,7 +74,7 @@ const HomePage = () => {
         <Link to="/train" className="btn">
           Entraînement
         </Link>
-        <Link to="/createduel" className="btn">
+        <Link to="/duel/create" className="btn">
           Nouveau duel
         </Link>
       </div>
