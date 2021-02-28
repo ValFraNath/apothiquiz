@@ -91,9 +91,11 @@ const generatorInfosByType = {
  * @apiUse     NotEnoughDataError
  * @apiError   (404) NotFound Incorrect type of question
  * @apiUse     ErrorBadRequest
+ *
+ * @param {express.Request} req The http request
+ * @param {HttpResponseWrapper} res The http response
  */
-async function generateQuestion(req, _res) {
-  const res = new HttpResponseWrapper(_res);
+async function generateQuestion(req, res) {
   const type = Number(req.params.type);
   const generateQuestion = createGeneratorOfType(type);
 
@@ -101,31 +103,29 @@ async function generateQuestion(req, _res) {
     res.sendUsageError(404, "Incorrect type of question");
     return;
   }
-  fetchConfigFromDB()
-    .then((config) =>
-      generateQuestion()
-        .then(({ type, title, subject, goodAnswer, answers, wording }) => {
-          res.sendResponse(200, {
-            type,
-            title,
-            subject,
-            goodAnswer,
-            answers,
-            wording,
-            timerDuration: config.questionTimerDuration,
-          });
-        })
-        .catch((error) => {
-          if (NotEnoughDataError.isInstance(error)) {
-            res.sendUsageError(422, "Not enough data to generate this type of question", {
-              code: error.code,
-            });
-            return;
-          }
-          res.sendServerError(error);
-        })
-    )
-    .catch(res.sendServerError);
+  const config = await fetchConfigFromDB();
+
+  try {
+    const { type, title, subject, goodAnswer, answers, wording } = await generateQuestion();
+
+    res.sendResponse(200, {
+      type,
+      title,
+      subject,
+      goodAnswer,
+      answers,
+      wording,
+      timerDuration: config.questionTimerDuration,
+    });
+  } catch (error) {
+    if (NotEnoughDataError.isInstance(error)) {
+      res.sendUsageError(422, "Not enough data to generate this type of question", {
+        code: error.code,
+      });
+      return;
+    }
+    throw error;
+  }
 }
 
 export default { generateQuestion };
@@ -148,29 +148,22 @@ const scriptsFolderPath = path.resolve("global", "question_generator_scripts");
  * @return {Promise<object>} The question
  */
 async function queryQuestion(filename, type, before = "") {
-  return new Promise((resolve, reject) => {
-    fs.readFile(path.resolve(scriptsFolderPath, filename), { encoding: "utf-8" })
-      .then((script) => {
-        queryPromise(before + script)
-          .then((res) => {
-            const data = res.find((e) => e instanceof Array);
-
-            if (data.length < 3) {
-              return reject(new NotEnoughDataError());
-            }
-
-            const formattedQuestion = formatQuestion(data);
-            if (formattedQuestion.answers.includes(null)) {
-              return reject(new NotEnoughDataError());
-            }
-            resolve(Object.assign(formattedQuestion, { type }));
-          })
-          .catch((error) => {
-            reject(addErrorTitle(error, "Can't generate question in database"));
-          });
-      })
-      .catch((error) => reject(addErrorTitle(error, "Can't read the question script")));
+  const script = await fs.readFile(path.resolve(scriptsFolderPath, filename), {
+    encoding: "utf-8",
   });
+  const res = await queryPromise(before + script);
+
+  const data = res.find((e) => e instanceof Array);
+
+  if (data.length < 3) {
+    throw new NotEnoughDataError();
+  }
+
+  const formattedQuestion = formatQuestion(data);
+  if (formattedQuestion.answers.includes(null)) {
+    throw new NotEnoughDataError();
+  }
+  return Object.assign(formattedQuestion, { type });
 }
 
 /**
@@ -184,19 +177,13 @@ export function createGeneratorOfType(type) {
     return null;
   }
 
-  return function () {
-    return new Promise((resolve, reject) => {
-      const { before, filename } = typeInfos;
-      queryQuestion(filename, type, before)
-        .then((question) =>
-          resolve(
-            Object.assign(question, {
-              wording: typeInfos.createWording(question.subject),
-              title: typeInfos.title,
-            })
-          )
-        )
-        .catch((error) => reject(addErrorTitle(error, "Can't create the question generator")));
+  return async () => {
+    const { before, filename } = typeInfos;
+    const question = await queryQuestion(filename, type, before);
+
+    return Object.assign(question, {
+      wording: typeInfos.createWording(question.subject),
+      title: typeInfos.title,
     });
   };
 }

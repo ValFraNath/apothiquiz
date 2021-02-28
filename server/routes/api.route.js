@@ -16,7 +16,7 @@ const apiRouter = express.Router();
 
 apiRouter.get("/status", HttpControllerWrapper(ApiController.status));
 
-apiRouter.get("/question/:type", QuestionController.generateQuestion);
+apiRouter.get("/question/:type", HttpControllerWrapper(QuestionController.generateQuestion));
 
 apiRouter.get("/users/", authenticationMiddleware, UserController.getAll);
 
