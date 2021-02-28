@@ -2,7 +2,6 @@ import path from "path";
 
 import chai from "chai";
 
-// import { DEFAULT_CONFIG } from "../../controllers/config.js";
 import { forceTruncateTables, getToken, insertData, requestAPI } from "../index.test.js";
 import { uploadFile } from "../molecules_importation/importation_route/importMolecule.test.js";
 
