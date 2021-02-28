@@ -8,6 +8,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import "./styles/styles.scss";
 import ButtonFullWidth from "./components/buttons/ButtonFullWidth";
 import FullScreenMessage from "./components/FullScreenMessage";
+import Notification from "./components/Notification";
 import ProtectedRoute from "./components/ProtectedRoute";
 import TopBar from "./components/system/TopBar";
 import About from "./pages/About";
@@ -51,6 +52,7 @@ export default class App extends Component {
       installPromptEvent: null,
       requireNotificationPermission: false,
       user: user,
+      foregroundNotification: {},
     };
   }
 
@@ -127,6 +129,7 @@ export default class App extends Component {
       installPromptEvent,
       updateRequired,
       requireNotificationPermission,
+      foregroundNotification,
     } = this.state;
 
     return (
@@ -160,6 +163,10 @@ export default class App extends Component {
               </ButtonFullWidth>
               <button onClick={this.displayBrowserNotificationPermission}>Ne pas autoriser</button>
             </FullScreenMessage>
+          )}
+
+          {foregroundNotification !== null && (
+            <Notification title={"Nouveau duel"} text={"A toi de jouer"} />
           )}
 
           <Switch>
