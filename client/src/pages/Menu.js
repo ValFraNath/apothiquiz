@@ -1,13 +1,13 @@
 import { PropTypes } from "prop-types";
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 
 import InstallApp from "../components/system/InstallApp";
 import AuthService from "../services/auth.service";
 
 const Menu = ({ installPromptEvent, user }) => {
   if (AuthService.getCurrentUser() !== null) {
-    document.location.replace("/homepage");
+    return <Redirect to="/homepage" />;
   }
 
   return (
