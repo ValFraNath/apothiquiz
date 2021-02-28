@@ -52,7 +52,10 @@ export default class App extends Component {
       installPromptEvent: null,
       requireNotificationPermission: false,
       user: user,
-      foregroundNotification: {},
+      foregroundNotification: {
+        title: "Nouveau duel",
+        body: "A toi de jouer",
+      },
     };
   }
 
@@ -166,7 +169,11 @@ export default class App extends Component {
           )}
 
           {foregroundNotification !== null && (
-            <Notification title={"Nouveau duel"} text={"A toi de jouer"} />
+            <Notification
+              title={foregroundNotification.title}
+              text={foregroundNotification.body}
+              closeNotification={() => this.setState({ foregroundNotification: null })}
+            />
           )}
 
           <Switch>

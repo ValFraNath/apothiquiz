@@ -33,6 +33,7 @@ main#create-duel {
       text-align: center;
       padding: 0.9rem 1rem;
       border-top: 1px solid $button-bg;
+      z-index: 100;
 
       p {
         padding: 0.9rem 1.6rem;
