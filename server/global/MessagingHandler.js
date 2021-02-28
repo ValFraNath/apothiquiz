@@ -36,8 +36,6 @@ class MessagingHandler {
               token: token,
             };
 
-            console.log(data);
-
             appInstance
               .messaging()
               .send(message)
