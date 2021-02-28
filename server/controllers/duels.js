@@ -4,11 +4,9 @@ import Logger, { addErrorTitle } from "../global/Logger.js";
 
 import MessagingHandlerFactory from "../global/MessagingHandler.js";
 
-import { createGeneratorOfType, NotEnoughDataError } from "./question.js";
+import { fetchConfigFromDB } from "./config.js";
+import { createGeneratorOfType, NotEnoughDataError, getAllQuestionTypes } from "./question.js";
 
-export const MAX_QUESTION_TYPE = 10;
-export const NUMBER_OF_ROUNDS_IN_DUEL = 5;
-export const NUMBER_OF_QUESTIONS_IN_ROUND = 5;
 /**
  *
  * @api {post} /duel/new Create a new duel
@@ -35,7 +33,6 @@ export const NUMBER_OF_QUESTIONS_IN_ROUND = 5;
  */
 function create(req, _res) {
   const res = new HttpResponseWrapper(_res);
-
   const username = req.body.authUser;
   const { opponent } = req.body;
 
@@ -52,21 +49,25 @@ function create(req, _res) {
       if (!yes) {
         return res.sendUsageError(404, "Opponent not found");
       }
-      createRounds()
-        .then((rounds) => {
-          createDuelInDatabase(username, opponent, rounds)
-            .then((id) => res.sendResponse(201, { id }))
-            .catch(res.sendServerError);
-        })
+      fetchConfigFromDB()
+        .then((config) =>
+          createRounds(config)
+            .then((rounds) =>
+              createDuelInDatabase(username, opponent, rounds)
+                .then((id) => res.sendResponse(201, { id }))
+                .catch(res.sendServerError)
+            )
 
-        .catch((error) => {
-          if (NotEnoughDataError.isInstance(error)) {
-            return res.sendUsageError(422, "Not enough data to generate the duel", {
-              code: error.code,
-            });
-          }
-          return res.sendServerError(error);
-        });
+            .catch((error) => {
+              if (NotEnoughDataError.isInstance(error)) {
+                return res.sendUsageError(422, "Not enough data to generate the duel", {
+                  code: error.code,
+                });
+              }
+              return res.sendServerError(error);
+            })
+        )
+        .catch(res.sendServerError);
     })
     .catch(res.sendServerError);
 }
@@ -347,10 +348,11 @@ function createDuelInDatabase(player1, player2, rounds) {
 
 /**
  * Create all rounds of a duel
+ * @param {object} config The configuration object
  * This function can be mocked : @see _initMockedDuelRounds
  * @return {Promise<object[][]|NotEnoughDataError>}
  */
-function createRounds() {
+function createRounds(config) {
   return new Promise((resolve, reject) => {
     if (mockedDuelsRounds) {
       resolve(mockedDuelsRounds);
@@ -363,9 +365,9 @@ function createRounds() {
         reject(new NotEnoughDataError());
       }
 
-      createRound(types.pop())
+      createRound(types.pop(), config)
         .then((round) => {
-          if (rounds.push(round) === NUMBER_OF_ROUNDS_IN_DUEL) {
+          if (rounds.push(round) === config.roundsPerDuel) {
             resolve(rounds);
           } else {
             createRoundsRecursively();
@@ -385,12 +387,13 @@ function createRounds() {
 /**
  * Create a round of a given question type
  * @param {number} type The question type
+ * @param {object} config The configuration object
  * @returns {Promise<object[]>} The list of questions
  */
-function createRound(type) {
+function createRound(type, config) {
   return new Promise((resolve, reject) => {
     const generateQuestion = createGeneratorOfType(type);
-    const questions = [...Array(NUMBER_OF_QUESTIONS_IN_ROUND)].map(generateQuestion);
+    const questions = [...Array(config.questionsPerRound)].map(generateQuestion);
 
     Promise.all(questions)
       .then((questions) => {
@@ -405,7 +408,7 @@ function createRound(type) {
  * @returns {number[]}
  */
 function createShuffledQuestionTypesArray() {
-  const types = [...Array(MAX_QUESTION_TYPE)].map((_, i) => i + 1);
+  const types = getAllQuestionTypes();
 
   for (let i = types.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -476,6 +479,8 @@ function formatDuel(duel, username) {
   const rounds = JSON.parse(duel[0].du_content);
   const inProgress = duel[0].du_inProgress;
 
+  const questionTimerDuration = Number(duel[0].du_questionTimerDuration);
+
   const userAnswers = JSON.parse(duel.find((player) => player.us_login === username).re_answers);
   const opponentAnswers = JSON.parse(
     duel.find((player) => player.us_login !== username).re_answers
@@ -523,6 +528,7 @@ function formatDuel(duel, username) {
     currentRound,
     inProgress,
     rounds: formattedRound,
+    questionTimerDuration,
   };
 
   const scores = computeScores(formattedDuel);

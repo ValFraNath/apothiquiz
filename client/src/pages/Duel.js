@@ -16,7 +16,7 @@ class Duel extends Component {
       currentQuestionNum: 1,
       inProgress: true,
       lastClicked: "",
-      timer: Duel.TIMER_DURATION,
+      timer: null,
       userAnswers: [],
     };
   }
@@ -27,17 +27,18 @@ class Duel extends Component {
       .get(`/api/v1/duels/${duelId}`)
       .then((res) => {
         if (res.data.inProgress === 0) {
-          document.location.replace("/homepage");
+          this.props.history.push("/homepage");
           return;
         }
         this.setState({
           duelData: res.data,
+          timer: res.data.questionTimerDuration,
         });
 
         // Can't access to a round already played
         const firstQuestion = res.data.rounds[res.data.currentRound - 1][0];
         if (firstQuestion.userAnswer !== undefined) {
-          document.location.replace(`/duel/${duelId}`);
+          this.props.history.push(`/duel/${duelId}`);
         }
       })
       .catch((err) => console.error(err));
@@ -111,7 +112,7 @@ class Duel extends Component {
     this.setState({
       inProgress: true,
       currentQuestionNum: currentQuestionNum + 1,
-      timer: Duel.TIMER_DURATION,
+      timer: this.state.duelData.questionTimerDuration,
     });
   };
 
@@ -139,7 +140,7 @@ class Duel extends Component {
       .post(`/api/v1/duels/${duelData.id}/${duelData.currentRound}`, {
         answers: userAnswers,
       })
-      .then(() => document.location.replace(`/duel/${duelId}`))
+      .then(() => this.props.history.push(`/duel/${duelId}`))
       .catch((error) => console.error(error));
   };
 
@@ -201,8 +202,7 @@ class Duel extends Component {
 
 Duel.propTypes = {
   match: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
 };
-
-Duel.TIMER_DURATION = 10;
 
 export default Duel;

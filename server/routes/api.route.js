@@ -1,6 +1,7 @@
 import express from "express";
 
 import ApiController from "../controllers/api.js";
+import ConfigController from "../controllers/config.js";
 import DuelController from "../controllers/duels.js";
 import ImagesImporterController from "../controllers/imagesImporter.js";
 import MessagingController from "../controllers/messaging.js";
@@ -86,6 +87,10 @@ apiRouter.get(
   createMulter(),
   UsersImporterController.getLastImportedUsers
 );
+
+apiRouter.get("/config", authenticationMiddleware, ConfigController.fetchConfig);
+
+apiRouter.patch("/config", authenticationMiddleware, ConfigController.setConfig);
 
 apiRouter.put("/messaging/token/add", authenticationMiddleware, MessagingController.updateToken);
 
