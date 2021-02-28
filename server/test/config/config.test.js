@@ -2,7 +2,7 @@ import path from "path";
 
 import chai from "chai";
 
-import { DEFAULT_CONFIG } from "../../controllers/config.js";
+// import { DEFAULT_CONFIG } from "../../controllers/config.js";
 import { forceTruncateTables, getToken, insertData, requestAPI } from "../index.test.js";
 import { uploadFile } from "../molecules_importation/importation_route/importMolecule.test.js";
 
@@ -149,7 +149,7 @@ describe("Configuration tests", () => {
     await uploadFile("molecules_little_sample.csv", true, token, FILES_DIR);
 
     const res = await requestAPI("config", { token, method: "get" });
-    expect(res.body.roundsPerDuel.value).equal(DEFAULT_CONFIG.ROUNDS_PER_DUEL);
+    expect(res.body.roundsPerDuel.value).equal(5);
     expect(res.body.roundsPerDuel.max).equal(6);
   });
 

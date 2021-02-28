@@ -98,7 +98,11 @@ export function resetConfig() {
   return new Promise((resolve, reject) => {
     const sql = `DELETE FROM server_informations WHERE server_informations.key LIKE 'config%'; `;
     queryPromise(sql)
-      .then(() => resolve())
+      .then(() =>
+        insertData("config.sql")
+          .then(() => resolve())
+          .catch(reject)
+      )
       .catch(reject);
   });
 }

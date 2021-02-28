@@ -6,12 +6,6 @@ import { addErrorTitle } from "../global/Logger.js";
 
 import { getAllQuestionTypes, createGeneratorOfType, NotEnoughDataError } from "./question.js";
 
-export const DEFAULT_CONFIG = {
-  ROUNDS_PER_DUEL: 5,
-  QUESTIONS_PER_ROUNDS: 5,
-  QUESTION_TIMER_DURATION: 10,
-};
-
 /**
  * @api       {post}        /config   Update the duels configuration
  * @apiName   UpdateConfig
@@ -137,15 +131,13 @@ export function fetchConfigFromDB() {
 
     queryPromise(sql)
       .then((res) => {
-        const { QUESTIONS_PER_ROUNDS, QUESTION_TIMER_DURATION, ROUNDS_PER_DUEL } = DEFAULT_CONFIG;
         const toNumber = (x) => (Number.isNaN(Number(x)) ? null : Number(x));
         const getValue = (key) => toNumber(res.find((row) => row.key === key)?.value);
 
         resolve({
-          questionsPerRound: getValue("config_duel_questions_per_round") ?? QUESTIONS_PER_ROUNDS,
-          roundsPerDuel: getValue("config_duel_rounds_per_duel") ?? ROUNDS_PER_DUEL,
-          questionTimerDuration:
-            getValue("config_question_timer_duration") ?? QUESTION_TIMER_DURATION,
+          questionsPerRound: getValue("config_duel_questions_per_round"),
+          roundsPerDuel: getValue("config_duel_rounds_per_duel"),
+          questionTimerDuration: getValue("config_question_timer_duration"),
         });
       })
       .catch(reject);
@@ -232,16 +224,14 @@ export function updateNumberOfRoundsPerDuel() {
   return new Promise((resolve, reject) => {
     getNumberOfQuestionTypesAvailable()
       .then((max) => {
+        const maxRoundsPerDuelByDefault = 5;
         const sql = ` UPDATE server_informations \
                       SET server_informations.value = ${max} \
                       WHERE server_informations.key = "config_duel_rounds_per_duel" AND \
                       server_informations.value > ${max};\
 
                       UPDATE server_informations 
-                      SET server_informations.value = ${Math.min(
-                        max,
-                        DEFAULT_CONFIG.ROUNDS_PER_DUEL
-                      )} 
+                      SET server_informations.value = ${Math.min(max, maxRoundsPerDuelByDefault)} 
                       WHERE server_informations.key = "config_duel_rounds_per_duel" 
                       AND server_informations.value = 0;`;
 

@@ -2,7 +2,7 @@ import { queryPromise } from "../db/database.js";
 import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
 import Logger, { addErrorTitle } from "../global/Logger.js";
 
-import { fetchConfigFromDB, DEFAULT_CONFIG } from "./config.js";
+import { fetchConfigFromDB } from "./config.js";
 import { createGeneratorOfType, NotEnoughDataError, getAllQuestionTypes } from "./question.js";
 
 /**
@@ -463,8 +463,7 @@ function formatDuel(duel, username) {
   const rounds = JSON.parse(duel[0].du_content);
   const inProgress = duel[0].du_inProgress;
 
-  const questionTimerDuration =
-    Number(duel[0].du_questionTimerDuration) || DEFAULT_CONFIG.QUESTION_TIMER_DURATION;
+  const questionTimerDuration = Number(duel[0].du_questionTimerDuration);
 
   const userAnswers = JSON.parse(duel.find((player) => player.us_login === username).re_answers);
   const opponentAnswers = JSON.parse(

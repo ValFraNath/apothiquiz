@@ -24,7 +24,7 @@ main#administration {
   p.success {
     margin: 1rem;
     &::before {
-      content: "✔️";
+      content: "✔️ ";
     }
   }
 

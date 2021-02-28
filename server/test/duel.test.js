@@ -6,7 +6,8 @@ import chai from "chai";
 import chaiHttp from "chai-http";
 import mocha from "mocha";
 
-import { DEFAULT_CONFIG } from "../controllers/config.js";
+// import { DEFAULT_CONFIG } from "../controllers/config.js";
+
 import { _initMockedDuelRounds } from "../controllers/duels.js";
 
 import {
@@ -21,6 +22,11 @@ chai.use(chaiHttp);
 const { expect } = chai;
 const { before } = mocha;
 
+const DEFAULT_CONFIG = {
+  ROUNDS_PER_DUEL: 5,
+  QUESTIONS_PER_ROUNDS: 5,
+  QUESTION_TIMER_DURATION: 10,
+};
 // without data
 
 describe("Duels", () => {

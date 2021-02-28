@@ -193,16 +193,13 @@ const Configuration = ({ lastImport }) => {
     questionTimerDuration: 0,
   });
 
-  const [saved, setSaved] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
 
   const updateConfig = (key, value) => {
-    const newKey = { ...config[key], ...{ value } };
-    config[key] = newKey;
-
-    const newConfig = Object.create(null);
-    Object.assign(newConfig, config);
-
-    setConfig(newConfig);
+    setConfig((oldConfig) => ({
+      ...oldConfig,
+      [key]: { ...oldConfig[key], ...{ value } },
+    }));
   };
 
   useEffect(() => {
@@ -210,7 +207,7 @@ const Configuration = ({ lastImport }) => {
       .get("/api/v1/config")
       .then((res) => {
         setConfig(res.data);
-        setSaved(false);
+        setIsSaved(false);
       })
       .catch(console.error);
   }, [lastImport]);
@@ -226,7 +223,7 @@ const Configuration = ({ lastImport }) => {
       .patch("/api/v1/config/", body)
       .then((res) => {
         setConfig(res.data);
-        setSaved(true);
+        setIsSaved(true);
       })
       .catch(console.error);
   }
@@ -265,7 +262,7 @@ const Configuration = ({ lastImport }) => {
           <input type="submit" value="Enregistrer" />
         </>
       )}
-      {saved && <p className="success">Configuration sauvegardée avec succès</p>}
+      {isSaved && <p className="success">Configuration sauvegardée avec succès</p>}
     </form>
   );
 };
