@@ -1,51 +1,25 @@
-import axios from "axios";
 import PropTypes from "prop-types";
-import React, { Component, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
-// import { CaretLeftIcon } from "@modulz/radix-icons";
 
 import connectionAnim from "../../images/connection_status.png";
 import Avatar from "../Avatar";
 import SpriteSheet from "../SpriteSheet";
 
-class UserBadge extends Component {
-  constructor(props) {
-    super(props);
+const UserBadge = ({ username }) => {
+  const { data: user } = useQuery(["user", "me"]);
 
-    this.state = {
-      avatar: undefined,
-    };
-  }
-
-  componentDidMount() {
-    // TODO? Use global state?
-    axios
-      .get(`/api/v1/users/me`)
-      .then((res) => {
-        const { avatar } = res.data;
-        this.setState({
-          avatar,
-        });
-      })
-      .catch((error) => {
-        // TODO show message
-        console.error(error);
-        return;
-      });
-  }
-
-  render() {
-    return (
-      <Link to="/profile" id={"userBadge"}>
-        <Avatar size="32px" infos={this.state.avatar} />
-        <span>{this.props.pseudo}</span>
-      </Link>
-    );
-  }
-}
+  return (
+    <Link to="/profile" id={"userBadge"}>
+      <Avatar size="32px" infos={user?.avatar} />
+      <span>{username}</span>
+    </Link>
+  );
+};
 
 UserBadge.propTypes = {
-  pseudo: PropTypes.string.isRequired,
+  username: PropTypes.string.isRequired,
 };
 
 const OfflineBanner = () => {
@@ -111,18 +85,17 @@ const OfflineBanner = () => {
   );
 };
 
-const TopBar = ({ user }) => (
+const TopBar = ({ username }) => (
   <nav>
-    {user ? <UserBadge pseudo={user} /> : <span></span>}
+    {username ? <UserBadge username={username} /> : <span></span>}
     <h1>
-      <Link to={user ? "/homepage" : "/"}>Guacamole</Link>
+      <Link to={username ? "/homepage" : "/"}>Guacamole</Link>
     </h1>
     <OfflineBanner />
   </nav>
 );
-
 TopBar.propTypes = {
-  user: PropTypes.string,
+  username: PropTypes.string,
 };
 
 export default TopBar;

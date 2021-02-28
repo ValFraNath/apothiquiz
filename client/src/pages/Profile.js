@@ -1,92 +1,74 @@
 import { CaretSortIcon } from "@modulz/radix-icons";
 import * as Collapsible from "@radix-ui/react-collapsible";
-import axios from "axios";
-import React, { Component } from "react";
+
+import React, { useState } from "react";
+import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
 
 import Avatar from "../components/Avatar";
-import ChooseAvatar from "../components/ChooseAvatar";
+import AvatarChooser from "../components/AvatarChooser";
 import AuthService from "../services/auth.service";
 
-export default class Profile extends Component {
-  constructor(props) {
-    super(props);
+const Profile = () => {
+  const [isInitialized, setIsInitialized] = useState(false);
+  const [avatar, setAvatar] = useState();
+  const { data, isPlaceholderData } = useQuery(["user", "me"]);
 
-    this.state = Avatar.defaultProps;
+  if (isPlaceholderData) {
+    return <span>Chargement</span>;
   }
 
-  componentDidMount() {
-    axios
-      .get(`/api/v1/users/me`)
-      .then((res) => {
-        const { avatar } = res.data;
-        this.setState({
-          choiceEyes: avatar.eyes,
-          choiceHands: avatar.hands,
-          choiceHat: avatar.hat,
-          choiceMouth: avatar.mouth,
-          choiceColorBody: avatar.colorBody,
-          choiceColorBG: avatar.colorBG,
-        });
-      })
-      .catch((error) => {
-        // TODO show message
-        console.error(error);
-        return;
-      });
+  if (!isInitialized) {
+    setAvatar(data.avatar);
+    setIsInitialized(true);
   }
 
-  handleLogoutClick = () => {
-    AuthService.logout();
-    document.location.replace("/");
-  };
-
-  render() {
-    return (
-      <main id="profile">
-        <Avatar
-          size="256px"
-          infos={{
-            eyes: this.state?.choiceEyes,
-            hands: this.state?.choiceHands,
-            hat: this.state?.choiceHat,
-            mouth: this.state?.choiceMouth,
-            colorBody: this.state?.choiceColorBody,
-            colorBG: this.state?.choiceColorBG,
-          }}
-        />
-
-        <Collapsible.Root>
-          <Collapsible.Button className="btn">
-            Personnaliser mon avatar
-            <CaretSortIcon height="20px" width="20px" style={{ marginLeft: "10px" }} />
-          </Collapsible.Button>
-          <Collapsible.Content>
-            <ChooseAvatar
-              choiceEyes={this.state?.choiceEyes}
-              choiceHands={this.state?.choiceHands}
-              choiceHat={this.state?.choiceHat}
-              choiceMouth={this.state?.choiceMouth}
-              choiceColorBody={this.state?.choiceColorBody}
-              choiceColorBG={this.state?.choiceColorBG}
-              handleInputEyes={(val) => this.setState({ choiceEyes: parseInt(val) })}
-              handleInputHands={(val) => this.setState({ choiceHands: parseInt(val) })}
-              handleInputHat={(val) => this.setState({ choiceHat: parseInt(val) })}
-              handleInputMouth={(val) => this.setState({ choiceMouth: parseInt(val) })}
-              handleInputColorBody={(val) => this.setState({ choiceColorBody: val })}
-              handleInputColorBG={(val) => this.setState({ choiceColorBG: val })}
-            />
-          </Collapsible.Content>
-        </Collapsible.Root>
-
-        <button className="btn" onClick={this.handleLogoutClick}>
-          Me déconnecter
-        </button>
-
-        <Link to="/about" className="btn">
-          À propos de l'application
-        </Link>
-      </main>
-    );
+  function updateValue(valueName, newValue) {
+    setAvatar((prevAvatar) => ({ ...prevAvatar, [valueName]: newValue }));
   }
-}
+
+  return (
+    <main id="profile">
+      <Avatar size="256px" infos={avatar} />
+
+      <Collapsible.Root>
+        <Collapsible.Button className="btn">
+          Personnaliser mon avatar
+          <CaretSortIcon height="20px" width="20px" style={{ marginLeft: "10px" }} />
+        </Collapsible.Button>
+        <Collapsible.Content>
+          <AvatarChooser
+            choiceEyes={avatar?.eyes}
+            choiceHands={avatar?.hands}
+            choiceHat={avatar?.hat}
+            choiceMouth={avatar?.mouth}
+            choiceColorBody={avatar?.colorBody}
+            choiceColorBG={avatar?.colorBG}
+            handleInputEyes={(val) => updateValue("eyes", parseInt(val))}
+            handleInputHands={(val) => updateValue("hands", parseInt(val))}
+            handleInputHat={(val) => updateValue("hat", parseInt(val))}
+            handleInputMouth={(val) => updateValue("mouth", parseInt(val))}
+            handleInputColorBody={(val) => updateValue("colorBody", val)}
+            handleInputColorBG={(val) => updateValue("colorBG", val)}
+          />
+        </Collapsible.Content>
+      </Collapsible.Root>
+
+      <button
+        className="btn"
+        onClick={() => {
+          AuthService.logout();
+          document.location.replace("/");
+        }}
+      >
+        Me déconnecter
+      </button>
+
+      <Link to="/about" className="btn">
+        À propos de l'application
+      </Link>
+    </main>
+  );
+};
+
+export default Profile;
