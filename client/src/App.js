@@ -23,7 +23,7 @@ import Train from "./pages/Train";
 import AuthService from "./services/auth.service";
 import * as serviceWorker from "./serviceWorker";
 import queryClient from "./utils/configuredQueryClient";
-import * as Messaging from "./utils/messaging";
+import MessagingHandler from "./utils/messaging";
 
 /**
  * Set up the authorization header in all request if the user is logged in
@@ -80,27 +80,23 @@ export default class App extends Component {
     });
 
     // Request permission for notifications and subscribe to push
+    const messaging = new MessagingHandler();
     if (
-      this.state.user &&
       "Notification" in window &&
       navigator.serviceWorker &&
       Notification.permission !== "denied"
     ) {
-      if (Notification.permission === "default") {
-        this.setState({ requireNotificationPermission: true });
+      if (this.state.user) {
+        if (Notification.permission === "default") {
+          this.setState({ requireNotificationPermission: true });
+        } else {
+          messaging.saveToken();
+        }
       } else {
-        this.installFirebase();
+        messaging.removeToken();
       }
     }
   }
-
-  /**
-   * Install Firebase and save token
-   */
-  installFirebase = () => {
-    Messaging.installFirebase();
-    Messaging.saveToken();
-  };
 
   /**
    * Display the notification authorization request
@@ -109,7 +105,7 @@ export default class App extends Component {
     Notification.requestPermission()
       .then(() => {
         this.setState({ requireNotificationPermission: false });
-        this.installFirebase();
+        new MessagingHandler().saveToken();
       })
       .catch((err) => console.error("Can't request permission", err));
   };

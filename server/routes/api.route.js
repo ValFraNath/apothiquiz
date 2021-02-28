@@ -89,6 +89,6 @@ apiRouter.get(
 
 apiRouter.put("/messaging/token/add", authenticationMiddleware, MessagingController.updateToken);
 
-apiRouter.put("/messaging/token/remove", authenticationMiddleware, MessagingController.removeToken);
+apiRouter.put("/messaging/token/remove", MessagingController.removeToken);
 
 export default apiRouter;
