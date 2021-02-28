@@ -261,19 +261,24 @@ function play(req, _res) {
       }
 
       insertResultInDatabase(id, username, answers)
-        .then((newDuel) =>
+        .then((newDuel) => {
           updateDuelState(newDuel, username)
-            .then((duel) => res.sendResponse(200, duel))
-            .catch(res.sendServerError)
-        )
-        .catch(res.sendServerError);
+            .then((duel) => {
+              res.sendResponse(200, duel);
+              let messagingPayload = {
+                title: `${username} vient de jouer !`,
+                body: "C'est à ton tour de jouer.",
+              };
+              if (duel.currentRound === 1 && newDuel.currentRound === 1) {
+                messagingPayload.title = `${username} te propose un duel !`;
+              }
 
-      const MessageHandler = MessagingHandlerFactory.getInstance();
-      console.log(duel);
-      MessageHandler.sendNotificationToOneDevice(duel.opponent, {
-        title: `${username} vient de jouer`,
-        body: "Tu peux jouer le round suivant.",
-      });
+              const MessageHandler = MessagingHandlerFactory.getInstance();
+              MessageHandler.sendNotificationToOneDevice(duel.opponent, messagingPayload);
+            })
+            .catch(res.sendServerError);
+        })
+        .catch(res.sendServerError);
     })
     .catch(res.sendServerError);
 }

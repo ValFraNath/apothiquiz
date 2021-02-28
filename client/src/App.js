@@ -78,8 +78,17 @@ export default class App extends Component {
     });
 
     // Request permission for notifications and subscribe to push
-    if (this.state.user && "Notification" in window && navigator.serviceWorker) {
-      this.installFirebase();
+    if (
+      this.state.user &&
+      "Notification" in window &&
+      navigator.serviceWorker &&
+      Notification.permission !== "denied"
+    ) {
+      if (Notification.permission === "default") {
+        this.setState({ requireNotificationPermission: true });
+      } else {
+        this.installFirebase();
+      }
     }
   }
 
@@ -88,7 +97,7 @@ export default class App extends Component {
    * Set up push notifications: either display the authorization request or subscribe the user to
    * the push service if he accepts notifications
    */
-  installFirebase() {
+  installFirebase = () => {
     // Information available in the firebase console
     firebase.initializeApp({
       apiKey: "AIzaSyCtGrFY1_UOzWAFn1xt1CRPNGZ40JZcaJw",
@@ -120,22 +129,23 @@ export default class App extends Component {
             }
 
             localStorage.setItem("messagingToken", currentToken);
-          } else {
-            this.displayBrowserNotificationPermission();
           }
         })
         .catch((err) => console.error("Can't retrieve token.", err));
     });
-  }
+  };
 
   /**
    * Display the notification authorization request
    */
-  displayBrowserNotificationPermission() {
-    Notification.requestPermission().then(() => {
-      this.setState({ requireNotificationPermission: false });
-    });
-  }
+  displayBrowserNotificationPermission = () => {
+    Notification.requestPermission()
+      .then(() => {
+        this.setState({ requireNotificationPermission: false });
+        this.installFirebase();
+      })
+      .catch((err) => console.error("Can't request permission", err));
+  };
 
   /**
    * Send a message to the service-worker to request the new version
