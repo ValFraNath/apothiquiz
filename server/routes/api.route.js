@@ -60,13 +60,13 @@ apiRouter.post(
   "/import/molecules",
   authenticationMiddleware,
   createMulter(),
-  MoleculesImporterController.importMolecules
+  HttpControllerWrapper(MoleculesImporterController.importMolecules)
 );
 
 apiRouter.get(
   "/import/molecules",
   authenticationMiddleware,
-  MoleculesImporterController.getLastImportedFile
+  HttpControllerWrapper(MoleculesImporterController.getLastImportedFile)
 );
 
 apiRouter.post(
