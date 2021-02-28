@@ -180,7 +180,7 @@ function importMolecules(req, _res) {
  *
  * @apiSuccessExample Success-Response:
  *  {
-      "url": "https://glowing-octo-guacamole.com/files/molecules/molecules_1612279095021.csv",
+      "url": "https://guacamole.com/files/molecules/molecules_1612279095021.csv",
       "shortpath" : "/files/molecules/molecules_1612279095021.csv",
       "file" : "molecules_1612279095021.csv"
     }
