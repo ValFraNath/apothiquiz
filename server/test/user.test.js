@@ -9,7 +9,8 @@ import { forceTruncateTables, insertData, requestAPI } from "./index.test.js";
 chai.use(chaiHttp);
 const { expect } = chai;
 describe("User test", function () {
-  before("Insert users data", (done) => {
+  before("Insert users data", function (done) {
+    this.timeout(10000);
     forceTruncateTables("user").then(() => insertData("users.sql").then(done));
   });
 

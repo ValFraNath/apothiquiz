@@ -95,7 +95,8 @@ describe("Molecules analyzer", () => {
         data = JSON.parse(await parseMoleculesFromCsv(path.resolve(FILES_DIR, file.name)));
       });
 
-      before("Clear database", (done) => {
+      before("Clear database", function (done) {
+        this.timeout(10000);
         forceTruncateTables(
           "molecule",
           "class",
