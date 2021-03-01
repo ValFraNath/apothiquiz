@@ -17,66 +17,62 @@ export const isFormatValid = (filename) => VALID_FORMATS_REGEX.test(filename);
  * @param {string[]} filenames The list of images filenames
  * @returns {Promise<ImagesAnalyzerWarning[]>} The warnings list
  */
-export function analyseImagesFilenames(filenames) {
-  return new Promise((resolve, reject) => {
-    const warnings = [];
+export async function analyseImagesFilenames(filenames) {
+  const warnings = [];
 
-    const invalidFormats = filenames.filter((f) => !isFormatValid(f));
+  const invalidFormats = filenames.filter((f) => !isFormatValid(f));
 
-    warnings.push(
-      ...invalidFormats.map(
-        (f) =>
-          new ImagesAnalyzerWarning(
-            ImagesAnalyzerWarning.BAD_FORMAT,
-            `Format invalide : "${f}" (uniquement ${VALID_FORMATS.join(", ")})`
-          )
-      )
-    );
+  warnings.push(
+    ...invalidFormats.map(
+      (f) =>
+        new ImagesAnalyzerWarning(
+          ImagesAnalyzerWarning.BAD_FORMAT,
+          `Format invalide : "${f}" (uniquement ${VALID_FORMATS.join(", ")})`
+        )
+    )
+  );
 
-    let normalizedMolecules = filenames
-      .filter((f) => !invalidFormats.includes(f))
-      .map(removeExtension)
-      .map(normalizeDCI);
+  let normalizedMolecules = filenames
+    .filter((f) => !invalidFormats.includes(f))
+    .map(removeExtension)
+    .map(normalizeDCI);
 
-    const invalidMolecules = getInvalidNormalizedDci(normalizedMolecules);
+  const invalidMolecules = getInvalidNormalizedDci(normalizedMolecules);
 
-    warnings.push(
-      ...invalidMolecules.map(
-        (dci) =>
-          new ImagesAnalyzerWarning(
-            ImagesAnalyzerWarning.INVALID_MOLECULE,
-            `Molécule invalide : "${dci}" `
-          )
-      )
-    );
+  warnings.push(
+    ...invalidMolecules.map(
+      (dci) =>
+        new ImagesAnalyzerWarning(
+          ImagesAnalyzerWarning.INVALID_MOLECULE,
+          `Molécule invalide : "${dci}" `
+        )
+    )
+  );
 
-    normalizedMolecules = normalizedMolecules.filter((m) => !invalidMolecules.includes(m));
+  normalizedMolecules = normalizedMolecules.filter((m) => !invalidMolecules.includes(m));
 
-    warnings.push(
-      ...getDuplicates(normalizedMolecules).map(
-        (dup) =>
-          new ImagesAnalyzerWarning(
-            ImagesAnalyzerWarning.DUPLICATE_IMAGES,
-            `Plusieurs images pour la molécule "${dup}"`
-          )
-      )
-    );
+  warnings.push(
+    ...getDuplicates(normalizedMolecules).map(
+      (dup) =>
+        new ImagesAnalyzerWarning(
+          ImagesAnalyzerWarning.DUPLICATE_IMAGES,
+          `Plusieurs images pour la molécule "${dup}"`
+        )
+    )
+  );
 
-    getUnknownMolecules(normalizedMolecules)
-      .then((molecules) =>
-        resolve([
-          ...warnings,
-          ...molecules.map(
-            (molecule) =>
-              new ImagesAnalyzerWarning(
-                ImagesAnalyzerWarning.UNKNOWN_MOLECULES,
-                `Molécule inconnue : "${molecule}"`
-              )
-          ),
-        ])
-      )
-      .catch(reject);
-  });
+  const molecules = await getUnknownMolecules(normalizedMolecules);
+  warnings.push(
+    ...molecules.map(
+      (molecule) =>
+        new ImagesAnalyzerWarning(
+          ImagesAnalyzerWarning.UNKNOWN_MOLECULES,
+          `Molécule inconnue : "${molecule}"`
+        )
+    )
+  );
+
+  return warnings;
 }
 
 /**

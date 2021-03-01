@@ -2,7 +2,12 @@ import fs from "fs";
 
 import reader from "csv-reader";
 
-export function readCSV(filepath) {
+/**
+ * Read a csv file and return a matrix
+ * @param {string} filepath The csv file path
+ * @returns {Promise<string[][]}
+ */
+export async function readCSV(filepath) {
   return new Promise((resolve, reject) => {
     let inputStream = fs.createReadStream(filepath, "utf8").on("error", reject);
 

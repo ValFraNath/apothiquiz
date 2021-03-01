@@ -194,12 +194,8 @@ export default { importMolecules, getLastImportedFile };
 
 /**
  * Make sure molecules with an image before import always have one after
- * @returns {Promise}
  */
-function bindAlreadyExistingImages() {
-  return new Promise((resolve, reject) => {
-    getSortedFiles(path.resolve(FILES_DIR, "images"))
-      .then((images) => bindImagesToMolecules(images).then(() => resolve()))
-      .catch(reject);
-  });
+async function bindAlreadyExistingImages() {
+  const images = await getSortedFiles(path.resolve(FILES_DIR, "images"));
+  await bindImagesToMolecules(images);
 }

@@ -7,27 +7,18 @@ import { addErrorTitle } from "./Logger.js";
  * Move a file
  * @param {string} oldPath
  * @param {string} newPath
- * @return {Promise}
  */
-export function moveFile(oldPath, newPath) {
-  return new Promise((resolve, reject) => {
-    fs.rename(oldPath, newPath)
-      .then(resolve)
-      .catch((error) => reject(addErrorTitle(error, "Can't move the file")));
-  });
+export async function moveFile(oldPath, newPath) {
+  fs.rename(oldPath, newPath);
 }
 
 /**
  * Delete files
  * @param {string} filename
- * @returns {Promise}
  */
-export function deleteFiles(...filenames) {
-  return new Promise((resolve, reject) => {
-    Promise.all(filenames.map((filename) => fs.unlink(filename)))
-      .then(resolve)
-      .catch((error) => reject(addErrorTitle(error, "Can't delete files")));
-  });
+export async function deleteFiles(...filenames) {
+  await Promise.all(filenames.map((filename) => fs.unlink(filename)));
+  return;
 }
 
 /**
@@ -35,12 +26,8 @@ export function deleteFiles(...filenames) {
  * @param {string} dirname
  * @return {Promise}
  */
-export function createDir(dirname) {
-  return new Promise((resolve, reject) => {
-    fs.mkdir(dirname, { recursive: true })
-      .then(() => resolve())
-      .catch((error) => reject(addErrorTitle(error, "Can't create the directory")));
-  });
+export async function createDir(dirname) {
+  await fs.mkdir(dirname, { recursive: true });
 }
 
 /**
@@ -48,30 +35,16 @@ export function createDir(dirname) {
  * @param {string} dirpath
  * @return {Promise}
  */
-export function getSortedFiles(dirpath) {
-  return new Promise((resolve, reject) => {
-    fs.readdir(dirpath)
-      .then((files) =>
-        resolve(
-          files
-            .map(
-              (file) =>
-                new Object({
-                  name: file,
-                  time: Number(file.split(".").shift()) || 0,
-                })
-            )
-            .sort((a, b) => b.time - a.time)
-            .map((f) => f.name)
-        )
-      )
-      .catch((error) => {
-        if (error.code === "ENOENT") {
-          resolve([]);
-        }
-        reject(addErrorTitle(error, "Can't read the directory"));
-      });
-  });
+export async function getSortedFiles(dirpath) {
+  const files = await fs.readdir(dirpath);
+
+  return files
+    .map((file) => ({
+      name: file,
+      time: Number(file.split(".").shift()) || 0,
+    }))
+    .sort((a, b) => b.time - a.time)
+    .map((f) => f.name);
 }
 
 /**
