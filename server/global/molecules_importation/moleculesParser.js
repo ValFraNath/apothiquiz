@@ -27,45 +27,40 @@ const columns = [
 /**
  * Import CSV file to parse data into an object
  * @param {string} filepath The path to the file
- * @returns {Promise<Error|HeaderErrors|JSON>}
+ * @returns {Promise<JSON>}
+ * @throws {HeaderErrors}
  */
-export function parseMoleculesFromCsv(filepath) {
-  return new Promise((resolve, reject) => {
-    readCSV(filepath)
-      .then((moleculesMatrix) => {
-        const columnsHeader = moleculesMatrix.shift();
+export async function parseMoleculesFromCsv(filepath) {
+  const moleculesMatrix = await readCSV(filepath);
+  const columnsHeader = moleculesMatrix.shift();
 
-        const checker = new HeaderChecker(columnsHeader, columns);
-        if (!checker.check()) {
-          reject(checker.getErrors());
-          return;
-        }
+  const checker = new HeaderChecker(columnsHeader, columns);
+  if (!checker.check()) {
+    throw checker.getErrors();
+  }
 
-        const structure = new FileStructure(columnsHeader, columns);
+  const structure = new FileStructure(columnsHeader, columns);
 
-        moleculesMatrix = removeInvalidMoleculeLines(
-          moleculesMatrix,
-          structure.getIndexesFor("dci")[0]
-        );
+  const cleanedMoleculesMatrix = removeInvalidMoleculeLines(
+    moleculesMatrix,
+    structure.getIndexesFor("dci")[0]
+  );
 
-        const data = Object.create(null);
+  const data = Object.create(null);
 
-        const nonUniqueColumns = columns.filter((column) => !column.isUnique());
+  const nonUniqueColumns = columns.filter((column) => !column.isUnique());
 
-        for (let column of nonUniqueColumns) {
-          const creator = column.isHierarchical() ? Classification.create : Property.create;
+  for (let column of nonUniqueColumns) {
+    const creator = column.isHierarchical() ? Classification.create : Property.create;
 
-          data[column.property] = creator(
-            extractColumns(moleculesMatrix, ...structure.getIndexesFor(column.property))
-          );
-        }
+    data[column.property] = creator(
+      extractColumns(cleanedMoleculesMatrix, ...structure.getIndexesFor(column.property))
+    );
+  }
 
-        data.molecules = MoleculeList.create(moleculesMatrix, structure, data);
+  data.molecules = MoleculeList.create(cleanedMoleculesMatrix, structure, data);
 
-        resolve(JSON.stringify(data));
-      })
-      .catch(reject);
-  });
+  return JSON.stringify(data);
 }
 
 // ***** INTERNAL FUNCTIONS *****

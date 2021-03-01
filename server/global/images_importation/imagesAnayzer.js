@@ -80,15 +80,11 @@ export async function analyseImagesFilenames(filenames) {
  * @param {string[]} molecules
  * @returns {Promise<String[]>} The list of unknown molecules
  */
-function getUnknownMolecules(molecules) {
-  return new Promise((resolve, reject) => {
-    getAllMolecules()
-      .then((dbMolecules) => {
-        const normalizedDbMolecules = dbMolecules.map(normalizeDCI);
-        resolve(molecules.filter((molecule) => !normalizedDbMolecules.includes(molecule)));
-      })
-      .catch(reject);
-  });
+async function getUnknownMolecules(molecules) {
+  const dbMolecules = await getAllMolecules();
+
+  const normalizedDbMolecules = dbMolecules.map(normalizeDCI);
+  return molecules.filter((molecule) => !normalizedDbMolecules.includes(molecule));
 }
 
 /**
@@ -104,13 +100,10 @@ function getDuplicates(filenames) {
  * Fetch all molecules name in database
  * @returns {Promise<String[]>}
  */
-function getAllMolecules() {
-  return new Promise((resolve, reject) => {
-    const sql = `SELECT mo_dci FROM molecule;`;
-    queryPromise(sql)
-      .then((res) => resolve(res.map((mol) => mol.mo_dci)))
-      .catch((error) => reject(addErrorTitle(error, "Can't fetch molecules")));
-  });
+async function getAllMolecules() {
+  const sql = `SELECT mo_dci FROM molecule;`;
+  const res = await queryPromise(sql);
+  return res.map((mol) => mol.mo_dci);
 }
 
 export class ImagesAnalyzerWarning {

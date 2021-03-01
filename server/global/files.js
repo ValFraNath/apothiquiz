@@ -1,8 +1,6 @@
 import fs from "fs/promises";
 import path from "path";
 
-import { addErrorTitle } from "./Logger.js";
-
 /**
  * Move a file
  * @param {string} oldPath
