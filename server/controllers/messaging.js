@@ -101,13 +101,7 @@ function _saveMessagingTokenInDatabase(user, messagingToken = undefined) {
                  WHERE us_login = ?`;
     const arrayOfValues = messagingToken ? [messagingToken, user] : [user];
     queryPromise(sql, arrayOfValues)
-      .then((res) => {
-        if (res.affectedRows === 0) {
-          resolve(false);
-        } else {
-          resolve(true);
-        }
-      })
+      .then((res) => resolve(res.affectedRows === 0))
       .catch((error) => reject(addErrorTitle(error, "Can't update messaging token", true)));
   });
 }

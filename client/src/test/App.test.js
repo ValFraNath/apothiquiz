@@ -3,7 +3,6 @@ import { shallow, mount } from "enzyme";
 import React from "react";
 
 import App from "../App";
-te;
 
 /* eslint-disable */
 describe("Good display", () => {
