@@ -4,8 +4,8 @@ import express from "express";
 import jwt from "jsonwebtoken";
 
 import { queryPromise } from "../db/database.js";
+// eslint-disable-next-line no-unused-vars
 import { HttpResponseWrapper } from "../global/HttpControllerWrapper.js";
-import { addErrorTitle } from "../global/Logger.js";
 
 dotenv.config();
 

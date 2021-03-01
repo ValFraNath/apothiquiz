@@ -83,7 +83,7 @@ describe("Configuration tests", () => {
     expect(res.body.rounds).to.have.length(8);
     res.body.rounds.forEach((round) => expect(round).to.have.length(10));
     expect(res.body.questionTimerDuration).equals(4);
-  });
+  }).timeout(5000);
 
   it("Timer duration sent with questions", async () => {
     const res = await requestAPI("question/7");

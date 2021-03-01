@@ -98,14 +98,14 @@ apiRouter.post(
   "/import/users",
   authenticationMiddleware,
   createMulter(),
-  UsersImporterController.importUsers
+  HttpControllerWrapper(UsersImporterController.importUsers)
 );
 
 apiRouter.get(
   "/import/users",
   authenticationMiddleware,
   createMulter(),
-  UsersImporterController.getLastImportedUsers
+  HttpControllerWrapper(UsersImporterController.getLastImportedUsers)
 );
 
 apiRouter.get(

@@ -6,6 +6,7 @@ import express from "express";
 import { queryPromise } from "../db/database.js";
 import { HeaderErrors } from "../global/csv_reader/HeaderChecker.js";
 import { createDir, deleteFiles, getSortedFiles, moveFile } from "../global/files.js";
+// eslint-disable-next-line no-unused-vars
 import { HttpResponseWrapper } from "../global/HttpControllerWrapper.js";
 import { bindImagesToMolecules } from "../global/images_importation/imagesImporter.js";
 

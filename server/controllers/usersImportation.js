@@ -1,10 +1,15 @@
 import path from "path";
 
+// eslint-disable-next-line no-unused-vars
+import express from "express";
+
 import { queryPromise } from "../db/database.js";
 import { HeaderErrors } from "../global/csv_reader/HeaderChecker.js";
 import { deleteFiles, moveFile, createDir, getSortedFiles } from "../global/files.js";
+
+// eslint-disable-next-line no-unused-vars
 import { HttpResponseWrapper } from "../global/HttpControllerWrapper.js";
-import Logger, { addErrorTitle } from "../global/Logger.js";
+
 import { analyzeUsers } from "../global/users_importation/usersAnalyzer.js";
 import { createSqlToInsertAllUsers } from "../global/users_importation/usersImporter.js";
 import { parseUsersFromCsv } from "../global/users_importation/usersParser.js";
@@ -57,10 +62,10 @@ const MAX_FILE_KEPT = 15;
   }
  * @apiUse ErrorServer
  *
+ * @param {express.Request} req The http request
+ * @param {HttpResponseWrapper} res The http response
  */
-function importUsers(req, _res) {
-  const res = new HttpResponseWrapper(_res);
-
+async function importUsers(req, res) {
   const { confirmed } = req.body;
 
   if (!req.file) {
@@ -69,74 +74,54 @@ function importUsers(req, _res) {
 
   const { path: filepath, filename, originalname } = req.file;
 
-  const deleteUploadedFile = () => deleteFiles(filepath).catch(Logger.error);
+  try {
+    if (!/\.csv$/i.test(originalname)) {
+      res.sendUsageError(400, "Invalid file format: must be csv ");
+      return;
+    }
 
-  const sendServorError = (error, title) => {
-    res.sendServerError(addErrorTitle(error, title));
-    deleteUploadedFile();
-  };
+    const json = await parseUsersFromCsv(filepath);
 
-  if (!/\.csv$/i.test(originalname)) {
-    res.sendUsageError(400, "Invalid file format: must be csv ");
-    deleteUploadedFile();
-    return;
+    const data = JSON.parse(json);
+
+    if (confirmed === "true") {
+      const insertionScript = createSqlToInsertAllUsers(data);
+
+      await queryPromise(insertionScript);
+
+      await createDir(USERS_DIR);
+
+      await moveFile(filepath, path.resolve(USERS_DIR, filename));
+
+      const files = await getSortedFiles(USERS_DIR);
+
+      await deleteFiles(...files.slice(MAX_FILE_KEPT).map((file) => `${USERS_DIR}/${file}`));
+
+      res.sendResponse(201, {
+        message: "File imported",
+        warnings: [],
+        imported: true,
+      });
+    } else {
+      const warnings = analyzeUsers(data);
+      res.sendResponse(202, {
+        message: "File tested but not imported",
+        warnings,
+        imported: false,
+      });
+    }
+  } catch (error) {
+    if (HeaderErrors.isInstance(error)) {
+      res.sendUsageError(422, "Badly formatted file", {
+        errors: error.errors,
+        imported: false,
+      });
+      return;
+    }
+    throw error;
+  } finally {
+    deleteFiles(filepath).catch(() => {});
   }
-
-  let imported = false;
-  parseUsersFromCsv(filepath)
-    .then((json) => {
-      const data = JSON.parse(json);
-
-      if (confirmed === "true") {
-        const insertionScript = createSqlToInsertAllUsers(data);
-        queryPromise(insertionScript)
-          .then(() =>
-            createDir(USERS_DIR)
-              .then(() =>
-                moveFile(filepath, path.resolve(USERS_DIR, filename))
-                  .then(() =>
-                    getSortedFiles(USERS_DIR)
-                      .then((files) =>
-                        deleteFiles(
-                          ...files.slice(MAX_FILE_KEPT).map((file) => `${USERS_DIR}/${file}`)
-                        )
-                          .then(() =>
-                            res.sendResponse(201, {
-                              message: "File imported",
-                              warnings: [],
-                              imported: true,
-                            })
-                          )
-                          .catch(sendServorError)
-                      )
-                      .catch(sendServorError)
-                  )
-                  .catch(sendServorError)
-              )
-              .catch(sendServorError)
-          )
-          .catch(sendServorError);
-      } else {
-        const warnings = analyzeUsers(data);
-        res.sendResponse(202, {
-          message: "File tested but not imported",
-          warnings,
-          imported,
-        });
-        deleteUploadedFile();
-      }
-    })
-    .catch((error) => {
-      if (HeaderErrors.isInstance(error)) {
-        res.sendUsageError(422, "Badly formatted file", {
-          errors: error.errors,
-          imported,
-        });
-      } else {
-        res.sendServerError(error);
-      }
-      deleteUploadedFile();
-    });
 }
 
 /**
@@ -159,26 +144,22 @@ function importUsers(req, _res) {
       "file" : "molecules_1612279095021.csv"
     }
  *
- *
+ * @param {express.Request} req The http request
+ * @param {HttpResponseWrapper} res The http response
  */
-function getLastImportedUsers(req, _res) {
-  const res = new HttpResponseWrapper(_res);
+async function getLastImportedUsers(req, res) {
+  const files = await getSortedFiles(USERS_DIR);
+  const last = files[0];
 
-  getSortedFiles(USERS_DIR)
-    .then((files) => {
-      const last = files[0];
+  if (!last) {
+    return res.sendUsageError(404, "Aucun utilisateur n'a déjà été importé");
+  }
 
-      if (!last) {
-        return res.sendUsageError(404, "Aucun utilisateur n'a déjà été importé");
-      }
-
-      res.sendResponse(200, {
-        url: `${req.protocol}://${req.get("host")}/api/v1/files/users/${last}`,
-        shortpath: `/api/v1/files/users/${last}`,
-        file: last,
-      });
-    })
-    .catch(res.sendServerError);
+  res.sendResponse(200, {
+    url: `${req.protocol}://${req.get("host")}/api/v1/files/users/${last}`,
+    shortpath: `/api/v1/files/users/${last}`,
+    file: last,
+  });
 }
 
 export default { importUsers, getLastImportedUsers };
