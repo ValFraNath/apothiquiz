@@ -8,6 +8,8 @@ import Logger, { addErrorTitle } from "../global/Logger.js";
 
 const __dirname = path.resolve();
 
+const UPDATES_FILES_DIR = path.resolve(__dirname, "db", "updates");
+
 dotenv.config();
 
 // Be sure to add a new version at the end of this array (it must be sorted)
@@ -40,31 +42,22 @@ export const connection = mysql.createConnection({
 /**
  * Connect the server to the database
  */
-function connect() {
-  return new Promise((resolve, reject) => {
-    connection.connect((error) => {
-      if (error) {
-        return reject(addErrorTitle(error, "Can't connect to the database"));
-      }
+async function connect() {
+  return new Promise((resolve) => {
+    connection.connect(async (error) => {
+      if (error) throw error;
+
       Logger.info("Connected to database!");
 
-      getSystemInformation("api_version")
-        .then((dbVersion) => {
-          if (dbVersion === null) {
-            create()
-              .then(() =>
-                update()
-                  .then(() => resolve())
-                  .catch((error) => reject(addErrorTitle(error, "Can't update the database")))
-              )
-              .catch((error) => reject(addErrorTitle(error, "Can't create the database")));
-          } else {
-            update(dbVersion)
-              .then(() => resolve())
-              .catch((error) => reject(addErrorTitle(error, "Can't update the database")));
-          }
-        })
-        .catch((error) => reject(addErrorTitle(error, "Can't get the api version")));
+      const dbVersion = await getSystemInformation("api_version");
+
+      if (dbVersion === null) {
+        await create();
+        await update();
+      } else {
+        await update(dbVersion);
+      }
+      resolve();
     });
   });
 }
@@ -72,20 +65,16 @@ function connect() {
 /**
  * Create the database
  */
-function create() {
-  return new Promise((resolve, reject) => {
-    fs.readFile(path.resolve("db", "create_database.sql"), { encoding: "utf-8" })
-      .then((script) => {
-        Logger.info("Creation of database... ");
-        queryPromise(script)
-          .then(() => {
-            Logger.info("-> Database created!");
-            resolve();
-          })
-          .catch((error) => reject(addErrorTitle(error, "Can't create the database")));
-      })
-      .catch((error) => reject(addErrorTitle(error, "Can't read the database creation script")));
+async function create() {
+  const script = await fs.readFile(path.resolve("db", "create_database.sql"), {
+    encoding: "utf-8",
   });
+
+  Logger.info("Creation of database... ");
+
+  await queryPromise(script);
+
+  Logger.info("-> Database created!");
 }
 
 /**
@@ -94,73 +83,58 @@ function create() {
  * @param {String} key the name of the information
  * @return {Promise<Number|String|null>} The value of the information, or null if the information is not found
  */
-export function getSystemInformation(key) {
-  return new Promise(function (resolve, reject) {
-    const sql = "SELECT value   \
+export async function getSystemInformation(key) {
+  const sql = "SELECT value   \
        FROM server_informations \
        WHERE `key` = ? ;";
 
-    queryPromise(sql, [key])
-      .then((res) => {
-        if (res[0] && res[0].value) {
-          resolve(res[0].value);
-        } else {
-          resolve(null);
-        }
-      })
-      .catch((error) => {
-        if (error.code === "ER_NO_SUCH_TABLE") {
-          resolve(null);
-        } else {
-          reject(addErrorTitle(error, "Can't get system information"));
-        }
-      });
-  });
+  try {
+    const res = await queryPromise(sql, [key]);
+    if (res[0] && res[0].value) {
+      return res[0].value;
+    }
+    return null;
+  } catch (error) {
+    if (error.code === "ER_NO_SUCH_TABLE") {
+      return null;
+    }
+    throw error;
+  }
 }
 
 /**
  * Update the database if needed
  * @param {String} version The current database version, if undefined it use the first version
  */
-function update(version = versions[0]) {
-  return new Promise((resolve, reject) => {
-    if (version === currentAPIVersion()) {
-      Logger.info("Database is up to date!");
-      return resolve();
-    }
+async function update(version = versions[0]) {
+  if (version === currentAPIVersion()) {
+    Logger.info("Database is up to date!");
+    return;
+  }
 
-    if (!versions.includes(version)) {
-      reject(addErrorTitle(new Error("Invalid database version found"), "Can't update database"));
-      return;
-    }
+  if (!versions.includes(version)) {
+    throw new Error("Invalid database version found");
+  }
 
-    let i = versions.indexOf(version) + 1;
-    (function updateRecursively() {
-      if (i === versions.length) {
-        Logger.info("-> Database updated!\n");
-        return resolve();
-      }
-      Logger.info(`Update database from ${versions[i - 1]} to ${versions[i]}... `);
-      fs.readFile(
-        path.resolve(
-          __dirname,
-          "db",
-          "updates",
-          `db_${versions[i - 1].split("-").join("")}_to_${versions[i].split("-").join("")}.sql`
-        ),
-        { encoding: "utf-8" }
-      )
-        .then((script) =>
-          queryPromise(script)
-            .then(() => {
-              i++;
-              updateRecursively();
-            })
-            .catch((error) => reject(addErrorTitle(error, "Can't update the database")))
-        )
-        .catch((error) => reject(addErrorTitle(error, "Can't read the update file")));
-    })();
-  });
+  let i = versions.indexOf(version) + 1;
+
+  while (i < version.length) {
+    Logger.info(`Update database from ${versions[i - 1]} to ${versions[i]}... `);
+
+    const updateFileName = `db_${versions[i - 1].split("-").join("")}_to_${versions[i]
+      .split("-")
+      .join("")}.sql`;
+
+    const script = await fs.readFile(path.resolve(UPDATES_FILES_DIR, updateFileName), {
+      encoding: "utf-8",
+    });
+
+    await queryPromise(script);
+    i++;
+  }
+
+  Logger.info("-> Database updated!\n");
+  return;
 }
 
 /**
@@ -169,12 +143,10 @@ function update(version = versions[0]) {
  * @param {Array<String>|Object} values? optional values to be given put into the request placeholders
  * @return {Promise<Array>} The result if success, the error otherwise
  */
-export function queryPromise(sql, values = []) {
+export async function queryPromise(sql, values = []) {
   return new Promise(function (resolve, reject) {
-    connection.query(sql, values, function (err, res) {
-      if (err) {
-        reject(addErrorTitle(err, "MySql error"));
-      }
+    connection.query(sql, values, (error, res) => {
+      if (error) reject(error);
       resolve(res);
     });
   });
