@@ -8,21 +8,13 @@ import Loading from "../components/status/Loading";
 import PageError from "../components/status/PageError";
 
 const TestConnection = () => {
-  function getServerInformations() {
-    return new Promise((resolve, reject) => {
-      axios
-        .get(`/api/v1/status`)
-        .then((res) => {
-          resolve({
-            serverStatus: res.data.status,
-            currentServerAPIVersion: res.data.apiVersion,
-          });
-        })
-        .catch((err) => {
-          console.log(err);
-          reject(err);
-        });
-    });
+  async function getServerInformations() {
+    const res = await axios.get(`/api/v1/status`);
+
+    return {
+      serverStatus: res.data.status,
+      currentServerAPIVersion: res.data.apiVersion,
+    };
   }
 
   const [isEnabled, setIsEnabled] = useState(false);

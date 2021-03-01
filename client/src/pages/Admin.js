@@ -366,29 +366,23 @@ export default Admin;
  * @param {string} endpoint The endpoint to request
  * @returns {string} The data url
  */
-function getLastImportedFile(endpoint) {
-  return new Promise((resolve, reject) => {
-    axios
-      .get(endpoint)
-      .then((res) => {
-        const { token } = AuthService.getCurrentUser();
-        fetch(res.data.shortpath, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-          .then((res) => {
-            if (res.status !== 200) {
-              res.json().then((error) => reject(error));
-              return;
-            }
-            res
-              .blob()
-              .then((data) => resolve(window.URL.createObjectURL(data)))
-              .catch(reject);
-          })
-          .catch(reject);
-      })
-      .catch(reject);
+async function getLastImportedFile(endpoint) {
+  let {
+    data: { shortpath },
+  } = await axios.get(endpoint);
+
+  const { token } = AuthService.getCurrentUser();
+
+  const res = await fetch(shortpath, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
+
+  if (res.status !== 200) {
+    throw await res.json();
+  }
+
+  const data = await res.blob();
+  return window.URL.createObjectURL(data);
 }
