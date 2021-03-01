@@ -118,7 +118,7 @@ async function update(version = versions[0]) {
 
   let i = versions.indexOf(version) + 1;
 
-  while (i < version.length) {
+  while (i < version.length - 1) {
     Logger.info(`Update database from ${versions[i - 1]} to ${versions[i]}... `);
 
     const updateFileName = `db_${versions[i - 1].split("-").join("")}_to_${versions[i]
