@@ -59,8 +59,8 @@ const About = () => {
   return (
     <main id="informations">
       <p>
-        Guacamole est une application d'apprentissage réflexe à destination des étudiants en
-        pharmacie de l'Université de Franche-Comté.
+        Guacamole <i>(nom temporaire)</i> est une application d'apprentissage réflexe à destination
+        des étudiants en pharmacie de l'Université de Franche-Comté.
       </p>
       <p>Elle est réalisée dans le cadre d'un projet tutoré de Licence 3 Informatique 2020-2021.</p>
       <p>

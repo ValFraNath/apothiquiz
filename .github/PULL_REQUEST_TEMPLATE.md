@@ -7,4 +7,4 @@
 
 - [ ] New item
 - [ ] Updated [API documentation](https://github.com/ValFraNath/guacamole-api-docs)
-- [ ] Updated [Wiki](https://github.com/ValFraNath/glowing-octo-guacamole/wiki)
+- [ ] Updated [Wiki](https://github.com/ValFraNath/guacamole/wiki)
