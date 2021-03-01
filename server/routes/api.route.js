@@ -18,15 +18,27 @@ apiRouter.get("/status", HttpControllerWrapper(ApiController.status));
 
 apiRouter.get("/question/:type", HttpControllerWrapper(QuestionController.generateQuestion));
 
-apiRouter.get("/users/", authenticationMiddleware, UserController.getAll);
+apiRouter.get("/users/", authenticationMiddleware, HttpControllerWrapper(UserController.getAll));
 
-apiRouter.post("/users/", authenticationMiddleware, UserController.severalGetInfos);
+apiRouter.post(
+  "/users/",
+  authenticationMiddleware,
+  HttpControllerWrapper(UserController.severalGetInfos)
+);
 
-apiRouter.post("/users/login", UserController.login);
+apiRouter.post("/users/login", HttpControllerWrapper(UserController.login));
 
-apiRouter.get("/users/:pseudo", authenticationMiddleware, UserController.getInfos);
+apiRouter.get(
+  "/users/:pseudo",
+  authenticationMiddleware,
+  HttpControllerWrapper(UserController.getInfos)
+);
 
-apiRouter.patch("/users/:pseudo", authenticationMiddleware, UserController.saveInfos);
+apiRouter.patch(
+  "/users/:pseudo",
+  authenticationMiddleware,
+  HttpControllerWrapper(UserController.saveInfos)
+);
 
 apiRouter.post(
   "/duels/new",

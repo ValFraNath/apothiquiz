@@ -1,4 +1,6 @@
 import dotenv from "dotenv";
+// eslint-disable-next-line no-unused-vars
+import express from "express";
 import jwt from "jsonwebtoken";
 
 import { queryPromise } from "../db/database.js";
@@ -21,31 +23,31 @@ dotenv.config();
  * @apiError   (401) IncorrectPassword
  * @apiError   (404) UserNotFound
  * @apiUse ErrorServer
+ *
+ * @param {express.Request} req The http request
+ * @param {HttpResponseWrapper} res The http response
  */
-function login(req, _res) {
-  const res = new HttpResponseWrapper(_res);
+async function login(req, res) {
   const { userPseudo, userPassword } = req.body;
 
   if (!userPseudo || !userPassword) {
     return res.sendUsageError(401, "Bad request format.");
   }
 
-  doesUserExist(userPseudo)
-    .then((userExists) => {
-      if (userExists) {
-        if (queryCAS(userPseudo, userPassword)) {
-          res.sendResponse(200, {
-            pseudo: userPseudo,
-            token: jwt.sign({ pseudo: userPseudo }, process.env.TOKEN_PRIVATE_KEY),
-          });
-        } else {
-          res.sendUsageError(401, "Authentication failed");
-        }
-      } else {
-        res.sendUsageError(404, "User not found.");
-      }
-    })
-    .catch(res.sendServerError);
+  const userExists = await doesUserExist(userPseudo);
+
+  if (userExists) {
+    if (queryCAS(userPseudo, userPassword)) {
+      res.sendResponse(200, {
+        pseudo: userPseudo,
+        token: jwt.sign({ pseudo: userPseudo }, process.env.TOKEN_PRIVATE_KEY),
+      });
+    } else {
+      res.sendUsageError(401, "Authentication failed");
+    }
+  } else {
+    res.sendUsageError(404, "User not found.");
+  }
 }
 
 /**
@@ -71,9 +73,10 @@ function login(req, _res) {
  * @apiSuccess (200) {object[]} users  All users in an array
  *
  * @apiUse ErrorServer
+ *
+ * @param {HttpResponseWrapper} res The http response
  */
-function getAll(_, _res) {
-  const res = new HttpResponseWrapper(_res);
+async function getAll(_, res) {
   const sql =
     "SELECT us_login AS pseudo, \
             us_victories AS victories, \
@@ -81,20 +84,20 @@ function getAll(_, _res) {
             us_avatar AS avatar \
       FROM user \
       WHERE us_deleted IS NULL;";
-  queryPromise(sql)
-    .then((sqlRes) => {
-      const usersData = {};
-      for (let value of sqlRes) {
-        usersData[value.pseudo] = {
-          pseudo: value.pseudo,
-          victories: Number(value.victories),
-          defeats: Number(value.defeats),
-          avatar: JSON.parse(value.avatar),
-        };
-      }
-      res.sendResponse(200, usersData);
-    })
-    .catch((error) => res.sendUsageError(error));
+
+  const sqlRes = await queryPromise(sql);
+  const usersData = {};
+
+  for (let value of sqlRes) {
+    usersData[value.pseudo] = {
+      pseudo: value.pseudo,
+      victories: Number(value.victories),
+      defeats: Number(value.defeats),
+      avatar: JSON.parse(value.avatar),
+    };
+  }
+
+  res.sendResponse(200, usersData);
 }
 
 /**
@@ -107,9 +110,11 @@ function getAll(_, _res) {
  * @apiSuccess (200) {object[]} users  All users in an array
  *
  * @apiUse ErrorServer
+ *
+ * @param {express.Request} req The http request
+ * @param {HttpResponseWrapper} res The http response
  */
-function severalGetInfos(req, _res) {
-  const res = new HttpResponseWrapper(_res);
+async function severalGetInfos(req, res) {
   const listOfUsers = req.body;
   if (
     !Array.isArray(listOfUsers) ||
@@ -128,22 +133,18 @@ function severalGetInfos(req, _res) {
                WHERE us_deleted IS NULL
                AND (${sqlWhere.join(" OR ")})`;
 
-  queryPromise(sql, listOfUsers)
-    .then((sqlRes) => {
-      const usersData = {};
-      for (let value of sqlRes) {
-        usersData[value.pseudo] = {
-          pseudo: value.pseudo,
-          victories: Number(value.victories),
-          defeats: Number(value.defeats),
-          avatar: JSON.parse(value.avatar),
-        };
-      }
-      res.sendResponse(200, usersData);
-    })
-    .catch((error) => {
-      res.sendServerError(error);
-    });
+  const sqlRes = await queryPromise(sql, listOfUsers);
+
+  const usersData = {};
+  for (let value of sqlRes) {
+    usersData[value.pseudo] = {
+      pseudo: value.pseudo,
+      victories: Number(value.victories),
+      defeats: Number(value.defeats),
+      avatar: JSON.parse(value.avatar),
+    };
+  }
+  res.sendResponse(200, usersData);
 }
 
 /**
@@ -155,22 +156,21 @@ function severalGetInfos(req, _res) {
  *
  * @apiUse GetUserSuccess
  * @apiError (404) UserNotFound User not found
+ *
+ * @param {express.Request} req The http request
+ * @param {HttpResponseWrapper} res The http response
  */
-function getInfos(req, _res) {
-  const res = new HttpResponseWrapper(_res);
+async function getInfos(req, res) {
   let user = String(req.params.pseudo);
   if (user === "me") {
     user = req.body.authUser;
   }
 
-  getUserInformations(user)
-    .then((infos) => {
-      if (!infos) {
-        return res.sendUsageError(404, "User not found");
-      }
-      res.sendResponse(200, infos);
-    })
-    .catch(res.sendServerError);
+  const infos = await getUserInformations(user);
+  if (!infos) {
+    return res.sendUsageError(404, "User not found");
+  }
+  res.sendResponse(200, infos);
 }
 
 /**
@@ -197,10 +197,12 @@ function getInfos(req, _res) {
  * @apiUse ErrorBadRequest
  * @apiError (404) NotFound   User not found
  * @apiUse ErrorServer
+ * 
+ * @param {express.Request} req The http request
+ * @param {HttpResponseWrapper} res The http response
  */
-function saveInfos(req, _res) {
-  const res = new HttpResponseWrapper(_res);
-  var user = String(req.params.pseudo);
+async function saveInfos(req, res) {
+  let user = String(req.params.pseudo);
   if (user === "me") {
     user = req.body.authUser;
   }
@@ -234,14 +236,11 @@ function saveInfos(req, _res) {
     }
   }
 
-  getUserInformations(user)
-    .then((infos) => {
-      infos.avatar = avatar || infos.avatar;
-      updateUserAvatar(user, infos.avatar)
-        .then(() => res.sendResponse(200, infos))
-        .catch(res.sendServerError);
-    })
-    .catch(res.sendServerError);
+  const infos = await getUserInformations(user);
+  infos.avatar = avatar || infos.avatar;
+
+  await updateUserAvatar(user, infos.avatar);
+  res.sendResponse(200, infos);
 }
 
 export default { login, saveInfos, getInfos, getAll, severalGetInfos };
@@ -253,18 +252,22 @@ export default { login, saveInfos, getInfos, getAll, severalGetInfos };
  * @param {string} login The user login
  * @returns {Promise<boolean>} True if the user exists, false otherwise
  */
-function doesUserExist(login) {
-  return new Promise((resolve, reject) => {
-    const sql = `SELECT COUNT(*) as found 
+async function doesUserExist(login) {
+  const sql = `SELECT COUNT(*) as found 
                   FROM user                
                   WHERE us_login = ?
                   AND us_deleted IS NULL;`;
-    queryPromise(sql, [login])
-      .then((res) => resolve(res[0].found > 0))
-      .catch((error) => reject(addErrorTitle(error, "Can't check if the user exists")));
-  });
+
+  const res = await queryPromise(sql, [login]);
+  return res[0].found > 0;
 }
 
+/**
+ * This funtion simulate the CAS authentication
+ * @param {string} login The user login
+ * @param {string} pass The user password
+ * @returns {boolean} Boolean telling if the user is well authenticated
+ */
 function queryCAS(login, pass) {
   return pass === "1234";
 }
@@ -275,16 +278,12 @@ function queryCAS(login, pass) {
  * @param {object} avatar The avatar object
  * @returns {Promise}
  */
-function updateUserAvatar(user, avatar) {
-  return new Promise((resolve, reject) => {
-    const sql = `UPDATE user 
+async function updateUserAvatar(user, avatar) {
+  const sql = `UPDATE user 
                   SET us_avatar = ?      
                   WHERE us_login = ?;`;
 
-    queryPromise(sql, [JSON.stringify(avatar), user])
-      .then(() => resolve())
-      .catch((error) => reject(addErrorTitle(error, "Can't update user avatar")));
-  });
+  await queryPromise(sql, [JSON.stringify(avatar), user]);
 }
 
 /**
@@ -292,9 +291,8 @@ function updateUserAvatar(user, avatar) {
  * @param {String} pseudo ENT login of the user
  * @return {Object|null} user informations or null if user not found
  */
-function getUserInformations(pseudo) {
-  return new Promise((resolve, reject) => {
-    const sql = `SELECT 
+async function getUserInformations(pseudo) {
+  const sql = `SELECT 
                   us_login AS pseudo, 
                   us_victories AS victories,    
                   us_defeats AS defeats, 
@@ -303,22 +301,16 @@ function getUserInformations(pseudo) {
                 WHERE us_login = ?
                 AND us_deleted IS NULL;`;
 
-    queryPromise(sql, [pseudo])
-      .then((res) => {
-        if (res.length !== 1) {
-          resolve(null);
-          return;
-        }
+  const res = await queryPromise(sql, [pseudo]);
 
-        const result = {
-          pseudo: res[0].pseudo,
-          victories: Number(res[0].victories),
-          defeats: Number(res[0].defeats),
-          avatar: JSON.parse(res[0].avatar),
-        };
+  if (res.length !== 1) {
+    return null;
+  }
 
-        resolve(result);
-      })
-      .catch((error) => reject(addErrorTitle(error, "Can't get user informations")));
-  });
+  return {
+    pseudo: res[0].pseudo,
+    victories: Number(res[0].victories),
+    defeats: Number(res[0].defeats),
+    avatar: JSON.parse(res[0].avatar),
+  };
 }

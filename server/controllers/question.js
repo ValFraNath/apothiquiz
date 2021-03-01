@@ -1,10 +1,13 @@
 import fs from "fs/promises";
 import path from "path";
 
+// eslint-disable-next-line no-unused-vars
+import express from "express";
+
 import { fetchConfigFromDB } from "../controllers/config.js";
 import { queryPromise } from "../db/database.js";
+// eslint-disable-next-line no-unused-vars
 import { HttpResponseWrapper } from "../global/HttpControllerWrapper.js";
-import { addErrorTitle } from "../global/Logger.js";
 
 const generatorInfosByType = {
   1: {
