@@ -115,8 +115,6 @@ messaging.onBackgroundMessage((payload) => {
     data: payload.data,
   };
 
-  console.log(payload);
-
   self.registration
     .showNotification(title, options)
     .catch((err) => console.error("Can't send notification: ", err));

@@ -1,5 +1,5 @@
 ALTER TABLE `user`
-ADD `us_messaging_token` VARCHAR(255) NULL DEFAULT FALSE
+ADD `us_messaging_token` VARCHAR(255) NULL DEFAULT NULL
 AFTER `us_avatar`;
 
 

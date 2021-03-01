@@ -72,6 +72,6 @@ class MessagingHandler {
   }
 }
 
-MessagingHandler.SERVICE_ACCOUNT_KEY_FILE = "files/serviceAccountKey.json";
+MessagingHandler.SERVICE_ACCOUNT_KEY_FILE = "files-config/serviceAccountKey.json";
 
 export default MessagingHandlerFactory;

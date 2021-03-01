@@ -360,7 +360,10 @@ function createRounds(config) {
     const types = createShuffledQuestionTypesArray();
     const rounds = [];
 
+    console.log(types);
+
     (function createRoundsRecursively() {
+      console.log(types);
       if (types.length === 0) {
         reject(new NotEnoughDataError());
       }

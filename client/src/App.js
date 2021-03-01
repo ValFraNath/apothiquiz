@@ -8,7 +8,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import "./styles/styles.scss";
 import ButtonFullWidth from "./components/buttons/ButtonFullWidth";
 import FullScreenMessage from "./components/FullScreenMessage";
-import Notification from "./components/Notification";
+import NotificationForeground from "./components/NotificationForeground";
 import ProtectedRoute from "./components/ProtectedRoute";
 import TopBar from "./components/system/TopBar";
 import About from "./pages/About";
@@ -89,7 +89,7 @@ export default class App extends Component {
       Notification.permission !== "denied"
     ) {
       if (this.state.user) {
-        if (Notification.permission === "default") {
+        if (Notification.permission !== "granted") {
           this.setState({ requireNotificationPermission: true });
         } else {
           messaging.saveToken();
@@ -115,6 +115,7 @@ export default class App extends Component {
    * Display the notification authorization request
    */
   displayBrowserNotificationPermission = () => {
+    console.log(Notification);
     Notification.requestPermission()
       .then(() => {
         this.setState({ requireNotificationPermission: false });
@@ -177,7 +178,7 @@ export default class App extends Component {
           )}
 
           {foregroundNotification !== null && (
-            <Notification
+            <NotificationForeground
               title={foregroundNotification.title}
               text={foregroundNotification.body}
               closeNotification={() => this.setState({ foregroundNotification: null })}

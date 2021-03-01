@@ -2,7 +2,7 @@ import { Cross1Icon } from "@modulz/radix-icons";
 import { PropTypes } from "prop-types";
 import React, { useState, useEffect } from "react";
 
-const Notification = ({ title, text, closeNotification }) => {
+const NotificationForeground = ({ title, text, closeNotification }) => {
   const [timer, setTimer] = useState(10);
 
   useEffect(() => {
@@ -31,10 +31,10 @@ const Notification = ({ title, text, closeNotification }) => {
   );
 };
 
-Notification.propTypes = {
+NotificationForeground.propTypes = {
   title: PropTypes.string.isRequired,
   text: PropTypes.string.isRequired,
   closeNotification: PropTypes.func.isRequired,
 };
 
-export default Notification;
+export default NotificationForeground;

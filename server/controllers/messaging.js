@@ -35,7 +35,7 @@ function updateToken(req, _res) {
     return res.sendUsageError(400, "Missing messaging token");
   }
 
-  saveMessagingTokenInDatabase(user, messagingToken)
+  _saveMessagingTokenInDatabase(user, messagingToken)
     .then((isUpdated) => {
       if (isUpdated) {
         res.sendResponse(200, {
@@ -76,7 +76,7 @@ function removeToken(req, _res) {
     return res.sendUsageError(400, "Missing user");
   }
 
-  saveMessagingTokenInDatabase(user)
+  _saveMessagingTokenInDatabase(user)
     .then((isUpdated) => {
       if (isUpdated) {
         res.sendResponse(200, {
@@ -94,7 +94,7 @@ export default { updateToken, removeToken };
 
 // ***** INTERNAL FUNCTIONS *****
 
-function saveMessagingTokenInDatabase(user, messagingToken = undefined) {
+function _saveMessagingTokenInDatabase(user, messagingToken = undefined) {
   return new Promise((resolve, reject) => {
     const sql = `UPDATE user
                  SET us_messaging_token = ${messagingToken ? "?" : "NULL"}
