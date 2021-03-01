@@ -129,7 +129,7 @@ async function importImages(req, res) {
  *
  * @apiSuccessExample Success-Response:
  *  {
-      "url": "https://glowing-octo-guacamole.com/api/v1/files/images/images-archive.zip",
+      "url": "https://guacamole.com/api/v1/files/images/images-archive.zip",
       "shortpath" : "/api/v1/files/images/images-archive.zip",
       "file" : "images-archive.zip"
     }
