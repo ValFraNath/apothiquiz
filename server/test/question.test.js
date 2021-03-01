@@ -9,7 +9,8 @@ chai.use(chaiHttp);
 const { expect } = chai;
 
 describe("Question generation with empty database", () => {
-  before("Remove all data", (done) => {
+  before("Remove all data", function (done) {
+    this.timeout(10000);
     forceTruncateTables(
       "molecule",
       "class",
@@ -32,7 +33,8 @@ describe("Question generation", function () {
   // Only question types we can generate with current data
   const questionTypes = [1, 2, 3, 5, 6, 7, 8, 9];
 
-  before("Import data", (done) => {
+  before("Import data", function (done) {
+    this.timeout(10000);
     forceTruncateTables(
       "molecule",
       "class",

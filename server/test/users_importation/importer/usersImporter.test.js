@@ -40,7 +40,8 @@ const tests = [
 describe("Users Importer", () => {
   for (const test of tests) {
     describe(`File ${test.file}`, () => {
-      before("Clear users and their data", (done) => {
+      before("Clear users and their data", function (done) {
+        this.timeout(10000);
         forceTruncateTables("user", "results", "duel").then(() => done());
       });
 
@@ -71,7 +72,8 @@ describe("Users Importer", () => {
 });
 
 describe("Users deleted after new import", () => {
-  before("Clear users and their data", (done) => {
+  before("Clear users and their data", function (done) {
+    this.timeout(10000);
     forceTruncateTables("user", "results", "duel").then(() => done());
   });
 

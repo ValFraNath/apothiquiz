@@ -23,7 +23,8 @@ const files = [
 
 for (let file of files) {
   describe("Data are well imported in database", function () {
-    before("Import data", (done) => {
+    before("Import data", function (done) {
+      this.timeout(10000);
       forceTruncateTables(
         "molecule",
         "property",
