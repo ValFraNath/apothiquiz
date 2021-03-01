@@ -143,7 +143,6 @@ PlayView.propTypes = {
   getNewQuestion: PropTypes.func.isRequired,
   addUserAnswer: PropTypes.func.isRequired,
   displaySummury: PropTypes.func.isRequired,
-  timer: PropTypes.number.isRequired,
   questionNum: PropTypes.number.isRequired,
 };
 

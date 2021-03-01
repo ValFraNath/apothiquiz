@@ -54,7 +54,7 @@ export function makeGetDuelDetails(duelId) {
     const { data: users } = await axios.post("/api/v1/users/", [currentUser.pseudo, opponent]);
 
     return {
-      opponent: users.data[opponent],
+      opponent: users[opponent],
       currentUserScore: duel.userScore,
       opponentScore: duel.opponentScore,
       // eslint-disable-next-line eqeqeq
