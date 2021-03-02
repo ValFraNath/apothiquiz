@@ -61,7 +61,7 @@ async function start() {
  */
 async function connect() {
   return new Promise((resolve, reject) => {
-    connection.connect(async (error) => {
+    connection.connect((error) => {
       if (error) {
         return reject(error);
       }
