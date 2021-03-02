@@ -34,15 +34,22 @@ export async function createDir(dirname) {
  * @return {Promise}
  */
 export async function getSortedFiles(dirpath) {
-  const files = await fs.readdir(dirpath);
+  try {
+    const files = await fs.readdir(dirpath);
 
-  return files
-    .map((file) => ({
-      name: file,
-      time: Number(file.split(".").shift()) || 0,
-    }))
-    .sort((a, b) => b.time - a.time)
-    .map((f) => f.name);
+    return files
+      .map((file) => ({
+        name: file,
+        time: Number(file.split(".").shift()) || 0,
+      }))
+      .sort((a, b) => b.time - a.time)
+      .map((f) => f.name);
+  } catch (error) {
+    if (error.code === "ENOENT") {
+      return [];
+    }
+    throw error;
+  }
 }
 
 /**
