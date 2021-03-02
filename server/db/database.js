@@ -48,19 +48,21 @@ async function connect() {
       if (error) {
         return reject(error);
       }
+      try {
+        Logger.info("Connected to database!");
 
-      Logger.info("Connected to database!");
+        const dbVersion = await getSystemInformation("api_version");
 
-      const dbVersion = await getSystemInformation("api_version").catch(reject);
-
-      if (dbVersion === null) {
-        await create().catch(reject);
-        await update().catch(reject);
-      } else {
-        await update(dbVersion).catch(reject);
+        if (dbVersion === null) {
+          await create();
+          await update();
+        } else {
+          await update(dbVersion);
+        }
+        resolve();
+      } catch (error) {
+        reject(error);
       }
-
-      resolve();
     });
   });
 }
@@ -147,7 +149,7 @@ async function update(version = versions[0]) {
  * @return {Promise<Array>} The result if success, the error otherwise
  */
 export async function queryPromise(sql, values = []) {
-  return new Promise(function (resolve, reject) {
+  return new Promise((resolve, reject) => {
     connection.query(sql, values, (error, res) => {
       if (error) {
         return reject(error);
