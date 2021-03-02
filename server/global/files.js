@@ -7,7 +7,7 @@ import path from "path";
  * @param {string} newPath
  */
 export async function moveFile(oldPath, newPath) {
-  fs.rename(oldPath, newPath);
+  await fs.rename(oldPath, newPath);
 }
 
 /**

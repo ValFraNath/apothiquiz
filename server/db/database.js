@@ -4,7 +4,7 @@ import path from "path";
 import dotenv from "dotenv";
 import mysql from "mysql";
 
-import Logger, { addErrorTitle } from "../global/Logger.js";
+import Logger from "../global/Logger.js";
 
 const __dirname = path.resolve();
 
@@ -43,20 +43,23 @@ export const connection = mysql.createConnection({
  * Connect the server to the database
  */
 async function connect() {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     connection.connect(async (error) => {
-      if (error) throw error;
+      if (error) {
+        return reject(error);
+      }
 
       Logger.info("Connected to database!");
 
-      const dbVersion = await getSystemInformation("api_version");
+      const dbVersion = await getSystemInformation("api_version").catch(reject);
 
       if (dbVersion === null) {
-        await create();
-        await update();
+        await create().catch(reject);
+        await update().catch(reject);
       } else {
-        await update(dbVersion);
+        await update(dbVersion).catch(reject);
       }
+
       resolve();
     });
   });
@@ -146,7 +149,9 @@ async function update(version = versions[0]) {
 export async function queryPromise(sql, values = []) {
   return new Promise(function (resolve, reject) {
     connection.query(sql, values, (error, res) => {
-      if (error) reject(error);
+      if (error) {
+        return reject(error);
+      }
       resolve(res);
     });
   });
