@@ -1,6 +1,5 @@
 import { queryPromise } from "../../db/database.js";
 import { removeExtension } from "../files.js";
-import { addErrorTitle } from "../Logger.js";
 
 import {
   normalizeDCI,

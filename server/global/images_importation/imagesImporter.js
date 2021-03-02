@@ -4,8 +4,6 @@ import { queryPromise } from "../../db/database.js";
 
 import { removeExtension } from "../files.js";
 
-import { addErrorTitle } from "../Logger.js";
-
 import { normalizeDCI } from "../molecules_importation/moleculesAnalyzer.js";
 
 import { isFormatValid } from "./imagesAnayzer.js";
