@@ -10,7 +10,8 @@ const { expect } = chai;
 const FILES_DIR = path.resolve("test", "config", "files");
 
 describe("Configuration tests", () => {
-  before("Clear & insert data", (done) => {
+  before("Clear & insert data", function (done) {
+    this.timeout(10000);
     forceTruncateTables(
       "molecule",
       "class",
