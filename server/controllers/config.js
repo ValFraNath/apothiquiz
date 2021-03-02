@@ -165,9 +165,9 @@ export default { setConfig, fetchConfig };
 export async function fetchConfigFromDB() {
   const sql = "SELECT * FROM server_informations WHERE server_informations.key LIKE 'config%';";
 
-  const res = await queryPromise(sql);
+  const config = await queryPromise(sql);
   const toNumber = (x) => (Number.isNaN(Number(x)) ? null : Number(x));
-  const getValue = (key) => toNumber(res.find((row) => row.key === key)?.value);
+  const getValue = (key) => toNumber(config.find((row) => row.key === key)?.value);
 
   return {
     questionsPerRound: getValue("config_duel_questions_per_round"),

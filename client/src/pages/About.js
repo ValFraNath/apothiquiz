@@ -9,11 +9,13 @@ import PageError from "../components/status/PageError";
 
 const TestConnection = () => {
   async function getServerInformations() {
-    const res = await axios.get(`/api/v1/status`);
+    const {
+      data: { status, apiVersion },
+    } = await axios.get(`/api/v1/status`);
 
     return {
-      serverStatus: res.data.status,
-      currentServerAPIVersion: res.data.apiVersion,
+      serverStatus: status,
+      currentServerAPIVersion: apiVersion,
     };
   }
 
