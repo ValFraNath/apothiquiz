@@ -40,6 +40,23 @@ export const connection = mysql.createConnection({
 });
 
 /**
+ * Connect the server to the database and update it
+ */
+async function start() {
+  await connect();
+  Logger.info("Connected to database!");
+
+  const dbVersion = await getSystemInformation("api_version");
+
+  if (dbVersion === null) {
+    await create();
+    await update();
+  } else {
+    await update(dbVersion);
+  }
+}
+
+/**
  * Connect the server to the database
  */
 async function connect() {
@@ -48,21 +65,7 @@ async function connect() {
       if (error) {
         return reject(error);
       }
-      try {
-        Logger.info("Connected to database!");
-
-        const dbVersion = await getSystemInformation("api_version");
-
-        if (dbVersion === null) {
-          await create();
-          await update();
-        } else {
-          await update(dbVersion);
-        }
-        resolve();
-      } catch (error) {
-        reject(error);
-      }
+      resolve();
     });
   });
 }
@@ -191,4 +194,4 @@ connection.config.queryFormat = function (query, values) {
   );
 };
 
-export default { connect };
+export default { connect: start };
