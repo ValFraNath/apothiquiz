@@ -35,15 +35,17 @@ class FileImporter extends Component {
 
     axios
       .post(this.props.endpoint, requestData)
-      .then((res) => {
-        const warnings = res.data.warnings.map((w) => `[${w.code}] - ${w.message}`);
+      .then(({ data: { imported, warnings: receivedWarnings } }) => {
+        const warnings = receivedWarnings.map((w) => `[${w.code}] - ${w.message}`);
+
         this.setState({
           warnings,
           errors: [],
           canConfirm: !this.state.canConfirm,
-          imported: res.data.imported,
+          imported,
         });
-        if (res.data.imported && this.props.onImport) {
+
+        if (imported && this.props.onImport) {
           this.props.onImport();
         }
       })
@@ -205,8 +207,8 @@ const Configuration = ({ lastImport }) => {
   useEffect(() => {
     axios
       .get("/api/v1/config")
-      .then((res) => {
-        setConfig(res.data);
+      .then(({ data }) => {
+        setConfig(data);
         setIsSaved(false);
       })
       .catch(console.error);
@@ -221,8 +223,8 @@ const Configuration = ({ lastImport }) => {
 
     axios
       .patch("/api/v1/config/", body)
-      .then((res) => {
-        setConfig(res.data);
+      .then(({ data }) => {
+        setConfig(data);
         setIsSaved(true);
       })
       .catch(console.error);
@@ -366,29 +368,23 @@ export default Admin;
  * @param {string} endpoint The endpoint to request
  * @returns {string} The data url
  */
-function getLastImportedFile(endpoint) {
-  return new Promise((resolve, reject) => {
-    axios
-      .get(endpoint)
-      .then((res) => {
-        const { token } = AuthService.getCurrentUser();
-        fetch(res.data.shortpath, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-          .then((res) => {
-            if (res.status !== 200) {
-              res.json().then((error) => reject(error));
-              return;
-            }
-            res
-              .blob()
-              .then((data) => resolve(window.URL.createObjectURL(data)))
-              .catch(reject);
-          })
-          .catch(reject);
-      })
-      .catch(reject);
+async function getLastImportedFile(endpoint) {
+  let {
+    data: { shortpath },
+  } = await axios.get(endpoint);
+
+  const { token } = AuthService.getCurrentUser();
+
+  const res = await fetch(shortpath, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
+
+  if (res.status !== 200) {
+    throw await res.json();
+  }
+
+  const data = await res.blob();
+  return window.URL.createObjectURL(data);
 }

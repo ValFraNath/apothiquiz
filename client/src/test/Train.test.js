@@ -27,6 +27,7 @@ describe("Train component", () => {
         subject: "Décoloration dents",
         type: 6,
         wording: "Quelle molécule a comme effet indésirable 'Décoloration dents' ?",
+        timerDuration: 10,
       },
     });
 

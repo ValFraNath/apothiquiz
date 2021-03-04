@@ -3,7 +3,7 @@ import Logger from "./Logger.js";
 /**
  * Class wrapping the response object
  */
-export default class HttpResponseWrapper {
+export class HttpResponseWrapper {
   constructor(res) {
     this.original = res;
     this.sendServerError = this.sendServerError.bind(this);
@@ -33,3 +33,12 @@ export default class HttpResponseWrapper {
     return this.original.status(Number(status) || 200).json(body);
   }
 }
+
+export default (controller) => async (req, res, next) => {
+  const wrappedResponse = new HttpResponseWrapper(res);
+  try {
+    await controller(req, wrappedResponse, next);
+  } catch (e) {
+    wrappedResponse.sendServerError(e);
+  }
+};
