@@ -331,15 +331,13 @@ async function createRounds(config) {
       throw new NotEnoughDataError();
     }
 
-    await createRound(types.pop(), config)
-      .then((round) => {
-        rounds.push(round);
-      })
-      .catch((error) => {
-        if (!NotEnoughDataError.isInstance(error)) {
-          throw error;
-        }
-      });
+    try {
+      rounds.push(await createRound(types.pop(), config));
+    } catch (error) {
+      if (!NotEnoughDataError.isInstance(error)) {
+        throw error;
+      }
+    }
   }
 
   return rounds;

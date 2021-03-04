@@ -36,17 +36,18 @@ async function login(req, res) {
 
   const userExists = await doesUserExist(userPseudo);
 
-  if (userExists) {
-    if (queryCAS(userPseudo, userPassword)) {
-      res.sendResponse(200, {
-        pseudo: userPseudo,
-        token: jwt.sign({ pseudo: userPseudo }, process.env.TOKEN_PRIVATE_KEY),
-      });
-    } else {
-      res.sendUsageError(401, "Authentication failed");
-    }
-  } else {
+  if (!userExists) {
     res.sendUsageError(404, "User not found.");
+    return;
+  }
+
+  if (queryCAS(userPseudo, userPassword)) {
+    res.sendResponse(200, {
+      pseudo: userPseudo,
+      token: jwt.sign({ pseudo: userPseudo }, process.env.TOKEN_PRIVATE_KEY),
+    });
+  } else {
+    res.sendUsageError(401, "Authentication failed");
   }
 }
 

@@ -107,7 +107,14 @@ async function importMolecules(req, res) {
     const json = await parseMoleculesFromCsv(filepath);
     const data = JSON.parse(json);
 
-    if (confirmed === "true") {
+    if (confirmed !== "true") {
+      const warnings = analyzeData(data);
+      res.sendResponse(202, {
+        message: "File tested but not imported",
+        warnings,
+        imported: false,
+      });
+    } else {
       const sql = createSqlToInsertAllData(data);
       await queryPromise(sql);
 
@@ -127,13 +134,6 @@ async function importMolecules(req, res) {
         message: "File imported",
         warnings: [],
         imported: true,
-      });
-    } else {
-      const warnings = analyzeData(data);
-      res.sendResponse(202, {
-        message: "File tested but not imported",
-        warnings,
-        imported: false,
       });
     }
   } catch (error) {

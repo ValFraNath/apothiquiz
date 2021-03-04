@@ -79,7 +79,15 @@ async function importImages(req, res) {
   const deleteUploadedFiles = () => deleteFiles(...req.files.map((f) => f.path)).catch(() => {});
 
   try {
-    if (confirmed === "true") {
+    if (confirmed !== "true") {
+      const warnings = await analyseImagesFilenames(ogNames);
+
+      res.sendResponse(202, {
+        message: "Images tested but not imported ",
+        warnings,
+        imported: false,
+      });
+    } else {
       await createDir(IMAGES_DIR_PATH);
 
       const imported = await bindImagesToMolecules(ogNames);
@@ -100,14 +108,6 @@ async function importImages(req, res) {
       });
 
       updateNumberOfRoundsPerDuel().catch(Logger.error);
-    } else {
-      const warnings = await analyseImagesFilenames(ogNames);
-
-      res.sendResponse(202, {
-        message: "Images tested but not imported ",
-        warnings,
-        imported: false,
-      });
     }
   } finally {
     deleteUploadedFiles();
