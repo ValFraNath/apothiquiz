@@ -1,11 +1,15 @@
 import path from "path";
 
+// eslint-disable-next-line no-unused-vars
+import express from "express";
+
 import { queryPromise } from "../db/database.js";
 import { HeaderErrors } from "../global/csv_reader/HeaderChecker.js";
 import { createDir, deleteFiles, getSortedFiles, moveFile } from "../global/files.js";
-import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
+// eslint-disable-next-line no-unused-vars
+import { HttpResponseWrapper } from "../global/HttpControllerWrapper.js";
 import { bindImagesToMolecules } from "../global/images_importation/imagesImporter.js";
-import Logger, { addErrorTitle } from "../global/Logger.js";
+
 import { analyzeData } from "../global/molecules_importation/moleculesAnalyzer.js";
 import { createSqlToInsertAllData } from "../global/molecules_importation/moleculesImporter.js";
 import { parseMoleculesFromCsv } from "../global/molecules_importation/moleculesParser.js";
@@ -79,10 +83,11 @@ const MAX_FILE_KEPT = 15;
   }
  * @apiUse ErrorServer
  *
+ * @param {express.Request} req The http request
+ * @param {HttpResponseWrapper} res The http response
+ * 
  */
-function importMolecules(req, _res) {
-  const res = new HttpResponseWrapper(_res);
-
+async function importMolecules(req, res) {
   const { confirmed } = req.body;
 
   if (!req.file) {
@@ -91,84 +96,58 @@ function importMolecules(req, _res) {
 
   const { path: filepath, filename, originalname } = req.file;
 
-  const deleteUploadedFile = () => deleteFiles(filepath).catch(Logger.error);
+  const deleteUploadedFile = () => deleteFiles(filepath).catch(() => {});
 
-  const sendServorError = (error, title) => {
-    res.sendServerError(addErrorTitle(error, title));
-    deleteUploadedFile();
-  };
+  try {
+    if (!/\.csv$/i.test(originalname)) {
+      res.sendUsageError(400, "Invalid file format : must be csv ");
+      return;
+    }
 
-  if (!/\.csv$/i.test(originalname)) {
-    res.sendUsageError(400, "Invalid file format : must be csv ");
+    const json = await parseMoleculesFromCsv(filepath);
+    const data = JSON.parse(json);
+
+    if (confirmed !== "true") {
+      const warnings = analyzeData(data);
+      res.sendResponse(202, {
+        message: "File tested but not imported",
+        warnings,
+        imported: false,
+      });
+    } else {
+      const sql = createSqlToInsertAllData(data);
+      await queryPromise(sql);
+
+      await bindAlreadyExistingImages();
+
+      await createDir(MOLECULES_DIR);
+
+      await moveFile(filepath, path.resolve(MOLECULES_DIR, filename));
+
+      const files = await getSortedFiles(MOLECULES_DIR);
+
+      await deleteFiles(...files.slice(MAX_FILE_KEPT).map((file) => `${MOLECULES_DIR}/${file}`));
+
+      await updateNumberOfRoundsPerDuel();
+
+      res.sendResponse(201, {
+        message: "File imported",
+        warnings: [],
+        imported: true,
+      });
+    }
+  } catch (error) {
+    if (HeaderErrors.isInstance(error)) {
+      res.sendUsageError(422, "Badly formatted file", {
+        errors: error.errors,
+        imported: false,
+      });
+    } else {
+      throw error;
+    }
+  } finally {
     deleteUploadedFile();
-    return;
   }
-
-  let imported = false;
-  parseMoleculesFromCsv(filepath)
-    .then((json) => {
-      const data = JSON.parse(json);
-
-      if (confirmed === "true") {
-        const sql = createSqlToInsertAllData(data);
-        queryPromise(sql)
-          .then(() =>
-            bindAlreadyExistingImages()
-              .then(() =>
-                createDir(MOLECULES_DIR)
-                  .then(() =>
-                    moveFile(filepath, path.resolve(MOLECULES_DIR, filename))
-                      .then(() =>
-                        getSortedFiles(MOLECULES_DIR)
-                          .then((files) =>
-                            deleteFiles(
-                              ...files
-                                .slice(MAX_FILE_KEPT)
-                                .map((file) => `${MOLECULES_DIR}/${file}`)
-                            )
-                              .then(() =>
-                                updateNumberOfRoundsPerDuel()
-                                  .then(() =>
-                                    res.sendResponse(201, {
-                                      message: "File imported",
-                                      warnings: [],
-                                      imported: true,
-                                    })
-                                  )
-                                  .catch(sendServorError)
-                              )
-                              .catch(sendServorError)
-                          )
-                          .catch(sendServorError)
-                      )
-                      .catch(sendServorError)
-                  )
-                  .catch(sendServorError)
-              )
-              .catch(sendServorError)
-          )
-          .catch(sendServorError);
-      } else {
-        const warnings = analyzeData(data);
-        res.sendResponse(202, {
-          message: "File tested but not imported",
-          warnings,
-          imported,
-        });
-        deleteUploadedFile();
-      }
-    })
-    .catch((error) => {
-      if (HeaderErrors.isInstance(error)) {
-        res.sendUsageError(422, "Badly formatted file", {
-          errors: error.errors,
-          imported,
-        });
-      } else {
-        res.sendServerError(error);
-      }
-      deleteUploadedFile();
-    });
 }
 
 /**
@@ -191,25 +170,22 @@ function importMolecules(req, _res) {
       "file" : "molecules_1612279095021.csv"
     }
  *
- *
+ * @param {express.Request} req The http request
+ * @param {HttpResponseWrapper} res The http response
  */
-function getLastImportedFile(req, _res) {
-  const res = new HttpResponseWrapper(_res);
-  getSortedFiles(MOLECULES_DIR)
-    .then((files) => {
-      const last = files[0];
+async function getLastImportedFile(req, res) {
+  const files = await getSortedFiles(MOLECULES_DIR);
+  const last = files[0];
 
-      if (!last) {
-        return res.sendUsageError(404, "Aucune molécule n'a déjà été importée");
-      }
+  if (!last) {
+    return res.sendUsageError(404, "Aucune molécule n'a déjà été importée");
+  }
 
-      res.sendResponse(200, {
-        url: `${req.protocol}://${req.get("host")}/api/v1/files/molecules/${last}`,
-        shortpath: `/api/v1/files/molecules/${last}`,
-        file: last,
-      });
-    })
-    .catch(res.sendServerError);
+  res.sendResponse(200, {
+    url: `${req.protocol}://${req.get("host")}/api/v1/files/molecules/${last}`,
+    shortpath: `/api/v1/files/molecules/${last}`,
+    file: last,
+  });
 }
 
 export default { importMolecules, getLastImportedFile };
@@ -218,12 +194,8 @@ export default { importMolecules, getLastImportedFile };
 
 /**
  * Make sure molecules with an image before import always have one after
- * @returns {Promise}
  */
-function bindAlreadyExistingImages() {
-  return new Promise((resolve, reject) => {
-    getSortedFiles(path.resolve(FILES_DIR, "images"))
-      .then((images) => bindImagesToMolecules(images).then(() => resolve()))
-      .catch(reject);
-  });
+async function bindAlreadyExistingImages() {
+  const images = await getSortedFiles(path.resolve(FILES_DIR, "images"));
+  await bindImagesToMolecules(images);
 }

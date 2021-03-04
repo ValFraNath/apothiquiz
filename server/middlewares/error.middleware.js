@@ -1,4 +1,4 @@
-import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
+import { HttpResponseWrapper } from "../global/HttpControllerWrapper.js";
 
 /**
  * Catch the thrown error and return a 400 error if
