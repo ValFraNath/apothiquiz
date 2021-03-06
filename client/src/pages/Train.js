@@ -50,6 +50,11 @@ class PlayView extends Component {
     let { inProgress } = this.state;
 
     if (!inProgress) return false;
+
+    if (value === 8) {
+      return false;
+    }
+
     if (value === 0) {
       this.props.addUserAnswer(this.state.currentQuestion, null);
       inProgress = false;
@@ -214,9 +219,9 @@ class Train extends Component {
     this.state = {
       gameState: Train.STATE_INTRO,
       question: { answers: [], goodAnswerIndex: -1, subject: "", type: 0 },
-      result: { good: [], bad: [] },
+      result: { good: ["", "", "", "", "", ""], bad: ["", "", ""] },
       error: null,
-      questionNum: 0,
+      questionNum: 9,
     };
   }
 
@@ -225,32 +230,42 @@ class Train extends Component {
    * @param {number} nthRetry The number of attempts
    */
   getNewQuestion = (nthRetry = 0) => {
-    const minQuestionType = 1,
-      maxQuestionType = 10;
+    const fakeQuestion = {
+      answers: [],
+      goodAnswer: 0,
+      subject: "LEVOFLOXACINE",
+      timerDuration: 10,
+      title: "SLR(1) - 3 grammaires",
+      type: 9,
+      wording: "Laquelle de ces grammaires n'est pas SLR(1) ?",
+    };
 
-    const questionType =
-      Math.floor(Math.random() * (maxQuestionType + 1 - minQuestionType)) + minQuestionType;
-    axios
-      .get(`/api/v1/question/${questionType}`)
-      .then(({ data: question }) => {
-        this.setState({
-          gameState: Train.STATE_PLAY,
-          question,
-          inProgress: true,
-          lastClicked: "",
-          error: null,
-          questionNum: this.state.questionNum + 1,
-        });
-      })
-      .catch((error) => {
-        if (error.response?.status === 422 && nthRetry < 10) {
-          this.getNewQuestion(nthRetry + 1);
-          return;
-        }
-        this.setState({
-          error: "Impossible de récupérer les données depuis le serveur.",
-        });
-      });
+    // const minQuestionType = 1,
+    //   maxQuestionType = 10;
+
+    // const questionType =
+    //   Math.floor(Math.random() * (maxQuestionType + 1 - minQuestionType)) + minQuestionType;
+    // axios
+    //   .get(`/api/v1/question/${questionType}`)
+    //   .then(({ data: question }) => {
+    this.setState({
+      gameState: Train.STATE_PLAY,
+      question: fakeQuestion,
+      inProgress: true,
+      lastClicked: "",
+      error: null,
+      questionNum: this.state.questionNum + 1,
+    });
+    // })
+    // .catch((error) => {
+    //   if (error.response?.status === 422 && nthRetry < 10) {
+    //     this.getNewQuestion(nthRetry + 1);
+    //     return;
+    //   }
+    //   this.setState({
+    //     error: "Impossible de récupérer les données depuis le serveur.",
+    //   });
+    // });
   };
 
   /**

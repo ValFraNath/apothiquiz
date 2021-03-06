@@ -1,6 +1,10 @@
 import PropTypes from "prop-types";
 import React from "react";
 
+import Grammar1 from "../../images/grammar-1.png";
+import Grammar2 from "../../images/grammar-2.png";
+import Grammar3 from "../../images/grammar-3.png";
+
 /* ---------- Buttons ---------- */
 
 const AnswerBtn = ({ value, isRight, showResult, onClick }) => {
@@ -32,7 +36,16 @@ AnswerBtn.propTypes = {
 const Answers = ({ inProgress, answers, goodAnswerIndex, lastClicked, onClick }) => {
   return (
     <div id="quiz-answers">
-      {answers.map((value, index) => (
+      <button>
+        <img src={Grammar1} alt="Grammar1" />
+      </button>
+      <button>
+        <img src={Grammar2} alt="Grammar2" />
+      </button>
+      <button>
+        <img src={Grammar3} alt="Grammar3" />
+      </button>
+      {/* {answers.map((value, index) => (
         <AnswerBtn
           key={index}
           value={value}
@@ -40,7 +53,7 @@ const Answers = ({ inProgress, answers, goodAnswerIndex, lastClicked, onClick })
           showResult={!inProgress && (index === goodAnswerIndex || lastClicked === value)}
           onClick={onClick}
         />
-      ))}
+      ))} */}
     </div>
   );
 };

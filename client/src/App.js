@@ -116,7 +116,7 @@ export default class App extends Component {
             <ProtectedRoute path="/admin" exact component={Admin} />
           </Switch>
         </Router>
-        <ReactQueryDevtools initialIsOpen={false} />
+        {/* <ReactQueryDevtools initialIsOpen={false} /> */}
       </QueryClientProvider>
     );
   }

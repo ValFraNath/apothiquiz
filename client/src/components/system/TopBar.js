@@ -13,7 +13,7 @@ const UserBadge = ({ username }) => {
   return (
     <Link to="/profile" id={"userBadge"}>
       <Avatar size="32px" infos={user?.avatar} />
-      <span>{username}</span>
+      <span>dpager</span>
     </Link>
   );
 };
@@ -89,9 +89,9 @@ const TopBar = ({ username }) => (
   <nav>
     {username ? <UserBadge username={username} /> : <span></span>}
     <h1>
-      <Link to={username ? "/homepage" : "/"}>Guacamole</Link>
+      <Link to={username ? "/homepage" : "/"}>Guacamaire</Link>
     </h1>
-    <OfflineBanner />
+    {/* <OfflineBanner /> */}
   </nav>
 );
 
