@@ -30,9 +30,9 @@ describe("User test", function () {
           expect(res.status, res.error).to.be.equal(200);
 
           expect(Object.keys(res.body)).to.contains("pseudo");
-          expect(Object.keys(res.body)).to.contains("token");
+          expect(Object.keys(res.body)).to.contains("accessToken");
 
-          let decodedToken = jwt.verify(res.body.token, process.env.TOKEN_PRIVATE_KEY);
+          let decodedToken = jwt.verify(res.body.accessToken, process.env.ACCESS_TOKEN_KEY);
 
           expect(Object.keys(decodedToken)).to.contains("pseudo");
           expect(decodedToken.pseudo).to.be.equal("fpoguet");

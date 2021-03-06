@@ -6,6 +6,7 @@ import jwt from "jsonwebtoken";
 import { queryPromise } from "../db/database.js";
 // eslint-disable-next-line no-unused-vars
 import { HttpResponseWrapper } from "../global/HttpControllerWrapper.js";
+import Tokens from "../global/Tokens.js";
 
 dotenv.config();
 
@@ -17,8 +18,9 @@ dotenv.config();
  * @apiParam {string} userPseudo    ENT Login
  * @apiParam {string} userPassword  ENT password
  *
- * @apiSuccess (200) {string} pseudo  the ENT login
- * @apiSuccess (200) {string} token   the user token
+ * @apiSuccess (200) {string} pseudo  			the ENT login
+ * @apiSuccess (200) {string} accessToken   the user access token
+ * * @apiSuccess (200) {string} refreshToken   the user refresh token
  *
  * @apiError   (401) IncorrectPassword
  * @apiError   (404) UserNotFound
@@ -42,13 +44,40 @@ async function login(req, res) {
   }
 
   if (queryCAS(userPseudo, userPassword)) {
+    const accessToken = Tokens.createAccessToken(userPseudo);
+    const refreshToken = await Tokens.createRefreshToken(userPseudo);
+
     res.sendResponse(200, {
       pseudo: userPseudo,
-      token: jwt.sign({ pseudo: userPseudo }, process.env.TOKEN_PRIVATE_KEY),
+      accessToken,
+      refreshToken,
     });
   } else {
     res.sendUsageError(401, "Authentication failed");
   }
+}
+
+/**
+ * @param {express.Request} req The http request
+ * @param {HttpResponseWrapper} res The http response
+ */
+async function generateAccessToken(req, res) {
+  const { refreshToken } = req.body;
+
+  if (!refreshToken) {
+    return res.sendUsageError(400, "Refresh token is missing");
+  }
+
+  const tokenExists = await Tokens.doesRefreshTokenExist(refreshToken);
+
+  if (!tokenExists) {
+    return res.sendUsageError(400, "Invalid or expired refresh token");
+  }
+
+  const user = Tokens.getUserFromRefreshToken(refreshToken);
+  const accessToken = Tokens.createAccessToken(user);
+
+  res.sendResponse(200, { accessToken });
 }
 
 /**
@@ -244,7 +273,7 @@ async function saveInfos(req, res) {
   res.sendResponse(200, infos);
 }
 
-export default { login, saveInfos, getInfos, getAll, severalGetInfos };
+export default { login, generateAccessToken, saveInfos, getInfos, getAll, severalGetInfos };
 
 // ***** INTERNAL FUNCTIONS *****
 

@@ -15,11 +15,19 @@ function createAccessToken(login) {
 /**
  * Create a refresh token for a given user
  * @param {string} login The user login
- * @returns {string} The token
+ * @returns {Promise<string>} The token
  */
-function createRefreshToken(login) {
-  const key = process.env.ACCESS_TOKEN_KEY;
-  return jwt.sign({ user: login }, key, { expiresIn: "1d" });
+async function createRefreshToken(login) {
+  const key = process.env.REFRESH_TOKEN_KEY;
+  const token = jwt.sign({ user: login }, key);
+  console.log(token);
+  const sql = "INSERT IGNORE INTO token VALUES (?,?);";
+  await queryPromise(sql, [token, login]);
+  return token;
+}
+
+function getUserFromRefreshToken(refreshToken) {
+  return jwt.verify(refreshToken, process.env.REFRESH_TOKEN_KEY).user;
 }
 
 /**
@@ -28,9 +36,10 @@ function createRefreshToken(login) {
  * @param {return} boolean
  */
 async function doesRefreshTokenExist(refreshToken) {
-  const sql = `SELECT COUNT(*) as exists FROM refresh_token WHERE to_value = ?;`;
-  const { exists } = await queryPromise(sql, [refreshToken]);
-  if (Number(exists)) {
+  const sql = `SELECT COUNT(*) as tokenExists FROM token WHERE to_value = ?`;
+
+  const { tokenExists } = (await queryPromise(sql, [refreshToken]))[0];
+  if (Number(tokenExists)) {
     return true;
   }
   return false;
@@ -45,4 +54,10 @@ async function deleteToken(refreshToken) {
   await queryPromise(sql, [refreshToken]);
 }
 
-export default { createAccessToken, createRefreshToken, doesRefreshTokenExist, deleteToken };
+export default {
+  createAccessToken,
+  createRefreshToken,
+  getUserFromRefreshToken,
+  doesRefreshTokenExist,
+  deleteToken,
+};

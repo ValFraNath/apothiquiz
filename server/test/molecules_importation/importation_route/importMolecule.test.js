@@ -7,7 +7,7 @@ import mocha from "mocha";
 
 import { queryPromise } from "../../../db/database.js";
 import app from "../../../index.js";
-import { forceTruncateTables, insertData, requestAPI } from "../../index.test.js";
+import { forceTruncateTables, getToken, insertData, requestAPI } from "../../index.test.js";
 
 const { expect } = chai;
 const { describe, it, before } = mocha;
@@ -17,19 +17,11 @@ const __dirname = path.resolve("test", "molecules_importation", "importation_rou
 // TODO test import with non admin user
 describe("Import molecule", () => {
   let mytoken;
-  before("Insert users data & get token", function (done) {
+  before("Insert users data & get token", async function () {
     this.timeout(10000);
-    forceTruncateTables("user").then(() =>
-      insertData("users.sql").then(async () => {
-        const res = await requestAPI("users/login", {
-          body: { userPseudo: "fpoguet", userPassword: "1234" },
-          method: "post",
-        });
-        mytoken = res.body.token;
-
-        done();
-      })
-    );
+    await forceTruncateTables("user");
+    await insertData("users.sql");
+    mytoken = await getToken("fpoguet", "1234");
   });
 
   it("Can upload file", async () => {

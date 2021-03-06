@@ -1,5 +1,5 @@
 CREATE TABLE `token` ( 
-	`to_value` VARCHAR(64) NOT NULL , 
+	`to_value` VARCHAR(256) NOT NULL , 
 	`us_login` VARCHAR(32) COLLATE utf8_bin NOT NULL , 
 	PRIMARY KEY (`to_value`),
 	FOREIGN KEY (`us_login`) REFERENCES `user`(`us_login`)
