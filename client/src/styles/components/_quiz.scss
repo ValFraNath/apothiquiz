@@ -103,9 +103,13 @@ $timer-size: 100px;
   flex-direction: column;
   margin-top: 1.2rem;
 
+  // .katex-html {
+  //   display: none;
+  // }
+
   button {
     padding: 1rem 0.8rem;
-    text-transform: capitalize;
+    // text-transform: capitalize;
     text-align: left;
     font-size: 1rem;
     border: 3px solid $button-bg;
@@ -116,6 +120,13 @@ $timer-size: 100px;
 
     &:last-child {
       margin-bottom: 0;
+    }
+
+    line-height: 1.5em;
+
+    ul {
+      list-style: "— ";
+      margin-left: 3.5rem;
     }
 
     &:before {

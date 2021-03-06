@@ -1,7 +1,8 @@
 import { ArrowRightIcon, CheckCircledIcon, CrossCircledIcon, ExitIcon } from "@modulz/radix-icons";
-import axios from "axios";
 import PropTypes from "prop-types";
 import React, { Component } from "react";
+
+import Latex from "react-latex";
 
 import ButtonCircle from "../components/buttons/ButtonCircle";
 import ButtonDefault from "../components/buttons/ButtonDefault";
@@ -231,23 +232,55 @@ class Train extends Component {
    */
   getNewQuestion = (nthRetry = 0) => {
     const fakeQuestion = {
-      answers: [],
+      answers: [
+        <>
+          <Latex>{"$G = (\\{E, H, M\\}, \\{ =, *, id\\}, E, R)$ avec $R$: "}</Latex>
+          <ul>
+            <li>
+              <Latex>$E → H = M | M$</Latex>
+            </li>
+            <li>
+              <Latex>$H → *M | id$</Latex>
+            </li>
+            <li>
+              <Latex>$M → H$</Latex>
+            </li>
+          </ul>
+        </>,
+        <>
+          <Latex>{"$G = (\\{S, L\\}, \\{ (, ), atom\\}, S, R)$ avec $R$ :"}</Latex>
+          <ul>
+            <li>
+              <Latex>$S → (L) | atom$</Latex>
+            </li>
+            <li>
+              <Latex>$L → SL | \varepsilon$</Latex>
+            </li>
+          </ul>
+        </>,
+        <>
+          <Latex>{"$G = (\\{E, T, F\\}, \\{ +, x, (, ), id\\}, E, R)$ avec $R$ :"}</Latex>
+          <ul>
+            <li>
+              <Latex>$E → E + T | T$</Latex>
+            </li>
+            <li>
+              <Latex>$T → T * F | F$</Latex>
+            </li>
+            <li>
+              <Latex>$F → (E) | id$</Latex>
+            </li>
+          </ul>
+        </>,
+      ],
       goodAnswer: 0,
       subject: "LEVOFLOXACINE",
       timerDuration: 10,
       title: "SLR(1) - 3 grammaires",
       type: 9,
-      wording: "Laquelle de ces grammaires n'est pas SLR(1) ?",
+      wording: <Latex output="html">Laquelle de ces grammaires n'est pas $SLR(1)$ ?</Latex>,
     };
 
-    // const minQuestionType = 1,
-    //   maxQuestionType = 10;
-
-    // const questionType =
-    //   Math.floor(Math.random() * (maxQuestionType + 1 - minQuestionType)) + minQuestionType;
-    // axios
-    //   .get(`/api/v1/question/${questionType}`)
-    //   .then(({ data: question }) => {
     this.setState({
       gameState: Train.STATE_PLAY,
       question: fakeQuestion,
@@ -256,16 +289,6 @@ class Train extends Component {
       error: null,
       questionNum: this.state.questionNum + 1,
     });
-    // })
-    // .catch((error) => {
-    //   if (error.response?.status === 422 && nthRetry < 10) {
-    //     this.getNewQuestion(nthRetry + 1);
-    //     return;
-    //   }
-    //   this.setState({
-    //     error: "Impossible de récupérer les données depuis le serveur.",
-    //   });
-    // });
   };
 
   /**

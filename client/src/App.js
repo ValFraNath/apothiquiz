@@ -2,7 +2,6 @@ import { ReloadIcon } from "@modulz/radix-icons";
 import axios from "axios";
 import React, { Component } from "react";
 import { QueryClientProvider } from "react-query";
-import { ReactQueryDevtools } from "react-query/devtools";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 import "./styles/styles.scss";
@@ -116,7 +115,6 @@ export default class App extends Component {
             <ProtectedRoute path="/admin" exact component={Admin} />
           </Switch>
         </Router>
-        {/* <ReactQueryDevtools initialIsOpen={false} /> */}
       </QueryClientProvider>
     );
   }
