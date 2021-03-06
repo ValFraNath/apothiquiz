@@ -19,16 +19,11 @@ const propertiesId = {
 /**
  * Parse a csv file and create the sql script to insert it in database
  * @param {string} filename The csv file to parse
- * @returns {string} The sql script
+ * @returns {Promise<string>} The sql script
  */
-export function parseAndCreateSqlToInsertAllData(filename) {
-  return new Promise((resolve, reject) => {
-    parseMoleculesFromCsv(filename)
-      .then((json) => {
-        resolve(createSqlToInsertAllData(JSON.parse(json)));
-      })
-      .catch(reject);
-  });
+export async function parseAndCreateSqlToInsertAllData(filename) {
+  const json = await parseMoleculesFromCsv(filename);
+  return createSqlToInsertAllData(JSON.parse(json));
 }
 
 /**
