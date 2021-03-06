@@ -52,10 +52,6 @@ class PlayView extends Component {
 
     if (!inProgress) return false;
 
-    if (value === 8) {
-      return false;
-    }
-
     if (value === 0) {
       this.props.addUserAnswer(this.state.currentQuestion, null);
       inProgress = false;
@@ -274,7 +270,7 @@ class Train extends Component {
         </>,
       ],
       goodAnswer: 0,
-      subject: "LEVOFLOXACINE",
+      subject: "SLR1",
       timerDuration: 10,
       title: "SLR(1) - 3 grammaires",
       type: 9,
