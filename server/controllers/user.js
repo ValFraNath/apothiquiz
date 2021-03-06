@@ -48,7 +48,7 @@ async function login(req, res) {
     const refreshToken = await Tokens.createRefreshToken(userPseudo);
 
     res.sendResponse(200, {
-      pseudo: userPseudo,
+      user: userPseudo,
       accessToken,
       refreshToken,
     });

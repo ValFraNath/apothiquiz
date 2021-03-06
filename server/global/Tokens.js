@@ -20,7 +20,6 @@ function createAccessToken(login) {
 async function createRefreshToken(login) {
   const key = process.env.REFRESH_TOKEN_KEY;
   const token = jwt.sign({ user: login }, key);
-  console.log(token);
   const sql = "INSERT IGNORE INTO token VALUES (?,?);";
   await queryPromise(sql, [token, login]);
   return token;

@@ -6,7 +6,7 @@ import chaiHttp from "chai-http";
 
 import { queryPromise } from "../../../db/database.js";
 import app from "../../../index.js";
-import { forceTruncateTables, insertData, requestAPI } from "../../index.test.js";
+import { forceTruncateTables, getToken, insertData, requestAPI } from "../../index.test.js";
 
 const { expect } = chai;
 
@@ -17,19 +17,12 @@ const __dirname = path.resolve("test", "users_importation", "importation_route")
 // TODO test import with non admin user
 describe("Import users", () => {
   let mytoken;
-  before("Insert users data & get token", function (done) {
+  before("Insert users data & get token", async function () {
     this.timeout(10000);
-    forceTruncateTables("user").then(() =>
-      insertData("users.sql").then(async () => {
-        const res = await requestAPI("users/login", {
-          body: { userPseudo: "fpoguet", userPassword: "1234" },
-          method: "post",
-        });
-        mytoken = res.body.token;
+    await forceTruncateTables("user");
+    await insertData("users.sql");
 
-        done();
-      })
-    );
+    mytoken = await getToken("fpoguet");
   });
 
   it("Can upload file", async () => {

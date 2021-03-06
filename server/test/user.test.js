@@ -28,14 +28,13 @@ describe("User test", function () {
             throw err;
           }
           expect(res.status, res.error).to.be.equal(200);
-
-          expect(Object.keys(res.body)).to.contains("pseudo");
+          expect(Object.keys(res.body)).to.contains("user");
           expect(Object.keys(res.body)).to.contains("accessToken");
 
           let decodedToken = jwt.verify(res.body.accessToken, process.env.ACCESS_TOKEN_KEY);
 
-          expect(Object.keys(decodedToken)).to.contains("pseudo");
-          expect(decodedToken.pseudo).to.be.equal("fpoguet");
+          expect(Object.keys(decodedToken)).to.contains("user");
+          expect(decodedToken.user).to.be.equal("fpoguet");
 
           done();
         });
@@ -105,11 +104,10 @@ describe("User test", function () {
         method: "post",
       });
       expect(res.status).to.be.equal(200);
-
-      expect(Object.keys(res.body)).to.contains("pseudo");
-      expect(Object.keys(res.body)).to.contains("token");
+      expect(Object.keys(res.body)).to.contains("user");
+      expect(Object.keys(res.body)).to.contains("accessToken");
       // eslint-disable-next-line prefer-destructuring
-      token = res.body.token;
+      token = res.body.accessToken;
     });
 
     it("All users exist", async function () {
@@ -180,9 +178,9 @@ describe("User test", function () {
 
           expect(res.status, res.error).to.be.equal(200);
 
-          expect(Object.keys(res.body)).to.contains("pseudo");
-          expect(Object.keys(res.body)).to.contains("token");
-          token = "Bearer " + res.body.token;
+          expect(Object.keys(res.body)).to.contains("user");
+          expect(Object.keys(res.body)).to.contains("accessToken");
+          token = "Bearer " + res.body.accessToken;
 
           done();
         });
@@ -277,9 +275,9 @@ describe("User test", function () {
 
           expect(res.status, res.error).to.be.equal(200);
 
-          expect(Object.keys(res.body)).to.contains("pseudo");
-          expect(Object.keys(res.body)).to.contains("token");
-          token = "Bearer " + res.body.token;
+          expect(Object.keys(res.body)).to.contains("user");
+          expect(Object.keys(res.body)).to.contains("accessToken");
+          token = "Bearer " + res.body.accessToken;
 
           done();
         });
