@@ -40,7 +40,7 @@ startServer();
  */
 async function startServer() {
   try {
-    await Database.connect();
+    await Database.start();
     app.listen(PORT, () => {
       app.isReady = true;
       Logger.info(`Server is running on port ${PORT}.`);
