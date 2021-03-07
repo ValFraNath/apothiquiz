@@ -18,12 +18,7 @@ const FILES_DIR = process.env.NODE_ENV === "test" ? "files-test" : "files";
 const app = express();
 app.isReady = false;
 
-if (!process.env.TOKEN_PRIVATE_KEY) {
-  Logger.error(
-    new Error("TOKEN_PRIVATE_KEY is not defined in .env. Please generate a random private key")
-  );
-  process.exit(1);
-}
+checkEnv();
 
 fs.mkdirSync(FILES_DIR, { recursive: true });
 
@@ -64,5 +59,27 @@ app.waitReady = function (callback, interval = 100) {
     }
   }, interval);
 };
+
+/**
+ *
+ */
+function checkEnv() {
+  const keys = [
+    "ACCESS_TOKEN_KEY",
+    "REFRESH_TOKEN_KEY",
+    "DB_USER",
+    "DB_HOST",
+    "DB_PASSWORD",
+    "DB_DATABASE",
+  ];
+  for (const key of keys) {
+    if (!process.env[key]) {
+      Logger.error(
+        new Error(`The ${key} environment variable is required but not defined in .env.`)
+      );
+      process.exit(1);
+    }
+  }
+}
 
 export default app;
