@@ -72,7 +72,7 @@ jobs:
         working-directory: ./server
 
       - name: Setting private key
-        run: echo "ACCESS_TOKEN_KEY=TMP_ACCESS_KEY\nREFRESH_TOKEN_KEY=TMP_REFRESH_KEY" >> .env
+        run: echo "ACCESS_TOKEN_KEY=TMP_ACCESS_KEY" >> .env; echo "REFRESH_TOKEN_KEY=TMP_REFRESH_KEY" >> .env;
         working-directory: ./server
 
       - name: Wait for mariadb server to be ready

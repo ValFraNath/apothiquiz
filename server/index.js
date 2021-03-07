@@ -61,9 +61,11 @@ app.waitReady = function (callback, interval = 100) {
 };
 
 /**
- *
+ * Verify that all required environment variables are defined
+ * Otherwise, the process is stopped
  */
 function checkEnv() {
+  let needToExit = false;
   const keys = [
     "ACCESS_TOKEN_KEY",
     "REFRESH_TOKEN_KEY",
@@ -77,8 +79,12 @@ function checkEnv() {
       Logger.error(
         new Error(`The ${key} environment variable is required but not defined in .env.`)
       );
-      process.exit(1);
+      needToExit = true;
     }
+  }
+
+  if (needToExit) {
+    process.exit(1);
   }
 }
 
