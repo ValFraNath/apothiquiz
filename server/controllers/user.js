@@ -1,7 +1,6 @@
 import dotenv from "dotenv";
 // eslint-disable-next-line no-unused-vars
 import express from "express";
-import jwt from "jsonwebtoken";
 
 import { queryPromise } from "../db/database.js";
 // eslint-disable-next-line no-unused-vars
@@ -61,7 +60,16 @@ async function login(req, res) {
  * @param {express.Request} req The http request
  * @param {HttpResponseWrapper} res The http response
  */
-async function logout(req, res) {}
+async function logout(req, res) {
+  const { refreshToken } = req.body;
+
+  if (!refreshToken) {
+    return res.sendUsageError(400, "The refresh token is missing");
+  }
+  await Tokens.deleteToken(refreshToken);
+
+  res.sendResponse(200, "User has successfully logged out");
+}
 
 /**
  * @param {express.Request} req The http request
@@ -274,7 +282,7 @@ async function saveInfos(req, res) {
   res.sendResponse(200, infos);
 }
 
-export default { login, generateAccessToken, saveInfos, getInfos, getAll, severalGetInfos };
+export default { login, logout, generateAccessToken, saveInfos, getInfos, getAll, severalGetInfos };
 
 // ***** INTERNAL FUNCTIONS *****
 
