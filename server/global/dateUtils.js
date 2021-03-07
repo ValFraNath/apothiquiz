@@ -4,5 +4,9 @@ export function formatDate(daysInPast = 0) {
     currentDate.setDate(currentDate.getDate() - daysInPast);
   }
 
-  return currentDate.toLocaleDateString("fr-FR").split("/").reverse().join("-");
+  const formatted = currentDate.toLocaleString("en-GB").split(", ");
+  const date = formatted[0].split("/").reverse().join("-");
+  const time = formatted[1];
+
+  return `${date} ${time}`;
 }

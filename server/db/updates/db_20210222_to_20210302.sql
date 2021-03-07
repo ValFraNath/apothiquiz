@@ -1,8 +1,8 @@
-ALTER TABLE `duel` ADD `du_finished` DATE NULL DEFAULT NULL AFTER `du_questionTimerDuration`;
+ALTER TABLE `duel` ADD `du_finished` TIMESTAMP NULL DEFAULT NULL AFTER `du_questionTimerDuration`;
 
-ALTER TABLE `results` ADD `re_last_time` DATE NULL DEFAULT NULL AFTER `re_answers`;
+ALTER TABLE `results` ADD `re_last_time` TIMESTAMP NULL DEFAULT NULL AFTER `re_answers`;
 
-CREATE PROCEDURE `removeOldDuels`(IN olderThan DATE)
+CREATE PROCEDURE `removeOldDuels`(IN olderThan TIMESTAMP)
 BEGIN
 	DELETE FROM `duel`
         WHERE `du_finished` IS NOT NULL
