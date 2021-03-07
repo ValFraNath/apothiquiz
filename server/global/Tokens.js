@@ -46,7 +46,7 @@ async function doesRefreshTokenExist(refreshToken) {
  * @param {string} refreshToken The token to delete
  */
 async function deleteToken(refreshToken) {
-  const sql = `DELETE FROM refresh_token WHERE to_value = ?`;
+  const sql = `DELETE FROM token WHERE to_value = ?`;
   await queryPromise(sql, [refreshToken]);
 }
 
@@ -56,9 +56,9 @@ async function deleteToken(refreshToken) {
  * @returns {Promise<boolean>}
  */
 async function isUserAdmin(login) {
-  const sql = `SELECT us_admin FROM user WHERE us_login = ?;`;
-  const res = await queryPromise(sql, [login]);
-  return Boolean(res[0].is_admin);
+  const sql = `SELECT us_admin AS admin FROM user WHERE us_login = ?;`;
+  const { admin } = (await queryPromise(sql, [login]))[0];
+  return Boolean(admin);
 }
 
 /**

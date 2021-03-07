@@ -1,6 +1,7 @@
 import chai from "chai";
 import chaiHttp from "chai-http";
 import jwt from "jsonwebtoken";
+import sinon from "sinon";
 
 import app from "../index.js";
 
@@ -9,6 +10,18 @@ import { forceTruncateTables, insertData, requestAPI } from "./index.test.js";
 chai.use(chaiHttp);
 const { expect } = chai;
 describe("User test", function () {
+  function decodeRefreshToken(refreshToken) {
+    const { REFRESH_TOKEN_KEY } = process.env;
+    const { user, admin } = jwt.verify(refreshToken, REFRESH_TOKEN_KEY);
+    return { user, admin };
+  }
+
+  function decodeAccessToken(accessToken) {
+    const { ACCESS_TOKEN_KEY } = process.env;
+    const { user, admin } = jwt.verify(accessToken, ACCESS_TOKEN_KEY);
+    return { user, admin };
+  }
+
   before("Insert users data", async function () {
     this.timeout(10000);
     await forceTruncateTables("user");
@@ -31,14 +44,35 @@ describe("User test", function () {
       expect(Object.keys(res.body)).to.contains("refreshToken");
       expect(res.body.user).equal("fpoguet");
 
-      let decodedAccessToken = jwt.verify(res.body.accessToken, process.env.ACCESS_TOKEN_KEY);
-      let decodedRefreshToken = jwt.verify(res.body.refreshToken, process.env.REFRESH_TOKEN_KEY);
+      expect(decodeRefreshToken(res.body.refreshToken)).deep.equal({
+        user: "fpoguet",
+        admin: false,
+      });
 
-      expect(decodedAccessToken.user).to.be.equal("fpoguet");
-      expect(decodedRefreshToken.user).to.be.equal("fpoguet");
+      expect(decodeAccessToken(res.body.accessToken)).deep.equal({
+        user: "fpoguet",
+        admin: false,
+      });
+    });
 
-      // Test if the token is valid
-      expect((await requestAPI("users", { token: res.body.accessToken })).status).equal(200);
+    it("Admin user", async () => {
+      const res = await requestAPI("users/login", {
+        body: {
+          userPseudo: "fdadeau",
+          userPassword: "1234",
+        },
+        method: "post",
+      });
+
+      expect(decodeRefreshToken(res.body.refreshToken)).deep.equal({
+        user: "fdadeau",
+        admin: true,
+      });
+
+      expect(decodeAccessToken(res.body.accessToken)).deep.equal({
+        user: "fdadeau",
+        admin: true,
+      });
     });
 
     it("User does not exist", async function () {
@@ -101,8 +135,38 @@ describe("User test", function () {
       expect(res.status).equal(200);
       expect(res.body).haveOwnProperty("accessToken");
 
-      // Test if the token is valid
-      expect((await requestAPI("users", { token: res.body.accessToken })).status).equal(200);
+      expect(decodeAccessToken(res.body.accessToken)).deep.equal({
+        user: "fpoguet",
+        admin: false,
+      });
+    });
+
+    it("Can logout", async () => {
+      const res = await requestAPI("users/logout", {
+        body: { refreshToken: tokens.refresh },
+        method: "post",
+        token: tokens.access,
+      });
+
+      expect(res.status).equal(200);
+    });
+
+    it("Can't generate new access token after logout", async () => {
+      const res = await requestAPI("users/token", {
+        body: { refreshToken: tokens.refresh },
+        method: "post",
+      });
+
+      expect(res.status).equal(400);
+    });
+
+    it("Can't use an expired access token", async () => {
+      const clock = sinon.useFakeTimers(Date.now() + 1000 * 60 * 11);
+
+      const res = await requestAPI("users", { token: tokens.access });
+      expect(res.status).equal(401);
+
+      clock.restore();
     });
   });
 

@@ -30,6 +30,12 @@ apiRouter.post("/users/login", HttpControllerWrapper(UserController.login));
 
 apiRouter.post("/users/token", HttpControllerWrapper(UserController.generateAccessToken));
 
+apiRouter.post(
+  "/users/logout",
+  authenticationMiddleware,
+  HttpControllerWrapper(UserController.logout)
+);
+
 apiRouter.get(
   "/users/:pseudo",
   authenticationMiddleware,
