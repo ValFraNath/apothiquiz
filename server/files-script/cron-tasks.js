@@ -1,6 +1,7 @@
 import cron from "node-cron";
 
 import { queryPromise } from "../db/database.js";
+import { formatDate } from "../global/dateUtils.js";
 
 /**
  * Remove duels older than 5 days
@@ -8,12 +9,7 @@ import { queryPromise } from "../db/database.js";
  */
 const removeDuels = cron.schedule("10 * * * * *", function () {
   const REMOVE_UNTIL = 5;
-
-  const currentDate = new Date();
-  currentDate.setDate(currentDate.getDate() - REMOVE_UNTIL);
-
-  let formattedDate = currentDate.toLocaleDateString("fr-FR").split("/");
-  formattedDate = `${formattedDate[2]}-${formattedDate[1]}-${formattedDate[0]}`;
+  const formattedDate = formatDate(REMOVE_UNTIL);
 
   const sql = "CALL removeOldDuels(?);";
   queryPromise(sql, [formattedDate]).catch((err) =>

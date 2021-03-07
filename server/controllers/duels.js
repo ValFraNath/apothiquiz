@@ -1,5 +1,6 @@
 import { queryPromise } from "../db/database.js";
 
+import { formatDate } from "../global/dateUtils.js";
 import Logger from "../global/Logger.js";
 
 import { fetchConfigFromDB } from "./config.js";
@@ -256,6 +257,13 @@ async function play(req, res) {
   let updatedDuel = await insertResultInDatabase(id, username, answers);
 
   updatedDuel = await updateDuelState(updatedDuel, username);
+
+  if (updatedDuel.inProgress === 0) {
+    const currentDate = formatDate();
+    const sql = "UPDATE duel SET du_finished = ? WHERE du_id = ?;";
+    await queryPromise(sql, [currentDate, id]);
+  }
+
   res.sendResponse(200, updatedDuel);
 }
 

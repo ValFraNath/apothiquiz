@@ -1,6 +1,6 @@
 ALTER TABLE `duel` ADD `du_finished` DATE NULL DEFAULT NULL AFTER `du_inProgress`;
 
-CREATE PROCEDURE `removeOldDuels` (IN `oldThan` DATE)
+CREATE PROCEDURE `removeOldDuels` (IN `olderThan` DATE)
 BEGIN
     DELETE FROM `duel`
     WHERE `du_finished` IS NOT NULL
