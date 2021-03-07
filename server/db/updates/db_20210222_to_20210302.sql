@@ -3,9 +3,9 @@ ALTER TABLE `duel` ADD `du_finished` DATE NULL DEFAULT NULL AFTER `du_inProgress
 CREATE PROCEDURE `removeOldDuels` (IN `oldThan` DATE)
 BEGIN
     DELETE FROM `duel`
-    WHERE `du_finished` < oldThan;
+    WHERE `du_finished` IS NOT NULL
+      AND `du_finished` <= oldThan;
 END;
-
 
 
 UPDATE `server_informations`
