@@ -59,7 +59,7 @@ const Profile = ({ history }) => {
         className="btn"
         onClick={() => {
           AuthService.logout();
-          document.location.replace("/");
+          document.location.replace("/"); // TODO change location.replace ?
         }}
       >
         Me déconnecter

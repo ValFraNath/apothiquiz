@@ -373,11 +373,11 @@ async function getLastImportedFile(endpoint) {
     data: { shortpath },
   } = await axios.get(endpoint);
 
-  const { token } = AuthService.getCurrentUser();
+  const { accessToken } = AuthService.getCurrentUser() || {};
 
   const res = await fetch(shortpath, {
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${accessToken}`,
     },
   });
 

@@ -39,10 +39,12 @@ describe("User test", function () {
       });
 
       expect(res.status, res.error).to.be.equal(200);
-      expect(Object.keys(res.body)).to.contains("user");
-      expect(Object.keys(res.body)).to.contains("accessToken");
-      expect(Object.keys(res.body)).to.contains("refreshToken");
+      expect(res.body).to.haveOwnProperty("user");
+      expect(res.body).to.haveOwnProperty("accessToken");
+      expect(res.body).to.haveOwnProperty("refreshToken");
+
       expect(res.body.user).equal("fpoguet");
+      expect(res.body.admin).false;
 
       expect(decodeRefreshToken(res.body.refreshToken)).deep.equal({
         user: "fpoguet",
@@ -63,6 +65,8 @@ describe("User test", function () {
         },
         method: "post",
       });
+
+      expect(res.body.admin).true;
 
       expect(decodeRefreshToken(res.body.refreshToken)).deep.equal({
         user: "fdadeau",

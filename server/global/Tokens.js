@@ -16,11 +16,11 @@ function createAccessToken(refreshToken) {
 /**
  * Create a refresh token for a given user
  * @param {string} login The user login
+ * @param {boolean} admin Boolean telling if the user is an admin
  * @returns {Promise<string>} The token
  */
-async function createRefreshToken(login) {
+async function createRefreshToken(login, admin) {
   const { REFRESH_TOKEN_KEY } = process.env;
-  const admin = await isUserAdmin(login);
   const token = jwt.sign({ user: login, admin }, REFRESH_TOKEN_KEY);
   await storeRefreshToken(token, login);
   return token;
@@ -48,17 +48,6 @@ async function doesRefreshTokenExist(refreshToken) {
 async function deleteToken(refreshToken) {
   const sql = `DELETE FROM token WHERE to_value = ?`;
   await queryPromise(sql, [refreshToken]);
-}
-
-/**
- * Check if a user is an admin
- * @param {string} login The user login
- * @returns {Promise<boolean>}
- */
-async function isUserAdmin(login) {
-  const sql = `SELECT us_admin AS admin FROM user WHERE us_login = ?;`;
-  const { admin } = (await queryPromise(sql, [login]))[0];
-  return Boolean(admin);
 }
 
 /**

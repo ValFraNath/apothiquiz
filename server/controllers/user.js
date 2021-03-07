@@ -44,13 +44,15 @@ async function login(req, res) {
   }
 
   if (queryCAS(userPseudo, userPassword)) {
-    const refreshToken = await Tokens.createRefreshToken(userPseudo);
+    const admin = await isUserAdmin(userPseudo);
+    const refreshToken = await Tokens.createRefreshToken(userPseudo, admin);
     const accessToken = Tokens.createAccessToken(refreshToken);
 
     res.sendResponse(200, {
       user: userPseudo,
       accessToken,
       refreshToken,
+      admin,
     });
   } else {
     res.sendUsageError(401, "Authentication failed");
@@ -285,6 +287,18 @@ async function saveInfos(req, res) {
 export default { login, logout, generateAccessToken, saveInfos, getInfos, getAll, severalGetInfos };
 
 // ***** INTERNAL FUNCTIONS *****
+
+/**
+ * Check if a user is an admin
+ * @param {string} login The user login
+ * @returns {Promise<boolean>}
+ */
+
+async function isUserAdmin(login) {
+  const sql = `SELECT us_admin AS admin FROM user WHERE us_login = ?;`;
+  const { admin } = (await queryPromise(sql, [login]))[0];
+  return Boolean(admin);
+}
 
 /**
  * Check if a user exists
