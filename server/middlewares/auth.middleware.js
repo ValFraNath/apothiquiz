@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 
-import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
+import { HttpResponseWrapper } from "../global/HttpControllerWrapper.js";
 dotenv.config();
 
 /**

@@ -11,35 +11,33 @@ const columnsSpecs = [
 /**
  * Import users list from a CSV file
  * @param {string} filepath The path to the file
- * @returns {Promise<Error|HeaderErrors|JSON>} Either the JSON list or format errors
+ * @returns {Promise<JSON>} Either the JSON list or format errors
  */
-export function parseUsersFromCsv(filepath) {
-  return new Promise((resolve, reject) => {
-    readCSV(filepath)
-      .then((usersMatrix) => {
-        const columnsHeader = usersMatrix.shift();
+export async function parseUsersFromCsv(filepath) {
+  const usersMatrix = await readCSV(filepath);
+  const columnsHeader = usersMatrix.shift();
 
-        const checker = new HeaderChecker(columnsHeader, columnsSpecs);
-        if (!checker.check()) {
-          reject(checker.getErrors());
-          return;
-        }
+  const checker = new HeaderChecker(columnsHeader, columnsSpecs);
+  if (!checker.check()) {
+    throw checker.getErrors();
+  }
 
-        const structure = new FileStructure(columnsHeader, columnsSpecs);
-        usersMatrix = removeInvalidUsersLines(usersMatrix, structure.getIndexesFor("login")[0]);
+  const structure = new FileStructure(columnsHeader, columnsSpecs);
 
-        const users = [];
+  const cleanedUsersMatrix = removeInvalidUsersLines(
+    usersMatrix,
+    structure.getIndexesFor("login")[0]
+  );
 
-        for (const row of usersMatrix) {
-          const login = row[structure.getIndexesFor("login")[0]];
-          const admin = row[structure.getIndexesFor("admin")[0]];
-          users.push({ login, admin });
-        }
+  const users = [];
 
-        resolve(JSON.stringify(users));
-      })
-      .catch(reject);
-  });
+  for (const row of cleanedUsersMatrix) {
+    const login = row[structure.getIndexesFor("login")[0]];
+    const admin = row[structure.getIndexesFor("admin")[0]];
+    users.push({ login, admin });
+  }
+
+  return JSON.stringify(users);
 }
 
 /**

@@ -7,81 +7,59 @@ import AuthService from "../services/auth.service";
  *
  * @return {Promise<Object>} An object with finished, pending, toPlay
  */
-export function getAllDuels() {
-  return new Promise((resolve, reject) => {
-    axios
-      .get("/api/v1/duels/")
-      .then(({ data }) => {
-        const duels = {
-          finished: [],
-          pending: [],
-          toPlay: [],
-        };
+export async function getAllDuels() {
+  const { data: duelsList } = await axios.get("/api/v1/duels/");
 
-        const listDefiedOfUsers = new Set([AuthService.getCurrentUser().pseudo]);
+  const duels = {
+    finished: [],
+    pending: [],
+    toPlay: [],
+  };
 
-        data.forEach((val) => {
-          if (val.inProgress === 0) {
-            duels.finished.push(val);
-          } else if (val.rounds[val.currentRound - 1][0].userAnswer !== undefined) {
-            // Current user has played the current round
-            duels.pending.push(val);
-          } else {
-            duels.toPlay.push(val);
-          }
+  const listDefiedOfUsers = new Set([AuthService.getCurrentUser().pseudo]);
 
-          listDefiedOfUsers.add(val.opponent);
-        });
+  duelsList.forEach((val) => {
+    if (val.inProgress === 0) {
+      duels.finished.push(val);
+    } else if (val.rounds[val.currentRound - 1][0].userAnswer !== undefined) {
+      // Current user has played the current round
+      duels.pending.push(val);
+    } else {
+      duels.toPlay.push(val);
+    }
 
-        axios
-          .post("/api/v1/users/", [...listDefiedOfUsers])
-          .then(({ data: usersData }) => {
-            duels.usersData = usersData;
-            resolve(duels);
-          })
-          .catch((error) => {
-            console.error(error);
-            reject(error);
-          });
-      })
-      .catch((error) => {
-        console.error(error);
-        reject(error);
-      });
+    listDefiedOfUsers.add(val.opponent);
   });
+
+  const { data: usersData } = await axios.post("/api/v1/users/", [...listDefiedOfUsers]);
+
+  duels.usersData = usersData;
+  return duels;
 }
 
 /**
- * Get all information about a duel
+ * Make a function that get all information about a duel
  *
  * @param {Number} duelId The duel ID in the database
  * @return // TODO
  */
 export function makeGetDuelDetails(duelId) {
-  return function () {
-    return new Promise((resolve, reject) => {
-      axios
-        .get(`/api/v1/duels/${duelId}`)
-        .then((res) => {
-          // TODO : move this user information request into
-          // TODO > the request duel request body to prevent request chaining
-          const { opponent } = res.data;
+  return async () => {
+    const { data: duel } = await axios.get(`/api/v1/duels/${duelId}`);
+    // TODO : move this user information request into
+    // TODO > the request duel request body to prevent request chaining
+    const { opponent } = duel;
 
-          const currentUser = AuthService.getCurrentUser();
-          axios.post("/api/v1/users/", [currentUser.pseudo, opponent]).then((usersRes) => {
-            resolve({
-              opponent: usersRes.data[opponent],
-              currentUserScore: res.data.userScore,
-              opponentScore: res.data.opponentScore,
-              // eslint-disable-next-line eqeqeq
-              inProgress: res.data.inProgress == true,
-              rounds: res.data.rounds,
-            });
-          });
-        })
-        .catch((err) => {
-          reject(err);
-        });
-    });
+    const currentUser = AuthService.getCurrentUser();
+    const { data: users } = await axios.post("/api/v1/users/", [currentUser.pseudo, opponent]);
+
+    return {
+      opponent: users[opponent],
+      currentUserScore: duel.userScore,
+      opponentScore: duel.opponentScore,
+      // eslint-disable-next-line eqeqeq
+      inProgress: duel.inProgress == true,
+      rounds: duel.rounds,
+    };
   };
 }

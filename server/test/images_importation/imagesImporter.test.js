@@ -51,7 +51,8 @@ const tests = [
 ];
 
 describe("Bind images to molecules", () => {
-  before("Clear & insert data", (done) => {
+  before("Clear & insert data", function (done) {
+    this.timeout(10000);
     forceTruncateTables(
       "molecule",
       "system",

@@ -67,7 +67,8 @@ const warningsCounter = (warnings) => (code) =>
   warnings.reduce((count, warning) => count + (warning.code === code), 0);
 
 describe("Analyze filenames", () => {
-  before("Insert data", (done) => {
+  before("Insert data", function (done) {
+    this.timeout(10000);
     forceTruncateTables(
       "molecule",
       "class",

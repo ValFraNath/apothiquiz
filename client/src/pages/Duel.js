@@ -25,18 +25,18 @@ class Duel extends Component {
     const duelId = this.props.match.params.id;
     axios
       .get(`/api/v1/duels/${duelId}`)
-      .then((res) => {
-        if (res.data.inProgress === 0) {
+      .then(({ data: duel }) => {
+        if (duel.inProgress === 0) {
           this.props.history.push("/homepage");
           return;
         }
         this.setState({
-          duelData: res.data,
-          timer: res.data.questionTimerDuration,
+          duelData: duel,
+          timer: duel.questionTimerDuration,
         });
 
         // Can't access to a round already played
-        const firstQuestion = res.data.rounds[res.data.currentRound - 1][0];
+        const firstQuestion = duel.rounds[duel.currentRound - 1][0];
         if (firstQuestion.userAnswer !== undefined) {
           this.props.history.push(`/duel/${duelId}`);
         }
