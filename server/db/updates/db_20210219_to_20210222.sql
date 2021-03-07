@@ -11,7 +11,7 @@ CREATE PROCEDURE `createDuel`(IN `player1` VARCHAR(32),
   BEGIN 
     SET @id = ( SELECT IFNULL(MAX(du_id),0)+1 FROM duel); 
     SET @timer = (SELECT value FROM server_informations WHERE server_informations.key = "config_question_timer_duration"); 
-    INSERT INTO duel VALUES (@id,content,1,true,@timer); 
+    INSERT INTO duel VALUES (@id,content,1,true,@timer);
     INSERT INTO results VALUES (player1,@id,"[]"); 
     INSERT INTO results VALUES (player2,@id,"[]"); 
     SELECT @id as id; 

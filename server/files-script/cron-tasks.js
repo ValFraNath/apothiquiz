@@ -7,7 +7,7 @@ import { formatDate } from "../global/dateUtils.js";
  * Remove duels older than 5 days
  * Should be executed each day at 12:01 PM
  */
-const removeDuels = cron.schedule("10 * * * * *", function () {
+const removeDuels = cron.schedule("00 01 00 * * *", function () {
   const REMOVE_UNTIL = 5;
   const formattedDate = formatDate(REMOVE_UNTIL);
 

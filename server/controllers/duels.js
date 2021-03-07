@@ -509,14 +509,20 @@ async function insertResultInDatabase(id, username, answers) {
   const previousAnswers = await getDuelResults(id, username);
 
   const updatedAnswers = JSON.stringify([...previousAnswers, answers]);
+  const currentDate = formatDate();
   const sql =
     "UPDATE results \
-    SET re_answers = :answers \
+    SET re_answers = :answers, re_last_time = :time \
     WHERE us_login = :login \
     AND du_id = :id ; \
     CALL getDuel(:id,:login);";
 
-  const res = await queryPromise(sql, { answers: updatedAnswers, login: username, id });
+  const res = await queryPromise(sql, {
+    answers: updatedAnswers,
+    login: username,
+    time: currentDate,
+    id,
+  });
   return formatDuel(res[1], username);
 }
 
