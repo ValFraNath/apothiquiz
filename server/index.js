@@ -66,14 +66,7 @@ app.waitReady = function (callback, interval = 100) {
  */
 function checkEnv() {
   let needToExit = false;
-  const keys = [
-    "ACCESS_TOKEN_KEY",
-    "REFRESH_TOKEN_KEY",
-    "DB_USER",
-    "DB_HOST",
-    "DB_PASSWORD",
-    "DB_DATABASE",
-  ];
+  const keys = ["ACCESS_TOKEN_KEY", "REFRESH_TOKEN_KEY"];
   for (const key of keys) {
     if (!process.env[key]) {
       Logger.error(
