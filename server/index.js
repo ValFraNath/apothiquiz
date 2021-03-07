@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import express from "express";
 
 import Database from "./db/database.js";
+import { removeDuels } from "./files-script/cron-tasks.js";
 import Logger from "./global/Logger.js";
 import RequestSyntaxErrorHandler from "./middlewares/error.middleware.js";
 import apiRouter from "./routes/api.route.js";
@@ -34,6 +35,9 @@ app.use("/", reactRouter);
 app.use(RequestSyntaxErrorHandler);
 
 startServer();
+
+// ----- Start cron tasks
+removeDuels.start();
 
 /**
  * Connect the server to the database and start the server
