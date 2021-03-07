@@ -20,8 +20,9 @@ dotenv.config();
  *
  * @apiSuccess (200) {string} pseudo  			the ENT login
  * @apiSuccess (200) {string} accessToken   the user access token
- * * @apiSuccess (200) {string} refreshToken   the user refresh token
+ * @apiSuccess (200) {string} refreshToken   the user refresh token
  *
+ * @apiError 	 (400) BadRequestFormat
  * @apiError   (401) IncorrectPassword
  * @apiError   (404) UserNotFound
  * @apiUse ErrorServer
@@ -33,7 +34,7 @@ async function login(req, res) {
   const { userPseudo, userPassword } = req.body;
 
   if (!userPseudo || !userPassword) {
-    return res.sendUsageError(401, "Bad request format.");
+    return res.sendUsageError(400, "Bad request format.");
   }
 
   const userExists = await doesUserExist(userPseudo);
@@ -44,8 +45,8 @@ async function login(req, res) {
   }
 
   if (queryCAS(userPseudo, userPassword)) {
-    const accessToken = Tokens.createAccessToken(userPseudo);
     const refreshToken = await Tokens.createRefreshToken(userPseudo);
+    const accessToken = Tokens.createAccessToken(refreshToken);
 
     res.sendResponse(200, {
       user: userPseudo,
@@ -56,6 +57,11 @@ async function login(req, res) {
     res.sendUsageError(401, "Authentication failed");
   }
 }
+/**
+ * @param {express.Request} req The http request
+ * @param {HttpResponseWrapper} res The http response
+ */
+async function logout(req, res) {}
 
 /**
  * @param {express.Request} req The http request
@@ -74,8 +80,7 @@ async function generateAccessToken(req, res) {
     return res.sendUsageError(400, "Invalid or expired refresh token");
   }
 
-  const user = Tokens.getUserFromRefreshToken(refreshToken);
-  const accessToken = Tokens.createAccessToken(user);
+  const accessToken = await Tokens.createAccessToken(refreshToken);
 
   res.sendResponse(200, { accessToken });
 }
@@ -178,7 +183,7 @@ async function severalGetInfos(req, res) {
 }
 
 /**
- * @api       {get}        /user/:pseudo   Get user informations
+ * @api       {get}        /user/:pseudo   Get user informations //TODO change to login
  * @apiName   GetUserInformations
  * @apiGroup  User
  *
@@ -191,10 +196,8 @@ async function severalGetInfos(req, res) {
  * @param {HttpResponseWrapper} res The http response
  */
 async function getInfos(req, res) {
-  let user = String(req.params.pseudo);
-  if (user === "me") {
-    user = req.body.authUser;
-  }
+  const param = String(req.params.pseudo);
+  const user = param === "me" ? req.body._auth.user : param;
 
   const infos = await getUserInformations(user);
   if (!infos) {
@@ -232,12 +235,10 @@ async function getInfos(req, res) {
  * @param {HttpResponseWrapper} res The http response
  */
 async function saveInfos(req, res) {
-  let user = String(req.params.pseudo);
-  if (user === "me") {
-    user = req.body.authUser;
-  }
+  const param = String(req.params.pseudo);
+  const user = param === "me" ? req.body._auth.user : param;
 
-  if (req.body.authUser !== user) {
+  if (req.body._auth.user !== user) {
     // TODO? Add admin ?
     return res.sendUsageError(403, "Operation not allowed");
   }

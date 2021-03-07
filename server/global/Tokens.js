@@ -3,13 +3,14 @@ import jwt from "jsonwebtoken";
 import { queryPromise } from "../db/database.js";
 
 /**
- * Create an access token for a given user
- * @param {string} login The user login
+ * Create an access token from a refresh token
+ * @param {string} refreshToken The refreshToken of the user
  * @returns {string} The token
  */
-function createAccessToken(login) {
-  const key = process.env.ACCESS_TOKEN_KEY;
-  return jwt.sign({ user: login }, key, { expiresIn: "10m" });
+function createAccessToken(refreshToken) {
+  const { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY } = process.env;
+  const { user, admin } = jwt.verify(refreshToken, REFRESH_TOKEN_KEY);
+  return jwt.sign({ user, admin }, ACCESS_TOKEN_KEY, { expiresIn: "10m" });
 }
 
 /**
@@ -18,15 +19,11 @@ function createAccessToken(login) {
  * @returns {Promise<string>} The token
  */
 async function createRefreshToken(login) {
-  const key = process.env.REFRESH_TOKEN_KEY;
-  const token = jwt.sign({ user: login }, key);
-  const sql = "INSERT IGNORE INTO token VALUES (?,?);";
-  await queryPromise(sql, [token, login]);
+  const { REFRESH_TOKEN_KEY } = process.env;
+  const admin = await isUserAdmin(login);
+  const token = jwt.sign({ user: login, admin }, REFRESH_TOKEN_KEY);
+  await storeRefreshToken(token, login);
   return token;
-}
-
-function getUserFromRefreshToken(refreshToken) {
-  return jwt.verify(refreshToken, process.env.REFRESH_TOKEN_KEY).user;
 }
 
 /**
@@ -53,10 +50,30 @@ async function deleteToken(refreshToken) {
   await queryPromise(sql, [refreshToken]);
 }
 
+/**
+ * Check if a user is an admin
+ * @param {string} login The user login
+ * @returns {Promise<boolean>}
+ */
+async function isUserAdmin(login) {
+  const sql = `SELECT us_admin FROM user WHERE us_login = ?;`;
+  const res = await queryPromise(sql, [login]);
+  return Boolean(res[0].is_admin);
+}
+
+/**
+ * Store a refresh token in database
+ * @param {string} refreshToken The refresh token to store
+ * @param {string} login The owner of the token
+ */
+async function storeRefreshToken(refreshToken, login) {
+  const sql = "INSERT IGNORE INTO token VALUES (?,?);";
+  await queryPromise(sql, [refreshToken, login]);
+}
+
 export default {
   createAccessToken,
   createRefreshToken,
-  getUserFromRefreshToken,
   doesRefreshTokenExist,
   deleteToken,
 };

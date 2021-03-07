@@ -67,7 +67,7 @@ import { getAllQuestionTypes, createGeneratorOfType, NotEnoughDataError } from "
  * @param {HttpResponseWrapper} req The http request
  */
 async function setConfig(req, res) {
-  delete req.body.authUser;
+  delete req.body._auth;
 
   const keys = await getConfigKeys();
 

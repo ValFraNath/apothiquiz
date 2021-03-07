@@ -4,9 +4,8 @@ import path from "path";
 /**
  * Log an error
  * @param {Error} error The error object
- * @param {string} title Message explaining the reason for the error
  */
-function error(error, title) {
+function error(error) {
   const line = Array(100).fill("-").join("");
   const txt = `\n${line}\n${formatDate()} | ${error.message}\n${line}\n> ${error.stack}\n${line}`;
   if (isProduction()) {

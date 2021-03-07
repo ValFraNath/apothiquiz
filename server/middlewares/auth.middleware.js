@@ -11,8 +11,8 @@ function auth(req, _res, next) {
   const res = new HttpResponseWrapper(_res);
   try {
     const token = req.headers.authorization.split(" ")[1];
-    const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_KEY);
-    req.body.authUser = decodedToken.user;
+    const { user, admin } = jwt.verify(token, process.env.ACCESS_TOKEN_KEY);
+    req.body._auth = { user, admin };
     next();
   } catch (e) {
     res.sendUsageError(401, "Unauthorized connection");

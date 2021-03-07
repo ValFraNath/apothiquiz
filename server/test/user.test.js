@@ -9,86 +9,100 @@ import { forceTruncateTables, insertData, requestAPI } from "./index.test.js";
 chai.use(chaiHttp);
 const { expect } = chai;
 describe("User test", function () {
-  before("Insert users data", function (done) {
+  before("Insert users data", async function () {
     this.timeout(10000);
-    forceTruncateTables("user").then(() => insertData("users.sql").then(done));
+    await forceTruncateTables("user");
+    await insertData("users.sql");
   });
 
   describe("User login", function () {
-    it("Good user", function (done) {
-      chai
-        .request(app)
-        .post("/api/v1/users/login")
-        .send({
+    it("Good user", async function () {
+      const res = await requestAPI("users/login", {
+        body: {
           userPseudo: "fpoguet",
           userPassword: "1234",
-        })
-        .end((err, res) => {
-          if (err) {
-            throw err;
-          }
-          expect(res.status, res.error).to.be.equal(200);
-          expect(Object.keys(res.body)).to.contains("user");
-          expect(Object.keys(res.body)).to.contains("accessToken");
+        },
+        method: "post",
+      });
 
-          let decodedToken = jwt.verify(res.body.accessToken, process.env.ACCESS_TOKEN_KEY);
+      expect(res.status, res.error).to.be.equal(200);
+      expect(Object.keys(res.body)).to.contains("user");
+      expect(Object.keys(res.body)).to.contains("accessToken");
+      expect(Object.keys(res.body)).to.contains("refreshToken");
+      expect(res.body.user).equal("fpoguet");
 
-          expect(Object.keys(decodedToken)).to.contains("user");
-          expect(decodedToken.user).to.be.equal("fpoguet");
+      let decodedAccessToken = jwt.verify(res.body.accessToken, process.env.ACCESS_TOKEN_KEY);
+      let decodedRefreshToken = jwt.verify(res.body.refreshToken, process.env.REFRESH_TOKEN_KEY);
 
-          done();
-        });
+      expect(decodedAccessToken.user).to.be.equal("fpoguet");
+      expect(decodedRefreshToken.user).to.be.equal("fpoguet");
+
+      // Test if the token is valid
+      expect((await requestAPI("users", { token: res.body.accessToken })).status).equal(200);
     });
 
-    it("User does not exist", function (done) {
-      chai
-        .request(app)
-        .post("/api/v1/users/login")
-        .send({
+    it("User does not exist", async function () {
+      const res = await requestAPI("users/login", {
+        body: {
           userPseudo: "noexist",
           userPassword: "1234",
-        })
-        .end((err, res) => {
-          if (err) {
-            throw err;
-          }
-          expect(res.status).to.be.equal(404);
-          done();
-        });
+        },
+        method: "post",
+      });
+      expect(res.status).to.be.equal(404);
     });
 
-    it("Wrong password", function (done) {
-      chai
-        .request(app)
-        .post("/api/v1/users/login")
-        .send({
+    it("Wrong password", async function () {
+      const res = await requestAPI("users/login", {
+        body: {
           userPseudo: "vperigno",
           userPassword: "134",
-        })
-        .end((err, res) => {
-          if (err) {
-            throw err;
-          }
-          expect(res.status).to.be.equal(401);
-          done();
-        });
+        },
+        method: "post",
+      });
+      expect(res.status).to.be.equal(401);
     });
 
-    it("Wrong body format", function (done) {
-      chai
-        .request(app)
-        .post("/api/v1/users/login")
-        .send({
-          pseudo: "vperigno",
-          password: "134",
-        })
-        .end((err, res) => {
-          if (err) {
-            throw err;
-          }
-          expect(res.status).to.be.equal(401);
-          done();
-        });
+    it("Wrong body format", async function () {
+      const res = await requestAPI("users/login", {
+        body: {
+          pseudo: "noexist",
+          password: "1234",
+        },
+        method: "post",
+      });
+      expect(res.status).to.be.equal(400);
+    });
+  });
+
+  describe("Use refresh and access tokens", async function () {
+    const tokens = {};
+    before("Get tokens", async function () {
+      const {
+        body: { accessToken, refreshToken },
+      } = await requestAPI("users/login", {
+        body: { userPseudo: "fpoguet", userPassword: "1234" },
+        method: "post",
+      });
+
+      expect(refreshToken).not.undefined;
+      expect(accessToken).not.undefined;
+
+      tokens.refresh = refreshToken;
+      tokens.access = accessToken;
+    });
+
+    it("Can generate access token", async () => {
+      const res = await requestAPI("users/token", {
+        body: { refreshToken: tokens.refresh },
+        method: "post",
+      });
+
+      expect(res.status).equal(200);
+      expect(res.body).haveOwnProperty("accessToken");
+
+      // Test if the token is valid
+      expect((await requestAPI("users", { token: res.body.accessToken })).status).equal(200);
     });
   });
 
