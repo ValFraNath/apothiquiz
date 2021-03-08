@@ -95,9 +95,13 @@ describe("Import molecule", () => {
     expect(res.status).equals(401);
   });
 
-  it("Can't access file without be admin", async () => {
+  it("Can't access file without being admin", async () => {
     await uploadFile("molecules.csv", "true", mytoken);
     const token = await getToken("fpoguet");
+
+    let res = await requestAPI("import/molecules", { method: "get", token });
+
+    expect(res.status).equals(403);
   });
 
   it("Missing file", async () => {

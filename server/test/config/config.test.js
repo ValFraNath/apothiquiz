@@ -46,6 +46,24 @@ describe("Configuration tests", () => {
     });
   });
 
+  it("Can't fetch & update config without being admin", async () => {
+    const noAdminToken = await getToken("fpoguet");
+    let res = await requestAPI("config", { token: noAdminToken, method: "get" });
+    expect(res.status).equal(403);
+
+    res = await requestAPI("config", {
+      body: {
+        roundsPerDuel: 8,
+        questionTimerDuration: 4,
+        questionsPerRound: 10,
+      },
+      token: noAdminToken,
+      method: "patch",
+    });
+
+    expect(res.status).equal(403);
+  });
+
   it("Can update configuration", async () => {
     let res = await requestAPI("config", {
       body: {

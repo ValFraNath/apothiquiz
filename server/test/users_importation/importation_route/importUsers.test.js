@@ -14,7 +14,6 @@ chai.use(chaiHttp);
 
 const __dirname = path.resolve("test", "users_importation", "importation_route");
 
-// TODO test import with non admin user
 describe("Import users", () => {
   let mytoken;
   before("Insert users data & get token", async function () {
@@ -97,6 +96,15 @@ describe("Import users", () => {
     );
 
     expect(res.status).equals(401);
+  });
+
+  it("Can't access file without being admin", async () => {
+    await uploadFile("users.csv", "true", mytoken);
+    const token = await getToken("fpoguet");
+
+    let res = await requestAPI("import/users", { method: "get", token: token });
+
+    expect(res.status).equals(403);
   });
 
   it("Missing file", async () => {
