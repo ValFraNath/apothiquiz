@@ -1,5 +1,6 @@
 import cron from "node-cron";
 
+import Duels from "../controllers/duels.js";
 import { queryPromise } from "../db/database.js";
 import { diffDateInHour, formatDate } from "../global/dateUtils.js";
 
@@ -58,16 +59,13 @@ const checkDuels = cron.schedule("*/10 * * * * *", function () {
           const badResults = new Array(resSample.length).fill(-1);
           const looser = currentRound[indexLastPlayed ^ 1];
 
-          const sql =
-            "UPDATE results \
-             SET re_answers = :answers, re_last_time = :time \
-             WHERE us_login = :login \
-               AND du_id = :id";
-          queryPromise(sql, {
-            answers: JSON.stringify([...looser.answers, badResults]),
-            time: formatDate(),
-            login: looser.user,
-          }).catch((err) => console.error("Can't update duel", err));
+          Duels.insertResultInDatabase(key, looser.user, badResults)
+            .then((updatedDuels) => {
+              Duels.updateDuelState(updatedDuels, looser.user).catch((err) =>
+                console.error("Error: can't update duel state", err)
+              );
+            })
+            .catch((err) => console.error("Error: can't update result in database", err));
         }
       });
     })

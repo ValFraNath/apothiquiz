@@ -281,7 +281,7 @@ export function _initMockedDuelRounds(fakeDuelsRounds) {
   mockedDuelsRounds = fakeDuelsRounds;
 }
 
-export default { create, fetch, fetchAll, play };
+export default { create, fetch, fetchAll, play, insertResultInDatabase, updateDuelState };
 
 // ***** INTERNAL FUNCTIONS *****
 
