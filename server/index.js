@@ -36,10 +36,6 @@ app.use(RequestSyntaxErrorHandler);
 
 startServer();
 
-// ----- Start cron tasks
-removeDuelsTask.start();
-checkDuelsTask.start();
-
 /**
  * Connect the server to the database and start the server
  */
@@ -50,6 +46,9 @@ async function startServer() {
       app.isReady = true;
       Logger.info(`Server is running on port ${PORT}.`);
     });
+
+    removeDuelsTask.start();
+    checkDuelsTask.start();
   } catch (error) {
     Logger.error(error);
     process.exit(1);

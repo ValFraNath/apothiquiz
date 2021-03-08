@@ -3,6 +3,7 @@ import cron from "node-cron";
 import Duels from "../controllers/duels.js";
 import { queryPromise } from "../db/database.js";
 import { diffDateInHour, formatDate } from "../global/dateUtils.js";
+import Logger from "../global/Logger.js";
 
 /**
  * Remove duels older than 5 days
@@ -20,7 +21,7 @@ const removeDuelsTask = cron.schedule("00 01 00 * * *", async function () {
     const sql = "CALL removeOldDuels(?);";
     await queryPromise(sql, [formattedDate]);
   } catch (err) {
-    console.error("Error : can't remove old duels", err);
+    Logger.error(err, "Can't remove old duels");
   }
 });
 
@@ -73,7 +74,7 @@ const checkDuelsTask = cron.schedule("* * */3 * * *", async function () {
       }
     });
   } catch (err) {
-    console.error("Error: Can't check duels", err);
+    Logger.error(err, "Can't check duels");
   }
 });
 
