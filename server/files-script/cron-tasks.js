@@ -10,8 +10,10 @@ import { diffDateInHour, formatDate } from "../global/dateUtils.js";
  */
 const removeDuelsTask = cron.schedule("00 01 00 * * *", async function () {
   try {
-    const REMOVE_UNTIL = await queryPromise("SELECT config_duel_lifetime FROM server_informations")
-      .config_duel_lifetime;
+    const res = await queryPromise(
+      'SELECT `value` FROM `server_informations` WHERE `key` = "config_duel_lifetime";'
+    );
+    const REMOVE_UNTIL = parseInt(res[0].value);
 
     const formattedDate = formatDate(REMOVE_UNTIL);
 
@@ -26,7 +28,7 @@ const removeDuelsTask = cron.schedule("00 01 00 * * *", async function () {
  * Make lose the current round for players who have not played 24 hours after the start
  * Should be executed every 3 hours
  */
-const checkDuelsTask = cron.schedule("*/10 * * * * *", async function () {
+const checkDuelsTask = cron.schedule("* * */3 * * *", async function () {
   const sql = `SELECT duel.du_id, us_login, re_answers, re_last_time \
                FROM results, duel \
                WHERE results.du_id = duel.du_id \
