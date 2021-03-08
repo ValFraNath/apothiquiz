@@ -130,7 +130,7 @@ export default class App extends Component {
             <ProtectedRoute path="/duel/create" exact component={DuelCreate} />
             <ProtectedRoute path="/duel/:id" exact component={DuelOverview} />
             <ProtectedRoute path="/duel/:id/play" exact component={Duel} />
-            <ProtectedRoute path="/admin" exact component={Admin} />
+            <ProtectedRoute path="/admin" onlyAdmin exact component={Admin} />
           </Switch>
         </Router>
         <ReactQueryDevtools initialIsOpen={false} />
