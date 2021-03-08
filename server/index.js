@@ -37,8 +37,8 @@ app.use(RequestSyntaxErrorHandler);
 startServer();
 
 // ----- Start cron tasks
-removeDuels.start();
-checkDuels.start();
+removeDuelsTask.start();
+checkDuelsTask.start();
 
 /**
  * Connect the server to the database and start the server
