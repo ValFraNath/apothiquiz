@@ -14,6 +14,7 @@ const Profile = ({ history }) => {
   const [isInitialized, setIsInitialized] = useState(false);
   const [avatar, setAvatar] = useState();
   const { data, isPlaceholderData } = useQuery(["user", "me"]);
+  const { admin } = AuthService.getCurrentUser();
 
   if (isPlaceholderData) {
     return <span>Chargement</span>;
@@ -55,11 +56,17 @@ const Profile = ({ history }) => {
         </Collapsible.Content>
       </Collapsible.Root>
 
+      {admin && (
+        <Link to="/admin" className="btn">
+          Espace administrateur
+        </Link>
+      )}
+
       <button
         className="btn"
-        onClick={() => {
-          AuthService.logout();
-          document.location.replace("/"); // TODO change location.replace ?
+        onClick={async () => {
+          await AuthService.logout();
+          document.location.replace("/");
         }}
       >
         Me déconnecter
