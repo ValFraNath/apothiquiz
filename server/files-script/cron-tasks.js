@@ -47,7 +47,7 @@ const checkDuels = cron.schedule("* * */3 * * *", function () {
       Object.keys(duelsTime).forEach((key) => {
         const currentRound = duelsTime[key];
 
-        let indexLastPlayed = 0;
+        let indexLastPlayed;
         if (currentRound[0].time === null || currentRound[1].time === null) {
           indexLastPlayed = currentRound[0].time ? 0 : 1;
         } else {
@@ -56,10 +56,10 @@ const checkDuels = cron.schedule("* * */3 * * *", function () {
 
         if (diffDateInHour(new Date(), currentRound[indexLastPlayed].time) >= 24) {
           const resSample = JSON.parse(currentRound[indexLastPlayed].answers)[0];
-          const badResults = new Array(resSample.length).fill(-1);
           const looser = currentRound[indexLastPlayed ^ 1];
 
-          Duels.insertResultInDatabase(key, looser.user, badResults)
+          const results = new Array(resSample.length).fill(-1);
+          Duels.insertResultInDatabase(key, looser.user, results)
             .then((updatedDuels) => {
               Duels.updateDuelState(updatedDuels, looser.user).catch((err) =>
                 console.error("Error: can't update duel state", err)
