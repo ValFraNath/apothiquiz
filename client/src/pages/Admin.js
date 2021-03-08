@@ -193,6 +193,7 @@ const Configuration = ({ lastImport }) => {
     roundsPerDuel: 0,
     questionsPerRound: 0,
     questionTimerDuration: 0,
+    duelLifetime: 0,
   });
 
   const [isSaved, setIsSaved] = useState(false);
@@ -260,6 +261,14 @@ const Configuration = ({ lastImport }) => {
             onChange={(value) => updateConfig("roundsPerDuel", value)}
             min={config.roundsPerDuel.min}
             max={config.roundsPerDuel.max}
+          />
+
+          <NumberInput
+            label="Durée de sauvegarde d'un duel terminé"
+            defaultValue={config.duelLifetime.value}
+            onChange={(value) => updateConfig("duelLifetime", value)}
+            min={config.duelLifetime.min}
+            max={config.duelLifetime.max}
           />
           <input type="submit" value="Enregistrer" />
         </>
