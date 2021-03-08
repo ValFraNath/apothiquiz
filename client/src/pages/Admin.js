@@ -343,7 +343,7 @@ const Admin = () => {
         <summary>Importer des images</summary>
         <FileDownloader
           text="Télécharger les dernières images importées"
-          filename="images-molecules.csv"
+          filename="images-molecules.zip"
           endpoint="/api/v1/import/images"
         />
         <FileImporter
