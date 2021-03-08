@@ -1,9 +1,10 @@
 import { ReloadIcon } from "@modulz/radix-icons";
 import axios from "axios";
+import PropTypes from "prop-types";
 import React, { lazy, Suspense, Component } from "react";
 import { QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch, useLocation } from "react-router-dom";
 
 import "./styles/styles.scss";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -35,6 +36,26 @@ axios.interceptors.request.use((config) => {
   }
   return config;
 });
+
+const UpdateButton = ({ updateRequired, updateSW }) => {
+  const location = useLocation();
+  if (location.pathname === "/duel") {
+    return;
+  }
+
+  console.log(location);
+  return (
+    <button id="update-app" className={updateRequired ? "update-animation" : ""} onClick={updateSW}>
+      <ReloadIcon />
+      {!updateRequired ? "Mettre à jour l'app" : "Mise à jour..."}
+    </button>
+  );
+};
+
+UpdateButton.propTypes = {
+  updateRequired: PropTypes.bool.isRequired,
+  updateSW: PropTypes.func.isRequired,
+};
 
 export default class App extends Component {
   constructor(props) {
@@ -94,14 +115,7 @@ export default class App extends Component {
         <Router>
           <TopBar username={user} />
           {isUpdateAvailable && (
-            <button
-              id="update-app"
-              className={updateRequired ? "update-animation" : ""}
-              onClick={this.updateServiceWorker}
-            >
-              <ReloadIcon />
-              {!updateRequired ? "Mettre à jour l'app" : "Mise à jour..."}
-            </button>
+            <UpdateButton updateSW={this.updateServiceWorker} updateRequired={updateRequired} />
           )}
 
           <Suspense fallback={<Loading />}>
