@@ -12,5 +12,6 @@ export function formatDate(daysInPast = 0) {
 }
 
 export function diffDateInHour(date1, date2) {
+  if (!date2 || !date1) return new Date().getTime();
   return (date1.getTime() - date2.getTime()) / 3600000;
 }

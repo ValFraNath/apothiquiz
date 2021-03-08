@@ -8,14 +8,18 @@ import { diffDateInHour, formatDate } from "../global/dateUtils.js";
  * Remove duels older than 5 days
  * Should be executed each day at 12:01 PM
  */
-const removeDuelsTask = cron.schedule("00 01 00 * * *", function () {
-  const REMOVE_UNTIL = 5;
-  const formattedDate = formatDate(REMOVE_UNTIL);
+const removeDuelsTask = cron.schedule("00 01 00 * * *", async function () {
+  try {
+    const REMOVE_UNTIL = await queryPromise("SELECT config_duel_lifetime FROM server_informations")
+      .config_duel_lifetime;
 
-  const sql = "CALL removeOldDuels(?);";
-  queryPromise(sql, [formattedDate]).catch((err) =>
-    console.error("Error, can't remove old duels", err)
-  );
+    const formattedDate = formatDate(REMOVE_UNTIL);
+
+    const sql = "CALL removeOldDuels(?);";
+    await queryPromise(sql, [formattedDate]);
+  } catch (err) {
+    console.error("Error : can't remove old duels", err);
+  }
 });
 
 /**

@@ -23,6 +23,8 @@ CREATE PROCEDURE `createDuel`(IN `player1` VARCHAR(32),
     SELECT @id as id;
   END;
 
+INSERT INTO server_informations VALUES ("config_duel_lifetime", 5);
+
 
 UPDATE `server_informations`
     SET `value` = "2021-03-02" WHERE `key` = "api_version";
