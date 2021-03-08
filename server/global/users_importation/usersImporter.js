@@ -10,14 +10,9 @@ export const LOGIN_MAX_LENGTH = 32;
  * @param {string} filepath The file to parse
  * @returns {Promise<string>} The script
  */
-export function parseAndCreateSqlToInsertAllUsers(filepath) {
-  return new Promise((resolve, reject) => {
-    parseUsersFromCsv(filepath)
-      .then((json) => {
-        resolve(createSqlToInsertAllUsers(JSON.parse(json)));
-      })
-      .catch(reject);
-  });
+export async function parseAndCreateSqlToInsertAllUsers(filepath) {
+  const json = await parseUsersFromCsv(filepath);
+  return createSqlToInsertAllUsers(JSON.parse(json));
 }
 
 /**

@@ -33,17 +33,23 @@ app.use("/api/v1/", apiRouter);
 app.use("/", reactRouter);
 app.use(RequestSyntaxErrorHandler);
 
-Database.connect()
-  .then(() => {
+startServer();
+
+/**
+ * Connect the server to the database and start the server
+ */
+async function startServer() {
+  try {
+    await Database.connect();
     app.listen(PORT, () => {
       app.isReady = true;
       Logger.info(`Server is running on port ${PORT}.`);
     });
-  })
-  .catch((error) => {
+  } catch (error) {
     Logger.error(error);
     process.exit(1);
-  });
+  }
+}
 
 /**
  * Check every <interval> ms if the server is ready to use

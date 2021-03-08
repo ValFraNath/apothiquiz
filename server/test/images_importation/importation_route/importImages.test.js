@@ -145,19 +145,18 @@ function importImagesViaAPI(dir, confirmed = "", token = "") {
       .set("Content-Type", "image/*")
       .field("confirmed", confirmed);
 
-    getSortedFiles(path.resolve(FILES_DIR, dir))
-      .then((files) => {
-        files.forEach((file) => {
-          req.attach("file", fs.readFileSync(path.resolve(FILES_DIR, dir, file)), file);
-        });
-        req.end((err, res) => {
-          if (err) {
-            return reject(err);
-          }
-          resolve(res);
-        });
-      })
-      .catch(reject);
+    getSortedFiles(path.resolve(FILES_DIR, dir)).then((files) => {
+      files.forEach((file) => {
+        req.attach("file", fs.readFileSync(path.resolve(FILES_DIR, dir, file)), file);
+      });
+      req.end((err, res) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve(res);
+      });
+    });
   });
 }
 
