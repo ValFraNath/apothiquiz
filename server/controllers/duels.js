@@ -1,5 +1,6 @@
 import { queryPromise } from "../db/database.js";
 
+import { formatDate } from "../global/dateUtils.js";
 import Logger from "../global/Logger.js";
 
 import { fetchConfigFromDB } from "./config.js";
@@ -256,6 +257,13 @@ async function play(req, res) {
   let updatedDuel = await insertResultInDatabase(id, username, answers);
 
   updatedDuel = await updateDuelState(updatedDuel, username);
+
+  if (updatedDuel.inProgress === 0) {
+    const currentDate = formatDate();
+    const sql = "UPDATE duel SET du_finished = ? WHERE du_id = ?;";
+    await queryPromise(sql, [currentDate, id]);
+  }
+
   res.sendResponse(200, updatedDuel);
 }
 
@@ -273,7 +281,7 @@ export function _initMockedDuelRounds(fakeDuelsRounds) {
   mockedDuelsRounds = fakeDuelsRounds;
 }
 
-export default { create, fetch, fetchAll, play };
+export default { create, fetch, fetchAll, play, insertResultInDatabase, updateDuelState };
 
 // ***** INTERNAL FUNCTIONS *****
 
@@ -501,14 +509,20 @@ async function insertResultInDatabase(id, username, answers) {
   const previousAnswers = await getDuelResults(id, username);
 
   const updatedAnswers = JSON.stringify([...previousAnswers, answers]);
+  const currentDate = formatDate();
   const sql =
     "UPDATE results \
-    SET re_answers = :answers \
+    SET re_answers = :answers, re_last_time = :time \
     WHERE us_login = :login \
     AND du_id = :id ; \
     CALL getDuel(:id,:login);";
 
-  const res = await queryPromise(sql, { answers: updatedAnswers, login: username, id });
+  const res = await queryPromise(sql, {
+    answers: updatedAnswers,
+    login: username,
+    time: currentDate,
+    id,
+  });
   return formatDuel(res[1], username);
 }
 
