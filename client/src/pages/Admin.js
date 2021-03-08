@@ -264,7 +264,7 @@ const Configuration = ({ lastImport }) => {
           />
 
           <NumberInput
-            label="Durée de sauvegarde d'un duel terminé"
+            label="Durée de sauvegarde d'un duel terminé avant suppression"
             defaultValue={config.duelLifetime.value}
             onChange={(value) => updateConfig("duelLifetime", value)}
             min={config.duelLifetime.min}
