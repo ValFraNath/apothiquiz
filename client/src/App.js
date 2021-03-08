@@ -39,11 +39,10 @@ axios.interceptors.request.use((config) => {
 
 const UpdateButton = ({ updateRequired, updateSW }) => {
   const location = useLocation();
-  if (location.pathname === "/duel") {
-    return;
+  if (location.pathname === "/train" || /\/duel\/[0-9]+\/play/.test(location.pathname)) {
+    return "";
   }
 
-  console.log(location);
   return (
     <button id="update-app" className={updateRequired ? "update-animation" : ""} onClick={updateSW}>
       <ReloadIcon />
