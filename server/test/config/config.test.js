@@ -29,7 +29,7 @@ describe("Configuration tests", () => {
 
   let token;
   before("Get token", async () => {
-    token = await getToken("fpoguet", "1234");
+    token = await getToken("fdadeau", "1234");
   });
 
   it("Can fetch configuration with default values", async () => {

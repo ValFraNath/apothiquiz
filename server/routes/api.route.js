@@ -9,7 +9,7 @@ import QuestionController from "../controllers/question.js";
 import UserController from "../controllers/user.js";
 import UsersImporterController from "../controllers/usersImportation.js";
 import HttpControllerWrapper from "../global/HttpControllerWrapper.js";
-import authenticationMiddleware from "../middlewares/auth.middleware.js";
+import AuthMiddleware from "../middlewares/auth.middleware.js";
 import { createMulter } from "../middlewares/multer.middleware.js";
 
 const apiRouter = express.Router();
@@ -18,114 +18,82 @@ apiRouter.get("/status", HttpControllerWrapper(ApiController.status));
 
 apiRouter.get("/question/:type", HttpControllerWrapper(QuestionController.generateQuestion));
 
-apiRouter.get("/users/", authenticationMiddleware, HttpControllerWrapper(UserController.getAll));
+apiRouter.get("/users/", AuthMiddleware(), HttpControllerWrapper(UserController.getAll));
 
-apiRouter.post(
-  "/users/",
-  authenticationMiddleware,
-  HttpControllerWrapper(UserController.severalGetInfos)
-);
+apiRouter.post("/users/", AuthMiddleware(), HttpControllerWrapper(UserController.severalGetInfos));
 
 apiRouter.post("/users/login", HttpControllerWrapper(UserController.login));
 
 apiRouter.post("/users/token", HttpControllerWrapper(UserController.generateAccessToken));
 
-apiRouter.post(
-  "/users/logout",
-  authenticationMiddleware,
-  HttpControllerWrapper(UserController.logout)
-);
+apiRouter.post("/users/logout", AuthMiddleware(), HttpControllerWrapper(UserController.logout));
 
-apiRouter.get(
-  "/users/:pseudo",
-  authenticationMiddleware,
-  HttpControllerWrapper(UserController.getInfos)
-);
+apiRouter.get("/users/:pseudo", AuthMiddleware(), HttpControllerWrapper(UserController.getInfos));
 
 apiRouter.patch(
   "/users/:pseudo",
-  authenticationMiddleware,
+  AuthMiddleware(),
   HttpControllerWrapper(UserController.saveInfos)
 );
 
-apiRouter.post(
-  "/duels/new",
-  authenticationMiddleware,
-  HttpControllerWrapper(DuelController.create)
-);
+apiRouter.post("/duels/new", AuthMiddleware(), HttpControllerWrapper(DuelController.create));
 
-apiRouter.get("/duels/", authenticationMiddleware, HttpControllerWrapper(DuelController.fetchAll));
+apiRouter.get("/duels/", AuthMiddleware(), HttpControllerWrapper(DuelController.fetchAll));
 
-apiRouter.get("/duels/:id", authenticationMiddleware, HttpControllerWrapper(DuelController.fetch));
+apiRouter.get("/duels/:id", AuthMiddleware(), HttpControllerWrapper(DuelController.fetch));
 
-apiRouter.post(
-  "/duels/:id/:round",
-  authenticationMiddleware,
-  HttpControllerWrapper(DuelController.play)
-);
+apiRouter.post("/duels/:id/:round", AuthMiddleware(), HttpControllerWrapper(DuelController.play));
 
 const FILES_DIR = process.env.NODE_ENV === "test" ? "files-test" : "files";
 
-apiRouter.use(
-  "/files/molecules",
-  authenticationMiddleware,
-  express.static(`${FILES_DIR}/molecules`)
-);
+apiRouter.use("/files/molecules", AuthMiddleware(true), express.static(`${FILES_DIR}/molecules`));
 
-apiRouter.use("/files/users", authenticationMiddleware, express.static(`${FILES_DIR}/users`));
+apiRouter.use("/files/users", AuthMiddleware(true), express.static(`${FILES_DIR}/users`));
 
 apiRouter.use("/files/images", express.static(`${FILES_DIR}/images`));
 
 apiRouter.post(
   "/import/molecules",
-  authenticationMiddleware,
+  AuthMiddleware(true),
   createMulter(),
   HttpControllerWrapper(MoleculesImporterController.importMolecules)
 );
 
 apiRouter.get(
   "/import/molecules",
-  authenticationMiddleware,
+  AuthMiddleware(true),
   HttpControllerWrapper(MoleculesImporterController.getLastImportedFile)
 );
 
 apiRouter.post(
   "/import/images",
-  authenticationMiddleware,
+  AuthMiddleware(true),
   createMulter(true),
   HttpControllerWrapper(ImagesImporterController.importImages)
 );
 
 apiRouter.get(
   "/import/images",
-  authenticationMiddleware,
+  AuthMiddleware(true),
   HttpControllerWrapper(ImagesImporterController.getLastImportedFile)
 );
 
 apiRouter.post(
   "/import/users",
-  authenticationMiddleware,
+  AuthMiddleware(),
   createMulter(),
   HttpControllerWrapper(UsersImporterController.importUsers)
 );
 
 apiRouter.get(
   "/import/users",
-  authenticationMiddleware,
+  AuthMiddleware(),
   createMulter(),
   HttpControllerWrapper(UsersImporterController.getLastImportedUsers)
 );
 
-apiRouter.get(
-  "/config",
-  authenticationMiddleware,
-  HttpControllerWrapper(ConfigController.fetchConfig)
-);
+apiRouter.get("/config", AuthMiddleware(true), HttpControllerWrapper(ConfigController.fetchConfig));
 
-apiRouter.patch(
-  "/config",
-  authenticationMiddleware,
-  HttpControllerWrapper(ConfigController.setConfig)
-);
+apiRouter.patch("/config", AuthMiddleware(true), HttpControllerWrapper(ConfigController.setConfig));
 
 export default apiRouter;

@@ -14,14 +14,14 @@ const { describe, it, before } = mocha;
 chai.use(chaiHttp);
 
 const __dirname = path.resolve("test", "molecules_importation", "importation_route");
-// TODO test import with non admin user
+
 describe("Import molecule", () => {
   let mytoken;
   before("Insert users data & get token", async function () {
     this.timeout(10000);
     await forceTruncateTables("user");
     await insertData("users.sql");
-    mytoken = await getToken("fpoguet", "1234");
+    mytoken = await getToken("fdadeau", "1234");
   });
 
   it("Can upload file", async () => {
@@ -93,6 +93,11 @@ describe("Import molecule", () => {
     );
 
     expect(res.status).equals(401);
+  });
+
+  it("Can't access file without be admin", async () => {
+    await uploadFile("molecules.csv", "true", mytoken);
+    const token = await getToken("fpoguet");
   });
 
   it("Missing file", async () => {

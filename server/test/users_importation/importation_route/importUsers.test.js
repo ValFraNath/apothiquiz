@@ -22,7 +22,7 @@ describe("Import users", () => {
     await forceTruncateTables("user");
     await insertData("users.sql");
 
-    mytoken = await getToken("fpoguet");
+    mytoken = await getToken("fdadeau");
   });
 
   it("Can upload file", async () => {
