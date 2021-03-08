@@ -20,9 +20,9 @@ const removeDuels = cron.schedule("00 01 00 * * *", function () {
 
 /**
  * Make lose the current round for players who have not played 24 hours after the start
- * Should be executed every 2 hour
+ * Should be executed every 3 hours
  */
-const checkDuels = cron.schedule("*/10 * * * * *", function () {
+const checkDuels = cron.schedule("* * */3 * * *", function () {
   const sql = `SELECT duel.du_id, us_login, re_answers, re_last_time \
                FROM results, duel \
                WHERE results.du_id = duel.du_id \
