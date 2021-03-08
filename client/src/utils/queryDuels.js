@@ -19,7 +19,6 @@ export async function getAllDuels() {
   const listDefiedOfUsers = new Set([AuthService.getCurrentUser().pseudo]);
 
   duelsList.forEach((val) => {
-    console.log(val);
     if (val.inProgress === 0) {
       duels.finished.push(val);
     } else if (val.rounds[val.currentRound - 1][0].userAnswer !== undefined) {
