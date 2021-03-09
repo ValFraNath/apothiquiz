@@ -140,6 +140,7 @@ async function update(version = versions[0]) {
     });
 
     await queryPromise(script);
+    i++;
   }
 
   Logger.info("-> Database updated!\n");
