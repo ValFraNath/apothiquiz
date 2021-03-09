@@ -10,7 +10,7 @@ import Tokens from "../global/Tokens.js";
 dotenv.config();
 
 /**
- * @api       {post}        /user/login   Post a user login
+ * @api       {post}        /users/login   Post a user login
  * @apiName   PostUserLogin
  * @apiGroup  User
  *
@@ -19,7 +19,7 @@ dotenv.config();
  *
  * @apiSuccess (200) {string} pseudo  			the ENT login
  * @apiSuccess (200) {string} accessToken   the user access token
- * @apiSuccess (200) {string} refreshToken   the user refresh token
+ * @apiSuccess (200) {string} refreshToken  the user refresh token
  *
  * @apiError 	 (400) BadRequestFormat
  * @apiError   (401) IncorrectPassword
@@ -58,7 +58,19 @@ async function login(req, res) {
     res.sendUsageError(401, "Authentication failed");
   }
 }
+
 /**
+ * @api       {post}        /users/logout  User logout
+ * @apiName   UserLogout
+ * @apiGroup  User
+ *
+ * @apiParam {string} refreshToken 			The user refresh token
+ *
+ * @apiPermission LoggedIn
+ *
+ * @apiError 	 (400) BadRequestFormat
+ * @apiUse ErrorServer
+ *
  * @param {express.Request} req The http request
  * @param {HttpResponseWrapper} res The http response
  */
@@ -74,6 +86,18 @@ async function logout(req, res) {
 }
 
 /**
+ * @api       {post}  /users/token   Generate a new access token
+ * @apiName   GenerateAccessToken
+ * @apiGroup  User
+ *
+ * @apiParam {string} refreshToken The refresh token
+ *
+ * @apiSuccess (200) {string} accessToken  A new access token
+ *
+ * @apiError 	 (400) InvalidToken The token is invalid or expired
+ * @apiError 	 (400) MissingToken The token is missing
+ * @apiUse ErrorServer
+ *
  * @param {express.Request} req The http request
  * @param {HttpResponseWrapper} res The http response
  */
@@ -90,7 +114,7 @@ async function generateAccessToken(req, res) {
     return res.sendUsageError(400, "Invalid or expired refresh token");
   }
 
-  const accessToken = await Tokens.createAccessToken(refreshToken);
+  const accessToken = Tokens.createAccessToken(refreshToken);
 
   res.sendResponse(200, { accessToken });
 }
@@ -193,7 +217,7 @@ async function severalGetInfos(req, res) {
 }
 
 /**
- * @api       {get}        /user/:pseudo   Get user informations //TODO change to login
+ * @api       {get}        /users/:pseudo   Get user informations
  * @apiName   GetUserInformations
  * @apiGroup  User
  *
@@ -217,7 +241,7 @@ async function getInfos(req, res) {
 }
 
 /**
- * @api       {patch}               /user/:pseudo   Patch user informations
+ * @api       {patch}               /users/:pseudo   Patch user informations
  * @apiSampleRequest off
  * @apiName   PatchUserInformations
  * @apiGroup  User
