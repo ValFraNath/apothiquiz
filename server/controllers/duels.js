@@ -605,7 +605,7 @@ function computeScores(duel) {
  * @returns {Promise<boolean>}
  */
 async function doesDuelExist(users) {
-  const sql = `SELECT COUNT(*) as exists \
+  const sql = `SELECT COUNT(*) as duelExists \
 								FROM duel AS D	\
 								WHERE D.du_inProgress = 1 \
 								AND 2 = ( SELECT COUNT(*) \
@@ -614,7 +614,6 @@ async function doesDuelExist(users) {
 														AND ( R.us_login = ? \
 																OR R.us_login = ?));`;
 
-  console.log(sql);
-  const { exists } = await queryPromise(sql, users)[0];
-  return Boolean(Number(exists));
+  const { duelExists } = (await queryPromise(sql, users))[0];
+  return Boolean(Number(duelExists));
 }
