@@ -4,8 +4,7 @@ import path from "path";
 import multer from "multer";
 import { v4 as uuidv4 } from "uuid";
 
-import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
-import { addErrorTitle } from "../global/Logger.js";
+import { HttpResponseWrapper } from "../global/HttpControllerWrapper.js";
 
 /**
  * Multer configuration
@@ -18,7 +17,7 @@ const storage = multer.diskStorage({
     callback(null, filename);
   },
 
-  destination: (req, file, callback) => {
+  destination: async (req, file, callback) => {
     const destination = path.resolve("uploads");
 
     fs.mkdir(destination)
@@ -27,7 +26,7 @@ const storage = multer.diskStorage({
         if (error.code === "EEXIST") {
           callback(null, destination);
         } else {
-          callback(addErrorTitle(error, "Can't create the uploads directory"));
+          callback(error);
         }
       });
   },

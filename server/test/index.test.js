@@ -26,15 +26,11 @@ before("Insert configuration data", (done) => {
  * @param  {...string} tables The tables to truncate
  * @returns {Promise}
  */
-export function forceTruncateTables(...tables) {
-  return new Promise((resolve, reject) => {
-    let sql = "SET FOREIGN_KEY_CHECKS = 0; ";
-    sql = tables.reduce((sql, table) => sql + `TRUNCATE TABLE ${table} ; `, sql);
-    sql += "SET FOREIGN_KEY_CHECKS = 1; ";
-    queryPromise(sql)
-      .then(() => resolve())
-      .catch(reject);
-  });
+export async function forceTruncateTables(...tables) {
+  let sql = "SET FOREIGN_KEY_CHECKS = 0; ";
+  sql = tables.reduce((sql, table) => sql + `TRUNCATE TABLE ${table} ; `, sql);
+  sql += "SET FOREIGN_KEY_CHECKS = 1; ";
+  await queryPromise(sql);
 }
 
 /**
@@ -42,12 +38,11 @@ export function forceTruncateTables(...tables) {
  * @param {string} filename The filename
  * @returns {Promise}
  */
-export function insertData(filename) {
-  return new Promise((resolve, reject) => {
-    fs.readFile(path.resolve("test", "required_data", filename), { encoding: "utf8" })
-      .then((script) => queryPromise(script).then(() => resolve()))
-      .catch(reject);
+export async function insertData(filename) {
+  const script = await fs.readFile(path.resolve("test", "required_data", filename), {
+    encoding: "utf8",
   });
+  await queryPromise(script);
 }
 
 /**
@@ -79,30 +74,21 @@ export function requestAPI(endpoint, { body = {}, token = "", method = "get" } =
  * @param {string} password The user password
  * @returns {Promise<string>} The token
  */
-export function getToken(username, password = "1234") {
-  return new Promise((resolve, reject) => {
-    requestAPI("users/login", {
-      body: { userPseudo: username, userPassword: password },
-      method: "post",
-    })
-      .then((res) => resolve(res.body.token))
-      .catch(reject);
+export async function getToken(username, password = "1234") {
+  const res = await requestAPI("users/login", {
+    body: { userPseudo: username, userPassword: password },
+    method: "post",
   });
+  return res.body.token;
 }
 
 /**
  * Reset the configuration data in database
  * @returns {Promise}
  */
-export function resetConfig() {
-  return new Promise((resolve, reject) => {
-    const sql = `DELETE FROM server_informations WHERE server_informations.key LIKE 'config%'; `;
-    queryPromise(sql)
-      .then(() =>
-        insertData("config.sql")
-          .then(() => resolve())
-          .catch(reject)
-      )
-      .catch(reject);
-  });
+export async function resetConfig() {
+  const sql = `DELETE FROM server_informations WHERE server_informations.key LIKE 'config%'; `;
+  await queryPromise(sql);
+
+  await insertData("config.sql");
 }

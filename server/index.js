@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import express from "express";
 
 import Database from "./db/database.js";
+import { checkDuelsTask, removeDuelsTask } from "./files-script/cron-tasks.js";
 import Logger from "./global/Logger.js";
 import RequestSyntaxErrorHandler from "./middlewares/error.middleware.js";
 import apiRouter from "./routes/api.route.js";
@@ -33,17 +34,26 @@ app.use("/api/v1/", apiRouter);
 app.use("/", reactRouter);
 app.use(RequestSyntaxErrorHandler);
 
-Database.connect()
-  .then(() => {
+startServer();
+
+/**
+ * Connect the server to the database and start the server
+ */
+async function startServer() {
+  try {
+    await Database.connect();
     app.listen(PORT, () => {
       app.isReady = true;
       Logger.info(`Server is running on port ${PORT}.`);
     });
-  })
-  .catch((error) => {
+
+    removeDuelsTask.start();
+    checkDuelsTask.start();
+  } catch (error) {
     Logger.error(error);
     process.exit(1);
-  });
+  }
+}
 
 /**
  * Check every <interval> ms if the server is ready to use

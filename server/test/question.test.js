@@ -9,7 +9,8 @@ chai.use(chaiHttp);
 const { expect } = chai;
 
 describe("Question generation with empty database", () => {
-  before("Remove all data", (done) => {
+  before("Remove all data", function (done) {
+    this.timeout(10000);
     forceTruncateTables(
       "molecule",
       "class",
@@ -32,7 +33,8 @@ describe("Question generation", function () {
   // Only question types we can generate with current data
   const questionTypes = [1, 2, 3, 5, 6, 7, 8, 9];
 
-  before("Import data", (done) => {
+  before("Import data", function (done) {
+    this.timeout(10000);
     forceTruncateTables(
       "molecule",
       "class",
@@ -186,14 +188,9 @@ describe("Question generation", function () {
  * @param {string} systemName The system name
  * @return {Promise<string[]>}
  */
-function doesBelongToSystem(dci, systemName) {
-  return new Promise((resolve, reject) => {
-    queryPromise("CALL getSystemsOf(?)", [dci])
-      .then((res) => {
-        resolve(res[0].map((e) => e.sy_name).includes(systemName));
-      })
-      .catch(reject);
-  });
+async function doesBelongToSystem(dci, systemName) {
+  const res = await queryPromise("CALL getSystemsOf(?)", [dci]);
+  return res[0].map((e) => e.sy_name).includes(systemName);
 }
 
 /**
@@ -202,14 +199,9 @@ function doesBelongToSystem(dci, systemName) {
  * @param {String} className The class name
  * @returns {Promise<boolean>}
  */
-function doesBelongToClass(dci, className) {
-  return new Promise((resolve, reject) => {
-    queryPromise("CALL getClassesOf(?)", [dci])
-      .then((res) => {
-        resolve(res[0].map((e) => e.cl_name).includes(className));
-      })
-      .catch(reject);
-  });
+async function doesBelongToClass(dci, className) {
+  const res = await queryPromise("CALL getClassesOf(?)", [dci]);
+  return res[0].map((e) => e.cl_name).includes(className);
 }
 
 /**
@@ -219,10 +211,7 @@ function doesBelongToClass(dci, className) {
  * @param {string} value The property value
  * @returns {Promise<boolean>}
  */
-function doesHavePropertyValue(dci, property, value) {
-  return new Promise((resolve, reject) =>
-    queryPromise("CALL getPropertyValuesOf(?,?);", [dci, property])
-      .then((res) => resolve(res[0].map((e) => e.value).includes(value)))
-      .catch(reject)
-  );
+async function doesHavePropertyValue(dci, property, value) {
+  const res = await queryPromise("CALL getPropertyValuesOf(?,?);", [dci, property]);
+  return res[0].map((e) => e.value).includes(value);
 }

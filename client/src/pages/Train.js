@@ -227,14 +227,15 @@ class Train extends Component {
   getNewQuestion = (nthRetry = 0) => {
     const minQuestionType = 1,
       maxQuestionType = 10;
+
     const questionType =
       Math.floor(Math.random() * (maxQuestionType + 1 - minQuestionType)) + minQuestionType;
     axios
       .get(`/api/v1/question/${questionType}`)
-      .then((res) => {
+      .then(({ data: question }) => {
         this.setState({
           gameState: Train.STATE_PLAY,
-          question: res.data,
+          question,
           inProgress: true,
           lastClicked: "",
           error: null,

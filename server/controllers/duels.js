@@ -1,6 +1,7 @@
 import { queryPromise } from "../db/database.js";
-import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
-import Logger, { addErrorTitle } from "../global/Logger.js";
+
+import { formatDate } from "../global/dateUtils.js";
+import Logger from "../global/Logger.js";
 
 import MessagingHandlerFactory from "../global/MessagingHandler.js";
 
@@ -30,46 +31,45 @@ import { createGeneratorOfType, NotEnoughDataError, getAllQuestionTypes } from "
  * @apiError (404) OpponentNotFound The specified opponent does not exist
  * @apiUse NotEnoughDataError
  *
+ * @param {object} req The http request
+ * @param {HttpResponseWrapper} res The http response
+ *
  */
-function create(req, _res) {
-  const res = new HttpResponseWrapper(_res);
-  const username = req.body.authUser;
-  const { opponent } = req.body;
+async function create(req, res) {
+  try {
+    const username = req.body.authUser;
+    const { opponent } = req.body;
 
-  if (!opponent) {
-    return res.sendUsageError(400, "Missing opponent");
+    if (!opponent) {
+      return res.sendUsageError(400, "Missing opponent");
+    }
+
+    if (username === opponent) {
+      return res.sendUsageError(400, "You can't challenge yourself");
+    }
+
+    const usersExist = await doUsersExist(username, opponent);
+
+    if (!usersExist) {
+      return res.sendUsageError(404, "Opponent not found");
+    }
+
+    const config = await fetchConfigFromDB();
+
+    const rounds = await createRounds(config);
+
+    const id = await createDuelInDatabase(username, opponent, rounds);
+
+    res.sendResponse(201, { id });
+  } catch (error) {
+    if (NotEnoughDataError.isInstance(error)) {
+      res.sendUsageError(422, "Not enough data to generate the duel", {
+        code: error.code,
+      });
+      return;
+    }
+    res.sendServerError(error);
   }
-
-  if (username === opponent) {
-    return res.sendUsageError(400, "You can't challenge yourself");
-  }
-
-  doUsersExist(username, opponent)
-    .then((yes) => {
-      if (!yes) {
-        return res.sendUsageError(404, "Opponent not found");
-      }
-      fetchConfigFromDB()
-        .then((config) =>
-          createRounds(config)
-            .then((rounds) =>
-              createDuelInDatabase(username, opponent, rounds)
-                .then((id) => res.sendResponse(201, { id }))
-                .catch(res.sendServerError)
-            )
-
-            .catch((error) => {
-              if (NotEnoughDataError.isInstance(error)) {
-                return res.sendUsageError(422, "Not enough data to generate the duel", {
-                  code: error.code,
-                });
-              }
-              return res.sendServerError(error);
-            })
-        )
-        .catch(res.sendServerError);
-    })
-    .catch(res.sendServerError);
 }
 
 /**
@@ -162,10 +162,10 @@ function create(req, _res) {
  * @apiError (404) NotFound The duel does not exist
  * @apiUse ErrorServer
  *
+ * @param {object} req The http response
+ * @param {HttpResponseWrapper} res The http response
  */
-function fetch(req, _res) {
-  const res = new HttpResponseWrapper(_res);
-
+async function fetch(req, res) {
   const username = req.body.authUser;
   const duelID = Number(req.params.id);
 
@@ -173,14 +173,11 @@ function fetch(req, _res) {
     return res.sendUsageError(400, "Missing or invalid duel ID");
   }
 
-  getDuel(duelID, username)
-    .then((duel) => {
-      if (!duel) {
-        return res.sendUsageError(404, "Duel not found");
-      }
-      res.sendResponse(200, duel);
-    })
-    .catch(res.sendServerError);
+  const duel = await getDuel(duelID, username);
+  if (!duel) {
+    return res.sendUsageError(404, "Duel not found");
+  }
+  res.sendResponse(200, duel);
 }
 
 /**
@@ -194,13 +191,11 @@ function fetch(req, _res) {
  * @apiPermission LoggedIn
  * @apiUse ErrorServer
  */
-function fetchAll(req, _res) {
-  const res = new HttpResponseWrapper(_res);
+async function fetchAll(req, res) {
   const username = req.body.authUser;
 
-  getAllDuels(username)
-    .then((duels) => res.sendResponse(200, duels))
-    .catch(res.sendServerError);
+  const duels = await getAllDuels(username);
+  res.sendResponse(200, duels);
 }
 
 /**
@@ -229,8 +224,7 @@ function fetchAll(req, _res) {
  *
  *
  */
-function play(req, _res) {
-  const res = new HttpResponseWrapper(_res);
+async function play(req, res) {
   const id = Number(req.params.id);
   const round = Number(req.params.round);
   const username = req.body.authUser;
@@ -240,50 +234,52 @@ function play(req, _res) {
     return res.sendUsageError(400, "Invalid or missing duel id");
   }
 
-  getDuel(id, username)
-    .then((duel) => {
-      if (!duel) {
-        return res.sendUsageError(404, "Duel not found");
-      }
+  const duel = await getDuel(id, username);
 
-      if (!duel.inProgress) {
-        return res.sendUsageError(400, "This duel is finished");
-      }
+  if (!duel) {
+    return res.sendUsageError(404, "Duel not found");
+  }
 
-      if (duel.currentRound !== round) {
-        return res.sendUsageError(400, "Invalid duel round");
-      }
-      if (duel.rounds[round - 1][0].userAnswer !== undefined) {
-        return res.sendUsageError(400, "You can only play a round once");
-      }
+  if (!duel.inProgress) {
+    return res.sendUsageError(400, "This duel is finished");
+  }
 
-      if (answers.length !== duel.rounds[round - 1].length) {
-        return res.sendUsageError(400, "Incorrect number of answers");
-      }
+  if (duel.currentRound !== round) {
+    return res.sendUsageError(400, "Invalid duel round");
+  }
 
-      insertResultInDatabase(id, username, answers)
-        .then((newDuel) => {
-          updateDuelState(newDuel, username)
-            .then((duel) => {
-              res.sendResponse(200, duel);
-              let messagingPayload = {
-                title: `${username} vient de jouer !`,
-                body: "C'est à ton tour de jouer.",
-                type: "duel",
-                duelId: `${id}`,
-              };
-              if (duel.currentRound === 1 && newDuel.currentRound === 1) {
-                messagingPayload.title = `${username} te propose un duel !`;
-              }
+  if (duel.rounds[round - 1][0].userAnswer !== undefined) {
+    return res.sendUsageError(400, "You can only play a round once");
+  }
 
-              const MessageHandler = MessagingHandlerFactory.getInstance();
-              MessageHandler.sendNotificationToOneDevice(duel.opponent, messagingPayload);
-            })
-            .catch(res.sendServerError);
-        })
-        .catch(res.sendServerError);
-    })
-    .catch(res.sendServerError);
+  if (answers.length !== duel.rounds[round - 1].length) {
+    return res.sendUsageError(400, "Incorrect number of answers");
+  }
+
+  const addedDuel = await insertResultInDatabase(id, username, answers);
+
+  let updatedDuel = await updateDuelState(addedDuel, username);
+
+  if (updatedDuel.inProgress === 0) {
+    const currentDate = formatDate();
+    const sql = "UPDATE duel SET du_finished = ? WHERE du_id = ?;";
+    await queryPromise(sql, [currentDate, id]);
+  }
+
+  res.sendResponse(200, updatedDuel);
+
+  let messagingPayload = {
+    title: `${username} vient de jouer !`,
+    body: "C'est à ton tour de jouer.",
+    type: "duel",
+    duelId: `${id}`,
+  };
+  if (addedDuel.currentRound === 1 && updatedDuel.currentRound === 1) {
+    messagingPayload.title = `${username} te propose un duel !`;
+  }
+
+  const MessageHandler = MessagingHandlerFactory.getInstance();
+  MessageHandler.sendNotificationToOneDevice(updatedDuel.opponent, messagingPayload);
 }
 
 let mockedDuelsRounds;
@@ -300,7 +296,7 @@ export function _initMockedDuelRounds(fakeDuelsRounds) {
   mockedDuelsRounds = fakeDuelsRounds;
 }
 
-export default { create, fetch, fetchAll, play };
+export default { create, fetch, fetchAll, play, insertResultInDatabase, updateDuelState };
 
 // ***** INTERNAL FUNCTIONS *****
 
@@ -309,22 +305,18 @@ export default { create, fetch, fetchAll, play };
  * @param  {...string} users The list of users
  * @returns {Promise<boolean>}
  */
-function doUsersExist(...users) {
-  return new Promise((resolve, reject) => {
-    const sql = ` SELECT us_login \
+async function doUsersExist(...users) {
+  const sql = ` SELECT us_login \
                   FROM user \
                   WHERE us_login IN (${Array(users.length).fill("?").join(",")})
                   AND us_deleted IS NULL;`;
 
-    queryPromise(sql, users)
-      .then((sqlRes) => {
-        if (sqlRes.length !== users.length) {
-          return resolve(false);
-        }
-        resolve(true);
-      })
-      .catch((error) => reject(addErrorTitle(error, "Can't check if the user exists", true)));
-  });
+  const sqlRes = await queryPromise(sql, users);
+
+  if (sqlRes.length !== users.length) {
+    return false;
+  }
+  return true;
 }
 
 /**
@@ -334,57 +326,44 @@ function doUsersExist(...users) {
  * @param {object} rounds The rounds of the duel
  * @returns {Promise<number>} The id of the duel
  */
-function createDuelInDatabase(player1, player2, rounds) {
-  return new Promise((resolve, reject) => {
-    queryPromise("CALL createDuel(:player1,:player2,:content)", {
-      player1,
-      player2,
-      content: JSON.stringify(rounds),
-    })
-      .then((res) => resolve(res[0][0].id))
-      .catch((error) => reject(addErrorTitle(error, "Can't create duel", true)));
+async function createDuelInDatabase(player1, player2, rounds) {
+  const res = await queryPromise("CALL createDuel(:player1,:player2,:content)", {
+    player1,
+    player2,
+    content: JSON.stringify(rounds),
   });
+  return res[0][0].id;
 }
 
 /**
  * Create all rounds of a duel
  * @param {object} config The configuration object
  * This function can be mocked : @see _initMockedDuelRounds
- * @return {Promise<object[][]|NotEnoughDataError>}
+ * @throws NotEnoughDataError
+ * @return {Promise<object[][]>}
  */
-function createRounds(config) {
-  return new Promise((resolve, reject) => {
-    if (mockedDuelsRounds) {
-      resolve(mockedDuelsRounds);
+async function createRounds(config) {
+  if (mockedDuelsRounds) {
+    return mockedDuelsRounds;
+  }
+  const types = createShuffledQuestionTypesArray();
+  const rounds = [];
+
+  while (rounds.length < config.roundsPerDuel) {
+    if (types.length === 0) {
+      throw new NotEnoughDataError();
     }
-    const types = createShuffledQuestionTypesArray();
-    const rounds = [];
 
-    console.log(types);
-
-    (function createRoundsRecursively() {
-      console.log(types);
-      if (types.length === 0) {
-        reject(new NotEnoughDataError());
+    try {
+      rounds.push(await createRound(types.pop(), config));
+    } catch (error) {
+      if (!NotEnoughDataError.isInstance(error)) {
+        throw error;
       }
+    }
+  }
 
-      createRound(types.pop(), config)
-        .then((round) => {
-          if (rounds.push(round) === config.roundsPerDuel) {
-            resolve(rounds);
-          } else {
-            createRoundsRecursively();
-          }
-        })
-        .catch((error) => {
-          if (NotEnoughDataError.isInstance(error)) {
-            createRoundsRecursively();
-          } else {
-            reject(addErrorTitle(error, "Can't create a round", true));
-          }
-        });
-    })();
-  });
+  return rounds;
 }
 
 /**
@@ -393,17 +372,11 @@ function createRounds(config) {
  * @param {object} config The configuration object
  * @returns {Promise<object[]>} The list of questions
  */
-function createRound(type, config) {
-  return new Promise((resolve, reject) => {
-    const generateQuestion = createGeneratorOfType(type);
-    const questions = [...Array(config.questionsPerRound)].map(generateQuestion);
+async function createRound(type, config) {
+  const generateQuestion = createGeneratorOfType(type);
+  const questions = [...Array(config.questionsPerRound)].map(generateQuestion);
 
-    Promise.all(questions)
-      .then((questions) => {
-        resolve(questions);
-      })
-      .catch((error) => reject(addErrorTitle(error, "Can't create round")));
-  });
+  return await Promise.all(questions);
 }
 
 /**
@@ -427,48 +400,35 @@ function createShuffledQuestionTypesArray() {
  * @param {string} username The user requesting the duel
  * @returns {Promise<object>} The formatted duel
  */
-function getDuel(id, username) {
-  return new Promise((resolve, reject) => {
-    queryPromise("CALL getDuel(?,?);", [id, username])
-      .then((res) => {
-        if (res[0].length === 0) {
-          resolve(null);
-        } else {
-          resolve(formatDuel(res[0], username));
-        }
-      })
-      .catch((error) => reject(addErrorTitle(error, "Can't get duel", true)));
-  });
+async function getDuel(id, username) {
+  const res = await queryPromise("CALL getDuel(?,?);", [id, username]);
+
+  if (res[0].length === 0) {
+    return null;
+  }
+  return formatDuel(res[0], username);
 }
 
 /**
  * Fetch all duels of a user in database
  * @param {string} username The user requesting duels
- * @returns {object[]} The list of formatted duels
+ * @returns {Promise<object[]>} The list of formatted duels
  */
-function getAllDuels(username) {
-  return new Promise((resolve, reject) => {
-    queryPromise("CALL getDuelsOf(?);", [username])
-      .then((res) => {
-        if (res[0].length === 0) {
-          resolve([]);
-        } else {
-          resolve(
-            Object.values(
-              res[0].reduce((duels, duel) => {
-                if (duels[duel.du_id]) {
-                  duels[duel.du_id] = formatDuel([duels[duel.du_id], duel], username);
-                } else {
-                  duels[duel.du_id] = duel;
-                }
-                return duels;
-              }, Object.create(null))
-            )
-          );
-        }
-      })
-      .catch((error) => reject(addErrorTitle(error, "Can't get all duels", true)));
-  });
+async function getAllDuels(username) {
+  const res = await queryPromise("CALL getDuelsOf(?);", [username]);
+  if (res[0].length === 0) {
+    return [];
+  }
+  return Object.values(
+    res[0].reduce((duels, duel) => {
+      if (duels[duel.du_id]) {
+        duels[duel.du_id] = formatDuel([duels[duel.du_id], duel], username);
+      } else {
+        duels[duel.du_id] = duel;
+      }
+      return duels;
+    }, Object.create(null))
+  );
 }
 
 /**
@@ -547,13 +507,10 @@ function formatDuel(duel, username) {
  * @param {string} username The player username
  * @returns {Promise<number[]>} The user answers
  */
-function getDuelResults(id, username) {
-  return new Promise((resolve, reject) => {
-    const sql = "SELECT re_answers FROM results WHERE us_login = ? AND du_id = ? ;";
-    queryPromise(sql, [username, id])
-      .then((res) => resolve(JSON.parse(res[0].re_answers)))
-      .catch((error) => reject(addErrorTitle(error, "Can't get duel results", true)));
-  });
+async function getDuelResults(id, username) {
+  const sql = "SELECT re_answers FROM results WHERE us_login = ? AND du_id = ? ;";
+  const res = await queryPromise(sql, [username, id]);
+  return JSON.parse(res[0].re_answers);
 }
 
 /**
@@ -563,19 +520,25 @@ function getDuelResults(id, username) {
  * @param {number[]} answers The answers sent
  * @returns {Promise<object>} The updated duel
  */
-function insertResultInDatabase(id, username, answers) {
-  return new Promise((resolve, reject) => {
-    getDuelResults(id, username)
-      .then((previousAnswers) => {
-        const updatedAnswers = JSON.stringify([...previousAnswers, answers]);
-        const sql =
-          "UPDATE results SET re_answers = :answers WHERE us_login = :login AND du_id = :id ; CALL getDuel(:id,:login);";
-        queryPromise(sql, { answers: updatedAnswers, login: username, id })
-          .then((res) => resolve(formatDuel(res[1], username)))
-          .catch((error) => reject(addErrorTitle(error, "Can't insert answers in database", true)));
-      })
-      .catch((error) => reject(addErrorTitle(error, "Can't get duel results", true)));
+async function insertResultInDatabase(id, username, answers) {
+  const previousAnswers = await getDuelResults(id, username);
+
+  const updatedAnswers = JSON.stringify([...previousAnswers, answers]);
+  const currentDate = formatDate();
+  const sql =
+    "UPDATE results \
+    SET re_answers = :answers, re_last_time = :time \
+    WHERE us_login = :login \
+    AND du_id = :id ; \
+    CALL getDuel(:id,:login);";
+
+  const res = await queryPromise(sql, {
+    answers: updatedAnswers,
+    login: username,
+    time: currentDate,
+    id,
   });
+  return formatDuel(res[1], username);
 }
 
 /**
@@ -584,42 +547,44 @@ function insertResultInDatabase(id, username, answers) {
  * @param {string} username The player username
  * @returns {Promise<object>} The updated duel
  */
-function updateDuelState(duel, username) {
-  return new Promise((resolve, reject) => {
-    const { currentRound } = duel;
-    let sql = "";
-    let winner, looser;
-    if (duel.rounds[currentRound - 1][0].opponentAnswer !== undefined) {
-      if (currentRound === duel.rounds.length) {
-        sql += "UPDATE duel SET du_inProgress = false WHERE du_id = :id ;";
-        const scores = computeScores(duel);
-        if (scores.user !== scores.opponent) {
-          if (scores.user > scores.opponent) {
-            winner = username;
-            looser = duel.opponent;
-          } else {
-            winner = duel.opponent;
-            looser = username;
-          }
-          sql += `CALL incrementUserVictories(:winner);`;
-          sql += `CALL incrementUserDefeats(:looser);`;
+async function updateDuelState(duel, username) {
+  const { currentRound } = duel;
+  let sql = "";
+  let winner, looser;
+
+  if (duel.rounds[currentRound - 1][0].opponentAnswer !== undefined) {
+    if (currentRound === duel.rounds.length) {
+      sql += "UPDATE duel SET du_inProgress = false WHERE du_id = :id ;";
+      const scores = computeScores(duel);
+      if (scores.user !== scores.opponent) {
+        if (scores.user > scores.opponent) {
+          winner = username;
+          looser = duel.opponent;
+        } else {
+          winner = duel.opponent;
+          looser = username;
         }
-      } else {
-        sql = "UPDATE duel SET du_currentRound = :round WHERE du_id = :id ;";
+        sql += `CALL incrementUserVictories(:winner);`;
+        sql += `CALL incrementUserDefeats(:looser);`;
       }
+    } else {
+      sql = "UPDATE duel SET du_currentRound = :round WHERE du_id = :id ;";
     }
-    sql += "CALL getDuel(:id,:username);";
-    queryPromise(sql, { id: duel.id, username, round: currentRound + 1, winner, looser })
-      .then((res) => {
-        resolve(
-          formatDuel(
-            res.find((e) => e instanceof Array),
-            username
-          )
-        );
-      })
-      .catch((error) => reject(addErrorTitle(error, "Can't update the duel state", true)));
+  }
+  sql += "CALL getDuel(:id,:username);";
+
+  const res = await queryPromise(sql, {
+    id: duel.id,
+    username,
+    round: currentRound + 1,
+    winner,
+    looser,
   });
+
+  return formatDuel(
+    res.find((e) => e instanceof Array),
+    username
+  );
 }
 
 /**

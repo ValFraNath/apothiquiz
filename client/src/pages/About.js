@@ -8,21 +8,15 @@ import Loading from "../components/status/Loading";
 import PageError from "../components/status/PageError";
 
 const TestConnection = () => {
-  function getServerInformations() {
-    return new Promise((resolve, reject) => {
-      axios
-        .get(`/api/v1/status`)
-        .then((res) => {
-          resolve({
-            serverStatus: res.data.status,
-            currentServerAPIVersion: res.data.apiVersion,
-          });
-        })
-        .catch((err) => {
-          console.log(err);
-          reject(err);
-        });
-    });
+  async function getServerInformations() {
+    const {
+      data: { status, apiVersion },
+    } = await axios.get(`/api/v1/status`);
+
+    return {
+      serverStatus: status,
+      currentServerAPIVersion: apiVersion,
+    };
   }
 
   const [isEnabled, setIsEnabled] = useState(false);
@@ -59,8 +53,8 @@ const About = () => {
   return (
     <main id="informations">
       <p>
-        Guacamole est une application d'apprentissage réflexe à destination des étudiants en
-        pharmacie de l'Université de Franche-Comté.
+        Guacamole <i>(nom temporaire)</i> est une application d'apprentissage réflexe à destination
+        des étudiants en pharmacie de l'Université de Franche-Comté.
       </p>
       <p>Elle est réalisée dans le cadre d'un projet tutoré de Licence 3 Informatique 2020-2021.</p>
       <p>

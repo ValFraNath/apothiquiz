@@ -4,7 +4,7 @@ ALTER TABLE `duel` ADD `du_inProgress` BOOLEAN NOT NULL DEFAULT TRUE AFTER `du_c
 
 CREATE PROCEDURE `createDuel`(  IN `player1` VARCHAR(32), 
                                 IN `player2` VARCHAR(32), 
-                                IN `content` JSON) 
+                                IN `content` JSON)
                                 NOT DETERMINISTIC NO SQL SQL SECURITY DEFINER 
 BEGIN 
     SET @id = ( SELECT IFNULL(MAX(du_id),0)+1 

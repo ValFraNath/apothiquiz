@@ -9,32 +9,53 @@ import MoleculesImporterController from "../controllers/moleculesImporter.js";
 import QuestionController from "../controllers/question.js";
 import UserController from "../controllers/user.js";
 import UsersImporterController from "../controllers/usersImportation.js";
+import HttpControllerWrapper from "../global/HttpControllerWrapper.js";
 import authenticationMiddleware from "../middlewares/auth.middleware.js";
 import { createMulter } from "../middlewares/multer.middleware.js";
 
 const apiRouter = express.Router();
 
-apiRouter.get("/status", ApiController.status);
+apiRouter.get("/status", HttpControllerWrapper(ApiController.status));
 
-apiRouter.get("/question/:type", QuestionController.generateQuestion);
+apiRouter.get("/question/:type", HttpControllerWrapper(QuestionController.generateQuestion));
 
-apiRouter.get("/users/", authenticationMiddleware, UserController.getAll);
+apiRouter.get("/users/", authenticationMiddleware, HttpControllerWrapper(UserController.getAll));
 
-apiRouter.post("/users/", authenticationMiddleware, UserController.severalGetInfos);
+apiRouter.post(
+  "/users/",
+  authenticationMiddleware,
+  HttpControllerWrapper(UserController.severalGetInfos)
+);
 
-apiRouter.post("/users/login", UserController.login);
+apiRouter.post("/users/login", HttpControllerWrapper(UserController.login));
 
-apiRouter.get("/users/:pseudo", authenticationMiddleware, UserController.getInfos);
+apiRouter.get(
+  "/users/:pseudo",
+  authenticationMiddleware,
+  HttpControllerWrapper(UserController.getInfos)
+);
 
-apiRouter.patch("/users/:pseudo", authenticationMiddleware, UserController.saveInfos);
+apiRouter.patch(
+  "/users/:pseudo",
+  authenticationMiddleware,
+  HttpControllerWrapper(UserController.saveInfos)
+);
 
-apiRouter.post("/duels/new", authenticationMiddleware, DuelController.create);
+apiRouter.post(
+  "/duels/new",
+  authenticationMiddleware,
+  HttpControllerWrapper(DuelController.create)
+);
 
-apiRouter.get("/duels/", authenticationMiddleware, DuelController.fetchAll);
+apiRouter.get("/duels/", authenticationMiddleware, HttpControllerWrapper(DuelController.fetchAll));
 
-apiRouter.get("/duels/:id", authenticationMiddleware, DuelController.fetch);
+apiRouter.get("/duels/:id", authenticationMiddleware, HttpControllerWrapper(DuelController.fetch));
 
-apiRouter.post("/duels/:id/:round", authenticationMiddleware, DuelController.play);
+apiRouter.post(
+  "/duels/:id/:round",
+  authenticationMiddleware,
+  HttpControllerWrapper(DuelController.play)
+);
 
 const FILES_DIR = process.env.NODE_ENV === "test" ? "files-test" : "files";
 
@@ -52,45 +73,53 @@ apiRouter.post(
   "/import/molecules",
   authenticationMiddleware,
   createMulter(),
-  MoleculesImporterController.importMolecules
+  HttpControllerWrapper(MoleculesImporterController.importMolecules)
 );
 
 apiRouter.get(
   "/import/molecules",
   authenticationMiddleware,
-  MoleculesImporterController.getLastImportedFile
+  HttpControllerWrapper(MoleculesImporterController.getLastImportedFile)
 );
 
 apiRouter.post(
   "/import/images",
   authenticationMiddleware,
   createMulter(true),
-  ImagesImporterController.importImages
+  HttpControllerWrapper(ImagesImporterController.importImages)
 );
 
 apiRouter.get(
   "/import/images",
   authenticationMiddleware,
-  ImagesImporterController.getLastImportedFile
+  HttpControllerWrapper(ImagesImporterController.getLastImportedFile)
 );
 
 apiRouter.post(
   "/import/users",
   authenticationMiddleware,
   createMulter(),
-  UsersImporterController.importUsers
+  HttpControllerWrapper(UsersImporterController.importUsers)
 );
 
 apiRouter.get(
   "/import/users",
   authenticationMiddleware,
   createMulter(),
-  UsersImporterController.getLastImportedUsers
+  HttpControllerWrapper(UsersImporterController.getLastImportedUsers)
 );
 
-apiRouter.get("/config", authenticationMiddleware, ConfigController.fetchConfig);
+apiRouter.get(
+  "/config",
+  authenticationMiddleware,
+  HttpControllerWrapper(ConfigController.fetchConfig)
+);
 
-apiRouter.patch("/config", authenticationMiddleware, ConfigController.setConfig);
+apiRouter.patch(
+  "/config",
+  authenticationMiddleware,
+  HttpControllerWrapper(ConfigController.setConfig)
+);
 
 apiRouter.put("/messaging/token/add", authenticationMiddleware, MessagingController.updateToken);
 

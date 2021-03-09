@@ -87,11 +87,12 @@ describe("Check the database structure", function () {
         "du_currentRound",
         "du_inProgress",
         "du_questionTimerDuration",
+        "du_finished",
       ],
     },
     {
       name: "results",
-      fields: ["us_login", "du_id", "re_answers"],
+      fields: ["us_login", "du_id", "re_answers", "re_last_time"],
     },
     {
       name: "property",
@@ -142,7 +143,8 @@ describe("Check the database structure", function () {
 });
 
 describe("Procedures Molecule data", () => {
-  before("Insert data", (done) => {
+  before("Insert data", function (done) {
+    this.timeout(10000);
     forceTruncateTables(
       "molecule",
       "property",
@@ -220,7 +222,8 @@ describe("Procedures Molecule data", () => {
 describe("Procedures duels", () => {
   const duelIds = [];
 
-  before("Clear duels, results & users", (done) => {
+  before("Clear duels, results & users", function (done) {
+    this.timeout(10000);
     forceTruncateTables("results", "duel", "user").then(() => insertData("users.sql").then(done));
   });
 
@@ -297,7 +300,8 @@ describe("Procedures duels", () => {
 });
 
 describe("Procedures users statistics", () => {
-  before("Clear and insert users", (done) => {
+  before("Clear and insert users", function (done) {
+    this.timeout(10000);
     forceTruncateTables("user").then(() => insertData("users.sql").then(done));
   });
 

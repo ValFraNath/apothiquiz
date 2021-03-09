@@ -36,9 +36,9 @@ const DuelCreate = ({ history }) => {
       .post("/api/v1/duels/new", {
         opponent,
       })
-      .then((res) => {
+      .then(({ data: { id } }) => {
         queryClient.invalidateQueries(["users", "challengeable"]);
-        history.push(`/duel/${res.data.id}`);
+        history.push(`/duel/${id}`);
       })
       .catch((err) => console.error(err));
   }
