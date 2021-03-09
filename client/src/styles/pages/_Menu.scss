@@ -1,7 +1,7 @@
 main#menu {
   display: flex;
   flex-direction: column-reverse;
-  background-image: url("../../images/bg_menu.png");
+  background-image: url("../../images/bg_menu.jpg");
   background-size: cover;
   background-position: top;
   height: calc(100% - #{$top-bar-height});

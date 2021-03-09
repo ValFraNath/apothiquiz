@@ -21,7 +21,7 @@ const ProtectedRoute = ({ component, onlyAdmin, ...rest }) => {
 };
 
 ProtectedRoute.propTypes = {
-  component: PropTypes.func.isRequired,
+  component: PropTypes.oneOfType([PropTypes.object, PropTypes.func]).isRequired,
   path: PropTypes.string,
   exact: PropTypes.bool,
   onlyAdmin: PropTypes.bool,
