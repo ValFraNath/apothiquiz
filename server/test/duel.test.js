@@ -164,7 +164,7 @@ describe("Duels", () => {
         ids[0] = res.body.id;
       });
 
-      it("Can create a duel with the same users after completing the last one", async () => {
+      it("Can't create a duel with the same users at the same time", async () => {
         const res = await requestAPI("duels/new", {
           token: tokens.fpoguet,
           method: "post",
