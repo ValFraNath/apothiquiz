@@ -72,7 +72,7 @@ const checkDuelsTask = cron.schedule(
 
         if (diffDateInHour(new Date(), currentRound[indexLastPlayed].time) >= 24) {
           const resSample = JSON.parse(currentRound[indexLastPlayed].answers)[0];
-          if (resSample === undefined) return; // no one has played the challenge yet
+          if (resSample === undefined) return; // no date provided
           const looser = currentRound[indexLastPlayed ^ 1];
 
           const results = new Array(resSample.length).fill(-1);
