@@ -5,7 +5,7 @@ import admin from "firebase-admin";
 
 import { queryPromise } from "../db/database.js";
 
-import { addErrorTitle } from "./Logger.js";
+import Logger from "./Logger.js";
 
 /* Create singleton class */
 const MessagingHandlerFactory = (function () {
@@ -39,15 +39,11 @@ class MessagingHandler {
             appInstance
               .messaging()
               .send(message)
-              .catch((err) =>
-                console.error(addErrorTitle(err, "Can't send notification to one device", true))
-              );
+              .catch((err) => Logger.error(err));
           })
-          .catch((err) =>
-            console.error(addErrorTitle(err, "Can't get messaging token from user", true))
-          );
+          .catch((err) => Logger(err));
       })
-      .catch((err) => console.error(addErrorTitle(err, "Can't get firebase instance", true)));
+      .catch((err) => Logger.error(err));
   }
 
   async _initializeApp() {
@@ -67,7 +63,7 @@ class MessagingHandler {
                    WHERE us_login = ?`;
       queryPromise(sql, [user])
         .then((res) => resolve(res[0].us_messaging_token))
-        .catch((err) => reject(addErrorTitle(err, "Can't get messaging token", true)));
+        .catch((err) => reject(err));
     });
   }
 }

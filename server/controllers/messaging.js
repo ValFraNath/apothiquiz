@@ -1,6 +1,5 @@
 import { queryPromise } from "../db/database.js";
-import HttpResponseWrapper from "../global/HttpResponseWrapper.js";
-import { addErrorTitle } from "../global/Logger.js";
+import HttpResponseWrapper from "../global/HttpControllerWrapper.js";
 
 /**
  *
@@ -102,6 +101,6 @@ function _saveMessagingTokenInDatabase(user, messagingToken = undefined) {
     const arrayOfValues = messagingToken ? [messagingToken, user] : [user];
     queryPromise(sql, arrayOfValues)
       .then((res) => resolve(res.affectedRows === 0))
-      .catch((error) => reject(addErrorTitle(error, "Can't update messaging token", true)));
+      .catch((error) => reject(error));
   });
 }

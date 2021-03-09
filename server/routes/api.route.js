@@ -111,7 +111,7 @@ apiRouter.patch(
   HttpControllerWrapper(ConfigController.setConfig)
 );
 
-apiRouter.put("/messaging/token/add", authenticationMiddleware, MessagingController.updateToken);
+apiRouter.put("/messaging/token/add", AuthMiddleware(), MessagingController.updateToken);
 
 apiRouter.put("/messaging/token/remove", MessagingController.removeToken);
 
