@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "NODE_ENV=test DB_DATABASE=guacamoleTestDb PORT=5036 mocha \"test/**/*.test.js\" --exit",
-    "test:generate-data": "node ./db/fill-database.js",
+    "test:generate-data": "NODE_ENV=test node ./db/fill-fake-data.js",
     "start": "node .",
     "start:watch": "nodemon .",
     "lint": "eslint .",

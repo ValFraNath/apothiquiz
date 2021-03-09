@@ -311,7 +311,7 @@ async function doUsersExist(...users) {
  * @param {object} rounds The rounds of the duel
  * @returns {Promise<number>} The id of the duel
  */
-async function createDuelInDatabase(player1, player2, rounds) {
+export async function createDuelInDatabase(player1, player2, rounds) {
   const res = await queryPromise("CALL createDuel(:player1,:player2,:content)", {
     player1,
     player2,
@@ -327,7 +327,7 @@ async function createDuelInDatabase(player1, player2, rounds) {
  * @throws NotEnoughDataError
  * @return {Promise<object[][]>}
  */
-async function createRounds(config) {
+export async function createRounds(config) {
   if (mockedDuelsRounds) {
     return mockedDuelsRounds;
   }
