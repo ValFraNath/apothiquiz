@@ -610,7 +610,7 @@ async function doesDuelExist(users) {
 								WHERE D.du_inProgress = 1 \
 								AND 2 = ( SELECT COUNT(*) \
 														FROM results AS R \
-														WHERE R.du_id = R.du_id \
+														WHERE R.du_id = D.du_id \
 														AND ( R.us_login = ? \
 																OR R.us_login = ?));`;
 
