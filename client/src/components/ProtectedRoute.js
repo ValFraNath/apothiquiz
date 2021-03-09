@@ -7,11 +7,12 @@ import AuthService from "../services/auth.service";
 const ProtectedRoute = ({ component, onlyAdmin, ...rest }) => {
   const currentUser = AuthService.getCurrentUser();
   const isAuthenticated = currentUser !== null;
-  const isAdmin = isAuthenticated && currentUser.admin;
 
   if (!isAuthenticated) {
     return <Redirect to={{ pathname: "/login" }} />;
   }
+
+  const isAdmin = currentUser.admin;
 
   if (onlyAdmin && !isAdmin) {
     return <Redirect to={{ pathname: "/homepage" }} />;
