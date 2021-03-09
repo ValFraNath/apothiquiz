@@ -12,14 +12,14 @@ const { expect } = chai;
 describe("User test", function () {
   function decodeRefreshToken(refreshToken) {
     const { REFRESH_TOKEN_KEY } = process.env;
-    const { user, admin } = jwt.verify(refreshToken, REFRESH_TOKEN_KEY);
-    return { user, admin };
+    const { user, isAdmin } = jwt.verify(refreshToken, REFRESH_TOKEN_KEY);
+    return { user, isAdmin };
   }
 
   function decodeAccessToken(accessToken) {
     const { ACCESS_TOKEN_KEY } = process.env;
-    const { user, admin } = jwt.verify(accessToken, ACCESS_TOKEN_KEY);
-    return { user, admin };
+    const { user, isAdmin } = jwt.verify(accessToken, ACCESS_TOKEN_KEY);
+    return { user, isAdmin };
   }
 
   before("Insert users data", async function () {
@@ -44,16 +44,16 @@ describe("User test", function () {
       expect(res.body).to.haveOwnProperty("refreshToken");
 
       expect(res.body.user).equal("fpoguet");
-      expect(res.body.admin).false;
+      expect(res.body.isAdmin).false;
 
       expect(decodeRefreshToken(res.body.refreshToken)).deep.equal({
         user: "fpoguet",
-        admin: false,
+        isAdmin: false,
       });
 
       expect(decodeAccessToken(res.body.accessToken)).deep.equal({
         user: "fpoguet",
-        admin: false,
+        isAdmin: false,
       });
     });
 
@@ -66,16 +66,16 @@ describe("User test", function () {
         method: "post",
       });
 
-      expect(res.body.admin).true;
+      expect(res.body.isAdmin).true;
 
       expect(decodeRefreshToken(res.body.refreshToken)).deep.equal({
         user: "fdadeau",
-        admin: true,
+        isAdmin: true,
       });
 
       expect(decodeAccessToken(res.body.accessToken)).deep.equal({
         user: "fdadeau",
-        admin: true,
+        isAdmin: true,
       });
     });
 
@@ -141,7 +141,7 @@ describe("User test", function () {
 
       expect(decodeAccessToken(res.body.accessToken)).deep.equal({
         user: "fpoguet",
-        admin: false,
+        isAdmin: false,
       });
     });
 

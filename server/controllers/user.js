@@ -44,15 +44,15 @@ async function login(req, res) {
   }
 
   if (queryCAS(userPseudo, userPassword)) {
-    const admin = await isUserAdmin(userPseudo);
-    const refreshToken = await Tokens.createRefreshToken(userPseudo, admin);
+    const isAdmin = await isUserAdmin(userPseudo);
+    const refreshToken = await Tokens.createRefreshToken(userPseudo, isAdmin);
     const accessToken = Tokens.createAccessToken(refreshToken);
 
     res.sendResponse(200, {
       user: userPseudo,
       accessToken,
       refreshToken,
-      admin,
+      isAdmin,
     });
   } else {
     res.sendUsageError(401, "Authentication failed");
@@ -80,6 +80,7 @@ async function logout(req, res) {
   if (!refreshToken) {
     return res.sendUsageError(400, "The refresh token is missing");
   }
+
   await Tokens.deleteToken(refreshToken);
 
   res.sendResponse(200, "User has successfully logged out");
@@ -273,7 +274,6 @@ async function saveInfos(req, res) {
   const user = param === "me" ? req.body._auth.user : param;
 
   if (req.body._auth.user !== user) {
-    // TODO? Add admin ?
     return res.sendUsageError(403, "Operation not allowed");
   }
 
@@ -319,9 +319,9 @@ export default { login, logout, generateAccessToken, saveInfos, getInfos, getAll
  */
 
 async function isUserAdmin(login) {
-  const sql = `SELECT us_admin AS admin FROM user WHERE us_login = ?;`;
-  const { admin } = (await queryPromise(sql, [login]))[0];
-  return Boolean(admin);
+  const sql = `SELECT us_admin AS isAdmin FROM user WHERE us_login = ?;`;
+  const { isAdmin } = (await queryPromise(sql, [login]))[0];
+  return Boolean(isAdmin);
 }
 
 /**

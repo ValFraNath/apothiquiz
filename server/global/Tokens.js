@@ -9,19 +9,19 @@ import { queryPromise } from "../db/database.js";
  */
 function createAccessToken(refreshToken) {
   const { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY } = process.env;
-  const { user, admin } = jwt.verify(refreshToken, REFRESH_TOKEN_KEY);
-  return jwt.sign({ user, admin }, ACCESS_TOKEN_KEY, { expiresIn: "10m" });
+  const { user, isAdmin } = jwt.verify(refreshToken, REFRESH_TOKEN_KEY);
+  return jwt.sign({ user, isAdmin }, ACCESS_TOKEN_KEY, { expiresIn: "10m" });
 }
 
 /**
  * Create a refresh token for a given user
  * @param {string} login The user login
- * @param {boolean} admin Boolean telling if the user is an admin
+ * @param {boolean} isAdmin Boolean telling if the user is an admin
  * @returns {Promise<string>} The token
  */
-async function createRefreshToken(login, admin) {
+async function createRefreshToken(login, isAdmin) {
   const { REFRESH_TOKEN_KEY } = process.env;
-  const token = jwt.sign({ user: login, admin }, REFRESH_TOKEN_KEY);
+  const token = jwt.sign({ user: login, isAdmin }, REFRESH_TOKEN_KEY);
   await storeRefreshToken(token, login);
   return token;
 }

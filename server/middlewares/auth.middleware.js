@@ -14,11 +14,11 @@ function AuthMiddleware(onlyAdmin = false) {
     const res = new HttpResponseWrapper(_res);
     try {
       const token = req.headers.authorization.split(" ")[1];
-      const { user, admin } = jwt.verify(token, process.env.ACCESS_TOKEN_KEY);
-      if (onlyAdmin && !admin) {
+      const { user, isAdmin } = jwt.verify(token, process.env.ACCESS_TOKEN_KEY);
+      if (onlyAdmin && !isAdmin) {
         return res.sendUsageError(403, "Access denied");
       }
-      req.body._auth = { user, admin };
+      req.body._auth = { user, isAdmin };
       next();
     } catch (e) {
       res.sendUsageError(401, "Unauthorized connection");
