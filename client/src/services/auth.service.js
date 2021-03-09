@@ -12,7 +12,7 @@ const LOCAL_STORAGE_KEY = "user_informations";
  */
 async function login(pseudo, password) {
   const {
-    data: { accessToken, refreshToken, admin },
+    data: { accessToken, refreshToken, isAdmin },
   } = await axios.post("/api/v1/users/login", {
     userPseudo: pseudo,
     userPassword: password,
@@ -28,7 +28,7 @@ async function login(pseudo, password) {
       pseudo,
       accessToken,
       refreshToken,
-      admin,
+      isAdmin,
     })
   );
 
