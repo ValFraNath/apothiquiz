@@ -6,6 +6,7 @@ rapport-guacamole/
 .eslintcache
 server/logs/
 server/files/
-server/files-test/
 uploads/
+server/files-test/
 tmp/
+serviceAccountKey.json

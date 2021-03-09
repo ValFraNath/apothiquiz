@@ -34,12 +34,14 @@ $color-red-error: #e23737;
 
 /* ---------- Avatar ---------- */
 /** These should match the number of possibilities in images/avatar/files.png */
+
 $number-choices-eyes: 5;
 $number-choices-hands: 5;
 $number-choices-hats: 5;
 $number-choices-mouthes: 5;
 
 /* ---------- Make variables accessible from JS files ---------- */
+
 :export {
   numberChoicesEyes: $number-choices-eyes;
   numberChoicesHands: $number-choices-hands;

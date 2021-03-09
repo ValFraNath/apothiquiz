@@ -4,6 +4,7 @@ import ApiController from "../controllers/api.js";
 import ConfigController from "../controllers/config.js";
 import DuelController from "../controllers/duels.js";
 import ImagesImporterController from "../controllers/imagesImporter.js";
+import MessagingController from "../controllers/messaging.js";
 import MoleculesImporterController from "../controllers/moleculesImporter.js";
 import QuestionController from "../controllers/question.js";
 import UserController from "../controllers/user.js";
@@ -109,5 +110,13 @@ apiRouter.patch(
   AuthMiddleware(ONLY_ADMINS),
   HttpControllerWrapper(ConfigController.setConfig)
 );
+
+apiRouter.put(
+  "/messaging/token/add",
+  AuthMiddleware(),
+  HttpControllerWrapper(MessagingController.updateToken)
+);
+
+apiRouter.put("/messaging/token/remove", HttpControllerWrapper(MessagingController.removeToken));
 
 export default apiRouter;

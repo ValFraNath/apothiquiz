@@ -3,6 +3,8 @@ import { queryPromise } from "../db/database.js";
 import { formatDate } from "../global/dateUtils.js";
 import Logger from "../global/Logger.js";
 
+import MessagingHandlerFactory from "../global/MessagingHandler.js";
+
 import { fetchConfigFromDB } from "./config.js";
 import { createGeneratorOfType, NotEnoughDataError, getAllQuestionTypes } from "./question.js";
 
@@ -258,9 +260,9 @@ async function play(req, res) {
     return res.sendUsageError(400, "Incorrect number of answers");
   }
 
-  let updatedDuel = await insertResultInDatabase(id, username, answers);
+  const addedDuel = await insertResultInDatabase(id, username, answers);
 
-  updatedDuel = await updateDuelState(updatedDuel, username);
+  let updatedDuel = await updateDuelState(addedDuel, username);
 
   if (updatedDuel.inProgress === 0) {
     const currentDate = formatDate();
@@ -269,6 +271,19 @@ async function play(req, res) {
   }
 
   res.sendResponse(200, updatedDuel);
+
+  let messagingPayload = {
+    title: `${username} vient de jouer !`,
+    body: "C'est à ton tour de jouer.",
+    type: "duel",
+    duelId: `${id}`,
+  };
+  if (addedDuel.currentRound === 1 && updatedDuel.currentRound === 1) {
+    messagingPayload.title = `${username} te propose un duel !`;
+  }
+
+  const MessageHandler = MessagingHandlerFactory.getInstance();
+  MessageHandler.sendNotificationToOneDevice(updatedDuel.opponent, messagingPayload);
 }
 
 let mockedDuelsRounds;

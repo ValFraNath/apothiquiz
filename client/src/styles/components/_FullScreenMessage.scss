@@ -1,0 +1,48 @@
+.fullscreen-message {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: $color-bg;
+  z-index: 10;
+  text-align: center;
+  padding: 2rem;
+
+  & > div > svg {
+    width: 33%;
+    height: auto;
+    margin-bottom: 3.5rem;
+  }
+
+  h1 {
+    font-size: 1.7rem;
+    margin-bottom: 1.2rem;
+  }
+
+  button:not(.btn) {
+    background-color: transparent;
+    border: none;
+    font-size: 0.9rem;
+    padding: 0.4rem 1rem;
+    margin-top: 0.6rem;
+  }
+
+  p:last-of-type {
+    margin-bottom: 3rem;
+  }
+}
+
+/* ----- Notification Permission ----- */
+
+#authorization-notification {
+  & > div > svg {
+    padding: 1.8rem;
+    border-radius: 50%;
+    color: white;
+    background: linear-gradient(100deg, $mascot-blue-light 50%, $mascot-blue-dark);
+  }
+}

@@ -1,4 +1,4 @@
-import { ReloadIcon } from "@modulz/radix-icons";
+import { ReloadIcon, BellIcon } from "@modulz/radix-icons";
 import axios from "axios";
 import PropTypes from "prop-types";
 import React, { lazy, Suspense, Component } from "react";
@@ -7,6 +7,9 @@ import { ReactQueryDevtools } from "react-query/devtools";
 import { BrowserRouter as Router, Route, Switch, useLocation } from "react-router-dom";
 
 import "./styles/styles.scss";
+import ButtonFullWidth from "./components/buttons/ButtonFullWidth";
+import FullScreenMessage from "./components/FullScreenMessage";
+import NotificationForeground from "./components/NotificationForeground";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Loading from "./components/status/Loading";
 import TopBar from "./components/system/TopBar";
@@ -16,6 +19,7 @@ import Menu from "./pages/Menu";
 import AuthService from "./services/auth.service";
 import * as serviceWorker from "./serviceWorker";
 import queryClient from "./utils/configuredQueryClient";
+import { getToken, checkAndRemoveToken, onMessage } from "./utils/messaging";
 
 const About = lazy(() => import("./pages/About"));
 const Admin = lazy(() => import("./pages/Admin"));
@@ -89,6 +93,8 @@ export default class App extends Component {
       waitingServiceWorker: null,
       isUpdateAvailable: false,
       installPromptEvent: null,
+      requireNotificationPermission: false,
+      foregroundNotification: null,
       user: pseudo || null,
     };
   }
@@ -117,8 +123,43 @@ export default class App extends Component {
         installPromptEvent: event,
       });
     });
+
+    // Request permission for notifications and subscribe to push
+    if (this.state.user) {
+      getToken(this.state.user)
+        .then((token) => console.log(token))
+        .catch((err) => console.error("Error: can't retrieve token", err));
+    } else {
+      checkAndRemoveToken().catch((err) => console.error("Error: can't remove token", err));
+    }
+
+    // Listen for notifications (in foreground)
+    onMessage().then((payload) => {
+      if (!payload.data.title) {
+        console.error("Can't display notification without title");
+        return;
+      }
+
+      const { title, body } = payload.data;
+      this.setState({ foregroundNotification: { title: title, body: body } });
+    });
   }
 
+  /**
+   * Display the notification authorization request
+   */
+  /*displayBrowserNotificationPermission = () => {
+    Notification.requestPermission()
+      .then(() => {
+        this.setState({ requireNotificationPermission: false });
+        new MessagingHandler().saveToken();
+      })
+      .catch((err) => console.error("Can't request permission", err));
+  };*/
+
+  /**
+   * Send a message to the service-worker to request the new version
+   */
   updateServiceWorker = () => {
     this.setState({ updateRequired: true });
 
@@ -127,7 +168,14 @@ export default class App extends Component {
   };
 
   render() {
-    const { user, isUpdateAvailable, installPromptEvent, updateRequired } = this.state;
+    const {
+      user,
+      isUpdateAvailable,
+      installPromptEvent,
+      updateRequired,
+      requireNotificationPermission,
+      foregroundNotification,
+    } = this.state;
 
     return (
       <QueryClientProvider client={queryClient}>
@@ -135,6 +183,32 @@ export default class App extends Component {
           <TopBar username={user} />
           {isUpdateAvailable && (
             <UpdateButton updateSW={this.updateServiceWorker} updateRequired={updateRequired} />
+          )}
+
+          {requireNotificationPermission && (
+            <FullScreenMessage id="authorization-notification">
+              <BellIcon />
+
+              <h1>Notifications</h1>
+
+              <p>
+                Nous aimerions vous envoyer des notifications pour vous prévenir lorsque de nouveaux
+                duels sont disponibles.
+              </p>
+
+              <ButtonFullWidth onClick={this.displayBrowserNotificationPermission}>
+                Autoriser les notifications
+              </ButtonFullWidth>
+              <button onClick={this.displayBrowserNotificationPermission}>Ne pas autoriser</button>
+            </FullScreenMessage>
+          )}
+
+          {foregroundNotification !== null && (
+            <NotificationForeground
+              title={foregroundNotification.title}
+              text={foregroundNotification.body}
+              closeNotification={() => this.setState({ foregroundNotification: null })}
+            />
           )}
 
           <Suspense fallback={<Loading />}>

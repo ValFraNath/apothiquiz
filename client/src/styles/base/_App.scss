@@ -17,7 +17,7 @@ main {
   box-sizing: border-box;
 }
 
-@media only screen and (min-device-width: $screen-desktop) {
+@media only screen and (min-width: $screen-desktop) {
   body {
     display: flex;
     justify-content: center;

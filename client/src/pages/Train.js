@@ -116,7 +116,7 @@ class PlayView extends Component {
         <Question numero={questionNum} text={question.wording} />
 
         {inProgress ? (
-          <Timer inProgress={inProgress} duration={timer} updateParent={this.updateTimer} />
+          <Timer inProgress={inProgress} duration={timer ?? 0} updateParent={this.updateTimer} />
         ) : (
           <div id="next-btn">
             <ButtonCircle onClick={this.nextQuestion}>
