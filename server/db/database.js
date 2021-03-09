@@ -24,6 +24,7 @@ const versions = [
   "2021-02-19",
   "2021-02-22",
   "2021-03-02",
+  "2021-03-06",
   "2021-03-09",
 ];
 
@@ -196,4 +197,4 @@ connection.config.queryFormat = function (query, values) {
   );
 };
 
-export default { connect: start };
+export default { start };

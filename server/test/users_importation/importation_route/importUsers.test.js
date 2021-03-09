@@ -6,7 +6,7 @@ import chaiHttp from "chai-http";
 
 import { queryPromise } from "../../../db/database.js";
 import app from "../../../index.js";
-import { forceTruncateTables, insertData, requestAPI } from "../../index.test.js";
+import { forceTruncateTables, getToken, insertData, requestAPI } from "../../index.test.js";
 
 const { expect } = chai;
 
@@ -14,22 +14,14 @@ chai.use(chaiHttp);
 
 const __dirname = path.resolve("test", "users_importation", "importation_route");
 
-// TODO test import with non admin user
 describe("Import users", () => {
   let mytoken;
-  before("Insert users data & get token", function (done) {
+  before("Insert users data & get token", async function () {
     this.timeout(10000);
-    forceTruncateTables("user").then(() =>
-      insertData("users.sql").then(async () => {
-        const res = await requestAPI("users/login", {
-          body: { userPseudo: "fpoguet", userPassword: "1234" },
-          method: "post",
-        });
-        mytoken = res.body.token;
+    await forceTruncateTables("user");
+    await insertData("users.sql");
 
-        done();
-      })
-    );
+    mytoken = await getToken("fdadeau");
   });
 
   it("Can upload file", async () => {
@@ -104,6 +96,15 @@ describe("Import users", () => {
     );
 
     expect(res.status).equals(401);
+  });
+
+  it("Can't access file without being admin", async () => {
+    await uploadFile("users.csv", "true", mytoken);
+    const token = await getToken("fpoguet");
+
+    let res = await requestAPI("import/users", { method: "get", token: token });
+
+    expect(res.status).equals(403);
   });
 
   it("Missing file", async () => {

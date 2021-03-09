@@ -34,12 +34,35 @@ const Train = lazy(() => import("./pages/Train"));
  * Set up the authorization header in all request if the user is logged in
  */
 axios.interceptors.request.use((config) => {
-  const user = AuthService.getCurrentUser();
-  if (user && user.token && user.pseudo) {
-    config.headers.Authorization = `Bearer ${user.token}`;
+  const { accessToken, pseudo } = AuthService.getCurrentUser() || {};
+  if (accessToken && pseudo) {
+    config.headers.Authorization = `Bearer ${accessToken}`;
   }
   return config;
 });
+
+/**
+ * Automatically try to refresh a token on 401 error
+ */
+axios.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+    let { refreshToken } = AuthService.getCurrentUser() || {};
+
+    if (refreshToken && error.response.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      const res = await axios.post(`/api/v1/users/token`, { refreshToken });
+
+      if (res.status === 200) {
+        AuthService.updateAccesToken(res.data.accessToken);
+        console.log("Access token refreshed!");
+        return axios(originalRequest);
+      }
+    }
+    return Promise.reject(error);
+  }
+);
 
 const UpdateButton = ({ updateRequired, updateSW }) => {
   const location = useLocation();
@@ -64,18 +87,15 @@ export default class App extends Component {
   constructor(props) {
     super(props);
 
-    let user = AuthService.getCurrentUser();
-    if (user) {
-      user = user.pseudo;
-    }
+    let { pseudo } = AuthService.getCurrentUser() || {};
 
     this.state = {
       waitingServiceWorker: null,
       isUpdateAvailable: false,
       installPromptEvent: null,
       requireNotificationPermission: false,
-      user: user,
       foregroundNotification: null,
+      user: pseudo || null,
     };
   }
 
@@ -214,7 +234,7 @@ export default class App extends Component {
               <ProtectedRoute path="/duel/create" exact component={DuelCreate} />
               <ProtectedRoute path="/duel/:id" exact component={DuelOverview} />
               <ProtectedRoute path="/duel/:id/play" exact component={Duel} />
-              <ProtectedRoute path="/admin" exact component={Admin} />
+              <ProtectedRoute path="/admin" onlyAdmin exact component={Admin} />
             </Switch>
           </Suspense>
         </Router>
