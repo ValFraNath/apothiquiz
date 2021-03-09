@@ -35,31 +35,32 @@ const removeDuelsTask = cron.schedule(
  * Make lose the current round for players who have not played 24 hours after the start
  * Should be executed every 3 hours
  */
-const checkDuelsTask = cron.schedule("* * */3 * * *", async function () {
-  const sql = `SELECT duel.du_id, us_login, re_answers, re_last_time \
+const checkDuelsTask = cron.schedule(
+  "* * */3 * * *",
+  async function () {
+    const sql = `SELECT duel.du_id, us_login, re_answers, re_last_time \
                FROM results, duel \
                WHERE results.du_id = duel.du_id \
                  AND duel.du_inProgress = 1;`;
 
-  try {
-    const res = await queryPromise(sql);
+    try {
+      const res = await queryPromise(sql);
 
-    const duelsTime = {};
+      const duelsTime = {};
 
-    res.forEach((data) => {
-      const lastTime = data.re_last_time;
-      if (!duelsTime[data.du_id]) {
-        duelsTime[data.du_id] = [];
-      }
-      duelsTime[data.du_id].push({
-        user: data.us_login,
-        answers: data.re_answers,
-        time: lastTime === null ? null : new Date(lastTime),
+      res.forEach((data) => {
+        const lastTime = data.re_last_time;
+        if (!duelsTime[data.du_id]) {
+          duelsTime[data.du_id] = [];
+        }
+        duelsTime[data.du_id].push({
+          user: data.us_login,
+          answers: data.re_answers,
+          time: lastTime === null ? null : new Date(lastTime),
+        });
       });
-    });
 
-    await Object.keys(duelsTime).forEach(
-      async (key) => {
+      for (const key in duelsTime) {
         const currentRound = duelsTime[key];
 
         let indexLastPlayed;
@@ -75,18 +76,16 @@ const checkDuelsTask = cron.schedule("* * */3 * * *", async function () {
 
           const results = new Array(resSample.length).fill(-1);
           const updatedDuels = await Duels.insertResultInDatabase(key, looser.user, results);
-          await Duels.updateDuelState(updatedDuels, looser.user).catch((err) =>
-            console.error("Error: can't update duel state", err)
-          );
+          await Duels.updateDuelState(updatedDuels, looser.user);
         }
-      },
-      {
-        scheduled: false,
       }
-    );
-  } catch (err) {
-    Logger.error(err, "Can't check duels");
+    } catch (err) {
+      Logger.error(err, "Can't check duels");
+    }
+  },
+  {
+    scheduled: false,
   }
-});
+);
 
 export { removeDuelsTask, checkDuelsTask };
