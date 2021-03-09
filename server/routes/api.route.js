@@ -12,6 +12,8 @@ import HttpControllerWrapper from "../global/HttpControllerWrapper.js";
 import AuthMiddleware from "../middlewares/auth.middleware.js";
 import { createMulter } from "../middlewares/multer.middleware.js";
 
+const ONLY_ADMINS = true;
+
 const apiRouter = express.Router();
 
 apiRouter.get("/status", HttpControllerWrapper(ApiController.status));
@@ -46,54 +48,66 @@ apiRouter.post("/duels/:id/:round", AuthMiddleware(), HttpControllerWrapper(Duel
 
 const FILES_DIR = process.env.NODE_ENV === "test" ? "files-test" : "files";
 
-apiRouter.use("/files/molecules", AuthMiddleware(true), express.static(`${FILES_DIR}/molecules`));
+apiRouter.use(
+  "/files/molecules",
+  AuthMiddleware(ONLY_ADMINS),
+  express.static(`${FILES_DIR}/molecules`)
+);
 
-apiRouter.use("/files/users", AuthMiddleware(true), express.static(`${FILES_DIR}/users`));
+apiRouter.use("/files/users", AuthMiddleware(ONLY_ADMINS), express.static(`${FILES_DIR}/users`));
 
 apiRouter.use("/files/images", express.static(`${FILES_DIR}/images`));
 
 apiRouter.post(
   "/import/molecules",
-  AuthMiddleware(true),
+  AuthMiddleware(ONLY_ADMINS),
   createMulter(),
   HttpControllerWrapper(MoleculesImporterController.importMolecules)
 );
 
 apiRouter.get(
   "/import/molecules",
-  AuthMiddleware(true),
+  AuthMiddleware(ONLY_ADMINS),
   HttpControllerWrapper(MoleculesImporterController.getLastImportedFile)
 );
 
 apiRouter.post(
   "/import/images",
-  AuthMiddleware(true),
+  AuthMiddleware(ONLY_ADMINS),
   createMulter(true),
   HttpControllerWrapper(ImagesImporterController.importImages)
 );
 
 apiRouter.get(
   "/import/images",
-  AuthMiddleware(true),
+  AuthMiddleware(ONLY_ADMINS),
   HttpControllerWrapper(ImagesImporterController.getLastImportedFile)
 );
 
 apiRouter.post(
   "/import/users",
-  AuthMiddleware(true),
+  AuthMiddleware(ONLY_ADMINS),
   createMulter(),
   HttpControllerWrapper(UsersImporterController.importUsers)
 );
 
 apiRouter.get(
   "/import/users",
-  AuthMiddleware(true),
+  AuthMiddleware(ONLY_ADMINS),
   createMulter(),
   HttpControllerWrapper(UsersImporterController.getLastImportedUsers)
 );
 
-apiRouter.get("/config", AuthMiddleware(true), HttpControllerWrapper(ConfigController.fetchConfig));
+apiRouter.get(
+  "/config",
+  AuthMiddleware(ONLY_ADMINS),
+  HttpControllerWrapper(ConfigController.fetchConfig)
+);
 
-apiRouter.patch("/config", AuthMiddleware(true), HttpControllerWrapper(ConfigController.setConfig));
+apiRouter.patch(
+  "/config",
+  AuthMiddleware(ONLY_ADMINS),
+  HttpControllerWrapper(ConfigController.setConfig)
+);
 
 export default apiRouter;

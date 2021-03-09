@@ -70,7 +70,10 @@ function checkEnv() {
   for (const key of keys) {
     if (!process.env[key]) {
       Logger.error(
-        new Error(`The ${key} environment variable is required but not defined in .env.`)
+        new Error(
+          `The ${key} environment variable is required but not defined in .env.\
+					https://github.com/ValFraNath/guacamole/wiki/Production-deployment`
+        )
       );
       needToExit = true;
     }

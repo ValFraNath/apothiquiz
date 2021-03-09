@@ -61,7 +61,7 @@ async function logout() {
 }
 
 /**
- * Get the current user informations
+ * Get the current user information
  * @returns {object}
  */
 function getCurrentUser() {

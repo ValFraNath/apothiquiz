@@ -35,10 +35,7 @@ async function doesRefreshTokenExist(refreshToken) {
   const sql = `SELECT COUNT(*) as tokenExists FROM token WHERE to_value = ?`;
 
   const { tokenExists } = (await queryPromise(sql, [refreshToken]))[0];
-  if (Number(tokenExists)) {
-    return true;
-  }
-  return false;
+  return Boolean(Number(tokenExists));
 }
 
 /**

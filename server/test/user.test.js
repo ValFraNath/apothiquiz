@@ -243,7 +243,7 @@ describe("User test", function () {
   });
 
   describe("Get user informations", function () {
-    let token;
+    let authHeader;
     before(function (done) {
       // Authenticate
       chai
@@ -260,9 +260,9 @@ describe("User test", function () {
 
           expect(res.status, res.error).to.be.equal(200);
 
-          expect(Object.keys(res.body)).to.contains("user");
-          expect(Object.keys(res.body)).to.contains("accessToken");
-          token = "Bearer " + res.body.accessToken;
+          expect(res.body).to.haveOwnProperty("user");
+          expect(res.body).to.haveOwnProperty("accessToken");
+          authHeader = `Bearer ${res.body.accessToken}`;
 
           done();
         });
@@ -272,7 +272,7 @@ describe("User test", function () {
       chai
         .request(app)
         .get("/api/v1/users/vperigno")
-        .set("Authorization", token)
+        .set("Authorization", authHeader)
         .end((err, res) => {
           if (err) {
             throw err;
@@ -292,7 +292,7 @@ describe("User test", function () {
       chai
         .request(app)
         .get("/api/v1/users/no-i-do-not-exist")
-        .set("Authorization", token)
+        .set("Authorization", authHeader)
         .end((err, res) => {
           if (err) {
             throw err;
@@ -321,7 +321,7 @@ describe("User test", function () {
       chai
         .request(app)
         .get("/api/v1/users/me")
-        .set("Authorization", token)
+        .set("Authorization", authHeader)
         .end((err, res) => {
           if (err) {
             throw err;
@@ -339,7 +339,7 @@ describe("User test", function () {
   });
 
   describe("Update user informations", function () {
-    let token;
+    let authHeader;
 
     this.beforeAll(function (done) {
       // Authenticate
@@ -357,9 +357,9 @@ describe("User test", function () {
 
           expect(res.status, res.error).to.be.equal(200);
 
-          expect(Object.keys(res.body)).to.contains("user");
-          expect(Object.keys(res.body)).to.contains("accessToken");
-          token = "Bearer " + res.body.accessToken;
+          expect(res.body).to.haveOwnProperty("user");
+          expect(res.body).to.haveOwnProperty("accessToken");
+          authHeader = `Bearer ${res.body.accessToken}`;
 
           done();
         });
@@ -370,7 +370,7 @@ describe("User test", function () {
         .request(app)
         .patch("/api/v1/users/me")
         .send({ pseudo: "fpoguet" })
-        .set("Authorization", token)
+        .set("Authorization", authHeader)
         .end((err, res) => {
           if (err) {
             throw err;
@@ -385,7 +385,7 @@ describe("User test", function () {
         .request(app)
         .patch("/api/v1/users/fpoguet")
         .send({ avatar: "this-is-not-an-avatar" })
-        .set("Authorization", token)
+        .set("Authorization", authHeader)
         .end((err, res) => {
           if (err) {
             throw err;
@@ -401,7 +401,7 @@ describe("User test", function () {
         .request(app)
         .patch("/api/v1/users/fpoguet")
         .send({ avatar: { colorBG: "#ffffff", colorBody: "#dedede", eyes: 0, hands: 0, hat: 0 } }) // missing an information
-        .set("Authorization", token)
+        .set("Authorization", authHeader)
         .end((err, res) => {
           if (err) {
             throw err;
@@ -426,7 +426,7 @@ describe("User test", function () {
             mouth: "this-is-not-an-int",
           },
         }) // missing an information
-        .set("Authorization", token)
+        .set("Authorization", authHeader)
         .end((err, res) => {
           if (err) {
             throw err;
@@ -451,7 +451,7 @@ describe("User test", function () {
             mouth: "0",
           },
         }) // missing an information
-        .set("Authorization", token)
+        .set("Authorization", authHeader)
         .end((err, res) => {
           if (err) {
             throw err;
@@ -469,7 +469,7 @@ describe("User test", function () {
         .send({
           avatar: { colorBG: "#ffffff", colorBody: "#camion", eyes: 0, hands: 0, hat: 0, mouth: 0 },
         }) // missing an information
-        .set("Authorization", token)
+        .set("Authorization", authHeader)
         .end((err, res) => {
           if (err) {
             throw err;
@@ -487,7 +487,7 @@ describe("User test", function () {
         .send({
           avatar: { colorBG: "#ffffff", colorBody: "#dedede", eyes: 0, hands: 0, hat: 0, mouth: 0 },
         })
-        .set("Authorization", token)
+        .set("Authorization", authHeader)
         .end((err, res) => {
           if (err) {
             throw err;
@@ -517,7 +517,7 @@ describe("User test", function () {
         .send({
           avatar: { colorBG: "#158233", colorBody: "#9F7F53", eyes: 0, hands: 0, hat: 0, mouth: 0 },
         })
-        .set("Authorization", token)
+        .set("Authorization", authHeader)
         .end((err, res) => {
           if (err) {
             throw err;
@@ -544,7 +544,7 @@ describe("User test", function () {
       chai
         .request(app)
         .get("/api/v1/users/me")
-        .set("Authorization", token)
+        .set("Authorization", authHeader)
         .end((err, res) => {
           if (err) {
             throw err;
