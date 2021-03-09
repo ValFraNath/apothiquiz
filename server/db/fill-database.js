@@ -5,8 +5,8 @@ import Database, { queryPromise } from "./database.js";
 
 dotenv.config();
 
-const NUMBER_OF_USERS = parseInt(process.argv[2]) ?? 300;
-const NUMBER_OF_DUELS = parseInt(process.argv[3]) ?? Math.pow(NUMBER_OF_USERS, 2);
+const NUMBER_OF_USERS = process.argv[2] ?? 300;
+const NUMBER_OF_DUELS = process.argv[3] ?? Math.pow(NUMBER_OF_USERS, 2);
 const SEED = 123;
 
 console.info(`Filling database with ${NUMBER_OF_USERS} users and ${NUMBER_OF_DUELS} duels.`);
@@ -20,7 +20,6 @@ start();
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
-
 async function start() {
   try {
     await Database.connect();
