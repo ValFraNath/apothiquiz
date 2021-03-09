@@ -79,7 +79,8 @@ export async function getToken(username, password = "1234") {
     body: { userPseudo: username, userPassword: password },
     method: "post",
   });
-  return res.body.token;
+
+  return res.body.accessToken;
 }
 
 /**

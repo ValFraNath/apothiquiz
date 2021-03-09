@@ -79,11 +79,12 @@ describe("Check the database structure", function () {
         "du_currentRound",
         "du_inProgress",
         "du_questionTimerDuration",
+        "du_finished",
       ],
     },
     {
       name: "results",
-      fields: ["us_login", "du_id", "re_answers"],
+      fields: ["us_login", "du_id", "re_answers", "re_last_time"],
     },
     {
       name: "property",
@@ -96,6 +97,10 @@ describe("Check the database structure", function () {
     {
       name: "class",
       fields: ["cl_id", "cl_name", "cl_higher", "cl_level"],
+    },
+    {
+      name: "token",
+      fields: ["to_value", "us_login"],
     },
   ];
 

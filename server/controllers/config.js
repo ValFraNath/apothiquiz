@@ -22,6 +22,7 @@ import { getAllQuestionTypes, createGeneratorOfType, NotEnoughDataError } from "
       "questionsPerRound": 5,
       "roundsPerDuel" : 6,
       "questionTimerDuration" : 12,
+      "DuelLifetime" : 5
     }
  *
  * @apiSuccess (200) {object} roundsPerDuel
@@ -56,6 +57,11 @@ import { getAllQuestionTypes, createGeneratorOfType, NotEnoughDataError } from "
         "min": 1,
         "max": 8,
       },
+      "duelLifetime": {
+        "value" : 6
+        "min": 1,
+        "max": 10,
+      },
     }
  *
  * @apiPermission LoggedIn
@@ -67,7 +73,7 @@ import { getAllQuestionTypes, createGeneratorOfType, NotEnoughDataError } from "
  * @param {HttpResponseWrapper} req The http request
  */
 async function setConfig(req, res) {
-  delete req.body.authUser;
+  delete req.body._auth;
 
   const keys = await getConfigKeys();
 
@@ -140,6 +146,11 @@ async function setConfig(req, res) {
         "min": 1,
         "max": 8,
       },
+      "duelLifetime": {
+        "value" : 6
+        "min": 1,
+        "max": 10,
+      },
     }
  *
  * @apiPermission LoggedIn
@@ -173,6 +184,7 @@ export async function fetchConfigFromDB() {
     questionsPerRound: getValue("config_duel_questions_per_round"),
     roundsPerDuel: getValue("config_duel_rounds_per_duel"),
     questionTimerDuration: getValue("config_question_timer_duration"),
+    duelLifetime: getValue("config_duel_lifetime"),
   };
 }
 
@@ -198,6 +210,11 @@ async function getConfigKeys() {
       dbKey: "config_duel_rounds_per_duel",
       min: 1,
       max: maxRoundsPerDuel,
+    },
+    duelLifetime: {
+      dbKey: "config_duel_lifetime",
+      min: 1,
+      max: 10,
     },
   };
 }

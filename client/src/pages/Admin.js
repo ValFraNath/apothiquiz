@@ -193,6 +193,7 @@ const Configuration = ({ lastImport }) => {
     roundsPerDuel: 0,
     questionsPerRound: 0,
     questionTimerDuration: 0,
+    duelLifetime: 0,
   });
 
   const [isSaved, setIsSaved] = useState(false);
@@ -260,6 +261,14 @@ const Configuration = ({ lastImport }) => {
             onChange={(value) => updateConfig("roundsPerDuel", value)}
             min={config.roundsPerDuel.min}
             max={config.roundsPerDuel.max}
+          />
+
+          <NumberInput
+            label="Durée de sauvegarde d'un duel terminé avant suppression"
+            defaultValue={config.duelLifetime.value}
+            onChange={(value) => updateConfig("duelLifetime", value)}
+            min={config.duelLifetime.min}
+            max={config.duelLifetime.max}
           />
           <input type="submit" value="Enregistrer" />
         </>
@@ -343,7 +352,7 @@ const Admin = () => {
         <summary>Importer des images</summary>
         <FileDownloader
           text="Télécharger les dernières images importées"
-          filename="images-molecules.csv"
+          filename="images-molecules.zip"
           endpoint="/api/v1/import/images"
         />
         <FileImporter
@@ -373,11 +382,11 @@ async function getLastImportedFile(endpoint) {
     data: { shortpath },
   } = await axios.get(endpoint);
 
-  const { token } = AuthService.getCurrentUser();
+  const { accessToken } = AuthService.getCurrentUser() || {};
 
   const res = await fetch(shortpath, {
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${accessToken}`,
     },
   });
 

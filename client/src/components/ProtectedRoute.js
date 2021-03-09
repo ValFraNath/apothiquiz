@@ -4,20 +4,28 @@ import { Route, Redirect } from "react-router-dom";
 
 import AuthService from "../services/auth.service";
 
-const ProtectedRoute = ({ component, ...rest }) => {
-  const isAuthenticated = AuthService.getCurrentUser() !== null;
+const ProtectedRoute = ({ component, onlyAdmin, ...rest }) => {
+  const currentUser = AuthService.getCurrentUser();
+  const isAuthenticated = currentUser !== null;
 
-  return isAuthenticated ? (
-    <Route component={component} {...rest} />
-  ) : (
-    <Redirect to={{ pathname: "/login" }} />
-  );
+  if (!isAuthenticated) {
+    return <Redirect to={{ pathname: "/login" }} />;
+  }
+
+  const { isAdmin } = currentUser;
+
+  if (onlyAdmin && !isAdmin) {
+    return <Redirect to={{ pathname: "/homepage" }} />;
+  }
+
+  return <Route component={component} {...rest} />;
 };
 
 ProtectedRoute.propTypes = {
-  component: PropTypes.func.isRequired,
+  component: PropTypes.oneOfType([PropTypes.object, PropTypes.func]).isRequired,
   path: PropTypes.string,
   exact: PropTypes.bool,
+  onlyAdmin: PropTypes.bool,
 };
 
 export default ProtectedRoute;
