@@ -8,8 +8,6 @@ import mocha from "mocha";
 
 import { _initMockedDuelRounds } from "../controllers/duels.js";
 
-import { queryPromise } from "../db/database.js";
-
 import {
   forceTruncateTables,
   getToken,
