@@ -5,15 +5,36 @@ import Database, { queryPromise } from "./database.js";
 
 dotenv.config();
 
-Database.connect()
-  .then(() => {})
-  .catch((err) => {
-    console.error(err);
-    process.exit(1);
-  });
+const NUMBER_OF_USERS = parseInt(process.argv[2]) ?? 300;
+const NUMBER_OF_DUELS = parseInt(process.argv[3]) ?? Math.pow(NUMBER_OF_USERS, 2);
+const SEED = 123;
+
+console.info(`Filling database with ${NUMBER_OF_USERS} users and ${NUMBER_OF_DUELS} duels.`);
+console.info(`Using seed ${SEED}`);
 
 faker.locale = "fr";
-faker.seed(123);
+faker.seed(SEED);
+
+start();
+
+// ----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
+
+async function start() {
+  try {
+    await Database.connect();
+
+    console.info("Users...");
+    await insertUsers(generateUsers(NUMBER_OF_USERS));
+    console.info("... Done!");
+
+    console.info("Data inserted, bye!");
+    process.exit(0);
+  } catch (err) {
+    console.error(err);
+  }
+}
 
 function generateUsers(number) {
   const users = [];
@@ -55,12 +76,10 @@ function generateUsers(number) {
   return users;
 }
 
-const users = generateUsers(300);
+async function insertUsers(users) {
+  const sqlUsers = `INSERT INTO user (us_login, us_admin, us_deleted, us_defeats, us_avatar)
+  VALUES ${users.map(() => `(?)`).join(",")} \
+  ON DUPLICATE KEY UPDATE us_admin = FALSE, us_deleted = NULL; `;
 
-const sqlUsers = `INSERT INTO user (us_login, us_admin, us_deleted, us_defeats, us_avatar)
-                  VALUES ${users.map(() => `(?)`).join(",")} \
-                  ON DUPLICATE KEY UPDATE us_admin = FALSE, us_deleted = NULL; `;
-
-queryPromise(sqlUsers, users)
-  .then()
-  .catch((err) => console.error(err));
+  await queryPromise(sqlUsers, users);
+}
