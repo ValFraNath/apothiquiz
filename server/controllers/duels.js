@@ -35,7 +35,7 @@ import { createGeneratorOfType, NotEnoughDataError, getAllQuestionTypes } from "
  */
 async function create(req, res) {
   try {
-    const username = req.body.authUser;
+    const username = req.body._auth.user;
     const { opponent } = req.body;
 
     if (!opponent) {
@@ -164,7 +164,7 @@ async function create(req, res) {
  * @param {HttpResponseWrapper} res The http response
  */
 async function fetch(req, res) {
-  const username = req.body.authUser;
+  const username = req.body._auth.user;
   const duelID = Number(req.params.id);
 
   if (!duelID) {
@@ -190,7 +190,7 @@ async function fetch(req, res) {
  * @apiUse ErrorServer
  */
 async function fetchAll(req, res) {
-  const username = req.body.authUser;
+  const username = req.body._auth.user;
 
   const duels = await getAllDuels(username);
   res.sendResponse(200, duels);
@@ -225,7 +225,7 @@ async function fetchAll(req, res) {
 async function play(req, res) {
   const id = Number(req.params.id);
   const round = Number(req.params.round);
-  const username = req.body.authUser;
+  const username = req.body._auth.user;
   const answers = req.body.answers || [];
 
   if (!id) {

@@ -98,6 +98,10 @@ describe("Check the database structure", function () {
       name: "class",
       fields: ["cl_id", "cl_name", "cl_higher", "cl_level"],
     },
+    {
+      name: "token",
+      fields: ["to_value", "us_login"],
+    },
   ];
 
   it("Number of table", function (done) {

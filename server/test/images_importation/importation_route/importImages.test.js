@@ -28,7 +28,7 @@ describe("Images importation", () => {
     this.timeout(10000);
     forceTruncateTables("user").then(() =>
       insertData("users.sql").then(() =>
-        getToken("fpoguet").then((t) => {
+        getToken("fdadeau").then((t) => {
           token = t;
           done();
         })

@@ -55,6 +55,7 @@
     "rules": {
       "array-bracket-newline": "warn",
       "array-bracket-spacing": "warn",
+      "import/no-anonymous-default-export": "off",
       "camelcase": "warn",
       "eqeqeq": "error",
       "no-duplicate-imports": "error",

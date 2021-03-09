@@ -1,25 +1,27 @@
 import dotenv from "dotenv";
 // eslint-disable-next-line no-unused-vars
 import express from "express";
-import jwt from "jsonwebtoken";
 
 import { queryPromise } from "../db/database.js";
 // eslint-disable-next-line no-unused-vars
 import { HttpResponseWrapper } from "../global/HttpControllerWrapper.js";
+import Tokens from "../global/Tokens.js";
 
 dotenv.config();
 
 /**
- * @api       {post}        /user/login   Post a user login
+ * @api       {post}        /users/login   Post a user login
  * @apiName   PostUserLogin
  * @apiGroup  User
  *
  * @apiParam {string} userPseudo    ENT Login
  * @apiParam {string} userPassword  ENT password
  *
- * @apiSuccess (200) {string} pseudo  the ENT login
- * @apiSuccess (200) {string} token   the user token
+ * @apiSuccess (200) {string} pseudo  			the ENT login
+ * @apiSuccess (200) {string} accessToken   the user access token
+ * @apiSuccess (200) {string} refreshToken  the user refresh token
  *
+ * @apiError 	 (400) BadRequestFormat
  * @apiError   (401) IncorrectPassword
  * @apiError   (404) UserNotFound
  * @apiUse ErrorServer
@@ -31,7 +33,7 @@ async function login(req, res) {
   const { userPseudo, userPassword } = req.body;
 
   if (!userPseudo || !userPassword) {
-    return res.sendUsageError(401, "Bad request format.");
+    return res.sendUsageError(400, "Bad request format.");
   }
 
   const userExists = await doesUserExist(userPseudo);
@@ -42,13 +44,80 @@ async function login(req, res) {
   }
 
   if (queryCAS(userPseudo, userPassword)) {
+    const isAdmin = await isUserAdmin(userPseudo);
+    const refreshToken = await Tokens.createRefreshToken(userPseudo, isAdmin);
+    const accessToken = Tokens.createAccessToken(refreshToken);
+
     res.sendResponse(200, {
-      pseudo: userPseudo,
-      token: jwt.sign({ pseudo: userPseudo }, process.env.TOKEN_PRIVATE_KEY),
+      user: userPseudo,
+      accessToken,
+      refreshToken,
+      isAdmin,
     });
   } else {
     res.sendUsageError(401, "Authentication failed");
   }
+}
+
+/**
+ * @api       {post}        /users/logout  User logout
+ * @apiName   UserLogout
+ * @apiGroup  User
+ *
+ * @apiParam {string} refreshToken 			The user refresh token
+ *
+ * @apiPermission LoggedIn
+ *
+ * @apiError 	 (400) BadRequestFormat
+ * @apiUse ErrorServer
+ *
+ * @param {express.Request} req The http request
+ * @param {HttpResponseWrapper} res The http response
+ */
+async function logout(req, res) {
+  const { refreshToken } = req.body;
+
+  if (!refreshToken) {
+    return res.sendUsageError(400, "The refresh token is missing");
+  }
+
+  await Tokens.deleteToken(refreshToken);
+
+  res.sendResponse(200, "User has successfully logged out");
+}
+
+/**
+ * @api       {post}  /users/token   Generate a new access token
+ * @apiName   GenerateAccessToken
+ * @apiGroup  User
+ *
+ * @apiParam {string} refreshToken The refresh token
+ *
+ * @apiSuccess (200) {string} accessToken  A new access token
+ *
+ * @apiError 	 (400) InvalidToken The token is invalid or expired
+ * @apiError 	 (400) MissingToken The token is missing
+ * @apiUse ErrorServer
+ *
+ * @param {express.Request} req The http request
+ * @param {HttpResponseWrapper} res The http response
+ */
+async function generateAccessToken(req, res) {
+  const { refreshToken } = req.body;
+
+  if (!refreshToken) {
+    return res.sendUsageError(400, "Refresh token is missing");
+  }
+
+  const tokenExists = await Tokens.doesRefreshTokenExist(refreshToken);
+
+  if (!tokenExists) {
+    return res.sendUsageError(400, "Invalid or expired refresh token");
+  }
+
+  const accessToken = Tokens.createAccessToken(refreshToken);
+
+  res.sendResponse(200, { accessToken });
 }
 
 /**
@@ -149,7 +218,7 @@ async function severalGetInfos(req, res) {
 }
 
 /**
- * @api       {get}        /user/:pseudo   Get user informations
+ * @api       {get}        /users/:pseudo   Get user informations
  * @apiName   GetUserInformations
  * @apiGroup  User
  *
@@ -162,10 +231,8 @@ async function severalGetInfos(req, res) {
  * @param {HttpResponseWrapper} res The http response
  */
 async function getInfos(req, res) {
-  let user = String(req.params.pseudo);
-  if (user === "me") {
-    user = req.body.authUser;
-  }
+  const param = String(req.params.pseudo);
+  const user = param === "me" ? req.body._auth.user : param;
 
   const infos = await getUserInformations(user);
   if (!infos) {
@@ -175,7 +242,7 @@ async function getInfos(req, res) {
 }
 
 /**
- * @api       {patch}               /user/:pseudo   Patch user informations
+ * @api       {patch}               /users/:pseudo   Patch user informations
  * @apiSampleRequest off
  * @apiName   PatchUserInformations
  * @apiGroup  User
@@ -203,13 +270,10 @@ async function getInfos(req, res) {
  * @param {HttpResponseWrapper} res The http response
  */
 async function saveInfos(req, res) {
-  let user = String(req.params.pseudo);
-  if (user === "me") {
-    user = req.body.authUser;
-  }
+  const param = String(req.params.pseudo);
+  const user = param === "me" ? req.body._auth.user : param;
 
-  if (req.body.authUser !== user) {
-    // TODO? Add admin ?
+  if (req.body._auth.user !== user) {
     return res.sendUsageError(403, "Operation not allowed");
   }
 
@@ -244,9 +308,21 @@ async function saveInfos(req, res) {
   res.sendResponse(200, infos);
 }
 
-export default { login, saveInfos, getInfos, getAll, severalGetInfos };
+export default { login, logout, generateAccessToken, saveInfos, getInfos, getAll, severalGetInfos };
 
 // ***** INTERNAL FUNCTIONS *****
+
+/**
+ * Check if a user is an admin
+ * @param {string} login The user login
+ * @returns {Promise<boolean>}
+ */
+
+async function isUserAdmin(login) {
+  const sql = `SELECT us_admin AS isAdmin FROM user WHERE us_login = ?;`;
+  const { isAdmin } = (await queryPromise(sql, [login]))[0];
+  return Boolean(isAdmin);
+}
 
 /**
  * Check if a user exists

@@ -2,37 +2,70 @@ import axios from "axios";
 
 import queryClient from "../utils/configuredQueryClient";
 
-const AuthService = {};
-
 const LOCAL_STORAGE_KEY = "user_informations";
 
-AuthService.login = async function (pseudo, password) {
+/**
+ * Logs the user to the server
+ * @param {string} pseudo The user pseudo
+ * @param {string} password The user password
+ * @returns {Promise<string>} The user pseudo
+ */
+async function login(pseudo, password) {
   const {
-    data: { token },
+    data: { accessToken, refreshToken, isAdmin },
   } = await axios.post("/api/v1/users/login", {
     userPseudo: pseudo,
     userPassword: password,
   });
 
-  if (token) {
-    localStorage.setItem(
-      LOCAL_STORAGE_KEY,
-      JSON.stringify({
-        pseudo,
-        token,
-      })
-    );
+  if (!accessToken || !refreshToken) {
+    return null;
   }
-  return pseudo;
-};
 
-AuthService.logout = function () {
+  localStorage.setItem(
+    LOCAL_STORAGE_KEY,
+    JSON.stringify({
+      pseudo,
+      accessToken,
+      refreshToken,
+      isAdmin,
+    })
+  );
+
+  return pseudo;
+}
+
+/**
+ * Update the user access token
+ * @param {string} newAccessToken The new access token
+ */
+function updateAccesToken(newAccessToken) {
+  const currentInfos = getCurrentUser();
+  localStorage.setItem(
+    LOCAL_STORAGE_KEY,
+    JSON.stringify({
+      ...currentInfos,
+      accessToken: newAccessToken,
+    })
+  );
+}
+
+/**
+ * Logs the user out of the server
+ */
+async function logout() {
+  const { refreshToken } = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
+  await axios.post("/api/v1/users/logout", { refreshToken });
   localStorage.removeItem(LOCAL_STORAGE_KEY);
   queryClient.clear();
-};
+}
 
-AuthService.getCurrentUser = function () {
+/**
+ * Get the current user information
+ * @returns {object}
+ */
+function getCurrentUser() {
   return JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
-};
+}
 
-export default AuthService;
+export default { login, logout, getCurrentUser, updateAccesToken };

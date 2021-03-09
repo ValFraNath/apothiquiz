@@ -10,9 +10,9 @@ const { expect } = chai;
 const FILES_DIR = path.resolve("test", "config", "files");
 
 describe("Configuration tests", () => {
-  before("Clear & insert data", function (done) {
+  before("Clear & insert data", async function () {
     this.timeout(10000);
-    forceTruncateTables(
+    await forceTruncateTables(
       "molecule",
       "class",
       "system",
@@ -22,17 +22,14 @@ describe("Configuration tests", () => {
       "user",
       "duel",
       "results"
-    ).then(() =>
-      insertData("molecules.sql").then(() => insertData("users.sql").then(() => done()))
     );
+    await insertData("molecules.sql");
+    await insertData("users.sql");
   });
 
   let token;
-  before("Get token", (done) => {
-    getToken("fpoguet", "1234").then((t) => {
-      token = t;
-      done();
-    });
+  before("Get token", async () => {
+    token = await getToken("fdadeau", "1234");
   });
 
   it("Can fetch configuration with default values", async () => {
@@ -47,6 +44,24 @@ describe("Configuration tests", () => {
       expect(res.body[key]).haveOwnProperty("min");
       expect(res.body[key]).haveOwnProperty("value");
     });
+  });
+
+  it("Can't fetch & update config without being admin", async () => {
+    const noAdminToken = await getToken("fpoguet");
+    let res = await requestAPI("config", { token: noAdminToken, method: "get" });
+    expect(res.status).equal(403);
+
+    res = await requestAPI("config", {
+      body: {
+        roundsPerDuel: 8,
+        questionTimerDuration: 4,
+        questionsPerRound: 10,
+      },
+      token: noAdminToken,
+      method: "patch",
+    });
+
+    expect(res.status).equal(403);
   });
 
   it("Can update configuration", async () => {
