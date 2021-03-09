@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import express from "express";
 
 import Database from "./db/database.js";
+import { checkDuelsTask, removeDuelsTask } from "./files-script/cron-tasks.js";
 import Logger from "./global/Logger.js";
 import RequestSyntaxErrorHandler from "./middlewares/error.middleware.js";
 import apiRouter from "./routes/api.route.js";
@@ -40,6 +41,9 @@ async function startServer() {
       app.isReady = true;
       Logger.info(`Server is running on port ${PORT}.`);
     });
+
+    removeDuelsTask.start();
+    checkDuelsTask.start();
   } catch (error) {
     Logger.error(error);
     process.exit(1);
