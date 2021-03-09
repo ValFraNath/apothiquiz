@@ -37,7 +37,6 @@ axios.interceptors.request.use((config) => {
   return config;
 });
 
-
 /**
  * Automatically try to refresh a token on 401 error
  */
@@ -79,7 +78,6 @@ UpdateButton.propTypes = {
   updateRequired: PropTypes.bool.isRequired,
   updateSW: PropTypes.func.isRequired,
 };
-
 
 export default class App extends Component {
   constructor(props) {
@@ -155,7 +153,6 @@ export default class App extends Component {
               <ProtectedRoute path="/admin" onlyAdmin exact component={Admin} />
             </Switch>
           </Suspense>
-
         </Router>
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
