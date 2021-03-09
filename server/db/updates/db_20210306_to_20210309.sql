@@ -4,4 +4,4 @@ AFTER `us_avatar`;
 
 
 UPDATE `server_informations`
-    SET `value` = "2021-02-27" WHERE `key` = "api_version";
+    SET `value` = "2021-03-09" WHERE `key` = "api_version";

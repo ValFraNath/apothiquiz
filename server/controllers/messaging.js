@@ -1,5 +1,4 @@
 import { queryPromise } from "../db/database.js";
-import HttpResponseWrapper from "../global/HttpControllerWrapper.js";
 
 /**
  *
@@ -23,9 +22,7 @@ import HttpResponseWrapper from "../global/HttpControllerWrapper.js";
  * @apiError (400) InvalidToken The token is not valid
  * @apiError (404) NotFound User not found
  */
-function updateToken(req, _res) {
-  const res = new HttpResponseWrapper(_res);
-
+function updateToken(req, res) {
   const { user, messagingToken } = req.body;
   if (!user) {
     return res.sendUsageError(400, "Missing user");
@@ -67,9 +64,7 @@ function updateToken(req, _res) {
  * @apiError (400) InvalidToken The token is not valid
  * @apiError (404) NotFound User not found
  */
-function removeToken(req, _res) {
-  const res = new HttpResponseWrapper(_res);
-
+function removeToken(req, res) {
   const { user } = req.body;
   if (!user) {
     return res.sendUsageError(400, "Missing user");
