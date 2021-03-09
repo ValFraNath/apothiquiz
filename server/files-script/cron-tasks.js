@@ -9,21 +9,27 @@ import Logger from "../global/Logger.js";
  * Remove duels older than 5 days
  * Should be executed each day at 12:01 PM
  */
-const removeDuelsTask = cron.schedule("00 01 00 * * *", async function () {
-  try {
-    const res = await queryPromise(
-      'SELECT `value` FROM `server_informations` WHERE `key` = "config_duel_lifetime";'
-    );
-    const REMOVE_UNTIL = parseInt(res[0].value);
+const removeDuelsTask = cron.schedule(
+  "0 1 0 * * *",
+  async function () {
+    try {
+      const res = await queryPromise(
+        'SELECT `value` FROM `server_informations` WHERE `key` = "config_duel_lifetime";'
+      );
+      const REMOVE_UNTIL = parseInt(res[0].value);
 
-    const formattedDate = formatDate(REMOVE_UNTIL);
+      const formattedDate = formatDate(REMOVE_UNTIL);
 
-    const sql = "CALL removeOldDuels(?);";
-    await queryPromise(sql, [formattedDate]);
-  } catch (err) {
-    Logger.error(err, "Can't remove old duels");
+      const sql = "CALL removeOldDuels(?);";
+      await queryPromise(sql, [formattedDate]);
+    } catch (err) {
+      Logger.error(err, "Can't remove old duels");
+    }
+  },
+  {
+    scheduled: false,
   }
-});
+);
 
 /**
  * Make lose the current round for players who have not played 24 hours after the start
@@ -52,27 +58,32 @@ const checkDuelsTask = cron.schedule("* * */3 * * *", async function () {
       });
     });
 
-    await Object.keys(duelsTime).forEach(async (key) => {
-      const currentRound = duelsTime[key];
+    await Object.keys(duelsTime).forEach(
+      async (key) => {
+        const currentRound = duelsTime[key];
 
-      let indexLastPlayed;
-      if (currentRound[0].time === null || currentRound[1].time === null) {
-        indexLastPlayed = currentRound[0].time ? 0 : 1;
-      } else {
-        indexLastPlayed = currentRound[0].time > currentRound[1].time ? 0 : 1;
+        let indexLastPlayed;
+        if (currentRound[0].time === null || currentRound[1].time === null) {
+          indexLastPlayed = currentRound[0].time ? 0 : 1;
+        } else {
+          indexLastPlayed = currentRound[0].time > currentRound[1].time ? 0 : 1;
+        }
+
+        if (diffDateInHour(new Date(), currentRound[indexLastPlayed].time) >= 24) {
+          const resSample = JSON.parse(currentRound[indexLastPlayed].answers)[0];
+          const looser = currentRound[indexLastPlayed ^ 1];
+
+          const results = new Array(resSample.length).fill(-1);
+          const updatedDuels = await Duels.insertResultInDatabase(key, looser.user, results);
+          await Duels.updateDuelState(updatedDuels, looser.user).catch((err) =>
+            console.error("Error: can't update duel state", err)
+          );
+        }
+      },
+      {
+        scheduled: false,
       }
-
-      if (diffDateInHour(new Date(), currentRound[indexLastPlayed].time) >= 24) {
-        const resSample = JSON.parse(currentRound[indexLastPlayed].answers)[0];
-        const looser = currentRound[indexLastPlayed ^ 1];
-
-        const results = new Array(resSample.length).fill(-1);
-        const updatedDuels = await Duels.insertResultInDatabase(key, looser.user, results);
-        await Duels.updateDuelState(updatedDuels, looser.user).catch((err) =>
-          console.error("Error: can't update duel state", err)
-        );
-      }
-    });
+    );
   } catch (err) {
     Logger.error(err, "Can't check duels");
   }
