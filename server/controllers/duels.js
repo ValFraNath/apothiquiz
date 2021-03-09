@@ -52,6 +52,10 @@ async function create(req, res) {
       return res.sendUsageError(404, "Opponent not found");
     }
 
+    if (await doesDuelExist([username, opponent])) {
+      return res.sendUsageError(400, "This duel is already in progress");
+    }
+
     const config = await fetchConfigFromDB();
 
     const rounds = await createRounds(config);
@@ -593,4 +597,24 @@ function computeScores(duel) {
     },
     { user: 0, opponent: 0 }
   );
+}
+
+/**
+ * Check if two users have a duel in progress
+ * @param {string[]} users
+ * @returns {Promise<boolean>}
+ */
+async function doesDuelExist(users) {
+  const sql = `SELECT COUNT(*) as exists \
+								FROM duel AS D	\
+								WHERE D.du_inProgress = 1 \
+								AND 2 = ( SELECT COUNT(*) \
+														FROM results AS R \
+														WHERE R.du_id = R.du_id \
+														AND ( R.us_login = ? \
+																OR R.us_login = ?));`;
+
+  console.log(sql);
+  const { exists } = await queryPromise(sql, users)[0];
+  return Boolean(Number(exists));
 }
