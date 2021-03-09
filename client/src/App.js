@@ -19,7 +19,7 @@ import Menu from "./pages/Menu";
 import AuthService from "./services/auth.service";
 import * as serviceWorker from "./serviceWorker";
 import queryClient from "./utils/configuredQueryClient";
-import MessagingHandler from "./utils/messaging";
+import { getToken, checkAndRemoveToken, onMessage } from "./utils/messaging";
 
 const About = lazy(() => import("./pages/About"));
 const Admin = lazy(() => import("./pages/Admin"));
@@ -125,25 +125,16 @@ export default class App extends Component {
     });
 
     // Request permission for notifications and subscribe to push
-    const messaging = new MessagingHandler();
-    if (
-      "Notification" in window &&
-      navigator.serviceWorker &&
-      Notification.permission !== "denied"
-    ) {
-      if (this.state.user) {
-        if (Notification.permission !== "granted") {
-          this.setState({ requireNotificationPermission: true });
-        } else {
-          messaging.saveToken();
-        }
-      } else {
-        messaging.removeToken();
-      }
+    if (this.state.user) {
+      getToken(this.state.user)
+        .then((token) => console.log(token))
+        .catch((err) => console.error("Error: can't retrieve token", err));
+    } else {
+      checkAndRemoveToken().catch((err) => console.error("Error: can't remove token", err));
     }
 
     // Listen for notifications (in foreground)
-    messaging.getMessaging().onMessage((payload) => {
+    onMessage().then((payload) => {
       if (!payload.data.title) {
         console.error("Can't display notification without title");
         return;
@@ -157,15 +148,14 @@ export default class App extends Component {
   /**
    * Display the notification authorization request
    */
-  displayBrowserNotificationPermission = () => {
-    console.log(Notification);
+  /*displayBrowserNotificationPermission = () => {
     Notification.requestPermission()
       .then(() => {
         this.setState({ requireNotificationPermission: false });
         new MessagingHandler().saveToken();
       })
       .catch((err) => console.error("Can't request permission", err));
-  };
+  };*/
 
   /**
    * Send a message to the service-worker to request the new version
