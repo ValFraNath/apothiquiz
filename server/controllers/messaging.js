@@ -22,7 +22,7 @@ import { queryPromise } from "../db/database.js";
  * @apiError (400) InvalidToken The token is not valid
  * @apiError (404) NotFound User not found
  */
-function updateToken(req, res) {
+async function updateToken(req, res) {
   const { user, messagingToken } = req.body;
   if (!user) {
     return res.sendUsageError(400, "Missing user");
@@ -31,18 +31,15 @@ function updateToken(req, res) {
     return res.sendUsageError(400, "Missing messaging token");
   }
 
-  _saveMessagingTokenInDatabase(user, messagingToken)
-    .then((isUpdated) => {
-      if (isUpdated) {
-        res.sendResponse(200, {
-          user: user,
-          messagingToken: messagingToken,
-        });
-      } else {
-        res.sendUsageError(404, "User not found");
-      }
-    })
-    .catch(res.sendServerError);
+  const isUpdated = await _saveMessagingTokenInDatabase(user, messagingToken);
+  if (isUpdated) {
+    res.sendResponse(200, {
+      user: user,
+      messagingToken: messagingToken,
+    });
+  } else {
+    res.sendUsageError(404, "User not found");
+  }
 }
 
 /**
@@ -64,24 +61,21 @@ function updateToken(req, res) {
  * @apiError (400) InvalidToken The token is not valid
  * @apiError (404) NotFound User not found
  */
-function removeToken(req, res) {
+async function removeToken(req, res) {
   const { user } = req.body;
   if (!user) {
     return res.sendUsageError(400, "Missing user");
   }
 
-  _saveMessagingTokenInDatabase(user)
-    .then((isUpdated) => {
-      if (isUpdated) {
-        res.sendResponse(200, {
-          user: user,
-          messagingToken: "NULL",
-        });
-      } else {
-        res.sendUsageError(404, "User not found");
-      }
-    })
-    .catch(res.sendServerError);
+  const isUpdated = _saveMessagingTokenInDatabase(user);
+  if (isUpdated) {
+    res.sendResponse(200, {
+      user: user,
+      messagingToken: "NULL",
+    });
+  } else {
+    res.sendUsageError(404, "User not found");
+  }
 }
 
 export default { updateToken, removeToken };
@@ -95,7 +89,7 @@ function _saveMessagingTokenInDatabase(user, messagingToken = undefined) {
                  WHERE us_login = ?`;
     const arrayOfValues = messagingToken ? [messagingToken, user] : [user];
     queryPromise(sql, arrayOfValues)
-      .then((res) => resolve(res.affectedRows === 0))
+      .then((res) => resolve(res.affectedRows === 1))
       .catch((error) => reject(error));
   });
 }
