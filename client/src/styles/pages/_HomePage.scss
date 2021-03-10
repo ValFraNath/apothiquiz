@@ -142,7 +142,17 @@
 }
 
 body.dark #homepage {
-  section h2 {
-    color: #dadada;
+  section {
+    h2 {
+      color: #dadada;
+    }
+
+    .challenges-text {
+      background: $color-gray-dark;
+
+      h3 {
+        color: #dadada;
+      }
+    }
   }
 }

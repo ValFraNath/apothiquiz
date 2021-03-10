@@ -56,3 +56,17 @@ nav {
     margin: 5px;
   }
 }
+
+body.dark nav {
+  background: $color-bg-dark;
+  border-bottom: 2px solid $color-gray-dark;
+
+  h1 a {
+    color: white;
+    background-color: $color-gray-dark;
+  }
+
+  #userBadge {
+    color: white;
+  }
+}

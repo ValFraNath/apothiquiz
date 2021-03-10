@@ -18,6 +18,7 @@ main {
 }
 body.dark main {
   background-color: $color-bg-dark;
+  color: white;
 }
 
 @media only screen and (min-device-width: $screen-desktop) {
