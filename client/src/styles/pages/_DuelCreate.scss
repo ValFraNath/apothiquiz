@@ -64,3 +64,13 @@ main#create-duel {
     }
   }
 }
+
+body.dark #create-duel {
+  input {
+    background-color: $color-gray-dark;
+  }
+
+  section:nth-child(3) {
+    background-color: $color-gray-dark;
+  }
+}

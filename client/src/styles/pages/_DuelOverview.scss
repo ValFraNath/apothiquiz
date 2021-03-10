@@ -102,3 +102,17 @@ main#duel-overview {
     }
   }
 }
+
+body.dark #duel-overview {
+  section {
+    background-color: $color-gray-dark;
+
+    h3 {
+      background-color: $color-gray-dark;
+    }
+
+    .bricks .brick {
+      background-color: $color-gray-wait-dark;
+    }
+  }
+}
