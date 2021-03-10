@@ -505,11 +505,12 @@ async function getDuelResults(id, username) {
  * @param {number[]} answers The answers sent
  * @returns {Promise<object>} The updated duel
  */
-async function insertResultInDatabase(id, username, answers) {
+export async function insertResultInDatabase(id, username, answers) {
   const previousAnswers = await getDuelResults(id, username);
 
   const updatedAnswers = JSON.stringify([...previousAnswers, answers]);
   const currentDate = formatDate();
+
   const sql =
     "UPDATE results \
     SET re_answers = :answers, re_last_time = :time \
@@ -532,7 +533,7 @@ async function insertResultInDatabase(id, username, answers) {
  * @param {string} username The player username
  * @returns {Promise<object>} The updated duel
  */
-async function updateDuelState(duel, username) {
+export async function updateDuelState(duel, username) {
   const { currentRound } = duel;
   let sql = "";
   let winner, looser;
