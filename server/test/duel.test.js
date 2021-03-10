@@ -44,7 +44,7 @@ describe("Duels", () => {
   describe("Without data", () => {
     before("Clear data", function (done) {
       this.timeout(10000);
-      forceTruncateTables("molecule").then(done);
+      forceTruncateTables("molecule", "duel", "results").then(done);
     });
     it("Not enough data", async () => {
       const error = await requestAPI("duels/new", {
@@ -147,35 +147,40 @@ describe("Duels", () => {
         forceTruncateTables("duel", "results").then(done);
       });
 
-      before("Use mocked rounds", (done) => {
-        fs.readFile(path.resolve("test", "mocks", "rounds.mock.json"), { encoding: "utf8" }).then(
-          (mock) => {
-            _initMockedDuelRounds(JSON.parse(mock));
-            done();
-          }
-        );
+      before("Use mocked rounds", async () => {
+        const mock = await fs.readFile(path.resolve("test", "mocks", "rounds.mock.json"), {
+          encoding: "utf8",
+        });
+
+        _initMockedDuelRounds(JSON.parse(mock));
       });
 
-      before("Create against nath", (done) => {
-        requestAPI("duels/new", {
+      before("Create against nath", async () => {
+        const res = await requestAPI("duels/new", {
           token: tokens.fpoguet,
           method: "post",
           body: { opponent: "nhoun" },
-        }).then((res) => {
-          ids[0] = res.body.id;
-          done();
         });
+        ids[0] = res.body.id;
       });
 
-      before("Create against val", (done) => {
-        requestAPI("duels/new", {
+      it("Can't create a duel with the same users at the same time", async () => {
+        const res = await requestAPI("duels/new", {
+          token: tokens.fpoguet,
+          method: "post",
+          body: { opponent: "nhoun" },
+        });
+
+        expect(res.status).equals(400);
+      });
+
+      before("Create against val", async () => {
+        const res = await requestAPI("duels/new", {
           token: tokens.fpoguet,
           method: "post",
           body: { opponent: "vperigno" },
-        }).then((res) => {
-          ids[1] = res.body.id;
-          done();
         });
+        ids[1] = res.body.id;
       });
 
       it("Different ids", (done) => {
@@ -371,6 +376,7 @@ describe("Duels", () => {
               })
             );
           });
+
           it("Get duel after : fpoguet", async () => {
             const duel = (
               await requestAPI(`duels/${ids[0]}`, {
@@ -451,6 +457,15 @@ describe("Duels", () => {
           });
 
           expect(duel.status).equals(400);
+        });
+
+        it("Can create a duel with the same users after completing the last one", async () => {
+          const res = await requestAPI("duels/new", {
+            token: tokens.fpoguet,
+            method: "post",
+            body: { opponent: "nhoun" },
+          });
+          expect(res.status).equals(201);
         });
       });
     });

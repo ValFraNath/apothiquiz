@@ -55,7 +55,11 @@ function updateAccesToken(newAccessToken) {
  */
 async function logout() {
   const { refreshToken } = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
-  await axios.post("/api/v1/users/logout", { refreshToken });
+  try {
+    await axios.post("/api/v1/users/logout", { refreshToken });
+  } catch {
+    // Ignore error
+  }
   localStorage.removeItem(LOCAL_STORAGE_KEY);
   queryClient.clear();
 }

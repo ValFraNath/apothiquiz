@@ -8,19 +8,16 @@ import { Link } from "react-router-dom";
 
 import Avatar from "../components/Avatar";
 import AvatarChooser from "../components/AvatarChooser";
+import Loading from "../components/status/Loading";
 import AuthService from "../services/auth.service";
 
 const Profile = ({ history }) => {
   const [isInitialized, setIsInitialized] = useState(false);
   const [avatar, setAvatar] = useState();
-  const { data, isPlaceholderData } = useQuery(["user", "me"]);
+  const { data, isPlaceholderData, isError } = useQuery(["user", "me"]);
   const { isAdmin } = AuthService.getCurrentUser();
 
-  if (isPlaceholderData) {
-    return <span>Chargement</span>;
-  }
-
-  if (!isInitialized) {
+  if (!isInitialized && !isPlaceholderData && !isError) {
     setAvatar(data.avatar);
     setIsInitialized(true);
   }
@@ -38,21 +35,26 @@ const Profile = ({ history }) => {
           Personnaliser mon avatar
           <CaretSortIcon height="20px" width="20px" style={{ marginLeft: "10px" }} />
         </Collapsible.Button>
+
         <Collapsible.Content>
-          <AvatarChooser
-            choiceEyes={avatar?.eyes}
-            choiceHands={avatar?.hands}
-            choiceHat={avatar?.hat}
-            choiceMouth={avatar?.mouth}
-            choiceColorBody={avatar?.colorBody}
-            choiceColorBG={avatar?.colorBG}
-            handleInputEyes={(val) => updateValue("eyes", parseInt(val))}
-            handleInputHands={(val) => updateValue("hands", parseInt(val))}
-            handleInputHat={(val) => updateValue("hat", parseInt(val))}
-            handleInputMouth={(val) => updateValue("mouth", parseInt(val))}
-            handleInputColorBody={(val) => updateValue("colorBody", val)}
-            handleInputColorBG={(val) => updateValue("colorBG", val)}
-          />
+          {!isInitialized ? (
+            <Loading />
+          ) : (
+            <AvatarChooser
+              choiceEyes={avatar?.eyes}
+              choiceHands={avatar?.hands}
+              choiceHat={avatar?.hat}
+              choiceMouth={avatar?.mouth}
+              choiceColorBody={avatar?.colorBody}
+              choiceColorBG={avatar?.colorBG}
+              handleInputEyes={(val) => updateValue("eyes", parseInt(val))}
+              handleInputHands={(val) => updateValue("hands", parseInt(val))}
+              handleInputHat={(val) => updateValue("hat", parseInt(val))}
+              handleInputMouth={(val) => updateValue("mouth", parseInt(val))}
+              handleInputColorBody={(val) => updateValue("colorBody", val)}
+              handleInputColorBG={(val) => updateValue("colorBG", val)}
+            />
+          )}
         </Collapsible.Content>
       </Collapsible.Root>
 
