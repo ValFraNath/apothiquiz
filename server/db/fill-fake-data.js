@@ -191,15 +191,12 @@ function createFakeDuel(config, usernames, MAX_ANSWER, index) {
           }
         }
 
+        const strIndex = index.toString().padStart(Math.log10(NUMBER_OF_DUELS));
+        const strDuelId = duelID.toString().padEnd(6);
+        const strUser1 = user1.padEnd(8);
+        const strUser2 = user2.padEnd(8);
         console.info(
-          `    ${index
-            .toString()
-            .padStart(Math.log10(NUMBER_OF_DUELS))}. Generated duel ${duelID
-            .toString()
-            .padEnd(6)} between ${user1.padEnd(8)} and ${user2.padEnd(
-            8,
-            " "
-          )} with ${numberOfRoundsPlayed} played rounds`
+          `    ${strIndex}. Generated duel ${strDuelId} between ${strUser1} and ${strUser2} with ${numberOfRoundsPlayed} played rounds`
         );
 
         resolve();

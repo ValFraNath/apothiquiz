@@ -556,6 +556,7 @@ export async function updateDuelState(duel, username) {
         }
         sql += `CALL incrementUserVictories(:winner);`;
         sql += `CALL incrementUserDefeats(:looser);`;
+        console.debug("Increment victories for", winner, "and defeats for", looser);
       }
     } else {
       sql = "UPDATE duel SET du_currentRound = :round WHERE du_id = :id ;";
