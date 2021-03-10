@@ -40,8 +40,8 @@ async function start() {
 
     console.info("\nUsers...");
     const users = generateUsers(NUMBER_OF_USERS);
-    await insertUsers(users);
-    console.info("... Done!");
+    const nbInserted = await insertUsers(users);
+    console.info(`... Done! Inserted ${nbInserted} new users`);
 
     console.info("\nDuels...");
     await createAndInsertDuels(users, NUMBER_OF_DUELS);
@@ -104,7 +104,10 @@ async function insertUsers(users) {
   VALUES ${users.map(() => `(?)`).join(",")} \
   ON DUPLICATE KEY UPDATE us_admin = FALSE, us_deleted = NULL; `;
 
-  await queryPromise(sqlUsers, users);
+  const res = await queryPromise(sqlUsers, users);
+
+  const nbOfNewUsers = res.affectedRows - res.changedRows;
+  return nbOfNewUsers;
 }
 
 async function createAndInsertDuels(users, number) {
