@@ -85,7 +85,7 @@
 
       & > a {
         text-decoration: none;
-        color: none;
+        color: transparent;
       }
 
       .challenges-text {
@@ -138,5 +138,11 @@
 
   .avatar {
     flex-shrink: 0;
+  }
+}
+
+body.dark #homepage {
+  section h2 {
+    color: #dadada;
   }
 }

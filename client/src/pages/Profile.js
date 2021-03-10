@@ -14,6 +14,7 @@ import AuthService from "../services/auth.service";
 const Profile = ({ history }) => {
   const [isInitialized, setIsInitialized] = useState(false);
   const [avatar, setAvatar] = useState();
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
   const { data, isPlaceholderData, isError } = useQuery(["user", "me"]);
   const { isAdmin } = AuthService.getCurrentUser();
 
@@ -24,6 +25,12 @@ const Profile = ({ history }) => {
 
   function updateValue(valueName, newValue) {
     setAvatar((prevAvatar) => ({ ...prevAvatar, [valueName]: newValue }));
+  }
+
+  function updateTheme(event) {
+    const { value } = event.target;
+    localStorage.setItem("theme", value);
+    setTheme(value);
   }
 
   return (
@@ -63,6 +70,13 @@ const Profile = ({ history }) => {
           Espace administrateur
         </Link>
       )}
+
+      <p>Choix du thème</p>
+      <select value={theme} onChange={updateTheme}>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+        <option value="automatic">Automatique</option>
+      </select>
 
       <button
         className="btn"

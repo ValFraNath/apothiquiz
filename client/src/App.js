@@ -90,6 +90,7 @@ export default class App extends Component {
       isUpdateAvailable: false,
       installPromptEvent: null,
       user: pseudo || null,
+      theme: localStorage.getItem("theme") || "light",
     };
   }
 
@@ -117,6 +118,11 @@ export default class App extends Component {
         installPromptEvent: event,
       });
     });
+
+    // add theme
+    if (localStorage.getItem("theme") === "dark") {
+      document.body.classList.add("dark");
+    }
   }
 
   updateServiceWorker = () => {
