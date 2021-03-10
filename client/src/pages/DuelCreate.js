@@ -67,6 +67,7 @@ const DuelCreate = ({ history }) => {
                 <li
                   key={user.pseudo}
                   onClick={() => setSelected(user.pseudo)}
+                  onDoubleClick={() => createDuel(user.pseudo)}
                   className={selected === user.pseudo ? "selected" : ""}
                 >
                   <Avatar size="50px" infos={user.avatar} />
