@@ -1,3 +1,6 @@
+import fs from "fs/promises";
+import path from "path";
+
 import dotenv from "dotenv";
 import faker from "faker";
 
@@ -43,8 +46,21 @@ async function start() {
     const nbInserted = await insertUsers(users);
     console.info(`... Done! Inserted ${nbInserted} new users`);
 
+    console.info("\nChecking molecules...");
+    const nbMolecules = (await queryPromise("SELECT COUNT(*) AS count FROM molecule;"))[0].count;
+
+    if (nbMolecules === 0) {
+      console.info("  No molecule found, inserting default molecules from tests");
+      const script = await fs.readFile(path.resolve("test", "required_data", "molecules.sql"), {
+        encoding: "utf8",
+      });
+
+      await queryPromise(script);
+    }
+    console.info("...Done!");
+
     console.info("\nDuels...");
-    await createAndInsertDuels(users, NUMBER_OF_DUELS);
+    await createAndInsertFakeDuels(users, NUMBER_OF_DUELS);
     console.info("... Done!");
 
     console.info("\nData inserted, bye!");
@@ -110,7 +126,7 @@ async function insertUsers(users) {
   return nbOfNewUsers;
 }
 
-async function createAndInsertDuels(users, number) {
+async function createAndInsertFakeDuels(users, number) {
   const usernames = users.map((u) => u[0]);
   const config = await fetchConfigFromDB();
   const MAX_ANSWER = 3;
