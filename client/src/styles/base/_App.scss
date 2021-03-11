@@ -6,6 +6,11 @@ body,
   width: 100%;
 }
 
+body.dark #root {
+  background-color: $color-bg-dark;
+  color: $text-color-black;
+}
+
 /**
  * Main contain the content of each page
  */

@@ -69,7 +69,7 @@ const Profile = ({ history, updateTheme, theme }) => {
         <select value={theme} onChange={updateTheme}>
           <option value="light">Clair</option>
           <option value="dark">Sombre</option>
-          <option value="automatic">Automatique</option>
+          <option value="automatic">Thème par défaut du système</option>
         </select>
       </div>
 

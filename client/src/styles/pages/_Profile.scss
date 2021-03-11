@@ -2,6 +2,7 @@ main#profile {
   padding-top: 1rem;
 
   #options {
+    padding: 1rem 0;
     text-align: center;
   }
 
@@ -12,4 +13,17 @@ main#profile {
   .btn {
     margin: 10px auto;
   }
+
+  select {
+    border: none;
+    padding: 0.4rem 0.5rem;
+    border-radius: 4px;
+    margin-top: 0.3rem;
+    background-color: $color-gray;
+  }
+}
+
+body.dark #profile select {
+  background-color: $color-gray-dark;
+  color: white;
 }

@@ -90,7 +90,7 @@ export default class App extends Component {
       isUpdateAvailable: false,
       installPromptEvent: null,
       user: pseudo || null,
-      theme: localStorage.getItem(`theme-${pseudo}`) || "light",
+      theme: localStorage.getItem(`theme-${pseudo}`) || "automatic",
     };
   }
 
@@ -122,7 +122,11 @@ export default class App extends Component {
     // Add listener for theme if needed
     if (this.state.theme === "automatic") {
       window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
-        this.setState({ theme: e.matches ? "dark" : "light" });
+        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+          document.body.classList.add("dark");
+        } else {
+          document.body.classList.remove("dark");
+        }
       });
     }
   }
@@ -144,24 +148,19 @@ export default class App extends Component {
     const { user, isUpdateAvailable, installPromptEvent, updateRequired, theme } = this.state;
 
     // add theme
-    if (user) {
-      switch (theme) {
-        case "light":
+    switch (theme) {
+      case "light":
+        document.body.classList.remove("dark");
+        break;
+      case "dark":
+        document.body.classList.add("dark");
+        break;
+      default:
+        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+          document.body.classList.add("dark");
+        } else {
           document.body.classList.remove("dark");
-          break;
-        case "dark":
-          document.body.classList.add("dark");
-          break;
-        case "automatic":
-          if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-            document.body.classList.add("dark");
-          } else {
-            document.body.classList.remove("dark");
-          }
-          break;
-        default:
-          document.body.classList.add("dark");
-      }
+        }
     }
 
     return (
