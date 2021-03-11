@@ -4,6 +4,7 @@ import {
   getDuplicates,
   getTooLongValues,
   getTooCloseValues,
+  MoleculesAnalyzerWarning,
 } from "../importationUtils.js";
 
 import { MOLECULES_MAX_LENGTHS } from "./moleculesImporter.js";
@@ -206,20 +207,6 @@ export const normalizeDCI = (dci) =>
 export function getInvalidNormalizedDci(molecules) {
   return molecules.map(normalizeDCI).filter((dci) => !/^[a-z_]+$/i.test(dci));
 }
-
-export class MoleculesAnalyzerWarning {
-  constructor(code, message) {
-    this.code = code;
-    this.message = message;
-  }
-}
-
-MoleculesAnalyzerWarning.DUPLICATE_UNIQUE_VALUE = 1;
-MoleculesAnalyzerWarning.TOO_LONG_VALUE = 2;
-MoleculesAnalyzerWarning.TOO_CLOSE_VALUES = 3;
-MoleculesAnalyzerWarning.DUPLICATE_CLASSIFICATION_NODE = 4;
-MoleculesAnalyzerWarning.INVALID_TYPE = 5;
-MoleculesAnalyzerWarning.INVALID_DCI = 6;
 
 /**
  * Find nodes with the same name but a different parent

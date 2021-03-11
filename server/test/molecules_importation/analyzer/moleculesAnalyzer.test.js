@@ -3,10 +3,8 @@ import path from "path";
 import chai from "chai";
 
 import { queryPromise } from "../../../db/database.js";
-import {
-  analyzeData,
-  MoleculesAnalyzerWarning,
-} from "../../../global/molecules_importation/moleculesAnalyzer.js";
+import { MoleculesAnalyzerWarning } from "../../../global/importationUtils.js";
+import { analyzeData } from "../../../global/molecules_importation/moleculesAnalyzer.js";
 import { createSqlToInsertAllData } from "../../../global/molecules_importation/moleculesImporter.js";
 import { parseMoleculesFromCsv } from "../../../global/molecules_importation/moleculesParser.js";
 import { forceTruncateTables } from "../../index.test.js";

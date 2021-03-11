@@ -7,8 +7,9 @@ import HeaderChecker, {
 } from "../csv_reader/HeaderChecker.js";
 import { readCSV, extractColumns } from "../csv_reader/reader.js";
 
+import Classification from "../MoleculeImporter/Classification.js";
+
 import MoleculeList from "./MoleculeList.js";
-import Classification from "./MoleculesClassification.js";
 import Property from "./MoleculesProperty.js";
 
 const columns = [
@@ -51,7 +52,7 @@ export async function parseMoleculesFromCsv(filepath) {
   const nonUniqueColumns = columns.filter((column) => !column.isUnique());
 
   for (let column of nonUniqueColumns) {
-    const creator = column.isHierarchical() ? Classification.create : Property.create;
+    const creator = column.isHierarchical() ? Classification.createFromMatrix : Property.create;
 
     data[column.property] = creator(
       extractColumns(cleanedMoleculesMatrix, ...structure.getIndexesFor(column.property))

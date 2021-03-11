@@ -26,7 +26,11 @@ export function getDuplicates(values) {
   return [
     ...new Set(
       values.filter((value, i) =>
-        values.slice(i + 1).find((other) => new RegExp(`^${value}$`, "i").test(other))
+        values
+          .slice(i + 1)
+          .find(
+            (other) => other === value || new RegExp(`^${String(value)}$`, "i").test(String(other))
+          )
       )
     ),
   ];
@@ -95,3 +99,17 @@ export function createSqlToInsertInto(table) {
     };
   };
 }
+
+export class MoleculesAnalyzerWarning {
+  constructor(code, message) {
+    this.code = code;
+    this.message = message;
+  }
+}
+
+MoleculesAnalyzerWarning.DUPLICATE_UNIQUE_VALUE = 1;
+MoleculesAnalyzerWarning.TOO_LONG_VALUE = 2;
+MoleculesAnalyzerWarning.TOO_CLOSE_VALUES = 3;
+MoleculesAnalyzerWarning.DUPLICATE_CLASSIFICATION_NODE = 4;
+MoleculesAnalyzerWarning.INVALID_TYPE = 5;
+MoleculesAnalyzerWarning.INVALID_DCI = 6;
