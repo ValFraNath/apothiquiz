@@ -181,6 +181,11 @@ body.dark #timer {
   }
 }
 
+body.dark #quiz-answers button {
+  border: 3px solid $color-gray-dark;
+  background-color: $color-gray-dark;
+}
+
 @keyframes load-effect {
   from {
     height: 0%;

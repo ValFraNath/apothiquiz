@@ -68,6 +68,11 @@ main#create-duel {
 body.dark #create-duel {
   input {
     background-color: $color-gray-dark;
+    color: white;
+  }
+
+  li.selected {
+    background-color: $button-bg-dark;
   }
 
   section:nth-child(3) {
