@@ -35,3 +35,7 @@
     }
   }
 }
+
+body.dark #duel #duel-topbar > div > div {
+  background-color: $color-gray-wait-dark;
+}

@@ -13,3 +13,10 @@ import sinonChai from "sinon-chai";
 
 chai.use(dirtyChai).use(createChaiJestDiff()).use(createChaiEnzyme()).use(sinonChai);
 configureEnzyme({ adapter: new Adapter() });
+
+global.window.matchMedia = function () {
+  return {
+    matches: true,
+    addEventListener: function (ev, callback) {},
+  };
+};
