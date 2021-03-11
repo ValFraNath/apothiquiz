@@ -6,11 +6,10 @@ import HeaderChecker, {
   HeaderErrors,
 } from "../csv_reader/HeaderChecker.js";
 import { readCSV, extractColumns } from "../csv_reader/reader.js";
-
 import Classification from "../MoleculeImporter/Classification.js";
+import Property from "../MoleculeImporter/Property.js";
 
 import MoleculeList from "./MoleculeList.js";
-import Property from "./MoleculesProperty.js";
 
 const columns = [
   new ColumnSpecifications("DCI", "dci", ColumnSpecifications.UNIQUE),
@@ -52,9 +51,9 @@ export async function parseMoleculesFromCsv(filepath) {
   const nonUniqueColumns = columns.filter((column) => !column.isUnique());
 
   for (let column of nonUniqueColumns) {
-    const creator = column.isHierarchical() ? Classification.createFromMatrix : Property.create;
+    const constructor = column.isHierarchical() ? Classification : Property;
 
-    data[column.property] = creator(
+    data[column.property] = new constructor(
       extractColumns(cleanedMoleculesMatrix, ...structure.getIndexesFor(column.property)),
       column.property
     );

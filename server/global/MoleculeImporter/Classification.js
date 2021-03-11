@@ -7,6 +7,7 @@ import {
 } from "../importationUtils.js";
 
 const NODE_NAME_MAX_LENGTH = 128;
+const NODE_NAMES_MIN_DISTANCE = 2;
 
 /**
  * Class representing a classification, used for molecules classes and systems
@@ -85,7 +86,7 @@ export default class Classification {
         )
     );
 
-    const tooCloseNodeNames = getTooCloseValues(nodeNames).map(
+    const tooCloseNodeNames = getTooCloseValues(nodeNames, NODE_NAMES_MIN_DISTANCE).map(
       (group) =>
         new MoleculesAnalyzerWarning(
           "TOO_CLOSE_VALUES",
@@ -140,6 +141,8 @@ export class ClassificationNode {
       throw new Error("A classification node must be linked to a classification");
     }
 
+    // TODO take care about values length
+
     const sql = queryFormat(
       `INSERT INTO ${this.classification.name} VALUES (:id, :name, :higher, :level );`,
       {
@@ -178,8 +181,8 @@ export class ClassificationNode {
   }
 
   /**
-   * Get the node analyzer
-   * @returns {MoleculesAnalyzerWarning[]} The list of analyzer warnings
+   * Analyze the classification node
+   * @returns {MoleculesAnalyzerWarning|null} A warning or null
    */
   analyze() {
     /**
