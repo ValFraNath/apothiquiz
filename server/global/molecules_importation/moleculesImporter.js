@@ -5,7 +5,7 @@ import { parseMoleculesFromCsv } from "./moleculesParser.js";
 
 export const MOLECULES_MAX_LENGTHS = {
   DCI: 128,
-  PROPERTY_VALUE: 64,
+  PROPERTY_VALUE: 128,
   CLASSIFICATION_VALUE: 128,
   SKELETAL_FORMULA: 64,
 };

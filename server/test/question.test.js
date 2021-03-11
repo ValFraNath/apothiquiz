@@ -31,7 +31,7 @@ describe("Question generation with empty database", () => {
 
 describe("Question generation", function () {
   // Only question types we can generate with current data
-  const questionTypes = [1, 2, 3, 5, 6, 7, 8, 9];
+  const questionTypes = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
   before("Import data", function (done) {
     this.timeout(10000);
@@ -99,12 +99,6 @@ describe("Question generation", function () {
     );
   });
 
-  it("Type 4 : not enough data", async () => {
-    const res = await requestAPI("question/4");
-    expect(res.status).to.be.equals(422);
-    expect(res.body.code).to.be.equals("NED");
-  });
-
   it("Type 5 : Consistent values", async () => {
     const res = await requestAPI("question/5");
     const { answers, subject, goodAnswer } = res.body;
@@ -168,12 +162,6 @@ describe("Question generation", function () {
     answersHavePropertyValue.forEach((value, index) =>
       expect(value).to.be.equals(index === Number(goodAnswer))
     );
-  });
-
-  it("Type 10 : Not enough data", async () => {
-    const res = await requestAPI("question/10");
-    expect(res.status).equals(422);
-    expect(res.body.code).to.be.equals("NED");
   });
 
   it("Incorrect question type", async () => {
