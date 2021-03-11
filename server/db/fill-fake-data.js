@@ -1,5 +1,6 @@
 import fs from "fs/promises";
 import path from "path";
+
 import chai from "chai";
 import chaiHttp from "chai-http";
 import dotenv from "dotenv";
@@ -60,7 +61,7 @@ async function start() {
     console.info("...Done!");
 
     console.info("\nDuels...");
-    const nbCreatedDuels = await createAndInsertFakeDuels(users, NUMBER_OF_DUELS);
+    const nbCreatedDuels = await createAndInsertFakeDuelsWithAPI(users, NUMBER_OF_DUELS);
     console.info(`... Done! Created ${nbCreatedDuels} duels`);
 
     console.info("\nData inserted, bye!");
@@ -126,7 +127,7 @@ async function insertUsers(users) {
   return nbOfNewUsers;
 }
 
-async function createAndInsertFakeDuels(users, number) {
+async function createAndInsertFakeDuelsWithAPI(users, number) {
   const usernames = users.map((u) => u[0]);
   const config = await fetchConfigFromDB();
   const MAX_ANSWER = 3;
@@ -144,7 +145,7 @@ async function createAndInsertFakeDuels(users, number) {
       const promises = Array(currentBatchSize)
         .fill()
         .map((_, localI) =>
-          createFakeDuel(config, usernames, MAX_ANSWER, i * BATCH_SIZE + localI + 1)
+          createFakeDuelWithAPI(config, usernames, MAX_ANSWER, i * BATCH_SIZE + localI + 1)
         );
 
       const resp = await Promise.all(promises);
@@ -158,7 +159,7 @@ async function createAndInsertFakeDuels(users, number) {
   return nbCreatedDuels;
 }
 
-function createFakeDuel(config, usernames, MAX_ANSWER, index) {
+function createFakeDuelWithAPI(config, usernames, MAX_ANSWER, index) {
   return new Promise((resolve, reject) => {
     (async () => {
       // For printing
@@ -178,9 +179,7 @@ function createFakeDuel(config, usernames, MAX_ANSWER, index) {
         });
 
         if (resp.statusCode === 400) {
-          console.warn(
-            `    ${strIndex}. Duel is already in progress between ${user1} and ${user2}`
-          );
+          console.warn(`    ${strIndex}. Duel already exists between ${user1} and ${user2}`);
           resolve(false);
           return;
         }
@@ -193,21 +192,12 @@ function createFakeDuel(config, usernames, MAX_ANSWER, index) {
         const duelID = resp.body.id;
 
         const numberOfRoundsPlayed = faker.random.number(config.roundsPerDuel);
-        const numberOfQuestionsPerRound = Number(config.questionsPerRound);
+        const nbQuestions = Number(config.questionsPerRound);
 
         for (let i = 1; i <= numberOfRoundsPlayed; i++) {
-          const fakeAnswersUser1 = Array(numberOfQuestionsPerRound)
-            .fill()
-            .map(() => faker.random.number(MAX_ANSWER));
-
-          const res = await postToAPI(`duels/${duelID}/${i}`, {
-            token: token1,
-            method: "post",
-            body: { answers: fakeAnswersUser1 },
-          });
+          const res = await sendFakeAnswersWithAPI(nbQuestions, MAX_ANSWER, duelID, i, token1);
 
           if (res.statusCode !== 200) {
-            console.debug(`${res.statusCode} ${res.error.text}`, duelID, i, fakeAnswersUser1);
             reject(
               `User 1 ${user1} can't play round ${i}. Error ${res.statusCode} ${res.error.text}`
             );
@@ -215,18 +205,9 @@ function createFakeDuel(config, usernames, MAX_ANSWER, index) {
 
           // Sometimes the second user doesn't play the last round
           if (i !== numberOfRoundsPlayed || faker.random.boolean()) {
-            const fakeAnswersUser2 = Array(numberOfQuestionsPerRound)
-              .fill()
-              .map(() => faker.random.number(MAX_ANSWER));
-
-            const res = await postToAPI(`duels/${duelID}/${i}`, {
-              token: token2,
-              method: "post",
-              body: { answers: fakeAnswersUser2 },
-            });
+            const res = await sendFakeAnswersWithAPI(nbQuestions, MAX_ANSWER, duelID, i, token2);
 
             if (res.statusCode !== 200) {
-              console.debug(`${res.statusCode} ${res.error.text}`, duelID, i, fakeAnswersUser2);
               reject(
                 `User 2 ${user2} can't play round ${i}. Error ${res.statusCode} ${res.error.text}`
               );
@@ -248,6 +229,20 @@ function createFakeDuel(config, usernames, MAX_ANSWER, index) {
       }
     })();
   });
+}
+
+async function sendFakeAnswersWithAPI(nbQuestionPerRound, MAX_ANSWER, duelID, roundID, userToken) {
+  const fakeAnswers = Array(nbQuestionPerRound)
+    .fill()
+    .map(() => faker.random.number(MAX_ANSWER));
+
+  const res = await postToAPI(`duels/${duelID}/${roundID}`, {
+    token: userToken,
+    method: "post",
+    body: { answers: fakeAnswers },
+  });
+
+  return res;
 }
 
 /**
