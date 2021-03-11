@@ -161,9 +161,8 @@ describe("Procedures Molecule data", () => {
       (e) => e.cl_name
     );
     expect(classes).to.be.deep.equals([
-      "camion",
-      "INTI (INHIBITEURS NUCLEOSIDIQUES TRANSCRIPTASE INVERSE)",
-      "ANALOGUES NUCLEOSIDIQUES",
+      "INTI (INHIBITEURS NUCLEOTIDIQUES TRANSCRIPTASE INVERSE)",
+      "ANALOGUES NUCLEOTIDIQUES",
     ]);
 
     classes = (await queryPromise("CALL getClassesOf(?)", ["INVALID"]))[0];
@@ -176,8 +175,10 @@ describe("Procedures Molecule data", () => {
     );
     expect(systems).to.be.deep.equals(["ANTIVIRAL", "ANTIINFECTIEUX"]);
 
-    systems = (await queryPromise("CALL getSystemsOf(?)", ["NEXISTPA"]))[0].map((e) => e.sy_name);
-    expect(systems).to.be.deep.equals(["TRESNULLE", "ANTIRIEN"]);
+    systems = (await queryPromise("CALL getSystemsOf(?)", ["finastéride"]))[0].map(
+      (e) => e.sy_name
+    );
+    expect(systems).to.be.deep.equals(["endocrinologie", "endocrinologie et diabète"]);
 
     systems = (await queryPromise("CALL getSystemsOf(?)", ["INVALID"]))[0];
     expect(systems).to.be.deep.equals([]);
