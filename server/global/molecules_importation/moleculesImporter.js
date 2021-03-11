@@ -203,7 +203,7 @@ class FormattedMolecule {
     this.skeletalFormula = molecule.skeletalFormula
       ? String(molecule.skeletalFormula).substr(0, MOLECULES_MAX_LENGTHS.SKELETAL_FORMULA)
       : "";
-    this.difficulty = molecule.levelHard ? "HARD" : "EASY";
+    this.difficulty = molecule.levelEasy ? "EASY" : "HARD";
     this.properties = Object.create(null);
     this.properties.indications = molecule.indications.slice();
     this.properties.sideEffects = molecule.sideEffects.slice();
