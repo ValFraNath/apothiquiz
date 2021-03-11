@@ -1,20 +1,16 @@
 import fs from "fs/promises";
 import path from "path";
-
+import chai from "chai";
+import chaiHttp from "chai-http";
 import dotenv from "dotenv";
 import faker from "faker";
 
 import { fetchConfigFromDB } from "../controllers/config.js";
-import {
-  createRounds,
-  createDuelInDatabase,
-  insertResultInDatabase,
-  updateDuelState,
-} from "../controllers/duels.js";
-import { formatDate } from "../global/dateUtils.js";
+import app from "../index.js";
 
-import Database, { queryPromise } from "./database.js";
+import { queryPromise } from "./database.js";
 
+chai.use(chaiHttp);
 dotenv.config();
 
 const NUMBER_OF_USERS = process.argv[2] ?? 300;
@@ -26,9 +22,6 @@ if (NUMBER_OF_USERS < 2 && NUMBER_OF_DUELS > 0) {
   process.exit(1);
 }
 
-console.info(`Filling database with ${NUMBER_OF_USERS} users and ${NUMBER_OF_DUELS} duels.`);
-console.info(`Using seed ${SEED}`);
-
 faker.locale = "fr";
 faker.seed(SEED);
 
@@ -39,7 +32,14 @@ start();
 // ----------------------------------------------------------------------------
 async function start() {
   try {
-    await Database.start();
+    // Sleep waiting that the server starts
+    while (!app.isReady) {
+      await new Promise((r) => setTimeout(r, 1000));
+    }
+
+    console.info(`Filling database with ${NUMBER_OF_USERS} users and ${NUMBER_OF_DUELS} duels.`);
+    console.info(`Using seed ${SEED}`);
+    console.info("");
 
     console.info("\nUsers...");
     const users = generateUsers(NUMBER_OF_USERS);
@@ -60,8 +60,8 @@ async function start() {
     console.info("...Done!");
 
     console.info("\nDuels...");
-    await createAndInsertFakeDuels(users, NUMBER_OF_DUELS);
-    console.info("... Done!");
+    const nbCreatedDuels = await createAndInsertFakeDuels(users, NUMBER_OF_DUELS);
+    console.info(`... Done! Created ${nbCreatedDuels} duels`);
 
     console.info("\nData inserted, bye!");
     console.info(
@@ -133,6 +133,8 @@ async function createAndInsertFakeDuels(users, number) {
   const BATCH_SIZE = 100;
   const NUMBER_OF_BATCH = Math.ceil(number / BATCH_SIZE);
 
+  let nbCreatedDuels = 0;
+
   try {
     for (let i = 0; i < NUMBER_OF_BATCH; i++) {
       const currentBatchSize = Math.min(BATCH_SIZE, number - i * BATCH_SIZE);
@@ -145,53 +147,94 @@ async function createAndInsertFakeDuels(users, number) {
           createFakeDuel(config, usernames, MAX_ANSWER, i * BATCH_SIZE + localI + 1)
         );
 
-      await Promise.all(promises);
+      const resp = await Promise.all(promises);
+      nbCreatedDuels += resp.filter(Boolean).length;
     }
   } catch (err) {
     console.error(err);
     process.exit(1);
   }
+
+  return nbCreatedDuels;
 }
 
 function createFakeDuel(config, usernames, MAX_ANSWER, index) {
   return new Promise((resolve, reject) => {
     (async () => {
-      try {
-        const rounds = await createRounds(config);
+      // For printing
+      const strIndex = index.toString().padStart(Math.log10(NUMBER_OF_DUELS));
 
+      try {
         const [user1, user2] = faker.random.arrayElements(usernames, 2);
-        const duelID = await createDuelInDatabase(user1, user2, rounds);
+        const [token1, token2] = await Promise.all([
+          getToken(user1, "1234"),
+          getToken(user2, "1234"),
+        ]);
+
+        const resp = await postToAPI("duels/new", {
+          token: token1,
+          method: "post",
+          body: { opponent: user2 },
+        });
+
+        if (resp.statusCode === 400) {
+          console.warn(
+            `    ${strIndex}. Duel is already in progress between ${user1} and ${user2}`
+          );
+          resolve(false);
+          return;
+        }
+
+        if (resp.statusCode !== 201) {
+          reject("Can't create duel: " + resp.statusCode + " " + resp.error.text);
+          return;
+        }
+
+        const duelID = resp.body.id;
 
         const numberOfRoundsPlayed = faker.random.number(config.roundsPerDuel);
         const numberOfQuestionsPerRound = Number(config.questionsPerRound);
 
-        for (let i = 0; i < numberOfRoundsPlayed; i++) {
+        for (let i = 1; i <= numberOfRoundsPlayed; i++) {
           const fakeAnswersUser1 = Array(numberOfQuestionsPerRound)
             .fill()
             .map(() => faker.random.number(MAX_ANSWER));
 
-          const fakeAnswersUser2 = Array(numberOfQuestionsPerRound - faker.random.number(1))
-            .fill()
-            .map(() => faker.random.number(MAX_ANSWER));
+          const res = await postToAPI(`duels/${duelID}/${i}`, {
+            token: token1,
+            method: "post",
+            body: { answers: fakeAnswersUser1 },
+          });
 
-          const [updatedDuel1, updatedDuel2] = await Promise.all([
-            insertResultInDatabase(duelID, user1, fakeAnswersUser1),
-            insertResultInDatabase(duelID, user2, fakeAnswersUser2),
-          ]);
+          if (res.statusCode !== 200) {
+            console.debug(`${res.statusCode} ${res.error.text}`, duelID, i, fakeAnswersUser1);
+            reject(
+              `User 1 ${user1} can't play round ${i}. Error ${res.statusCode} ${res.error.text}`
+            );
+          }
 
-          const [reallyUpdatedDuel1, reallyUpdatedDuel2] = await Promise.all([
-            updateDuelState(updatedDuel1, user1),
-            updateDuelState(updatedDuel2, user2),
-          ]);
+          // Sometimes the second user doesn't play the last round
+          if (i !== numberOfRoundsPlayed || faker.random.boolean()) {
+            const fakeAnswersUser2 = Array(numberOfQuestionsPerRound)
+              .fill()
+              .map(() => faker.random.number(MAX_ANSWER));
 
-          if (reallyUpdatedDuel1.inProgress === 0 || reallyUpdatedDuel2.inProgress === 0) {
-            const currentDate = formatDate();
-            const sql = "UPDATE duel SET du_finished = ? WHERE du_id = ?;";
-            await queryPromise(sql, [currentDate, duelID]);
+            const res = await postToAPI(`duels/${duelID}/${i}`, {
+              token: token2,
+              method: "post",
+              body: { answers: fakeAnswersUser2 },
+            });
+
+            if (res.statusCode !== 200) {
+              console.debug(`${res.statusCode} ${res.error.text}`, duelID, i, fakeAnswersUser2);
+              reject(
+                `User 2 ${user2} can't play round ${i}. Error ${res.statusCode} ${res.error.text}`
+              );
+            }
           }
         }
 
-        const strIndex = index.toString().padStart(Math.log10(NUMBER_OF_DUELS));
+        // Printing
         const strDuelId = duelID.toString().padEnd(6);
         const strUser1 = user1.padEnd(8);
         const strUser2 = user2.padEnd(8);
@@ -199,10 +242,41 @@ function createFakeDuel(config, usernames, MAX_ANSWER, index) {
           `    ${strIndex}. Generated duel ${strDuelId} between ${strUser1} and ${strUser2} with ${numberOfRoundsPlayed} played rounds`
         );
 
-        resolve();
+        resolve(true);
       } catch (err) {
-        reject(err);
+        reject("Error " + err);
       }
     })();
   });
+}
+
+/**
+ * Make a authenticated post request to the api
+ * @param {string} endpoint The endpoint
+ * @param {{body? : object, token : string}} param1 The request option
+ * @returns
+ */
+async function postToAPI(endpoint, { body = {}, token } = {}) {
+  const res = await chai
+    .request(app)
+    .post("/api/v1/" + endpoint)
+    .set("Authorization", `Bearer ${token}`)
+    .send(body);
+
+  return res;
+}
+
+/**
+ * Get a token for a user
+ * @param {string} username The user login
+ * @param {string} password The user password
+ * @returns {Promise<string>} The token
+ */
+export async function getToken(username, password = "1234") {
+  const res = await postToAPI("users/login", {
+    body: { userPseudo: username, userPassword: password },
+    method: "post",
+  });
+
+  return res.body.accessToken;
 }

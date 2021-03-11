@@ -315,7 +315,7 @@ async function doUsersExist(...users) {
  * @param {object} rounds The rounds of the duel
  * @returns {Promise<number>} The id of the duel
  */
-export async function createDuelInDatabase(player1, player2, rounds) {
+async function createDuelInDatabase(player1, player2, rounds) {
   const res = await queryPromise("CALL createDuel(:player1,:player2,:content)", {
     player1,
     player2,
@@ -331,7 +331,7 @@ export async function createDuelInDatabase(player1, player2, rounds) {
  * @throws NotEnoughDataError
  * @return {Promise<object[][]>}
  */
-export async function createRounds(config) {
+async function createRounds(config) {
   if (mockedDuelsRounds) {
     return mockedDuelsRounds;
   }
@@ -509,7 +509,7 @@ async function getDuelResults(id, username) {
  * @param {number[]} answers The answers sent
  * @returns {Promise<object>} The updated duel
  */
-export async function insertResultInDatabase(id, username, answers) {
+async function insertResultInDatabase(id, username, answers) {
   const previousAnswers = await getDuelResults(id, username);
 
   const updatedAnswers = JSON.stringify([...previousAnswers, answers]);
@@ -537,7 +537,7 @@ export async function insertResultInDatabase(id, username, answers) {
  * @param {string} username The player username
  * @returns {Promise<object>} The updated duel
  */
-export async function updateDuelState(duel, username) {
+async function updateDuelState(duel, username) {
   const { currentRound } = duel;
   let sql = "";
   let winner, looser;
@@ -556,7 +556,6 @@ export async function updateDuelState(duel, username) {
         }
         sql += `CALL incrementUserVictories(:winner);`;
         sql += `CALL incrementUserDefeats(:looser);`;
-        console.debug("Increment victories for", winner, "and defeats for", looser);
       }
     } else {
       sql = "UPDATE duel SET du_currentRound = :round WHERE du_id = :id ;";
