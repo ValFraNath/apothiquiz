@@ -159,6 +159,8 @@ export default class App extends Component {
             document.body.classList.remove("dark");
           }
           break;
+        default:
+          document.body.classList.add("dark");
       }
     }
 
