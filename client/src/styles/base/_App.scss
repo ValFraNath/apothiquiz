@@ -27,6 +27,10 @@ body.dark main {
     justify-content: center;
     align-items: center;
     background-color: #d7a691;
+
+    &.dark {
+      background-color: #9e7462;
+    }
   }
 
   #root {

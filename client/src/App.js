@@ -90,7 +90,7 @@ export default class App extends Component {
       isUpdateAvailable: false,
       installPromptEvent: null,
       user: pseudo || null,
-      theme: localStorage.getItem("theme") || "light",
+      theme: localStorage.getItem(`theme-${pseudo}`) || "light",
     };
   }
 
@@ -119,9 +119,11 @@ export default class App extends Component {
       });
     });
 
-    // add theme
-    if (localStorage.getItem("theme") === "dark") {
-      document.body.classList.add("dark");
+    // Add listener for theme if needed
+    if (this.state.theme === "automatic") {
+      window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
+        this.setState({ theme: e.matches ? "dark" : "light" });
+      });
     }
   }
 
@@ -132,8 +134,33 @@ export default class App extends Component {
     window.location.reload();
   };
 
+  updateTheme = (event) => {
+    const { value } = event.target;
+    localStorage.setItem(`theme-${this.state.user}`, value);
+    this.setState({ theme: value });
+  };
+
   render() {
-    const { user, isUpdateAvailable, installPromptEvent, updateRequired } = this.state;
+    const { user, isUpdateAvailable, installPromptEvent, updateRequired, theme } = this.state;
+
+    // add theme
+    if (user) {
+      switch (theme) {
+        case "light":
+          document.body.classList.remove("dark");
+          break;
+        case "dark":
+          document.body.classList.add("dark");
+          break;
+        case "automatic":
+          if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+            document.body.classList.add("dark");
+          } else {
+            document.body.classList.remove("dark");
+          }
+          break;
+      }
+    }
 
     return (
       <QueryClientProvider client={queryClient}>
@@ -151,7 +178,13 @@ export default class App extends Component {
               <Route path="/about" exact component={About} />
               <Route path="/train" exact component={Train} />
               <Route path="/login" exact component={Login} />
-              <ProtectedRoute path="/profile" exact component={Profile} />
+              <ProtectedRoute
+                path="/profile"
+                exact
+                component={({ history }) => (
+                  <Profile history={history} theme={theme} updateTheme={this.updateTheme} />
+                )}
+              />
               <ProtectedRoute path="/homepage" exact component={HomePage} />
               <ProtectedRoute path="/duel/create" exact component={DuelCreate} />
               <ProtectedRoute path="/duel/:id" exact component={DuelOverview} />
