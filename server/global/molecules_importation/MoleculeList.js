@@ -4,7 +4,8 @@ import FileStructure from "../csv_reader/FileStructure.js";
 import MoleculesClassification, {
   // eslint-disable-next-line no-unused-vars
   ClassificationNode,
-} from "./MoleculesClassification.js";
+} from "../MoleculeImporter/Classification.js";
+
 import MoleculesProperty from "./MoleculesProperty.js";
 
 /**
@@ -77,18 +78,14 @@ function getMultiValuedPropertyIDs(row, indexes, property) {
  * @param {ClassificationNode[]} property
  * @returns {number} The corresponding ID
  */
-function getClassificationNodeID(row, indexes, property) {
-  let res = null;
-  indexes.reverse().forEach((index) => {
-    if (!row[index] || res) {
-      return;
-    }
-    const id = MoleculesClassification.findId(property, row[index]);
-    if (id) {
-      res = id;
-    }
+function getClassificationNodeID(row, indexes, classificaion) {
+  let node = null;
+  indexes.forEach((index) => {
+    const value = row[index];
+    if (!value) return;
+    node = node ? node.getChildByName(value) : classificaion.getElementByName(value);
   });
-  return res;
+  return node && node.id;
 }
 
 export default { create };

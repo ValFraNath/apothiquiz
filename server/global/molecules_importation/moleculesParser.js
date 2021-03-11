@@ -55,13 +55,16 @@ export async function parseMoleculesFromCsv(filepath) {
     const creator = column.isHierarchical() ? Classification.createFromMatrix : Property.create;
 
     data[column.property] = creator(
-      extractColumns(cleanedMoleculesMatrix, ...structure.getIndexesFor(column.property))
+      extractColumns(cleanedMoleculesMatrix, ...structure.getIndexesFor(column.property)),
+      column.property
     );
   }
 
+  console.dir(data, { depth: null });
+
   data.molecules = MoleculeList.create(cleanedMoleculesMatrix, structure, data);
 
-  return JSON.stringify(data);
+  return data;
 }
 
 // ***** INTERNAL FUNCTIONS *****

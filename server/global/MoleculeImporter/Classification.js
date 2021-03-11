@@ -13,79 +13,38 @@ const NODE_NAME_MAX_LENGTH = 128;
  */
 export default class Classification {
   /**
-   * Create a new classification
+   * Create a new classification from a matrix
+   * @param {any[][]} matrix The matrix of data
    * @param {string} name The classification name
    */
-  constructor(name) {
+  constructor(matrix, name) {
     /** @type {string} The classificaion name */
     this.name = name;
 
     /** @type {ClassificationNode[]} The list of elements of the classification */
     this.elements = [];
 
-    /** @type {number} The number of node in the classification */
-    this.size = 0;
-
-    this._bindNode = this._bindNode.bind(this);
-  }
-
-  /**
-   *
-   * @param {any[][]} matrix
-   */
-  static createFromMatrix(matrix, name) {
-    const classification = new Classification(name);
+    let autoIncrement = 1;
     for (const row of matrix) {
+      /** @type {ClassificationNode} */
       let parent = null;
       for (const value of row) {
         if (!value) return;
 
-        const same = parent ? parent.getChildByName(value) : classification.getElementByName(value);
+        const same = parent ? parent.getChildByName(value) : this.getElementByName(value);
         if (same) {
-          // console.log("same: ", value);
           parent = same;
         } else {
-          // console.log("new: ", value);
-          const newNode = new ClassificationNode(value);
+          const newNode = new ClassificationNode(autoIncrement++, value);
           if (parent === null) {
-            classification.addElements(newNode);
+            this.elements.push(newNode);
           } else {
-            parent.addChild(newNode);
+            parent.children.push(newNode);
           }
           parent = newNode;
         }
       }
     }
-
-    return classification;
-  }
-
-  /**
-   * Bind a node and its children to this classification
-   * @param {ClassificationNode} node The node
-   */
-  _bindNode(node) {
-    if (node.id || node.classification) {
-      throw new Error("The node is already bound to a classification");
-    }
-    node.id = ++this.size;
-    node.classification = this;
-    node.children.forEach((node) => this._bindNode(node));
-  }
-
-  /**
-   * Add elements to the classification
-   * @param  {...ClassificationNode} elements
-   */
-  addElements(...elements) {
-    if (!elements.every((element) => element instanceof ClassificationNode)) {
-      throw new Error("Elements of a classification must be classification nodes");
-    }
-    elements = elements.filter(
-      ({ name }) => !this.elements.find((element) => element.name === name)
-    );
-    elements.forEach(this._bindNode);
-    this.elements.push(...elements);
   }
 
   /**
@@ -158,35 +117,15 @@ export class ClassificationNode {
    * @param {number} id The node id
    * @param {string} name The node name
    */
-  constructor(name) {
+  constructor(id, name) {
     /** @type {number} The class id */
-    this.id = null;
-
-    /** @type {Classification} The classification to which the node belongs */
-    this.classification = null;
+    this.id = id;
 
     /** @type {string} The class name */
     this.name = name;
 
     /** @type {ClassificationNode[]} The class children */
     this.children = [];
-  }
-
-  /**
-   * Add children to a class
-   * @param  {...ClassificationNode} children
-   */
-  addChild(...children) {
-    if (!children.every((child) => child instanceof ClassificationNode)) {
-      throw new Error("Children of a classification node must be classification nodes");
-    }
-
-    children = children.filter(({ name }) => !this.children.find((child) => child.name === name));
-
-    if (this.id && this.classification) {
-      children.forEach((child) => this.classification._bindNode(child));
-    }
-    this.children.push(...children);
   }
 
   /**
