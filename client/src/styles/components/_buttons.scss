@@ -106,3 +106,8 @@ button.btn.btn-circle {
     transform: rotate(360deg);
   }
 }
+
+body.dark .btn {
+  background-color: $button-bg-dark;
+  box-shadow: none;
+}

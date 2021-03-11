@@ -11,7 +11,7 @@ import AvatarChooser from "../components/AvatarChooser";
 import Loading from "../components/status/Loading";
 import AuthService from "../services/auth.service";
 
-const Profile = ({ history }) => {
+const Profile = ({ history, updateTheme, theme }) => {
   const [isInitialized, setIsInitialized] = useState(false);
   const [avatar, setAvatar] = useState();
   const { data, isPlaceholderData, isError } = useQuery(["user", "me"]);
@@ -64,6 +64,15 @@ const Profile = ({ history }) => {
         </Link>
       )}
 
+      <div id="options">
+        <p>Choix du thème</p>
+        <select value={theme} onChange={updateTheme}>
+          <option value="light">Clair</option>
+          <option value="dark">Sombre</option>
+          <option value="automatic">Thème par défaut du système</option>
+        </select>
+      </div>
+
       <button
         className="btn"
         onClick={async () => {
@@ -83,6 +92,8 @@ const Profile = ({ history }) => {
 
 Profile.propTypes = {
   history: PropTypes.object.isRequired,
+  updateTheme: PropTypes.func.isRequired,
+  theme: PropTypes.string,
 };
 
 export default Profile;
