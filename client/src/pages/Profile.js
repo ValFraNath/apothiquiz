@@ -64,12 +64,14 @@ const Profile = ({ history, updateTheme, theme }) => {
         </Link>
       )}
 
-      <p>Choix du thème</p>
-      <select value={theme} onChange={updateTheme}>
-        <option value="light">Clair</option>
-        <option value="dark">Sombre</option>
-        <option value="automatic">Automatique</option>
-      </select>
+      <div id="options">
+        <p>Choix du thème</p>
+        <select value={theme} onChange={updateTheme}>
+          <option value="light">Clair</option>
+          <option value="dark">Sombre</option>
+          <option value="automatic">Automatique</option>
+        </select>
+      </div>
 
       <button
         className="btn"

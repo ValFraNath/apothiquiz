@@ -1,6 +1,10 @@
 main#profile {
   padding-top: 1rem;
 
+  #options {
+    text-align: center;
+  }
+
   & > .avatar {
     margin: auto;
   }
