@@ -91,7 +91,6 @@ function generateUsers(number) {
 
     if (usedLogins[fakeName]) {
       i--;
-      continue;
     }
 
     const fakeUser = [
