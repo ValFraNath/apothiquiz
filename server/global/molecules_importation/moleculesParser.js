@@ -59,8 +59,13 @@ export async function parseMoleculesFromCsv(filepath) {
 
   data.class = createClassification("class");
 
+  let propertyId = 1;
   const createProperty = (name) =>
-    new Property(extractColumns(cleanedMoleculesMatrix, ...structure.getIndexesFor(name)), name);
+    new Property(
+      extractColumns(cleanedMoleculesMatrix, ...structure.getIndexesFor(name)),
+      name,
+      propertyId++
+    );
 
   data.indications = createProperty("indications");
   data.interactions = createProperty("interactions");

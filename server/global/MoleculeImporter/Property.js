@@ -5,16 +5,14 @@ const PROPERTY_NAME_MAX_LENGTH = 64;
 const PROPERTY_VALUE_MAX_LENGTH = 128;
 const PROPERTY_VALUE_MIN_DISTANCE = 2;
 
-let propertyAutoincrementId = 1;
-
 export default class Property {
-  constructor(matrix, name) {
+  constructor(matrix, name, id) {
     /** @type {string} */
     this.name = name;
     /** @type {PropertyValue[]} */
     this.values = [];
 
-    this.id = propertyAutoincrementId++;
+    this.id = id;
     let autoIncrementId = 1;
 
     const uniqueId = () => Number(`${this.id}${autoIncrementId++}`);

@@ -70,6 +70,7 @@ describe("Test if values are well imported", function () {
         if (!file.snapshot) {
           this.skip();
         }
+
         let expectedData = fs.readFileSync(path.resolve(snapshotsFolderPath, file.snapshot));
         expect(data).to.be.deep.equals(JSON.parse(expectedData));
         done();
