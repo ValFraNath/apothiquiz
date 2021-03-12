@@ -36,7 +36,7 @@ export default class Classification {
         if (same) {
           parent = same;
         } else {
-          const newNode = new ClassificationNode(autoIncrement++, value);
+          const newNode = new ClassificationNode(autoIncrement++, value, this.name);
           if (parent === null) {
             this.elements.push(newNode);
           } else {
@@ -117,13 +117,17 @@ export class ClassificationNode {
    * Create a new node
    * @param {number} id The node id
    * @param {string} name The node name
+   * @param {string} classification The classification
    */
-  constructor(id, name) {
+  constructor(id, name, classification) {
     /** @type {number} The class id */
     this.id = id;
 
     /** @type {string} The class name */
     this.name = name;
+
+    /** @type {string} The classification name of the node */
+    this.classification = classification;
 
     /** @type {ClassificationNode[]} The class children */
     this.children = [];
@@ -137,21 +141,18 @@ export class ClassificationNode {
    * @returns {string} The sql script
    */
   createInsertionSql(higher = null, level = 1) {
-    if (!this.id) {
+    if (!this.id || !this.classification) {
       throw new Error("A classification node must be linked to a classification");
     }
 
-    // TODO take care about values length
+    const table = String(this.classification.name);
 
-    const sql = queryFormat(
-      `INSERT INTO ${this.classification.name} VALUES (:id, :name, :higher, :level );`,
-      {
-        id: this.id,
-        name: this.name,
-        higher,
-        level,
-      }
-    );
+    const sql = queryFormat(`INSERT INTO ${table} VALUES (:id, :name, :higher, :level );`, {
+      id: Number(this.id),
+      name: String(this.name).substr(0, NODE_NAME_MAX_LENGTH),
+      higher: Number(higher),
+      level: Number(level),
+    });
 
     return this.children.reduce(
       (sql, child) => `${sql} ${child.createInsertionSql(this.id, level + 1)}`,
