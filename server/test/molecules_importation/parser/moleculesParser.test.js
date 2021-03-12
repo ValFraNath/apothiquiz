@@ -58,15 +58,12 @@ describe("Test if values are well imported", function () {
     describe(`File : ${file.name}`, () => {
       let data;
 
-      before("Import data", (done) => {
-        parseMoleculesFromCsv(path.resolve(filesFolderPath, file.name))
-          .then((json) => {
-            data = JSON.parse(json);
-            done();
-          })
-          .catch((error) => {
-            expect(error).to.be.null;
-          });
+      before("Import data", async () => {
+        const json = (
+          await parseMoleculesFromCsv(path.resolve(filesFolderPath, file.name))
+        ).toJSON();
+
+        data = JSON.parse(json);
       });
 
       it("Imported data are equals to its snapshot", function (done) {
@@ -83,7 +80,7 @@ describe("Test if values are well imported", function () {
         done();
       });
 
-      for (let classification of ["systems", "classes"]) {
+      for (let classification of ["system", "class"]) {
         it(`Classification : ${classification}`, (done) => {
           const expectedValues = file.expectation[classification];
 
@@ -139,17 +136,14 @@ describe("Test if values are well imported", function () {
 
           expect(molecule, `| Molecule not found : ${expected.dci} |`).not.undefined;
 
-          for (let classification of ["systems", "classes"]) {
-            const moleculeProperty = classification
-              .replace("classes", "class")
-              .replace("systems", "system");
-            if (expected[moleculeProperty] === null) {
+          for (let classification of ["system", "class"]) {
+            if (expected[classification] === null) {
               continue;
             }
-            const value = getClassificationValue(data[classification], expected[moleculeProperty]);
-            expect(value, `| ${classification} not found : ${expected[moleculeProperty]} |`).not
+            const value = getClassificationValue(data[classification], expected[classification]);
+            expect(value, `| ${classification} not found : ${expected[classification]} |`).not
               .undefined;
-            expect(value.id, `| Invalid class |`).equals(molecule[moleculeProperty]);
+            expect(value.id, `| Invalid class |`).equals(molecule[classification]);
           }
 
           for (let property of ["skeletalFormula", "ntr", "levelEasy", "levelHard"]) {

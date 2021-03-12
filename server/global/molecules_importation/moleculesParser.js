@@ -1,3 +1,5 @@
+import path from "path";
+
 import ColumnSpecifications from "../csv_reader/ColumnSpecification.js";
 import FileStructure from "../csv_reader/FileStructure.js";
 
@@ -7,15 +9,14 @@ import HeaderChecker, {
 } from "../csv_reader/HeaderChecker.js";
 import { readCSV, extractColumns } from "../csv_reader/reader.js";
 import Classification from "../MoleculeImporter/Classification.js";
+import MoleculeList from "../MoleculeImporter/MoleculesList.js";
 import Property from "../MoleculeImporter/Property.js";
-
-import MoleculeList from "./MoleculeList.js";
 
 const columns = [
   new ColumnSpecifications("DCI", "dci", ColumnSpecifications.UNIQUE),
   new ColumnSpecifications("FORMULE_CHIMIQUE", "skeletalFormula", ColumnSpecifications.UNIQUE),
-  new ColumnSpecifications("SYSTEME_n", "systems", ColumnSpecifications.HIERARCHICAL),
-  new ColumnSpecifications("CLASSE_PHARMA_n", "classes", ColumnSpecifications.HIERARCHICAL),
+  new ColumnSpecifications("SYSTEME_n", "system", ColumnSpecifications.HIERARCHICAL),
+  new ColumnSpecifications("CLASSE_PHARMA_n", "class", ColumnSpecifications.HIERARCHICAL),
   new ColumnSpecifications("MTE", "ntr", ColumnSpecifications.UNIQUE),
   new ColumnSpecifications("INTERACTION", "interactions", ColumnSpecifications.MULTI_VALUED),
   new ColumnSpecifications("INDICATION", "indications", ColumnSpecifications.MULTI_VALUED),
@@ -27,7 +28,7 @@ const columns = [
 /**
  * Import CSV file to parse data into an object
  * @param {string} filepath The path to the file
- * @returns {Promise<JSON>}
+ 
  * @throws {HeaderErrors}
  */
 export async function parseMoleculesFromCsv(filepath) {
@@ -46,24 +47,38 @@ export async function parseMoleculesFromCsv(filepath) {
     structure.getIndexesFor("dci")[0]
   );
 
-  const data = Object.create(null);
+  const data = {};
 
-  const nonUniqueColumns = columns.filter((column) => !column.isUnique());
-
-  for (let column of nonUniqueColumns) {
-    const constructor = column.isHierarchical() ? Classification : Property;
-
-    data[column.property] = new constructor(
-      extractColumns(cleanedMoleculesMatrix, ...structure.getIndexesFor(column.property)),
-      column.property
+  const createClassification = (name) =>
+    new Classification(
+      extractColumns(cleanedMoleculesMatrix, ...structure.getIndexesFor(name)),
+      name
     );
-  }
 
-  console.dir(data, { depth: null });
+  data.system = createClassification("system");
 
-  data.molecules = MoleculeList.create(cleanedMoleculesMatrix, structure, data);
+  data.class = createClassification("class");
 
-  return data;
+  const createProperty = (name) =>
+    new Property(extractColumns(cleanedMoleculesMatrix, ...structure.getIndexesFor(name)), name);
+
+  data.indications = createProperty("indications");
+  data.interactions = createProperty("interactions");
+  data.sideEffects = createProperty("sideEffects");
+
+  data.molecules = new MoleculeList(cleanedMoleculesMatrix, structure, data);
+
+  return {
+    toJSON: () =>
+      JSON.stringify(
+        Object.getOwnPropertyNames(data).reduce((o, key) => {
+          o[key] = data[key].extract();
+          return o;
+        }, {})
+      ),
+    analyze: () => {},
+    import: () => {},
+  };
 }
 
 // ***** INTERNAL FUNCTIONS *****
@@ -77,3 +92,9 @@ export async function parseMoleculesFromCsv(filepath) {
 function removeInvalidMoleculeLines(matrix, dciIndex) {
   return matrix.filter((row) => row[dciIndex]);
 }
+
+// parseMoleculesFromCsv(
+//   path.resolve("server/test/molecules_importation/importation_route/files/molecules.csv")
+// )
+//   .then((data) => console.dir(data.toJSON(), { depth: null }))
+//   .catch(console.error);

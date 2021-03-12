@@ -107,6 +107,10 @@ export default class Classification {
 
     return warnings;
   }
+
+  extract() {
+    return this.elements.map((element) => element.extract());
+  }
 }
 
 /**
@@ -215,5 +219,13 @@ export class ClassificationNode {
     };
 
     return isNameNotString() || isNameTooLong() || null;
+  }
+
+  extract() {
+    return {
+      id: this.id,
+      name: this.name,
+      children: this.children.map((child) => child.extract()),
+    };
   }
 }

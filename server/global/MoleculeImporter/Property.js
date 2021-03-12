@@ -69,6 +69,10 @@ export default class Property {
 
     return this.values.reduce((sql, value) => `${sql} ${value.createInsertionSql()}`, sql);
   }
+
+  extract() {
+    return this.values.map((value) => value.extract());
+  }
 }
 
 export class PropertyValue {
@@ -84,6 +88,13 @@ export class PropertyValue {
       name: String(this.name).substring(0, PROPERTY_VALUE_MAX_LENGTH),
       property: Number(this.propertyId),
     });
+  }
+
+  extract() {
+    return {
+      id: this.id,
+      name: this.name,
+    };
   }
 
   analyse() {

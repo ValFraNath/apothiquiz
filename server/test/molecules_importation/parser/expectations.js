@@ -3,7 +3,7 @@
  * Each key of this object is an expectation object ( as we can test several files, we can have several expectations objects )
  * in which each key is a classification, a property or a molecules list.
  *
- * For classifications (classes & systems) object :
+ * For classifications (class & system) object :
  * - all :  the complete (!) list of names of classification values
  * - nodes : A sample of classification values, a node must consist of a name and the list of names of its children
  *
@@ -17,7 +17,7 @@
 export const expectations = {
   firstVersion: {
     numberOfMolecules: 140,
-    classes: {
+    class: {
       all: [
         "INHIBITEUR DE FUSION",
         "INHIBITEURS DE NEURAMINISASE",
@@ -75,7 +75,7 @@ export const expectations = {
         },
       ],
     },
-    systems: {
+    system: {
       all: ["ANTIINFECTIEUX", "ANTIPARASITAIRE", "ANTIBIOTIQUE", "ANTIVIRAL"],
       nodes: [
         {
@@ -158,7 +158,7 @@ export const expectations = {
   },
   littleSample: {
     numberOfMolecules: 11,
-    systems: {
+    system: {
       all: ["ANTIINFECTIEUX", "ANTIBIOTIQUE", "ANTIVIRAL"],
       nodes: [
         {
@@ -167,7 +167,7 @@ export const expectations = {
         },
       ],
     },
-    classes: {
+    class: {
       all: [
         "INHIBITEUR DE FUSION",
         "INHIBITEURS DE NEURAMINISASE",
@@ -208,11 +208,11 @@ export const expectations = {
   },
   onlyDCI: {
     numberOfMolecules: 140,
-    systems: {
+    system: {
       all: [],
       nodes: [],
     },
-    classes: {
+    class: {
       all: [],
       nodes: [],
     },
@@ -248,11 +248,11 @@ export const expectations = {
   },
   empty: {
     numberOfMolecules: 0,
-    systems: {
+    system: {
       all: [],
       nodes: [],
     },
-    classes: {
+    class: {
       all: [],
       nodes: [],
     },
