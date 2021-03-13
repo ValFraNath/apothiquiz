@@ -33,6 +33,10 @@ export default class Property {
     return this.values.find((value) => value.name === name);
   }
 
+  import() {
+    return "";
+  }
+
   analyze() {
     const warnings = [];
 
@@ -47,7 +51,7 @@ export default class Property {
         )
     );
 
-    warnings.push(tooCloseValues);
+    warnings.push(...tooCloseValues);
 
     for (const value of this.values) {
       const warning = value.analyse();
@@ -104,7 +108,7 @@ export class PropertyValue {
       if (this.name.length > PROPERTY_VALUE_MAX_LENGTH) {
         return new MoleculesAnalyzerWarning(
           "TOO_LONG_CLASSIFICATION_VALUES",
-          `La valeur de ${this.classification.name} "${this.name}" est trop longue (max ${PROPERTY_VALUE_MAX_LENGTH})`
+          `La valeur de ${this.classification} "${this.name}" est trop longue (max ${PROPERTY_VALUE_MAX_LENGTH})`
         );
       }
       return false;
@@ -118,7 +122,7 @@ export class PropertyValue {
       if (!isString(this.name)) {
         return new MoleculesAnalyzerWarning(
           "INVALID_VALUE_TYPE",
-          `La valeur de ${this.classification.name} "${this.name}" devrait être du texte`
+          `La valeur de ${this.classification} "${this.name}" devrait être du texte`
         );
       }
       return false;

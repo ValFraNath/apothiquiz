@@ -52,7 +52,7 @@ export default class Classification {
    * Create the script to insert a classification in database
    * @returns
    */
-  createInsertionSql() {
+  import() {
     return this.elements.reduce((sql, element) => `${sql} ${element.createInsertionSql()}`, "");
   }
 
@@ -149,12 +149,12 @@ export class ClassificationNode {
       throw new Error("A classification node must be linked to a classification");
     }
 
-    const table = String(this.classification.name);
+    const table = String(this.classification);
 
     const sql = queryFormat(`INSERT INTO ${table} VALUES (:id, :name, :higher, :level );`, {
       id: Number(this.id),
       name: String(this.name).substr(0, NODE_NAME_MAX_LENGTH),
-      higher: Number(higher),
+      higher: Number(higher) || null,
       level: Number(level),
     });
 

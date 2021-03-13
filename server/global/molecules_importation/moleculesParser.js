@@ -81,8 +81,29 @@ export async function parseMoleculesFromCsv(filepath) {
           return o;
         }, {})
       ),
-    analyze: () => {},
-    import: () => {},
+    analyze: () =>
+      Object.getOwnPropertyNames(data).reduce(
+        (warnings, key) => [...warnings, ...data[key].analyze()],
+        []
+      ),
+    import: () => {
+      const tables = [
+        "molecule",
+        "class",
+        "system",
+        "property",
+        "property_value",
+        "molecule_property",
+      ];
+      let script =
+        "START TRANSACTION; SET AUTOCOMMIT=0; SET FOREIGN_KEY_CHECKS = 0; " +
+        tables.reduce((script, table) => script + `DELETE FROM ${table}; `, "") +
+        "SET FOREIGN_KEY_CHECKS = 1; ";
+
+      script += Object.getOwnPropertyNames(data).reduce((sql, key) => sql + data[key].import(), "");
+
+      return script + "COMMIT; SET AUTOCOMMIT=1;";
+    },
   };
 }
 

@@ -104,18 +104,18 @@ async function importMolecules(req, res) {
       return;
     }
 
-    const json = await parseMoleculesFromCsv(filepath);
-    const data = JSON.parse(json);
+    const data = await parseMoleculesFromCsv(filepath);
 
     if (confirmed !== "true") {
-      const warnings = analyzeData(data);
+      const warnings = data.analyze();
       res.sendResponse(202, {
         message: "File tested but not imported",
         warnings,
         imported: false,
       });
     } else {
-      const sql = createSqlToInsertAllData(data);
+      const sql = data.import();
+
       await queryPromise(sql);
 
       await bindAlreadyExistingImages();

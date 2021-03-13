@@ -15,6 +15,14 @@ export default class MoleculeList {
   extract() {
     return this.list.map((molecule) => molecule.extract());
   }
+
+  analyze() {
+    return [];
+  }
+
+  import() {
+    return "";
+  }
 }
 
 export class Molecule {
@@ -104,5 +112,9 @@ export class Molecule {
 
   extract() {
     return JSON.parse(JSON.stringify(this));
+  }
+
+  analyze() {
+    return [];
   }
 }
