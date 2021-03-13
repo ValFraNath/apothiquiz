@@ -106,3 +106,31 @@ export class AnalyzerWarning {
     this.message = message;
   }
 }
+
+/**
+ * Create the sql script to begin a transaction
+ * @returns {string}
+ */
+export function transationBeginSql() {
+  return "START TRANSACTION; SET AUTOCOMMIT=0; ";
+}
+
+/**
+ * Create the sql script to complete a transaction
+ * @returns {string}
+ */
+export function transationEndSql() {
+  return "COMMIT; SET AUTOCOMMIT=1; ";
+}
+
+/**
+ * Create the sql script to clear the given tables
+ * @returns
+ */
+export function clearDatabaseTablesSql(...tables) {
+  return (
+    "SET FOREIGN_KEY_CHECKS = 0; " +
+    tables.reduce((script, table) => script + `DELETE FROM ${table}; `, "") +
+    "SET FOREIGN_KEY_CHECKS = 1; "
+  );
+}

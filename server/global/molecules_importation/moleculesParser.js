@@ -1,5 +1,3 @@
-import path from "path";
-
 import ColumnSpecifications from "../csv_reader/ColumnSpecification.js";
 import FileStructure from "../csv_reader/FileStructure.js";
 
@@ -8,6 +6,11 @@ import HeaderChecker, {
   HeaderErrors,
 } from "../csv_reader/HeaderChecker.js";
 import { readCSV, extractColumns } from "../csv_reader/reader.js";
+import {
+  clearDatabaseTablesSql,
+  transationBeginSql,
+  transationEndSql,
+} from "../importationUtils.js";
 import Classification from "../MoleculeImporter/Classification.js";
 import MoleculeList from "../MoleculeImporter/MoleculesList.js";
 import Property from "../MoleculeImporter/Property.js";
@@ -116,7 +119,14 @@ export async function parseMoleculesFromCsv(filepath) {
      */
     import: () => {
       let script = transationBeginSql();
-      script += clearDatabaseSql();
+      script += clearDatabaseTablesSql(
+        "molecule",
+        "class",
+        "system",
+        "property",
+        "property_value",
+        "molecule_property"
+      );
 
       script += [
         "class",
@@ -146,33 +156,4 @@ export async function parseMoleculesFromCsv(filepath) {
  */
 function removeInvalidMoleculeLines(matrix, dciIndex) {
   return matrix.filter((row) => row[dciIndex]);
-}
-
-/**
- * Create the sql script to begin a transaction
- * @returns {string}
- */
-function transationBeginSql() {
-  return "START TRANSACTION; SET AUTOCOMMIT=0;";
-}
-
-/**
- * Create the sql script to complete a transaction
- * @returns {string}
- */
-function transationEndSql() {
-  return "COMMIT; SET AUTOCOMMIT=1;";
-}
-
-/**
- * Create the sql script to clear the database
- * @returns
- */
-function clearDatabaseSql() {
-  const tables = ["molecule", "class", "system", "property", "property_value", "molecule_property"];
-  return (
-    "SET FOREIGN_KEY_CHECKS = 0; " +
-    tables.reduce((script, table) => script + `DELETE FROM ${table}; `, "") +
-    "SET FOREIGN_KEY_CHECKS = 1; "
-  );
 }

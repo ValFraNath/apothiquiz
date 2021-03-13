@@ -5,7 +5,8 @@ import chai from "chai";
 import equalInAnyOrder from "deep-equal-in-any-order";
 
 import { queryPromise } from "../../../db/database.js";
-import { parseAndCreateSqlToInsertAllUsers } from "../../../global/users_importation/usersImporter.js";
+
+import { parseUsersFromCsv } from "../../../global/users_importation/usersParser.js";
 import { forceTruncateTables } from "../../index.test.js";
 
 import { expectations } from "./expectations.js";
@@ -40,13 +41,13 @@ const tests = [
 describe("Users Importer", () => {
   for (const test of tests) {
     describe(`File ${test.file}`, () => {
-      before("Clear users and their data", function (done) {
+      before("Clear users and their data", async function () {
         this.timeout(10000);
-        forceTruncateTables("user", "results", "duel").then(() => done());
+        await forceTruncateTables("user", "results", "duel");
       });
 
       it("Insert users", async () => {
-        const script = await parseAndCreateSqlToInsertAllUsers(path.resolve(FILES_DIR, test.file));
+        const script = (await parseUsersFromCsv(path.resolve(FILES_DIR, test.file))).import();
         await queryPromise(script);
       });
 
@@ -72,19 +73,19 @@ describe("Users Importer", () => {
 });
 
 describe("Users deleted after new import", () => {
-  before("Clear users and their data", function (done) {
+  before("Clear users and their data", async function () {
     this.timeout(10000);
-    forceTruncateTables("user", "results", "duel").then(() => done());
+    await forceTruncateTables("user", "results", "duel");
   });
 
   before("Insert users", async () => {
-    const script = await parseAndCreateSqlToInsertAllUsers(path.resolve(FILES_DIR, "students.csv"));
+    const script = (await parseUsersFromCsv(path.resolve(FILES_DIR, "students.csv"))).import();
     await queryPromise(script);
   });
 
-  before("Create duels", (done) => {
+  before("Create duels", async () => {
     const users = ["nhoun", "vperigno", "fdadeau", "fpoguet", "mpudlo"];
-    Promise.all(
+    await Promise.all(
       users.map((user, i) =>
         Promise.all(
           users
@@ -94,11 +95,11 @@ describe("Users deleted after new import", () => {
             )
         )
       )
-    ).then(() => done());
+    );
   });
 
   it("Good deleted users", async () => {
-    const script = await parseAndCreateSqlToInsertAllUsers(path.resolve(FILES_DIR, "small.csv"));
+    const script = (await parseUsersFromCsv(path.resolve(FILES_DIR, "small.csv"))).import();
     await queryPromise(script);
 
     const res = await queryPromise("SELECT us_login, us_admin, us_deleted FROM user");

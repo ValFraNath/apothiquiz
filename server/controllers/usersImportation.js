@@ -10,8 +10,6 @@ import { deleteFiles, moveFile, createDir, getSortedFiles } from "../global/file
 // eslint-disable-next-line no-unused-vars
 import { HttpResponseWrapper } from "../global/HttpControllerWrapper.js";
 
-import { analyzeUsers } from "../global/users_importation/usersAnalyzer.js";
-import { createSqlToInsertAllUsers } from "../global/users_importation/usersImporter.js";
 import { parseUsersFromCsv } from "../global/users_importation/usersParser.js";
 
 const FILES_DIR = process.env.NODE_ENV === "test" ? "files-test" : "files";
@@ -80,12 +78,10 @@ async function importUsers(req, res) {
       return;
     }
 
-    const json = await parseUsersFromCsv(filepath);
-
-    const data = JSON.parse(json);
+    const data = await parseUsersFromCsv(filepath);
 
     if (confirmed === "true") {
-      const insertionScript = createSqlToInsertAllUsers(data);
+      const insertionScript = data.import();
 
       await queryPromise(insertionScript);
 
@@ -103,7 +99,7 @@ async function importUsers(req, res) {
         imported: true,
       });
     } else {
-      const warnings = analyzeUsers(data);
+      const warnings = data.analyze();
       res.sendResponse(202, {
         message: "File tested but not imported",
         warnings,
