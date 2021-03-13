@@ -190,7 +190,7 @@ export class Molecule {
   analyze() {
     const warnings = [];
 
-    if (!VALID_DCI_REGEX.test(normalizeDCI(this.dci))) {
+    if (!Molecule.isMoleculeDCIValid(this.dci)) {
       warnings.push(
         new AnalyzerWarning(MOLECULE_WARNINGS.INVALID_DCI, `Molécule invalide : "${this.dci}" `)
       );
@@ -206,6 +206,10 @@ export class Molecule {
     }
 
     return warnings;
+  }
+
+  static isMoleculeDCIValid(dci) {
+    return VALID_DCI_REGEX.test(normalizeDCI(dci));
   }
 }
 

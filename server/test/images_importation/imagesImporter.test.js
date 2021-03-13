@@ -5,6 +5,7 @@ import equalInAnyOrder from "deep-equal-in-any-order";
 import { queryPromise } from "../../db/database.js";
 
 import { bindImagesToMolecules } from "../../global/images_importation/imagesImporter.js";
+import ImagesList from "../../global/images_importation/ImagesList.js";
 import { forceTruncateTables, insertData } from "../index.test.js";
 
 chai.use(equalInAnyOrder);
@@ -51,23 +52,24 @@ const tests = [
 ];
 
 describe("Bind images to molecules", () => {
-  before("Clear & insert data", function (done) {
+  before("Clear & insert data", async function () {
     this.timeout(10000);
-    forceTruncateTables(
+    await forceTruncateTables(
       "molecule",
       "system",
       "class",
       "property",
       "property_value",
       "molecule_property"
-    ).then(() => insertData("molecules.sql").then(() => done()));
+    );
+    await insertData("molecules.sql");
   });
 
   tests.forEach((test, i) => {
     const shouldBeImportedFilenames = Object.keys(test.filenames).filter((f) => test.filenames[f]);
 
     it(`Good imported molecules : ${i + 1}`, async () => {
-      const imported = await bindImagesToMolecules(Object.keys(test.filenames));
+      const imported = await new ImagesList(Object.keys(test.filenames)).bindImagesToMolecules();
       expect(imported).deep.equalInAnyOrder(shouldBeImportedFilenames);
     });
 
