@@ -1,4 +1,7 @@
 main#create-duel {
+  display: flex;
+  flex-direction: column;
+
   h1 {
     text-align: center;
     font-size: 1.3rem;
@@ -22,17 +25,19 @@ main#create-duel {
     &:nth-child(2) {
       overflow: auto;
       padding-top: 0.5rem;
-      padding-bottom: 4rem;
+      padding-bottom: 1rem;
     }
 
     &:nth-child(3) {
-      position: fixed;
+      position: sticky;
       bottom: 0;
       left: 0;
+      margin-top: auto;
       background-color: white;
       text-align: center;
       padding: 0.9rem 1rem;
       border-top: 1px solid $button-bg;
+      z-index: 100;
 
       p {
         padding: 0.9rem 1.6rem;
@@ -57,5 +62,20 @@ main#create-duel {
       font-size: 1.1rem;
       margin-left: 0.8rem;
     }
+  }
+}
+
+body.dark #create-duel {
+  input {
+    background-color: $color-gray-dark;
+    color: white;
+  }
+
+  li.selected {
+    background-color: $button-bg-dark;
+  }
+
+  section:nth-child(3) {
+    background-color: $color-gray-dark;
   }
 }

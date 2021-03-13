@@ -60,6 +60,10 @@ $timer-size: 100px;
   }
 }
 
+body.dark #quiz-question {
+  background-color: $color-gray-dark;
+}
+
 /* ---------- Timer ---------- */
 
 #timer {
@@ -85,6 +89,12 @@ $timer-size: 100px;
 
   #timer-stroke {
     background-image: url("../../images/timer_stroke.png");
+  }
+}
+
+body.dark #timer {
+  #timer-stroke {
+    filter: invert(1);
   }
 }
 
@@ -168,6 +178,16 @@ $timer-size: 100px;
       padding: 1.1rem;
       margin-bottom: 0.8rem;
     }
+  }
+}
+
+body.dark #quiz-answers button {
+  border: 3px solid $color-gray-dark;
+  background-color: $color-gray-dark;
+
+  &:not(.good-answer):before,
+  &:not(.bad-answer):before {
+    background-color: #43444a;
   }
 }
 

@@ -17,6 +17,9 @@ i {
 p {
   color: $text-color;
 }
+body.dark p {
+  color: $text-color-black;
+}
 
 summary {
   cursor: pointer;

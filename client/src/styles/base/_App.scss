@@ -6,6 +6,11 @@ body,
   width: 100%;
 }
 
+body.dark #root {
+  background-color: $color-bg-dark;
+  color: $text-color-black;
+}
+
 /**
  * Main contain the content of each page
  */
@@ -16,6 +21,10 @@ main {
   background-color: $color-bg;
   box-sizing: border-box;
 }
+body.dark main {
+  background-color: $color-bg-dark;
+  color: white;
+}
 
 @media only screen and (min-device-width: $screen-desktop) {
   body {
@@ -23,6 +32,10 @@ main {
     justify-content: center;
     align-items: center;
     background-color: #d7a691;
+
+    &.dark {
+      background-color: #9e7462;
+    }
   }
 
   #root {
@@ -33,6 +46,6 @@ main {
     border: solid 10px black;
     border-radius: 20px;
     overflow-y: auto;
-    background-color: white;
+    background-color: $color-bg;
   }
 }
