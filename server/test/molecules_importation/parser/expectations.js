@@ -127,8 +127,7 @@ export const expectations = {
         sideEffects: [],
         ntr: null,
         skeletalFormula: null,
-        levelEasy: null,
-        levelHard: null,
+        difficulty: "HARD",
       },
       {
         dci: "TINIDAZOLE",
@@ -138,8 +137,7 @@ export const expectations = {
         interactions: [],
         sideEffects: [],
         ntr: null,
-        levelEasy: null,
-        levelHard: null,
+        difficulty: "HARD",
         skeletalFormula: null,
       },
       {
@@ -150,8 +148,7 @@ export const expectations = {
         interactions: [],
         sideEffects: ["hypotension orthostatique"],
         ntr: null,
-        levelEasy: 0,
-        levelHard: 1,
+        difficulty: "HARD",
         skeletalFormula: null,
       },
     ],
@@ -194,8 +191,7 @@ export const expectations = {
     molecules: [
       {
         dci: "LYMECYCLINE",
-        levelEasy: 0,
-        levelHard: 1,
+        difficulty: "HARD",
         ntr: 0,
         skeletalFormula: null,
         system: "ANTIBIOTIQUE",
@@ -223,8 +219,7 @@ export const expectations = {
       {
         dci: "AMANTADINE",
         ntr: null,
-        levelEasy: null,
-        levelHard: null,
+        difficulty: "HARD",
         skeletalFormula: null,
         system: null,
         class: null,
@@ -235,8 +230,7 @@ export const expectations = {
       {
         dci: "THIAMPHENICOL",
         ntr: null,
-        levelEasy: null,
-        levelHard: null,
+        difficulty: "HARD",
         skeletalFormula: null,
         system: null,
         class: null,

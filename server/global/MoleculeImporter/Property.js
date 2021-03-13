@@ -33,10 +33,6 @@ export default class Property {
     return this.values.find((value) => value.name === name);
   }
 
-  import() {
-    return "";
-  }
-
   analyze() {
     const warnings = [];
 
@@ -63,7 +59,7 @@ export default class Property {
     return warnings;
   }
 
-  createInsertionSql() {
+  import() {
     const sql = queryFormat(`INSERT INTO property VALUES (:id, :name); `, {
       id: Number(this.id),
       name: String(this.name).substring(0, PROPERTY_NAME_MAX_LENGTH),
@@ -85,7 +81,7 @@ export class PropertyValue {
   }
 
   createInsertionSql() {
-    return queryFormat(`INSERT INTO property_value VALUES (:id, :name, :property)`, {
+    return queryFormat(`INSERT INTO property_value VALUES (:id, :name, :property); `, {
       id: Number(this.id),
       name: String(this.name).substring(0, PROPERTY_VALUE_MAX_LENGTH),
       property: Number(this.propertyId),

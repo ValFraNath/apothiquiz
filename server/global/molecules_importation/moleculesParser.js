@@ -32,40 +32,56 @@ const columns = [
  * @throws {HeaderErrors}
  */
 export async function parseMoleculesFromCsv(filepath) {
+  // Read the csv file
   const moleculesMatrix = await readCSV(filepath);
-  const columnsHeader = moleculesMatrix.shift();
 
+  // Checks that the file header matches the columns specifications
+  const columnsHeader = moleculesMatrix.shift();
   const checker = new HeaderChecker(columnsHeader, columns);
   if (!checker.check()) {
     throw checker.getErrors();
   }
 
+  // Defines the structure of the file following the header of the file
   const structure = new FileStructure(columnsHeader, columns);
 
+  // Keep only valid rows, i.e. those whose DCI value is different from null
   const cleanedMoleculesMatrix = removeInvalidMoleculeLines(
     moleculesMatrix,
     structure.getIndexesFor("dci")[0]
   );
 
   const data = {};
+  let propertyId = 1;
 
+  /**
+   * Create a classification
+   * @param {string} name The classification name
+   * @returns {Classification}
+   */
   const createClassification = (name) =>
     new Classification(
+      // Keep only the columns of the file dealing with the given classification
       extractColumns(cleanedMoleculesMatrix, ...structure.getIndexesFor(name)),
       name
     );
 
-  data.system = createClassification("system");
-
-  data.class = createClassification("class");
-
-  let propertyId = 1;
+  /**
+   * Create a property
+   * @param {string} name The classification name
+   * @returns {Property}
+   */
   const createProperty = (name) =>
     new Property(
+      // Keep only the columns of the file dealing with the given property
       extractColumns(cleanedMoleculesMatrix, ...structure.getIndexesFor(name)),
       name,
       propertyId++
     );
+
+  // Creates the differents classifications, properties & molecules
+  data.system = createClassification("system");
+  data.class = createClassification("class");
 
   data.indications = createProperty("indications");
   data.interactions = createProperty("interactions");
@@ -74,6 +90,10 @@ export async function parseMoleculesFromCsv(filepath) {
   data.molecules = new MoleculeList(cleanedMoleculesMatrix, structure, data);
 
   return {
+    /**
+     *
+     * @returns
+     */
     toJSON: () =>
       JSON.stringify(
         Object.getOwnPropertyNames(data).reduce((o, key) => {
@@ -81,28 +101,37 @@ export async function parseMoleculesFromCsv(filepath) {
           return o;
         }, {})
       ),
+    /**
+     *
+     * @returns
+     */
     analyze: () =>
       Object.getOwnPropertyNames(data).reduce(
         (warnings, key) => [...warnings, ...data[key].analyze()],
         []
       ),
+    /**
+     * Create the sql script to import data
+     * @returns
+     */
     import: () => {
-      const tables = [
-        "molecule",
+      let script = transationBeginSql();
+      script += clearDatabaseSql();
+
+      script += [
         "class",
         "system",
-        "property",
-        "property_value",
-        "molecule_property",
-      ];
-      let script =
-        "START TRANSACTION; SET AUTOCOMMIT=0; SET FOREIGN_KEY_CHECKS = 0; " +
-        tables.reduce((script, table) => script + `DELETE FROM ${table}; `, "") +
-        "SET FOREIGN_KEY_CHECKS = 1; ";
+        "indications",
+        "interactions",
+        "sideEffects",
+        "molecules",
+      ].reduce((sql, key) => sql + data[key].import(), "");
 
-      script += Object.getOwnPropertyNames(data).reduce((sql, key) => sql + data[key].import(), "");
+      script += transationEndSql();
 
-      return script + "COMMIT; SET AUTOCOMMIT=1;";
+      // console.log(script);
+
+      return script;
     },
   };
 }
@@ -119,8 +148,31 @@ function removeInvalidMoleculeLines(matrix, dciIndex) {
   return matrix.filter((row) => row[dciIndex]);
 }
 
-// parseMoleculesFromCsv(
-//   path.resolve("server/test/molecules_importation/importation_route/files/molecules.csv")
-// )
-//   .then((data) => console.dir(data.toJSON(), { depth: null }))
-//   .catch(console.error);
+/**
+ * Create the sql script to begin a transaction
+ * @returns {string}
+ */
+function transationBeginSql() {
+  return "START TRANSACTION; SET AUTOCOMMIT=0;";
+}
+
+/**
+ * Create the sql script to complete a transaction
+ * @returns {string}
+ */
+function transationEndSql() {
+  return "COMMIT; SET AUTOCOMMIT=1;";
+}
+
+/**
+ * Create the sql script to clear the database
+ * @returns
+ */
+function clearDatabaseSql() {
+  const tables = ["molecule", "class", "system", "property", "property_value", "molecule_property"];
+  return (
+    "SET FOREIGN_KEY_CHECKS = 0; " +
+    tables.reduce((script, table) => script + `DELETE FROM ${table}; `, "") +
+    "SET FOREIGN_KEY_CHECKS = 1; "
+  );
+}

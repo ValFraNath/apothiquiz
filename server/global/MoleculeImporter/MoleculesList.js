@@ -1,11 +1,16 @@
+import { queryFormat } from "../../db/database.js";
 import FileStructure from "../csv_reader/FileStructure.js";
 
 import Classification from "./Classification.js";
 
 import Property, { PropertyValue } from "./Property.js";
 
+const MOLECULE_DCI_MAX_LENGTH = 128;
+const MOLECULE_SKELETAL_FORMULA_MAX_LENGTH = 64;
+
 export default class MoleculeList {
   constructor(matrix, structure, data) {
+    /** @type {Molecule[]} */
     this.list = [];
     let autoIncrementId = 1;
 
@@ -21,7 +26,7 @@ export default class MoleculeList {
   }
 
   import() {
-    return "";
+    return this.list.reduce((script, molecule) => script + molecule.importSql(), "");
   }
 }
 
@@ -39,8 +44,7 @@ export class Molecule {
     this.dci = this.getUniquePropertyValue("dci", row, structure);
     this.skeletalFormula = this.getUniquePropertyValue("skeletalFormula", row, structure);
     this.ntr = this.getUniquePropertyValue("ntr", row, structure);
-    this.levelEasy = this.getUniquePropertyValue("levelEasy", row, structure);
-    this.levelHard = this.getUniquePropertyValue("levelHard", row, structure);
+    this.difficulty = this.getUniquePropertyValue("levelEasy", row, structure) ? "EASY" : "HARD";
 
     this.indications = this.getMultivaluedPropertyValuesIds("indications", row, structure, data);
     this.interactions = this.getMultivaluedPropertyValuesIds("interactions", row, structure, data);
@@ -112,6 +116,37 @@ export class Molecule {
 
   extract() {
     return JSON.parse(JSON.stringify(this));
+  }
+
+  importSql() {
+    // Insert the molecule in the table molecule
+    const insertMoleculeSql = `INSERT INTO molecule VALUES (:id, :dci, :difficulty, :skeletalFormula, :ntr, :class, :system, NULL); `;
+
+    let script = queryFormat(insertMoleculeSql, {
+      id: Number(this.id),
+      dci: String(this.dci).substr(0, MOLECULE_DCI_MAX_LENGTH),
+      difficulty: this.difficulty,
+      skeletalFormula: String(this.skeletalFormula || "").substr(
+        0,
+        MOLECULE_SKELETAL_FORMULA_MAX_LENGTH
+      ),
+      ntr: Number(this.ntr),
+      class: Number(this.class) || null,
+      system: Number(this.system) || null,
+    });
+
+    // Insert its properties in the molecule_property table
+    const insertMoleculePropertySql = `INSERT INTO molecule_property VALUES (:molecule, :propertyValue); `;
+
+    for (const property of ["indications", "interactions", "sideEffects"]) {
+      for (const value of this[property]) {
+        script += queryFormat(insertMoleculePropertySql, {
+          molecule: this.id,
+          propertyValue: value,
+        });
+      }
+    }
+    return script;
   }
 
   analyze() {
