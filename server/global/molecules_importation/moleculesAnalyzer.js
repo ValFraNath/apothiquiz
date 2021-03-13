@@ -4,7 +4,7 @@ import {
   getDuplicates,
   getTooLongValues,
   getTooCloseValues,
-  MoleculesAnalyzerWarning,
+  AnalyzerWarning,
 } from "../importationUtils.js";
 
 import { MOLECULES_MAX_LENGTHS } from "./moleculesImporter.js";
@@ -16,7 +16,7 @@ const CLASSIFICATION_VALUE_MIN_DISTANCE = 2;
 /**
  * Analyse the data object and returns warnings
  * @param {object} data
- * @returns {MoleculesAnalyzerWarning[]}
+ * @returns {AnalyzerWarning[]}
  */
 export function analyzeData(data) {
   const warnings = [];
@@ -37,7 +37,7 @@ export function analyzeData(data) {
  * Analyze a property
  * @param {string} property The property name
  * @param {{id : number, name : string}[]} values
- * @returns {MoleculesAnalyzerWarning[]}
+ * @returns {AnalyzerWarning[]}
  */
 function analyzeProperty(property, values) {
   const names = values.map((v) => v.name);
@@ -48,22 +48,22 @@ function analyzeProperty(property, values) {
   return [
     ...tooLongValues.map(
       (value) =>
-        new MoleculesAnalyzerWarning(
-          MoleculesAnalyzerWarning.TOO_LONG_VALUE,
+        new AnalyzerWarning(
+          AnalyzerWarning.TOO_LONG_VALUE,
           `La valeur "${value}" de la propriété "${property}" est trop longue (max ${MOLECULES_MAX_LENGTHS.PROPERTY_VALUE})`
         )
     ),
     ...closeValues.map(
       (group) =>
-        new MoleculesAnalyzerWarning(
-          MoleculesAnalyzerWarning.TOO_CLOSE_VALUES,
+        new AnalyzerWarning(
+          AnalyzerWarning.TOO_CLOSE_VALUES,
           `Ces valeurs de "${property}" sont très proches : "${group.join('", "')}"`
         )
     ),
     ...noStringValue.map(
       (value) =>
-        new MoleculesAnalyzerWarning(
-          MoleculesAnalyzerWarning.INVALID_TYPE,
+        new AnalyzerWarning(
+          AnalyzerWarning.INVALID_TYPE,
           `Une valeur de "${property}" devrait être une chaine de caractères : "${value}"`
         )
     ),
@@ -74,7 +74,7 @@ function analyzeProperty(property, values) {
  * Analyze a classification
  * @param {string} classification The classification name
  * @param {object[]} nodes The classification node
- * @returns {MoleculesAnalyzerWarning[]}
+ * @returns {AnalyzerWarning[]}
  */
 function analyzeClassification(classification, nodes) {
   const names = flattenClassification(nodes).map((n) => n.name);
@@ -86,15 +86,15 @@ function analyzeClassification(classification, nodes) {
   return [
     ...closeValues.map(
       (group) =>
-        new MoleculesAnalyzerWarning(
-          MoleculesAnalyzerWarning.TOO_CLOSE_VALUES,
+        new AnalyzerWarning(
+          AnalyzerWarning.TOO_CLOSE_VALUES,
           `Ces valeurs de "${classification}" sont très proches : "${group.join('", "')}"`
         )
     ),
     ...nodesHavingSeveralParents.map(
       (node) =>
-        new MoleculesAnalyzerWarning(
-          MoleculesAnalyzerWarning.DUPLICATE_CLASSIFICATION_NODE,
+        new AnalyzerWarning(
+          AnalyzerWarning.DUPLICATE_CLASSIFICATION_NODE,
           `La valeur de "${classification}" "${
             node.node
           }" apparait plusieurs fois dans la hiérarchie, enfant de : "${node.parents.join('", "')}"`
@@ -102,15 +102,15 @@ function analyzeClassification(classification, nodes) {
     ),
     ...tooLongValues.map(
       (value) =>
-        new MoleculesAnalyzerWarning(
-          MoleculesAnalyzerWarning.TOO_LONG_VALUE,
+        new AnalyzerWarning(
+          AnalyzerWarning.TOO_LONG_VALUE,
           `La valeur de "${classification}" "${value}" est trop longue (max ${MOLECULES_MAX_LENGTHS.CLASSIFICATION_VALUE})`
         )
     ),
     ...noStringValue.map(
       (value) =>
-        new MoleculesAnalyzerWarning(
-          MoleculesAnalyzerWarning.INVALID_TYPE,
+        new AnalyzerWarning(
+          AnalyzerWarning.INVALID_TYPE,
           `Une valeur de "${classification}" devrait être une chaîne de caractères : "${value}"`
         )
     ),
@@ -120,7 +120,7 @@ function analyzeClassification(classification, nodes) {
 /**
  * Analyze a molecule list
  * @param {object[]} molecules The molecules list
- * @returns {MoleculesAnalyzerWarning[]}
+ * @returns {AnalyzerWarning[]}
  */
 function analyzeMolecules(molecules) {
   const dciList = molecules.map((m) => m.dci);
@@ -132,37 +132,33 @@ function analyzeMolecules(molecules) {
 
   return [
     ...invalidDcis.map(
-      (dci) =>
-        new MoleculesAnalyzerWarning(
-          MoleculesAnalyzerWarning.INVALID_DCI,
-          `Molécule invalide : "${dci}" `
-        )
+      (dci) => new AnalyzerWarning(AnalyzerWarning.INVALID_DCI, `Molécule invalide : "${dci}" `)
     ),
     ...duplicates.map(
       (mol) =>
-        new MoleculesAnalyzerWarning(
-          MoleculesAnalyzerWarning.DUPLICATE_UNIQUE_VALUE,
+        new AnalyzerWarning(
+          AnalyzerWarning.DUPLICATE_UNIQUE_VALUE,
           `Duplications de la molécule "${mol}"`
         )
     ),
     ...closeNames.map(
       (group) =>
-        new MoleculesAnalyzerWarning(
-          MoleculesAnalyzerWarning.TOO_CLOSE_VALUES,
+        new AnalyzerWarning(
+          AnalyzerWarning.TOO_CLOSE_VALUES,
           `Ces molécules ont une DCI très proche : "${group.join('", "')}"`
         )
     ),
     ...tooLongNames.map(
       (dci) =>
-        new MoleculesAnalyzerWarning(
-          MoleculesAnalyzerWarning.TOO_LONG_VALUE,
+        new AnalyzerWarning(
+          AnalyzerWarning.TOO_LONG_VALUE,
           `La DCI "${dci}" est trop longue (max ${MOLECULES_MAX_LENGTHS.DCI})`
         )
     ),
     ...nonValidNumberValues.map(
       (value) =>
-        new MoleculesAnalyzerWarning(
-          MoleculesAnalyzerWarning.INVALID_TYPE,
+        new AnalyzerWarning(
+          AnalyzerWarning.INVALID_TYPE,
           `La propriété "${value.property}" de la molécule "${value.molecule}" devrait être un nombre compris entre 0 et 1 : "${value.value}"`
         )
     ),
@@ -195,7 +191,7 @@ function getNonValidNumberValues(molecules) {
 export const normalizeDCI = (dci) =>
   String(dci)
     .trim()
-    .normalize("NFD") // The unicode normal form Decomposes the combined graphemes into a combination of simple graphemes. 'è' => 'e' + '`'
+    .normalize("NFD") // The unicode normal form decomposes the combined graphemes into a combination of simple graphemes. 'è' => 'e' + '`'
     .replace(/[\u0300-\u036f]/g, "") // Remove all special graphemes : 'e' + '`' => 'e'
     .replace(/[\s-']+/g, "_")
     .toLowerCase();

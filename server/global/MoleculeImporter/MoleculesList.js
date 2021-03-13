@@ -1,12 +1,22 @@
 import { queryFormat } from "../../db/database.js";
 import FileStructure from "../csv_reader/FileStructure.js";
+import { getDuplicates, getTooCloseValues, AnalyzerWarning } from "../importationUtils.js";
 
 import Classification from "./Classification.js";
 
 import Property, { PropertyValue } from "./Property.js";
 
 const MOLECULE_DCI_MAX_LENGTH = 128;
+const MOLECULE_DCI_MIN_DISTANCE = 1;
 const MOLECULE_SKELETAL_FORMULA_MAX_LENGTH = 64;
+const VALID_DCI_REGEX = /^[a-z_]+$/i;
+
+export const MOLECULE_WARNINGS = {
+  INVALID_DCI: "INVALID_DCI",
+  DUPLICATED_MOLECULES: "DUPLICATED_MOLECULES",
+  TOO_CLOSE_MOLECULES: "TOO_CLOSE_MOLECULES",
+  TOO_LONG_DCI: "TOO_LONG_DCI",
+};
 
 export default class MoleculeList {
   constructor(matrix, structure, data) {
@@ -22,7 +32,35 @@ export default class MoleculeList {
   }
 
   analyze() {
-    return [];
+    const warnings = [];
+
+    const moleculeNames = this.list.map((m) => m.dci);
+
+    warnings.push(
+      ...getDuplicates(moleculeNames).map(
+        (duplicate) =>
+          new AnalyzerWarning(
+            MOLECULE_WARNINGS.DUPLICATED_MOLECULES,
+            `Duplications de la molécule "${duplicate}"`
+          )
+      )
+    );
+
+    warnings.push(
+      ...getTooCloseValues(moleculeNames, MOLECULE_DCI_MIN_DISTANCE).map(
+        (group) =>
+          new AnalyzerWarning(
+            MOLECULE_WARNINGS.TOO_CLOSE_MOLECULES,
+            `Ces molécules ont une DCI très proche : "${group.join('", "')}"`
+          )
+      )
+    );
+
+    for (const molecule of this.list) {
+      warnings.push(...molecule.analyze());
+    }
+
+    return warnings;
   }
 
   import() {
@@ -130,7 +168,7 @@ export class Molecule {
         0,
         MOLECULE_SKELETAL_FORMULA_MAX_LENGTH
       ),
-      ntr: Number(this.ntr),
+      ntr: Number(this.ntr) ? 1 : 0,
       class: Number(this.class) || null,
       system: Number(this.system) || null,
     });
@@ -150,6 +188,35 @@ export class Molecule {
   }
 
   analyze() {
-    return [];
+    const warnings = [];
+
+    if (!VALID_DCI_REGEX.test(normalizeDCI(this.dci))) {
+      warnings.push(
+        new AnalyzerWarning(MOLECULE_WARNINGS.INVALID_DCI, `Molécule invalide : "${this.dci}" `)
+      );
+    }
+
+    if (String(this.dci).length > MOLECULE_DCI_MAX_LENGTH) {
+      warnings.push(
+        new AnalyzerWarning(
+          MOLECULE_WARNINGS.TOO_LONG_DCI,
+          `La DCI "${this.dci}" est trop longue (max ${MOLECULE_DCI_MAX_LENGTH})`
+        )
+      );
+    }
+
+    return warnings;
   }
 }
+
+/**
+ * Normalize a molecule DCI
+ * @param {string} dci
+ */
+export const normalizeDCI = (dci) =>
+  String(dci)
+    .trim()
+    .normalize("NFD") // The unicode normal form decomposes the combined graphemes into a combination of simple graphemes. 'è' => 'e' + '`'
+    .replace(/[\u0300-\u036f]/g, "") // Remove all special graphemes : 'e' + '`' => 'e'
+    .replace(/[\s-']+/g, "_")
+    .toLowerCase();

@@ -39,7 +39,6 @@ for (let file of files) {
           path.resolve("test", "molecules_importation", "importer", "files", file.name)
         )
       ).import();
-      console.log(script);
       await queryPromise(script);
     });
 

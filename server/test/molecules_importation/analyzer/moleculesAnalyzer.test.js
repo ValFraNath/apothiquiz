@@ -3,9 +3,10 @@ import path from "path";
 import chai from "chai";
 
 import { queryPromise } from "../../../db/database.js";
-import { MoleculesAnalyzerWarning } from "../../../global/importationUtils.js";
-import { analyzeData } from "../../../global/molecules_importation/moleculesAnalyzer.js";
-import { createSqlToInsertAllData } from "../../../global/molecules_importation/moleculesImporter.js";
+import { AnalyzerWarning } from "../../../global/importationUtils.js";
+import { CLASSIFICATION_WARNINGS } from "../../../global/MoleculeImporter/Classification.js";
+import { MOLECULE_WARNINGS } from "../../../global/MoleculeImporter/MoleculesList.js";
+import { PROPERTY_WARNINGS } from "../../../global/MoleculeImporter/Property.js";
 import { parseMoleculesFromCsv } from "../../../global/molecules_importation/moleculesParser.js";
 import { forceTruncateTables } from "../../index.test.js";
 
@@ -15,67 +16,97 @@ const files = [
   {
     name: "duplicatesMolecules.csv",
     warnings: [
-      { code: MoleculesAnalyzerWarning.DUPLICATE_UNIQUE_VALUE, count: 2 },
-      { code: MoleculesAnalyzerWarning.TOO_LONG_VALUE, count: 0 },
-      { code: MoleculesAnalyzerWarning.DUPLICATE_CLASSIFICATION_NODE, count: 0 },
-      { code: MoleculesAnalyzerWarning.TOO_CLOSE_VALUES, count: 3 },
-      { code: MoleculesAnalyzerWarning.INVALID_TYPE, count: 0 },
-      { code: MoleculesAnalyzerWarning.INVALID_DCI, count: 0 },
+      { code: MOLECULE_WARNINGS.DUPLICATED_MOLECULES, count: 2 },
+      { code: MOLECULE_WARNINGS.TOO_LONG_DCI, count: 0 },
+      { code: MOLECULE_WARNINGS.INVALID_DCI, count: 0 },
+      { code: MOLECULE_WARNINGS.TOO_CLOSE_MOLECULES, count: 0 },
+      { code: CLASSIFICATION_WARNINGS.DUPLICATED_NODES, count: 0 },
+      { code: CLASSIFICATION_WARNINGS.TOO_CLOSE_CLASSIFICATION_VALUES, count: 2 },
+      { code: CLASSIFICATION_WARNINGS.INVALID_CLASSIFICATION_VALUE_TYPE, count: 0 },
+      { code: CLASSIFICATION_WARNINGS.TOO_LONG_CLASSIFICATION_VALUE, count: 0 },
+      { code: PROPERTY_WARNINGS.INVALID_PROPERTY_VALUE_TYPE, count: 0 },
+      { code: PROPERTY_WARNINGS.TOO_CLOSE_PROPERTY_VALUES, count: 1 },
+      { code: PROPERTY_WARNINGS.TOO_LONG_PROPERTY_VALUE, count: 0 },
     ],
   },
   {
     name: "duplicatesNodes.csv",
     warnings: [
-      { code: MoleculesAnalyzerWarning.DUPLICATE_UNIQUE_VALUE, count: 0 },
-      { code: MoleculesAnalyzerWarning.TOO_LONG_VALUE, count: 0 },
-      { code: MoleculesAnalyzerWarning.DUPLICATE_CLASSIFICATION_NODE, count: 2 },
-      { code: MoleculesAnalyzerWarning.TOO_CLOSE_VALUES, count: 4 },
-      { code: MoleculesAnalyzerWarning.INVALID_TYPE, count: 0 },
-      { code: MoleculesAnalyzerWarning.INVALID_DCI, count: 0 },
+      { code: MOLECULE_WARNINGS.DUPLICATED_MOLECULES, count: 0 },
+      { code: MOLECULE_WARNINGS.TOO_LONG_DCI, count: 0 },
+      { code: MOLECULE_WARNINGS.INVALID_DCI, count: 0 },
+      { code: MOLECULE_WARNINGS.TOO_CLOSE_MOLECULES, count: 0 },
+      { code: CLASSIFICATION_WARNINGS.DUPLICATED_NODES, count: 2 },
+      { code: CLASSIFICATION_WARNINGS.TOO_CLOSE_CLASSIFICATION_VALUES, count: 3 },
+      { code: CLASSIFICATION_WARNINGS.INVALID_CLASSIFICATION_VALUE_TYPE, count: 0 },
+      { code: CLASSIFICATION_WARNINGS.TOO_LONG_CLASSIFICATION_VALUE, count: 0 },
+      { code: PROPERTY_WARNINGS.INVALID_PROPERTY_VALUE_TYPE, count: 0 },
+      { code: PROPERTY_WARNINGS.TOO_CLOSE_PROPERTY_VALUES, count: 1 },
+      { code: PROPERTY_WARNINGS.TOO_LONG_PROPERTY_VALUE, count: 0 },
     ],
   },
   {
     name: "tooLongNames.csv",
     warnings: [
-      { code: MoleculesAnalyzerWarning.DUPLICATE_UNIQUE_VALUE, count: 0 },
-      { code: MoleculesAnalyzerWarning.TOO_LONG_VALUE, count: 1 },
-      { code: MoleculesAnalyzerWarning.DUPLICATE_CLASSIFICATION_NODE, count: 0 },
-      { code: MoleculesAnalyzerWarning.TOO_CLOSE_VALUES, count: 3 },
-      { code: MoleculesAnalyzerWarning.INVALID_TYPE, count: 0 },
-      { code: MoleculesAnalyzerWarning.INVALID_DCI, count: 0 },
+      { code: MOLECULE_WARNINGS.DUPLICATED_MOLECULES, count: 0 },
+      { code: MOLECULE_WARNINGS.TOO_LONG_DCI, count: 1 },
+      { code: MOLECULE_WARNINGS.INVALID_DCI, count: 0 },
+      { code: MOLECULE_WARNINGS.TOO_CLOSE_MOLECULES, count: 0 },
+      { code: CLASSIFICATION_WARNINGS.DUPLICATED_NODES, count: 0 },
+      { code: CLASSIFICATION_WARNINGS.TOO_CLOSE_CLASSIFICATION_VALUES, count: 2 },
+      { code: CLASSIFICATION_WARNINGS.INVALID_CLASSIFICATION_VALUE_TYPE, count: 0 },
+      { code: CLASSIFICATION_WARNINGS.TOO_LONG_CLASSIFICATION_VALUE, count: 1 },
+      { code: PROPERTY_WARNINGS.INVALID_PROPERTY_VALUE_TYPE, count: 0 },
+      { code: PROPERTY_WARNINGS.TOO_CLOSE_PROPERTY_VALUES, count: 1 },
+      { code: PROPERTY_WARNINGS.TOO_LONG_PROPERTY_VALUE, count: 0 },
     ],
   },
   {
     name: "badTypes.csv",
     warnings: [
-      { code: MoleculesAnalyzerWarning.DUPLICATE_UNIQUE_VALUE, count: 0 },
-      { code: MoleculesAnalyzerWarning.TOO_LONG_VALUE, count: 0 },
-      { code: MoleculesAnalyzerWarning.DUPLICATE_CLASSIFICATION_NODE, count: 2 },
-      { code: MoleculesAnalyzerWarning.TOO_CLOSE_VALUES, count: 3 },
-      { code: MoleculesAnalyzerWarning.INVALID_TYPE, count: 6 },
-      { code: MoleculesAnalyzerWarning.INVALID_DCI, count: 1 },
+      { code: MOLECULE_WARNINGS.DUPLICATED_MOLECULES, count: 0 },
+      { code: MOLECULE_WARNINGS.TOO_LONG_DCI, count: 0 },
+      { code: MOLECULE_WARNINGS.INVALID_DCI, count: 1 },
+      { code: MOLECULE_WARNINGS.TOO_CLOSE_MOLECULES, count: 0 },
+      { code: CLASSIFICATION_WARNINGS.DUPLICATED_NODES, count: 2 },
+      { code: CLASSIFICATION_WARNINGS.TOO_CLOSE_CLASSIFICATION_VALUES, count: 3 },
+      { code: CLASSIFICATION_WARNINGS.INVALID_CLASSIFICATION_VALUE_TYPE, count: 4 },
+      { code: CLASSIFICATION_WARNINGS.TOO_LONG_CLASSIFICATION_VALUE, count: 0 },
+      { code: PROPERTY_WARNINGS.INVALID_PROPERTY_VALUE_TYPE, count: 0 },
+      { code: PROPERTY_WARNINGS.TOO_CLOSE_PROPERTY_VALUES, count: 1 },
+      { code: PROPERTY_WARNINGS.TOO_LONG_PROPERTY_VALUE, count: 0 },
     ],
   },
   {
     name: "invalid_dci.csv",
     warnings: [
-      { code: MoleculesAnalyzerWarning.DUPLICATE_UNIQUE_VALUE, count: 0 },
-      { code: MoleculesAnalyzerWarning.TOO_LONG_VALUE, count: 0 },
-      { code: MoleculesAnalyzerWarning.DUPLICATE_CLASSIFICATION_NODE, count: 0 },
-      { code: MoleculesAnalyzerWarning.TOO_CLOSE_VALUES, count: 3 },
-      { code: MoleculesAnalyzerWarning.INVALID_TYPE, count: 0 },
-      { code: MoleculesAnalyzerWarning.INVALID_DCI, count: 4 },
+      { code: MOLECULE_WARNINGS.DUPLICATED_MOLECULES, count: 0 },
+      { code: MOLECULE_WARNINGS.TOO_LONG_DCI, count: 0 },
+      { code: MOLECULE_WARNINGS.INVALID_DCI, count: 4 },
+      { code: MOLECULE_WARNINGS.TOO_CLOSE_MOLECULES, count: 0 },
+      { code: CLASSIFICATION_WARNINGS.DUPLICATED_NODES, count: 0 },
+      { code: CLASSIFICATION_WARNINGS.TOO_CLOSE_CLASSIFICATION_VALUES, count: 2 },
+      { code: CLASSIFICATION_WARNINGS.INVALID_CLASSIFICATION_VALUE_TYPE, count: 0 },
+      { code: CLASSIFICATION_WARNINGS.TOO_LONG_CLASSIFICATION_VALUE, count: 0 },
+      { code: PROPERTY_WARNINGS.INVALID_PROPERTY_VALUE_TYPE, count: 0 },
+      { code: PROPERTY_WARNINGS.TOO_CLOSE_PROPERTY_VALUES, count: 1 },
+      { code: PROPERTY_WARNINGS.TOO_LONG_PROPERTY_VALUE, count: 0 },
     ],
   },
   {
     name: "worst.csv",
     warnings: [
-      { code: MoleculesAnalyzerWarning.DUPLICATE_UNIQUE_VALUE, count: 1 },
-      { code: MoleculesAnalyzerWarning.TOO_LONG_VALUE, count: 1 },
-      { code: MoleculesAnalyzerWarning.DUPLICATE_CLASSIFICATION_NODE, count: 1 },
-      { code: MoleculesAnalyzerWarning.TOO_CLOSE_VALUES, count: 3 },
-      { code: MoleculesAnalyzerWarning.INVALID_TYPE, count: 4 },
-      { code: MoleculesAnalyzerWarning.INVALID_DCI, count: 2 },
+      { code: MOLECULE_WARNINGS.DUPLICATED_MOLECULES, count: 1 },
+      { code: MOLECULE_WARNINGS.TOO_LONG_DCI, count: 0 },
+      { code: MOLECULE_WARNINGS.INVALID_DCI, count: 2 },
+      { code: MOLECULE_WARNINGS.TOO_CLOSE_MOLECULES, count: 0 },
+      { code: CLASSIFICATION_WARNINGS.DUPLICATED_NODES, count: 1 },
+      { code: CLASSIFICATION_WARNINGS.TOO_CLOSE_CLASSIFICATION_VALUES, count: 2 },
+      { code: CLASSIFICATION_WARNINGS.INVALID_CLASSIFICATION_VALUE_TYPE, count: 1 },
+      { code: CLASSIFICATION_WARNINGS.TOO_LONG_CLASSIFICATION_VALUE, count: 0 },
+      { code: PROPERTY_WARNINGS.INVALID_PROPERTY_VALUE_TYPE, count: 1 },
+      { code: PROPERTY_WARNINGS.TOO_CLOSE_PROPERTY_VALUES, count: 1 },
+      { code: PROPERTY_WARNINGS.TOO_LONG_PROPERTY_VALUE, count: 1 },
     ],
   },
 ];
@@ -114,8 +145,8 @@ describe("Molecules analyzer", () => {
       });
 
       it("Can import without errors", async () => {
-        // const sql = createSqlToInsertAllData(data);
-        // await queryPromise(sql);
+        const sql = data.import();
+        await queryPromise(sql);
       });
     });
   }

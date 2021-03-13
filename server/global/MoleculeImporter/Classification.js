@@ -1,6 +1,6 @@
 import { queryFormat } from "../../db/database.js";
 import {
-  MoleculesAnalyzerWarning,
+  AnalyzerWarning,
   isString,
   getTooCloseValues,
   getDuplicates,
@@ -8,6 +8,13 @@ import {
 
 const NODE_NAME_MAX_LENGTH = 128;
 const NODE_NAMES_MIN_DISTANCE = 2;
+
+export const CLASSIFICATION_WARNINGS = {
+  TOO_CLOSE_CLASSIFICATION_VALUES: "TOO_CLOSE_CLASSIFICATION_VALUES",
+  TOO_LONG_CLASSIFICATION_VALUE: "TOO_LONG_CLASSIFICATION_VALUE",
+  DUPLICATED_NODES: "DUPLICATED_NODES",
+  INVALID_CLASSIFICATION_VALUE_TYPE: "INVALID_CLASSIFICATION_VALUE_TYPE",
+};
 
 /**
  * Class representing a classification, used for molecules classes and systems
@@ -80,16 +87,16 @@ export default class Classification {
 
     const duplicateNodes = getDuplicates(nodeNames).map(
       (node) =>
-        new MoleculesAnalyzerWarning(
-          "DUPLICATE_NODES",
+        new AnalyzerWarning(
+          CLASSIFICATION_WARNINGS.DUPLICATED_NODES,
           `La valeur de ${this.name} "${node}" apparait plusieurs fois dans la hiérarchie`
         )
     );
 
     const tooCloseNodeNames = getTooCloseValues(nodeNames, NODE_NAMES_MIN_DISTANCE).map(
       (group) =>
-        new MoleculesAnalyzerWarning(
-          "TOO_CLOSE_VALUES",
+        new AnalyzerWarning(
+          CLASSIFICATION_WARNINGS.TOO_CLOSE_CLASSIFICATION_VALUES,
           `Ces valeurs de ${this.name} sont très proches : "${group.join('", "')}"`
         )
     );
@@ -187,7 +194,7 @@ export class ClassificationNode {
 
   /**
    * Analyze the classification node
-   * @returns {MoleculesAnalyzerWarning|null} A warning or null
+   * @returns {AnalyzerWarning|null} A warning or null
    */
   analyze() {
     /**
@@ -196,9 +203,9 @@ export class ClassificationNode {
      */
     const isNameTooLong = () => {
       if (this.name.length > NODE_NAME_MAX_LENGTH) {
-        return new MoleculesAnalyzerWarning(
-          "TOO_LONG_CLASSIFICATION_VALUES",
-          `La valeur de ${this.classification.name} "${this.name}" est trop longue (max ${NODE_NAME_MAX_LENGTH})`
+        return new AnalyzerWarning(
+          CLASSIFICATION_WARNINGS.TOO_LONG_CLASSIFICATION_VALUE,
+          `La valeur de ${this.classification} "${this.name}" est trop longue (max ${NODE_NAME_MAX_LENGTH})`
         );
       }
       return false;
@@ -210,9 +217,9 @@ export class ClassificationNode {
      */
     const isNameNotString = () => {
       if (!isString(this.name)) {
-        return new MoleculesAnalyzerWarning(
-          "INVALID_VALUE_TYPE",
-          `La valeur de ${this.classification.name} "${this.name}" devrait être du texte`
+        return new AnalyzerWarning(
+          CLASSIFICATION_WARNINGS.INVALID_CLASSIFICATION_VALUE_TYPE,
+          `La valeur de ${this.classification} "${this.name}" devrait être du texte`
         );
       }
       return false;

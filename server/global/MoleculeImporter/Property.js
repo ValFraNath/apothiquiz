@@ -1,9 +1,15 @@
 import { queryFormat } from "../../db/database.js";
-import { MoleculesAnalyzerWarning, isString, getTooCloseValues } from "../importationUtils.js";
+import { AnalyzerWarning, isString, getTooCloseValues } from "../importationUtils.js";
 
 const PROPERTY_NAME_MAX_LENGTH = 64;
 const PROPERTY_VALUE_MAX_LENGTH = 128;
 const PROPERTY_VALUE_MIN_DISTANCE = 2;
+
+export const PROPERTY_WARNINGS = {
+  TOO_CLOSE_PROPERTY_VALUES: "TOO_CLOSE_PROPERTY_VALUES",
+  TOO_LONG_PROPERTY_VALUE: "TOO_LONG_PROPERTY_VALUE",
+  INVALID_PROPERTY_VALUE_TYPE: "INVALID_PROPERTY_VALUE_TYPE",
+};
 
 export default class Property {
   constructor(matrix, name, id) {
@@ -41,8 +47,8 @@ export default class Property {
       PROPERTY_VALUE_MIN_DISTANCE
     ).map(
       (group) =>
-        new MoleculesAnalyzerWarning(
-          "TOO_CLOSE_VALUES",
+        new AnalyzerWarning(
+          PROPERTY_WARNINGS.TOO_CLOSE_PROPERTY_VALUES,
           `Ces valeurs de ${this.name} sont très proches : "${group.join('", "')}"`
         )
     );
@@ -50,10 +56,7 @@ export default class Property {
     warnings.push(...tooCloseValues);
 
     for (const value of this.values) {
-      const warning = value.analyse();
-      if (warning) {
-        warnings.push(warning);
-      }
+      warnings.push(...value.analyse());
     }
 
     return warnings;
@@ -96,34 +99,26 @@ export class PropertyValue {
   }
 
   analyse() {
-    /**
-     * Checks that the property value is not too long
-     * @returns
-     */
-    const isValueTooLong = () => {
-      if (this.name.length > PROPERTY_VALUE_MAX_LENGTH) {
-        return new MoleculesAnalyzerWarning(
-          "TOO_LONG_CLASSIFICATION_VALUES",
+    const warnings = [];
+
+    if (this.name.length > PROPERTY_VALUE_MAX_LENGTH) {
+      warnings.push(
+        new AnalyzerWarning(
+          PROPERTY_WARNINGS.TOO_LONG_PROPERTY_VALUE,
           `La valeur de ${this.classification} "${this.name}" est trop longue (max ${PROPERTY_VALUE_MAX_LENGTH})`
-        );
-      }
-      return false;
-    };
+        )
+      );
+    }
 
-    /**
-     * Checks that the property value is a string is a string
-     * @returns
-     */
-    const isValueNotString = () => {
-      if (!isString(this.name)) {
-        return new MoleculesAnalyzerWarning(
-          "INVALID_VALUE_TYPE",
+    if (!isString(this.name)) {
+      warnings.push(
+        new AnalyzerWarning(
+          PROPERTY_WARNINGS.INVALID_PROPERTY_VALUE_TYPE,
           `La valeur de ${this.classification} "${this.name}" devrait être du texte`
-        );
-      }
-      return false;
-    };
+        )
+      );
+    }
 
-    return isValueNotString() || isValueTooLong() || null;
+    return warnings;
   }
 }

@@ -100,16 +100,9 @@ export function createSqlToInsertInto(table) {
   };
 }
 
-export class MoleculesAnalyzerWarning {
+export class AnalyzerWarning {
   constructor(code, message) {
     this.code = code;
     this.message = message;
   }
 }
-
-MoleculesAnalyzerWarning.DUPLICATE_UNIQUE_VALUE = 1;
-MoleculesAnalyzerWarning.TOO_LONG_VALUE = 2;
-MoleculesAnalyzerWarning.TOO_CLOSE_VALUES = 3;
-MoleculesAnalyzerWarning.DUPLICATE_CLASSIFICATION_NODE = 4;
-MoleculesAnalyzerWarning.INVALID_TYPE = 5;
-MoleculesAnalyzerWarning.INVALID_DCI = 6;
