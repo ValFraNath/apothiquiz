@@ -10,7 +10,7 @@ import { HttpResponseWrapper } from "../global/HttpControllerWrapper.js";
 
 import ImagesList from "../global/images_importation/ImagesList.js";
 import Logger from "../global/Logger.js";
-import { normalizeDCI } from "../global/molecules_importation/moleculesAnalyzer.js";
+import { normalizeDCI } from "../global/molecules_importation/MoleculesList.js";
 
 import { updateNumberOfRoundsPerDuel } from "./config.js";
 

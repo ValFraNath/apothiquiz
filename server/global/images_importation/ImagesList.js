@@ -3,7 +3,7 @@ import mysql from "mysql";
 import { queryPromise } from "../../db/database.js";
 import { removeExtension } from "../files.js";
 import { AnalyzerWarning, getDuplicates } from "../importationUtils.js";
-import { normalizeDCI, Molecule } from "../MoleculeImporter/MoleculesList.js";
+import { normalizeDCI, Molecule } from "../molecules_importation/MoleculesList.js";
 
 const VALID_IMAGE_EXTENSIONS = ["jpeg", "jpg", "svg", "png"];
 const VALID_IMAGE_FORMAT_REGEX = new RegExp(`\\.${VALID_IMAGE_EXTENSIONS.join("|")}\\s*$`, "i");

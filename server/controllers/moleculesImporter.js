@@ -8,10 +8,8 @@ import { HeaderErrors } from "../global/csv_reader/HeaderChecker.js";
 import { createDir, deleteFiles, getSortedFiles, moveFile } from "../global/files.js";
 // eslint-disable-next-line no-unused-vars
 import { HttpResponseWrapper } from "../global/HttpControllerWrapper.js";
-import { bindImagesToMolecules } from "../global/images_importation/imagesImporter.js";
 
-import { analyzeData } from "../global/molecules_importation/moleculesAnalyzer.js";
-import { createSqlToInsertAllData } from "../global/molecules_importation/moleculesImporter.js";
+import ImagesList from "../global/images_importation/ImagesList.js";
 import { parseMoleculesFromCsv } from "../global/molecules_importation/moleculesParser.js";
 
 import { updateNumberOfRoundsPerDuel } from "./config.js";
@@ -197,5 +195,5 @@ export default { importMolecules, getLastImportedFile };
  */
 async function bindAlreadyExistingImages() {
   const images = await getSortedFiles(path.resolve(FILES_DIR, "images"));
-  await bindImagesToMolecules(images);
+  await new ImagesList(images).bindImagesToMolecules();
 }

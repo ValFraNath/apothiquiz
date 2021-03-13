@@ -11,9 +11,11 @@ import {
   transationBeginSql,
   transationEndSql,
 } from "../importationUtils.js";
-import Classification from "../MoleculeImporter/Classification.js";
-import MoleculeList from "../MoleculeImporter/MoleculesList.js";
-import Property from "../MoleculeImporter/Property.js";
+
+import MoleculeList from "../molecules_importation/MoleculesList.js";
+import Property from "../molecules_importation/Property.js";
+
+import Classification from "./Classification.js";
 
 const columns = [
   new ColumnSpecifications("DCI", "dci", ColumnSpecifications.UNIQUE),

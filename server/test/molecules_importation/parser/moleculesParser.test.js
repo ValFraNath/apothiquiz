@@ -6,8 +6,7 @@ import deepEqualAnyOrder from "deep-equal-in-any-order";
 import mocha from "mocha";
 
 import { HeaderErrors } from "../../../global/csv_reader/HeaderChecker.js";
-// eslint-disable-next-line no-unused-vars
-import { ClassificationNode } from "../../../global/molecules_importation/MoleculesClassification.js";
+
 import { parseMoleculesFromCsv } from "../../../global/molecules_importation/moleculesParser.js";
 
 import { expectations } from "./expectations.js";
