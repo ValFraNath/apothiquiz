@@ -29,11 +29,14 @@ self.addEventListener("install", (e) => {
  */
 self.addEventListener("activate", (e) => {
   e.waitUntil(
-    caches.keys().then((keyList) => {
-      return Promise.all(
-        keyList.filter((key) => key !== cacheName).map((key) => caches.delete(key))
-      );
-    })
+    caches
+      .keys()
+      .then((keyList) => {
+        return Promise.all(
+          keyList.filter((key) => key !== cacheName).map((key) => caches.delete(key))
+        );
+      })
+      .catch((err) => console.error("Error: can't retrieve cache keys", err))
   );
 });
 
@@ -46,6 +49,7 @@ self.addEventListener("activate", (e) => {
 self.addEventListener("fetch", (e) => {
   const currentLocation = self.location.origin;
   if (
+    !e.request.url ||
     !e.request.url.startsWith("http") ||
     new RegExp(`^${currentLocation}/api/v[1-9][0-9]*/`).test(e.request.url)
   ) {
@@ -53,28 +57,42 @@ self.addEventListener("fetch", (e) => {
   }
 
   e.respondWith(
-    caches.match(e.request).then((res) => {
-      if (res) {
-        return res;
-      }
-
-      return fetch(e.request).then((r) => {
-        if (!r || r.status !== 200 || r.type !== "basic") {
-          return r;
+    caches
+      .match(e.request)
+      .then((res) => {
+        if (res) {
+          return res;
         }
-        const newResource = r.clone();
-        caches.open(cacheName).then((cache) => {
-          console.info(`[Service Worker] Caching new resource: ${e.request.url}`);
-          cache.put(e.request, newResource);
-        });
-        return r;
-      });
-    })
+
+        return fetch(e.request)
+          .then((r) => {
+            if (!r || r.status !== 200 || r.type !== "basic") {
+              return r;
+            }
+            const newResource = r.clone();
+            caches
+              .open(cacheName)
+              .then((cache) => {
+                console.info(`[Service Worker] Caching new resource: ${e.request.url}`);
+                return cache
+                  .put(e.request, newResource)
+                  .then(() => {
+                    return r;
+                  })
+                  .catch((err) => console.warn("Warning: can't put resources in cache", err));
+              })
+              .catch((err) => console.warn("Warning: can't open cache", err));
+          })
+          .catch((err) => console.warn("Warning: can't fetch resources", e.request, err));
+      })
+      .catch((err) => console.warn("Warning: can't match request", err))
   );
 });
 
 self.addEventListener("message", (e) => {
   if (e.data.type && e.data.type === "SKIP_WAITING") {
-    self.skipWaiting();
+    self
+      .skipWaiting()
+      .catch((err) => console.error("Error: can't skip waiting service-worker", err));
   }
 });
