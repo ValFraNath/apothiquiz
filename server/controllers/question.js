@@ -9,6 +9,8 @@ import { queryPromise } from "../db/database.js";
 // eslint-disable-next-line no-unused-vars
 import { HttpResponseWrapper } from "../global/HttpControllerWrapper.js";
 
+const IMAGES_ROUTE = "files/images";
+
 const generatorInfosByType = {
   1: {
     filename: "question_CM.sql",
@@ -121,7 +123,17 @@ async function generateQuestion(req, res) {
   const config = await fetchConfigFromDB();
 
   try {
-    const { type, title, subject, goodAnswer, answers, wording } = await generateQuestion();
+    let { type, title, subject, goodAnswer, answers, wording } = await generateQuestion();
+
+    // Questions with images
+    if (type === 11 || type === 12) {
+      const imagesRoute = `/api/v1/${IMAGES_ROUTE}`;
+      if (type === 12) {
+        answers = answers.map((answer) => `${imagesRoute}/${answer}`);
+      } else {
+        subject = `${imagesRoute}/${subject}`;
+      }
+    }
 
     res.sendResponse(200, {
       type,
