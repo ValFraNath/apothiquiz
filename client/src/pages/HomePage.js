@@ -1,4 +1,4 @@
-import { ChevronRightIcon, LapTimerIcon } from "@modulz/radix-icons";
+import { LapTimerIcon } from "@modulz/radix-icons";
 
 import { PropTypes } from "prop-types";
 import React from "react";
