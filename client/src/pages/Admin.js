@@ -129,6 +129,7 @@ class FileImporter extends Component {
             type="submit"
             disabled={this.state.selectedFiles === null}
             value={this.state.canConfirm ? "Confirmer" : "Tester"}
+            className="btn"
           />
         </form>
         {this.state.imported && <p className="success">Importation réalisée avec succès</p>}
@@ -270,7 +271,7 @@ const Configuration = ({ lastImport }) => {
             min={config.duelLifetime.min}
             max={config.duelLifetime.max}
           />
-          <input type="submit" value="Enregistrer" />
+          <input type="submit" value="Enregistrer" className="btn" />
         </>
       )}
       {isSaved && <p className="success">Configuration sauvegardée avec succès</p>}
