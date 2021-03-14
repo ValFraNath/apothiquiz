@@ -57,10 +57,10 @@ export default class Classification {
 
   /**
    * Create the script to insert a classification in database
-   * @returns
+   * @returns {string} The sql script
    */
   import() {
-    return this.elements.reduce((sql, element) => `${sql} ${element.createInsertionSql()}`, "");
+    return this.elements.reduce((sql, element) => `${sql} ${element.importSql()}`, "");
   }
 
   /**
@@ -80,6 +80,10 @@ export default class Classification {
     return this.elements.reduce((list, element) => [...list, ...element.toArray()], []);
   }
 
+  /**
+   * Analyze the classification and return a list of warnings
+   * @returns {AnalyzerWarning[]} The list of warnings
+   */
   analyze() {
     const warnings = [];
     const nodes = this.toArray();
@@ -104,10 +108,7 @@ export default class Classification {
     warnings.push(...tooCloseNodeNames);
 
     for (const node of nodes) {
-      const warning = node.analyze();
-      if (warning) {
-        warnings.push(warning);
-      }
+      warnings.push(...node.analyze());
     }
 
     warnings.push(...duplicateNodes);
@@ -115,6 +116,10 @@ export default class Classification {
     return warnings;
   }
 
+  /**
+   * Extract to data into an array of simple object
+   * @returns {object[]}
+   */
   extract() {
     return this.elements.map((element) => element.extract());
   }
@@ -146,12 +151,11 @@ export class ClassificationNode {
 
   /**
    * Create the script to insert classification node (and its children !) in database
-   * @param {string} classificationName The name of the classification to which the node belongs
    * @param {number} higher The parent id
    * @param {number} level The level in the hierarchy
    * @returns {string} The sql script
    */
-  createInsertionSql(higher = null, level = 1) {
+  importSql(higher = null, level = 1) {
     if (!this.id || !this.classification) {
       throw new Error("A classification node must be linked to a classification");
     }
@@ -166,7 +170,7 @@ export class ClassificationNode {
     });
 
     return this.children.reduce(
-      (sql, child) => `${sql} ${child.createInsertionSql(this.id, level + 1)}`,
+      (sql, child) => `${sql} ${child.importSql(this.id, level + 1)}`,
       sql
     );
   }
@@ -194,40 +198,36 @@ export class ClassificationNode {
 
   /**
    * Analyze the classification node
-   * @returns {AnalyzerWarning|null} A warning or null
+   * @returns {AnalyzerWarning[]}  A list of warnings
    */
   analyze() {
-    /**
-     * Checks that the node name is not too long
-     * @returns
-     */
-    const isNameTooLong = () => {
-      if (this.name.length > NODE_NAME_MAX_LENGTH) {
-        return new AnalyzerWarning(
+    const warnings = [];
+
+    if (this.name.length > NODE_NAME_MAX_LENGTH) {
+      warnings.push(
+        new AnalyzerWarning(
           CLASSIFICATION_WARNINGS.TOO_LONG_CLASSIFICATION_VALUE,
           `La valeur de ${this.classification} "${this.name}" est trop longue (max ${NODE_NAME_MAX_LENGTH})`
-        );
-      }
-      return false;
-    };
+        )
+      );
+    }
 
-    /**
-     * Checks that the node name is a string
-     * @returns
-     */
-    const isNameNotString = () => {
-      if (!isString(this.name)) {
-        return new AnalyzerWarning(
+    if (!isString(this.name)) {
+      warnings.push(
+        new AnalyzerWarning(
           CLASSIFICATION_WARNINGS.INVALID_CLASSIFICATION_VALUE_TYPE,
           `La valeur de ${this.classification} "${this.name}" devrait être du texte`
-        );
-      }
-      return false;
-    };
+        )
+      );
+    }
 
-    return isNameNotString() || isNameTooLong() || null;
+    return warnings;
   }
 
+  /**
+   * Extract data into a simple object
+   * @returns {{id : number, name: string, children : object}}
+   */
   extract() {
     return {
       id: this.id,

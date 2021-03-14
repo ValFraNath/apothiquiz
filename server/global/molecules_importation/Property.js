@@ -11,16 +11,24 @@ export const PROPERTY_WARNINGS = {
   INVALID_PROPERTY_VALUE_TYPE: "INVALID_PROPERTY_VALUE_TYPE",
 };
 
+/**
+ * Class representing a property, used for molecules indications, interactions and sides effects
+ */
 export default class Property {
+  /**
+   * Create a new property from a matrix
+   * @param {any[][]} matrix The matrix of data
+   * @param {string} name The property name
+   * @param {number} id The property id
+   */
   constructor(matrix, name, id) {
-    /** @type {string} */
     this.name = name;
+    this.id = id;
+
     /** @type {PropertyValue[]} */
     this.values = [];
 
-    this.id = id;
     let autoIncrementId = 1;
-
     const uniqueId = () => Number(`${this.id}${autoIncrementId++}`);
 
     for (const row of matrix) {
@@ -34,11 +42,20 @@ export default class Property {
     }
   }
 
+  /**
+   * Get a value of this property by its name
+   * @param {string} name The property value name
+   * @returns {PropertyValue}
+   */
   getValueByName(name) {
     // TODO use regex to compare without case
     return this.values.find((value) => value.name === name);
   }
 
+  /**
+   * Analyze the property and return a list of warnings
+   * @returns {AnalyzerWarning[]}
+   */
   analyze() {
     const warnings = [];
 
@@ -62,28 +79,49 @@ export default class Property {
     return warnings;
   }
 
+  /**
+   * Create the sql script to insert the propertu in the database
+   * @returns {string}
+   */
   import() {
     const sql = queryFormat(`INSERT INTO property VALUES (:id, :name); `, {
       id: Number(this.id),
       name: String(this.name).substring(0, PROPERTY_NAME_MAX_LENGTH),
     });
 
-    return this.values.reduce((sql, value) => `${sql} ${value.createInsertionSql()}`, sql);
+    return this.values.reduce((sql, value) => `${sql} ${value.importSql()}`, sql);
   }
 
+  /**
+   * Extract data into an array of simple object
+   * @returns {object[]}
+   */
   extract() {
     return this.values.map((value) => value.extract());
   }
 }
 
+/**
+ * Class representing a value of a propety
+ */
 export class PropertyValue {
+  /**
+   * Create a property value
+   * @param {number} id The value id
+   * @param {string} name The value id
+   * @param {number} propertyId The if of the property
+   */
   constructor(id, name, propertyId) {
     this.id = id;
     this.name = name;
     this.propertyId = propertyId;
   }
 
-  createInsertionSql() {
+  /**
+   * Create the sql script to insert the property value in database
+   * @returns {string}
+   */
+  importSql() {
     return queryFormat(`INSERT INTO property_value VALUES (:id, :name, :property); `, {
       id: Number(this.id),
       name: String(this.name).substring(0, PROPERTY_VALUE_MAX_LENGTH),
@@ -91,6 +129,10 @@ export class PropertyValue {
     });
   }
 
+  /**
+   * Extract data into a simple object
+   * @returns {{id: number, name: string}}
+   */
   extract() {
     return {
       id: this.id,
@@ -98,6 +140,10 @@ export class PropertyValue {
     };
   }
 
+  /**
+   * Analyze the property value
+   * @returns {AnalyzerWarning[]} A list of warnings
+   */
   analyse() {
     const warnings = [];
 

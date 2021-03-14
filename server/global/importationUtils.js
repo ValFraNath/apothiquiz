@@ -17,6 +17,8 @@ export const isString = (v) => typeof v === "string" || v instanceof String;
  */
 export const isNumber = (v) => typeof v === "number" || v instanceof Number;
 
+const escapeRegex = (string) => String(string).replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&");
+
 /**
  * Returns values that appear more than once in the list
  * @param {any[]} values
@@ -29,7 +31,9 @@ export function getDuplicates(values) {
         values
           .slice(i + 1)
           .find(
-            (other) => other === value || new RegExp(`^${String(value)}$`, "i").test(String(other))
+            (other) =>
+              other === value ||
+              new RegExp(`^${escapeRegex(String(value))}$`, "i").test(String(other))
           )
       )
     ),

@@ -1,9 +1,12 @@
 import { queryFormat } from "../../db/database.js";
+// eslint-disable-next-line no-unused-vars
 import FileStructure from "../csv_reader/FileStructure.js";
 import { getDuplicates, getTooCloseValues, AnalyzerWarning } from "../importationUtils.js";
 
+// eslint-disable-next-line no-unused-vars
 import Classification from "./Classification.js";
 
+// eslint-disable-next-line no-unused-vars
 import Property, { PropertyValue } from "./Property.js";
 
 const MOLECULE_DCI_MAX_LENGTH = 128;
@@ -18,19 +21,36 @@ export const MOLECULE_WARNINGS = {
   TOO_LONG_DCI: "TOO_LONG_DCI",
 };
 
+/**
+ * Class representing a list of molecules
+ */
 export default class MoleculeList {
+  /**
+   * Create a molecules list
+   * @param {any[][]} matrix The matrix of data
+   * @param {FileStructure} structure The csv file structure
+   * @param {object} data The classifications and properties data
+   */
   constructor(matrix, structure, data) {
     /** @type {Molecule[]} */
     this.list = [];
-    let autoIncrementId = 1;
 
+    let autoIncrementId = 1;
     matrix.forEach((row) => this.list.push(new Molecule(autoIncrementId++, row, structure, data)));
   }
 
+  /**
+   * Extract the molecules list into an array of simple object
+   * @returns {object[]}
+   */
   extract() {
     return this.list.map((molecule) => molecule.extract());
   }
 
+  /**
+   * Analyze the molecules list
+   * @returns {AnalyzerWarning[]} A list of warnings
+   */
   analyze() {
     const warnings = [];
 
@@ -63,11 +83,18 @@ export default class MoleculeList {
     return warnings;
   }
 
+  /**
+   * Create the sql script to import the molecules list in database
+   * @returns {string}
+   */
   import() {
     return this.list.reduce((script, molecule) => script + molecule.importSql(), "");
   }
 }
 
+/**
+ * Class representing a molecule
+ */
 export class Molecule {
   /**
    * Create a molecule
@@ -129,8 +156,6 @@ export class Molecule {
     const indexes = structure.getIndexesFor(classificationName);
     const values = row.filter((_, index) => indexes.includes(index));
 
-    // console.log("values", classificationName, values);
-
     let node = classification.getElementByName(values.shift());
 
     while (node && values.length > 0) {
@@ -152,12 +177,19 @@ export class Molecule {
     return values.filter((v) => v).map((value) => property.getValueByName(value).id);
   }
 
+  /**
+   * Extract the molecule into a simple object
+   * @returns {object}
+   */
   extract() {
     return JSON.parse(JSON.stringify(this));
   }
 
+  /**
+   * Create the sql script to insert the molecule in database
+   * @returns {string}
+   */
   importSql() {
-    // Insert the molecule in the table molecule
     const insertMoleculeSql = `INSERT INTO molecule VALUES (:id, :dci, :difficulty, :skeletalFormula, :ntr, :class, :system, NULL); `;
 
     let script = queryFormat(insertMoleculeSql, {
@@ -187,6 +219,10 @@ export class Molecule {
     return script;
   }
 
+  /**
+   * Analyze the molecule
+   * @returns {AnalyzerWarning[]} A list of warning
+   */
   analyze() {
     const warnings = [];
 
@@ -208,6 +244,11 @@ export class Molecule {
     return warnings;
   }
 
+  /**
+   * Checks if a molecule dci is valud
+   * @param {string} dci The dci
+   * @returns {boolean}
+   */
   static isMoleculeDCIValid(dci) {
     return VALID_DCI_REGEX.test(normalizeDCI(dci));
   }

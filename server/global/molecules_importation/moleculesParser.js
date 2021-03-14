@@ -30,6 +30,8 @@ const columns = [
   new ColumnSpecifications("NIVEAU_EXPERT", "levelHard", ColumnSpecifications.UNIQUE),
 ];
 
+// TODO add french property name
+
 /**
  * Import CSV file to parse data into an object
  * @param {string} filepath The path to the file
