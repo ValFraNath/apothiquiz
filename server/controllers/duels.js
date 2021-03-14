@@ -391,10 +391,6 @@ function createShuffledQuestionTypesArray() {
  */
 async function getDuel(id, username) {
   let res = await queryPromise("CALL getDuel(?,?);", [id, username]);
-  const duel_ttl = await queryPromise(
-    "SELECT `value` AS `TTL` FROM server_informations WHERE `key` = 'config_duel_lifetime';"
-  );
-  console.log(duel_ttl[0].TTL);
 
   if (res[0].length === 0) {
     return null;
@@ -434,6 +430,7 @@ function formatDuel(duel, username) {
   const currentRound = duel[0].du_currentRound;
   const rounds = JSON.parse(duel[0].du_content);
   const inProgress = duel[0].du_inProgress;
+  const TTL = Number(duel[0].value);
 
   const questionTimerDuration = Number(duel[0].du_questionTimerDuration);
 
@@ -488,6 +485,7 @@ function formatDuel(duel, username) {
     rounds: formattedRound,
     questionTimerDuration,
     finishedDate,
+    TTL,
   };
 
   const scores = computeScores(formattedDuel);
