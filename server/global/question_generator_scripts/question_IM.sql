@@ -2,7 +2,6 @@
 --                  TYPE 11  : 1 image - 4 molecules 
 -- **************************************************************** 
 
-
 SET @good = (SELECT mo_id
              FROM molecule
              WHERE mo_image IS NOT NULL
@@ -15,7 +14,8 @@ SELECT (SELECT mo_dci
        (SELECT mo_image
         FROM molecule
         WHERE mo_id = @good) AS subject,
-        mo_dci AS bad_answers
+        mo_dci AS bad_answer
 FROM molecule 
 WHERE mo_id <> @good
+ORDER BY RAND()
 LIMIT 3;

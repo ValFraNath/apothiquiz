@@ -79,7 +79,7 @@ const generatorInfosByType = {
   12: {
     filename: "question_MI.sql",
     before: "",
-    createWording: (subject) => `Quelle molécule a la structure chimique '${subject}' ?`,
+    createWording: (subject) => `Quelle structure chimique a la molécule '${subject}' ?`,
     title: "1 molécules - 4 structure chimique",
   },
 };

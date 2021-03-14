@@ -1,9 +1,17 @@
+import path from "path";
+
 import chai from "chai";
 import chaiHttp from "chai-http";
 
 import { queryPromise } from "../db/database.js";
 
-import { forceTruncateTables, insertData, requestAPI } from "./index.test.js";
+import {
+  forceTruncateTables,
+  insertData,
+  requestAPI,
+  importImagesViaAPI,
+  getToken,
+} from "./index.test.js";
 
 chai.use(chaiHttp);
 const { expect } = chai;
@@ -31,9 +39,9 @@ describe("Question generation with empty database", () => {
 
 describe("Question generation", function () {
   // Only question types we can generate with current data
-  const questionTypes = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  const questionTypes = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
-  before("Import data", function (done) {
+  before("Import data", async function () {
     this.timeout(10000);
     forceTruncateTables(
       "molecule",
@@ -42,7 +50,17 @@ describe("Question generation", function () {
       "property",
       "property_value",
       "molecule_property"
-    ).then(() => insertData("molecules.sql").then(done));
+    );
+    await insertData("molecules.sql");
+  });
+
+  before("Import images", async function () {
+    this.timeout(10000);
+    await importImagesViaAPI(
+      path.resolve("test", "required_data", "images"),
+      "true",
+      await getToken("fdadeau")
+    );
   });
 
   for (let type of questionTypes) {

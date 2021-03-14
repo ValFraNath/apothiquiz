@@ -14,9 +14,10 @@ SELECT (SELECT mo_image
        (SELECT mo_dci
         FROM molecule
         WHERE mo_id = @good) AS subject,
-        mo_image AS bad_answers
+        mo_image AS bad_answer
 FROM molecule    
 WHERE mo_image IS NOT NULL
 AND mo_id <> @good
+ORDER BY RAND()
 LIMIT 3
         
