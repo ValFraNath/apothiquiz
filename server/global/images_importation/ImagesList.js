@@ -1,5 +1,3 @@
-import mysql from "mysql";
-
 import { queryFormat, queryPromise } from "../../db/database.js";
 import { removeExtension } from "../files.js";
 import { AnalyzerWarning, getDuplicates } from "../importationUtils.js";
