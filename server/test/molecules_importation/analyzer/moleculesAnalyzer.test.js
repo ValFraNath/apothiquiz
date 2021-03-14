@@ -138,7 +138,6 @@ describe("Molecules analyzer", () => {
 
       it("Expected warnings", async () => {
         const warnings = data.analyze();
-        console.log(warnings);
         const counter = warningsCounter(warnings);
         file.warnings.forEach((warning) =>
           expect(counter(warning.code), "Type " + warning.code).equals(warning.count)

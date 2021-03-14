@@ -7,6 +7,8 @@ import HeaderChecker, {
 } from "../csv_reader/HeaderChecker.js";
 import { readCSV, extractColumns } from "../csv_reader/reader.js";
 import {
+  // eslint-disable-next-line no-unused-vars
+  AnalyzerWarning,
   clearDatabaseTablesSql,
   transationBeginSql,
   transationEndSql,
@@ -98,7 +100,7 @@ export async function parseMoleculesFromCsv(filepath) {
 
   return {
     /**
-     *
+     * Extract all data into a JSON object
      * @returns
      */
     toJSON: () =>
@@ -109,8 +111,8 @@ export async function parseMoleculesFromCsv(filepath) {
         }, {})
       ),
     /**
-     *
-     * @returns
+     * Analyze all data
+     * @returns {AnalyzerWarning[]} A list of warnings
      */
     analyze: () =>
       Object.getOwnPropertyNames(data).reduce(
@@ -118,8 +120,8 @@ export async function parseMoleculesFromCsv(filepath) {
         []
       ),
     /**
-     * Create the sql script to import data
-     * @returns
+     * Create the sql script to import all data
+     * @returns {string}
      */
     importSql: () => {
       let script = transationBeginSql();
@@ -142,8 +144,6 @@ export async function parseMoleculesFromCsv(filepath) {
       ].reduce((sql, key) => sql + data[key].importSql(), "");
 
       script += transationEndSql();
-
-      // console.log(script);
 
       return script;
     },
