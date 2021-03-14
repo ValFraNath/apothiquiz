@@ -87,8 +87,8 @@ const HomePage = () => {
           <p>Aucun défi à relever pour le moment.</p>
         ) : (
           <>
-            {duels.toPlay.map((value, index) => (
-              <article key={index}>
+            {duels.toPlay.map((value) => (
+              <article key={value.id}>
                 <Avatar size="75px" infos={usersData[value.opponent]?.avatar} />
                 <Link to={`/duel/${value.id}`} className="challenges-text">
                   <div>
@@ -111,8 +111,8 @@ const HomePage = () => {
           <p>Aucun défi à en attente pour le moment.</p>
         ) : (
           <>
-            {duels.pending.map((value, index) => (
-              <article key={index}>
+            {duels.pending.map((value) => (
+              <article key={value.id}>
                 <Link to={`/duel/${value.id}`} className="challenges-text">
                   <h3>{value.opponent}</h3>
                   <p>En train de jouer le round {value.currentRound}</p>
@@ -128,15 +128,25 @@ const HomePage = () => {
         <section>
           <h2>Terminés</h2>
           <>
-            {duels.finished.map((value, index) => (
-              <article key={index}>
-                <Avatar size="75px" infos={usersData[value.opponent]?.avatar} />
-                <Link to={`/duel/${value.id}`} className="challenges-text">
-                  <h3>{value.opponent}</h3>
-                  <p>{displayResultDuel(value.userScore, value.opponentScore)}</p>
-                </Link>
-              </article>
-            ))}
+            {duels.finished
+              .sort((a, b) => b.finishedDate - a.finishedDate)
+              .map((value) => (
+                <article key={value.id}>
+                  <Avatar size="75px" infos={usersData[value.opponent]?.avatar} />
+                  <Link to={`/duel/${value.id}`} className="challenges-text">
+                    <h3>
+                      {value.opponent}{" "}
+                      <span>
+                        {new Date(value.finishedDate).toLocaleDateString("fr-FR", {
+                          day: "numeric",
+                          month: "long",
+                        })}
+                      </span>
+                    </h3>
+                    <p>{displayResultDuel(value.userScore, value.opponentScore)}</p>
+                  </Link>
+                </article>
+              ))}
           </>
         </section>
       )}
