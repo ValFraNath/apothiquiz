@@ -1,9 +1,11 @@
 import mysql from "mysql";
 
-import { queryPromise } from "../../db/database.js";
+import { queryFormat, queryPromise } from "../../db/database.js";
 import { removeExtension } from "../files.js";
 import { AnalyzerWarning, getDuplicates } from "../importationUtils.js";
-import { normalizeDCI, Molecule } from "../molecules_importation/MoleculesList.js";
+import { Molecule } from "../molecules_importation/MoleculesList.js";
+
+const { normalizeDCI } = Molecule;
 
 const VALID_IMAGE_EXTENSIONS = ["jpeg", "jpg", "svg", "png"];
 const VALID_IMAGE_FORMAT_REGEX = new RegExp(`\\.${VALID_IMAGE_EXTENSIONS.join("|")}\\s*$`, "i");
@@ -15,15 +17,22 @@ export const IMAGE_WARNINGS = {
   UNKNOWN_MOLECULE: "UNKNOWN_MOLECULE",
 };
 
+/**
+ * Class representing a list of images
+ */
 export default class ImagesList {
   /**
-   *
+   * Create an images list
    * @param {string[]} imageNames
    */
   constructor(imageNames) {
     this.list = imageNames.map((name) => new Image(name));
   }
 
+  /**
+   * Analyze the images list
+   * @returns {AnalyzerWarning[]} A list of warnings
+   */
   async analyze() {
     const warnings = [];
 
@@ -55,6 +64,10 @@ export default class ImagesList {
     return warnings;
   }
 
+  /**
+   * Get all molecules from this list unknown in database
+   * @returns {string[]} The unknown molecule names
+   */
   async getUnknownMolecules() {
     const sql = `SELECT mo_dci FROM molecule;`;
     const dbMolecules = (await queryPromise(sql)).map((molecule) => normalizeDCI(molecule.mo_dci));
@@ -64,12 +77,17 @@ export default class ImagesList {
       .filter((molecule) => !dbMolecules.includes(molecule));
   }
 
+  /**
+   * Binds the images to existing molecules
+   * @returns {string[]} The list of imported images
+   */
   async bindImagesToMolecules() {
     const filenames = this.list.map((image) => image.name).filter(Image.isFormatValid);
 
-    let insertSql = "SELECT mo_dci FROM molecule;";
-    const dbMolecules = await queryPromise(insertSql);
+    // Get all molecules in database
+    const dbMolecules = await queryPromise("SELECT mo_dci FROM molecule;");
 
+    // Normalize their names
     const normalizedDbMolecules = dbMolecules.map((m) => ({
       dci: m.mo_dci,
       normalized: normalizeDCI(m.mo_dci),
@@ -77,7 +95,6 @@ export default class ImagesList {
 
     // Get all filename corresponding to a molecule
     const imported = [];
-
     const matches = filenames.reduce((matches, filename) => {
       const normalizedFilename = normalizeDCI(filename);
 
@@ -94,25 +111,36 @@ export default class ImagesList {
     }, {});
 
     // Update molecules images in database
-    const updateSql = Object.keys(matches).reduce(
-      (sql, filename) =>
-        sql +
-        `UPDATE molecule SET mo_image = ${mysql.escape(filename)} WHERE mo_dci = ${mysql.escape(
-          matches[filename]
-        )} ; `,
-      "UPDATE molecule SET mo_image = NULL; "
-    );
+    let updateSql = "UPDATE molecule SET mo_image = NULL; ";
+
+    for (const filename of Object.keys(matches)) {
+      updateSql += queryFormat(
+        `UPDATE molecule SET mo_image = :image WHERE mo_dci = :molecule ; `,
+        { image: filename, molecule: matches[filename] }
+      );
+    }
 
     await queryPromise(updateSql);
     return imported;
   }
 }
 
+/**
+ * Class representing an image
+ */
 export class Image {
+  /**
+   * Create an image
+   * @param {string} name The image name
+   */
   constructor(name) {
     this.name = name;
   }
 
+  /**
+   * Analyze the image
+   * @returns {AnalyzerWarning[]} A list of warnings
+   */
   analyze() {
     const warnings = [];
 
@@ -134,9 +162,12 @@ export class Image {
     return warnings;
   }
 
+  /**
+   * Checks if the image format is valid
+   * @param {string} filename The image filename
+   * @returns {boolean}
+   */
   static isFormatValid(filename) {
     return VALID_IMAGE_FORMAT_REGEX.test(filename);
   }
-
-  import() {}
 }

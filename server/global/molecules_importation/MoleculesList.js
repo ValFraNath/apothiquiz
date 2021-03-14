@@ -250,18 +250,19 @@ export class Molecule {
    * @returns {boolean}
    */
   static isMoleculeDCIValid(dci) {
-    return VALID_DCI_REGEX.test(normalizeDCI(dci));
+    return VALID_DCI_REGEX.test(Molecule.normalizeDCI(dci));
+  }
+
+  /**
+   * Normalize a molecule DCI
+   * @param {string} dci
+   */
+  static normalizeDCI(dci) {
+    return String(dci)
+      .trim()
+      .normalize("NFD") // The unicode normal form decomposes the combined graphemes into a combination of simple graphemes. 'è' => 'e' + '`'
+      .replace(/[\u0300-\u036f]/g, "") // Remove all special graphemes : 'e' + '`' => 'e'
+      .replace(/[\s-']+/g, "_")
+      .toLowerCase();
   }
 }
-
-/**
- * Normalize a molecule DCI
- * @param {string} dci
- */
-export const normalizeDCI = (dci) =>
-  String(dci)
-    .trim()
-    .normalize("NFD") // The unicode normal form decomposes the combined graphemes into a combination of simple graphemes. 'è' => 'e' + '`'
-    .replace(/[\u0300-\u036f]/g, "") // Remove all special graphemes : 'e' + '`' => 'e'
-    .replace(/[\s-']+/g, "_")
-    .toLowerCase();

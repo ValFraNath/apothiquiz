@@ -2,6 +2,9 @@ import dateFormat from "dateformat";
 import mysql from "mysql";
 
 import { queryFormat } from "../../db/database.js";
+// eslint-disable-next-line no-unused-vars
+import FileStructure from "../csv_reader/FileStructure.js";
+
 import {
   AnalyzerWarning,
   getDuplicates,
@@ -32,7 +35,15 @@ const DEFAULT_AVATAR = {
   colorBG: "#D3D3D3", // grey
 };
 
+/**
+ * Class representing a list of users
+ */
 export default class UsersList {
+  /**
+   * Create a users list from a matrix
+   * @param {any[][]} matrix The matrix of users
+   * @param {FileStructure} structure The csv file structure
+   */
   constructor(matrix, structure) {
     this.list = [];
 
@@ -43,10 +54,18 @@ export default class UsersList {
     }
   }
 
+  /**
+   * Extract user into an array of simple object
+   * @returns {object[]}
+   */
   extract() {
     return this.list.map((user) => user.extract());
   }
 
+  /**
+   * Create the sql script to import the users list in database
+   * @returns {string}
+   */
   importSql() {
     let script = transationBeginSql();
 
@@ -59,6 +78,10 @@ export default class UsersList {
     return script;
   }
 
+  /**
+   * Analyze the users list
+   * @returns {AnalyzerWarning[]} A list of warnings
+   */
   analyze() {
     const warnings = [];
 
@@ -101,6 +124,10 @@ export default class UsersList {
     return warnings;
   }
 
+  /**
+   * Create the script to delete all user that have not been imported again
+   * @returns {string}
+   */
   deleteRemovedUserSql() {
     const date = mysql.escape(dateFormat(new Date(), "yyyy-mm-dd"));
     let escapedLogins = this.list
@@ -122,12 +149,24 @@ export default class UsersList {
   }
 }
 
+/**
+ * Class representing a user
+ */
 export class User {
+  /**
+   * Create a user
+   * @param {string} login The user login
+   * @param {boolean} isAdmin Boolean telling if the user is an admin
+   */
   constructor(login, isAdmin) {
     this.login = login;
     this.isAdmin = isAdmin;
   }
 
+  /**
+   * Extract the user into a simple object
+   * @returns {{login: string, isAdmin: boolean}}
+   */
   extract() {
     return {
       login: this.login,
@@ -135,6 +174,10 @@ export class User {
     };
   }
 
+  /**
+   * Create the script to import the user in database
+   * @returns {string}
+   */
   importSql() {
     const sql =
       "INSERT INTO user (us_login,us_admin,us_avatar) \
@@ -148,6 +191,10 @@ export class User {
     });
   }
 
+  /**
+   * Analyze the user
+   * @returns {AnalyzerWarning[]} A list of warnings
+   */
   analyze() {
     const warnings = [];
 
@@ -169,6 +216,11 @@ export class User {
     return warnings;
   }
 
+  /**
+   * Checks if a login is valid
+   * @param {string} login
+   * @returns {boolean}
+   */
   static isLoginValid(login) {
     return VALID_LOGIN_REGEX.test(String(login));
   }

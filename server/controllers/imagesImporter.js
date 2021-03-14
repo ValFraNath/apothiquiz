@@ -10,7 +10,7 @@ import { HttpResponseWrapper } from "../global/HttpControllerWrapper.js";
 
 import ImagesList from "../global/images_importation/ImagesList.js";
 import Logger from "../global/Logger.js";
-import { normalizeDCI } from "../global/molecules_importation/MoleculesList.js";
+import { Molecule } from "../global/molecules_importation/MoleculesList.js";
 
 import { updateNumberOfRoundsPerDuel } from "./config.js";
 
@@ -99,7 +99,7 @@ async function importImages(req, res) {
       await Promise.all(
         imported.map((file) => {
           const filepath = req.files.find((f) => f.originalname === file).path;
-          return moveFile(filepath, path.resolve(IMAGES_DIR_PATH, normalizeDCI(file)));
+          return moveFile(filepath, path.resolve(IMAGES_DIR_PATH, Molecule.normalizeDCI(file)));
         })
       );
 
