@@ -112,7 +112,7 @@ async function importMolecules(req, res) {
         imported: false,
       });
     } else {
-      const sql = data.import();
+      const sql = data.importSql();
 
       await queryPromise(sql);
 

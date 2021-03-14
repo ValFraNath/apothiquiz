@@ -35,7 +35,7 @@ export async function parseUsersFromCsv(filepath) {
   return {
     toJSON: () => JSON.stringify(users.extract()),
     analyze: () => users.analyze(),
-    import: () => users.importSql(),
+    importSql: () => users.importSql(),
   };
 }
 

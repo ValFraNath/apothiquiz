@@ -38,7 +38,7 @@ for (let file of files) {
         await parseMoleculesFromCsv(
           path.resolve("test", "molecules_importation", "importer", "files", file.name)
         )
-      ).import();
+      ).importSql();
       await queryPromise(script);
     });
 

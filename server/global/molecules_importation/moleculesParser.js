@@ -121,7 +121,7 @@ export async function parseMoleculesFromCsv(filepath) {
      * Create the sql script to import data
      * @returns
      */
-    import: () => {
+    importSql: () => {
       let script = transationBeginSql();
       script += clearDatabaseTablesSql(
         "molecule",
