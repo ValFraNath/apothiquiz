@@ -93,14 +93,22 @@
         padding: 0.8rem 1rem;
         border-radius: 7px;
         flex-grow: 1;
+        position: relative;
 
         h3 {
           font-size: 1.2rem;
-          margin-bottom: 0.3rem;
+          margin-bottom: 0.4rem;
           color: black;
+        }
 
-          span {
-            font-size: 0.8rem;
+        p.time {
+          position: absolute;
+          font-size: 0.8rem;
+          top: 0.7rem;
+          right: 0.8rem;
+
+          svg {
+            margin-right: 0.2rem;
           }
         }
       }
@@ -135,6 +143,10 @@
           &:first-of-type {
             text-align: right;
           }
+        }
+
+        .challenges-text {
+          left: 0.8rem;
         }
       }
     }

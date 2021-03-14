@@ -1,4 +1,4 @@
-import { ChevronRightIcon } from "@modulz/radix-icons";
+import { ChevronRightIcon, LapTimerIcon } from "@modulz/radix-icons";
 
 import { PropTypes } from "prop-types";
 import React from "react";
@@ -48,9 +48,9 @@ HomePageHeader.propTypes = {
 
 const HomePage = () => {
   function displayResultDuel(user, opponent) {
-    if (user === opponent) return "Égalité !";
-    if (user > opponent) return "Vous avez gagné !";
-    return "Vous avez perdu";
+    if (user === opponent) return "Égalité :";
+    if (user > opponent) return "Vous avez gagné :";
+    return "Vous avez perdu :";
   }
 
   const { isLoading, data: duels, isError } = useQuery("duels");
@@ -93,7 +93,9 @@ const HomePage = () => {
                 <Link to={`/duel/${value.id}`} className="challenges-text">
                   <div>
                     <h3>{value.opponent}</h3>
-                    <p>Vous pouvez jouer le round {value.currentRound}</p>
+                    <p>
+                      Tour {value.currentRound} : {value.userScore} - {value.opponentScore}
+                    </p>
                   </div>
                   <ChevronRightIcon />
                 </Link>
@@ -115,7 +117,7 @@ const HomePage = () => {
               <article key={value.id}>
                 <Link to={`/duel/${value.id}`} className="challenges-text">
                   <h3>{value.opponent}</h3>
-                  <p>En train de jouer le round {value.currentRound}</p>
+                  <p>En train de jouer le tour {value.currentRound}...</p>
                 </Link>
                 <Avatar size="75px" infos={usersData[value.opponent]?.avatar} />
               </article>
@@ -134,16 +136,18 @@ const HomePage = () => {
                 <article key={value.id}>
                   <Avatar size="75px" infos={usersData[value.opponent]?.avatar} />
                   <Link to={`/duel/${value.id}`} className="challenges-text">
-                    <h3>
-                      {value.opponent}{" "}
-                      <span>
-                        {new Date(value.finishedDate).toLocaleDateString("fr-FR", {
-                          day: "numeric",
-                          month: "long",
-                        })}
-                      </span>
-                    </h3>
-                    <p>{displayResultDuel(value.userScore, value.opponentScore)}</p>
+                    <h3>{value.opponent} </h3>
+                    <p className="time">
+                      <LapTimerIcon />
+                      {new Date(value.finishedDate).toLocaleDateString("fr-FR", {
+                        day: "numeric",
+                        month: "long",
+                      })}
+                    </p>
+                    <p>
+                      {displayResultDuel(value.userScore, value.opponentScore)} {value.userScore} -{" "}
+                      {value.opponentScore}
+                    </p>
                   </Link>
                 </article>
               ))}

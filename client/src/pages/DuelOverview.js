@@ -109,12 +109,15 @@ const DuelOverview = ({
           {userCanPlay ? `Jouer le tour ${answers.length}` : "En attente de l'adversaire"}
         </Link>
       ) : (
-        <DuelResults
-          user={currentUser}
-          opponent={opponent}
-          score={currentUserScore}
-          opponentScore={opponentScore}
-        />
+        <>
+          <DuelResults
+            user={currentUser}
+            opponent={opponent}
+            score={currentUserScore}
+            opponentScore={opponentScore}
+          />
+          <p id="TTL">Duel supprimé dans 5 jours</p>
+        </>
       )}
 
       {answers.map((answer, index) => (
