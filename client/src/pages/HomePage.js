@@ -53,6 +53,12 @@ const HomePage = () => {
     return "Vous avez perdu :";
   }
 
+  function getRemainingTime(playedTime) {
+    const MAX_TIME = 24;
+    const remaining = MAX_TIME - (new Date().getTime() - playedTime.getTime());
+    return remaining >= 0 ? remaining : 0;
+  }
+
   const { isLoading, data: duels, isError } = useQuery("duels");
   const { data: currentUser } = useQuery(["user", "me"], { refetchOnMount: "always" });
 
@@ -93,11 +99,14 @@ const HomePage = () => {
                 <Link to={`/duel/${value.id}`} className="challenges-text">
                   <div>
                     <h3>{value.opponent}</h3>
+                    <p className="time">
+                      <LapTimerIcon />
+                      {getRemainingTime(new Date())} h
+                    </p>
                     <p>
                       Tour {value.currentRound} : {value.userScore} - {value.opponentScore}
                     </p>
                   </div>
-                  <ChevronRightIcon />
                 </Link>
               </article>
             ))}
@@ -117,6 +126,10 @@ const HomePage = () => {
               <article key={value.id}>
                 <Link to={`/duel/${value.id}`} className="challenges-text">
                   <h3>{value.opponent}</h3>
+                  <p className="time">
+                    <LapTimerIcon />
+                    {getRemainingTime(new Date())} h
+                  </p>
                   <p>En train de jouer le tour {value.currentRound}...</p>
                 </Link>
                 <Avatar size="75px" infos={usersData[value.opponent]?.avatar} />

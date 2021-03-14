@@ -126,12 +126,6 @@
         a {
           margin-right: 0.5rem;
         }
-
-        svg {
-          width: 1.5rem;
-          height: auto;
-          color: $button-bg;
-        }
       }
     }
 
@@ -139,14 +133,15 @@
       article {
         justify-content: flex-end;
 
-        & > a {
+        & > a.challenges-text {
           &:first-of-type {
             text-align: right;
           }
-        }
 
-        .challenges-text {
-          left: 0.8rem;
+          p.time {
+            left: 0.8rem;
+            right: auto;
+          }
         }
       }
     }
