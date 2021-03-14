@@ -59,7 +59,7 @@ export default class Classification {
    * Create the script to insert a classification in database
    * @returns {string} The sql script
    */
-  import() {
+  importSql() {
     return this.elements.reduce((sql, element) => `${sql} ${element.importSql()}`, "");
   }
 

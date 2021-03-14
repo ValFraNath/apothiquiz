@@ -139,7 +139,7 @@ export async function parseMoleculesFromCsv(filepath) {
         "interactions",
         "sideEffects",
         "molecules",
-      ].reduce((sql, key) => sql + data[key].import(), "");
+      ].reduce((sql, key) => sql + data[key].importSql(), "");
 
       script += transationEndSql();
 

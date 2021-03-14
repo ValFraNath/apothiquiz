@@ -87,7 +87,7 @@ export default class MoleculeList {
    * Create the sql script to import the molecules list in database
    * @returns {string}
    */
-  import() {
+  importSql() {
     return this.list.reduce((script, molecule) => script + molecule.importSql(), "");
   }
 }

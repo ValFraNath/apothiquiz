@@ -83,7 +83,7 @@ export default class Property {
    * Create the sql script to insert the propertu in the database
    * @returns {string}
    */
-  import() {
+  importSql() {
     const sql = queryFormat(`INSERT INTO property VALUES (:id, :name); `, {
       id: Number(this.id),
       name: String(this.name).substring(0, PROPERTY_NAME_MAX_LENGTH),
