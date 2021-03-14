@@ -30,8 +30,6 @@ const columns = [
   new ColumnSpecifications("NIVEAU_EXPERT", "levelHard", ColumnSpecifications.UNIQUE),
 ];
 
-// TODO add french property name
-
 /**
  * Import CSV file to parse data into an object
  * @param {string} filepath The path to the file
@@ -66,11 +64,12 @@ export async function parseMoleculesFromCsv(filepath) {
    * @param {string} name The classification name
    * @returns {Classification}
    */
-  const createClassification = (name) =>
+  const createClassification = (name, frenchName) =>
     new Classification(
       // Keep only the columns of the file dealing with the given classification
       extractColumns(cleanedMoleculesMatrix, ...structure.getIndexesFor(name)),
-      name
+      name,
+      frenchName
     );
 
   /**
@@ -78,21 +77,22 @@ export async function parseMoleculesFromCsv(filepath) {
    * @param {string} name The classification name
    * @returns {Property}
    */
-  const createProperty = (name) =>
+  const createProperty = (name, frenchName) =>
     new Property(
       // Keep only the columns of the file dealing with the given property
       extractColumns(cleanedMoleculesMatrix, ...structure.getIndexesFor(name)),
       name,
-      propertyId++
+      propertyId++,
+      frenchName
     );
 
   // Creates the differents classifications, properties & molecules
-  data.system = createClassification("system");
-  data.class = createClassification("class");
+  data.system = createClassification("system", "Système");
+  data.class = createClassification("class", "Classe");
 
-  data.indications = createProperty("indications");
-  data.interactions = createProperty("interactions");
-  data.sideEffects = createProperty("sideEffects");
+  data.indications = createProperty("indications", "Indication");
+  data.interactions = createProperty("interactions", "Interaction");
+  data.sideEffects = createProperty("sideEffects", "Effet indésirable");
 
   data.molecules = new MoleculeList(cleanedMoleculesMatrix, structure, data);
 

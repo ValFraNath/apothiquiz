@@ -25,10 +25,12 @@ export default class Classification {
    * Create a new classification from a matrix
    * @param {any[][]} matrix The matrix of data
    * @param {string} name The classification name
+   * @param {string} frenchName The classification french name
    */
-  constructor(matrix, name) {
+  constructor(matrix, name, frenchName) {
     /** @type {string} The classificaion name */
     this.name = name;
+    this.frenchName = frenchName;
 
     /** @type {ClassificationNode[]} The list of elements of the classification */
     this.elements = [];
@@ -44,7 +46,7 @@ export default class Classification {
         if (same) {
           parent = same;
         } else {
-          const newNode = new ClassificationNode(autoIncrement++, value, this.name);
+          const newNode = new ClassificationNode(autoIncrement++, value, this);
           if (parent === null) {
             this.elements.push(newNode);
           } else {
@@ -94,7 +96,7 @@ export default class Classification {
       (node) =>
         new AnalyzerWarning(
           CLASSIFICATION_WARNINGS.DUPLICATED_NODES,
-          `La valeur de ${this.name} "${node}" apparait plusieurs fois dans la hiérarchie`
+          `La valeur de ${this.frenchName} "${node}" apparait plusieurs fois dans la hiérarchie`
         )
     );
 
@@ -102,7 +104,7 @@ export default class Classification {
       (group) =>
         new AnalyzerWarning(
           CLASSIFICATION_WARNINGS.TOO_CLOSE_CLASSIFICATION_VALUES,
-          `Ces valeurs de ${this.name} sont très proches : "${group.join('", "')}"`
+          `Ces valeurs de ${this.frenchName} sont très proches : "${group.join('", "')}"`
         )
     );
 
@@ -134,7 +136,7 @@ export class ClassificationNode {
    * Create a new node
    * @param {number} id The node id
    * @param {string} name The node name
-   * @param {string} classification The classification
+   * @param {Classification} classification The classification
    */
   constructor(id, name, classification) {
     /** @type {number} The class id */
@@ -143,7 +145,7 @@ export class ClassificationNode {
     /** @type {string} The class name */
     this.name = name;
 
-    /** @type {string} The classification name of the node */
+    /** @type {Classification} The classification name of the node */
     this.classification = classification;
 
     /** @type {ClassificationNode[]} The class children */
@@ -161,7 +163,7 @@ export class ClassificationNode {
       throw new Error("A classification node must be linked to a classification");
     }
 
-    const table = String(this.classification);
+    const table = String(this.classification.name);
 
     const sql = queryFormat(`INSERT INTO ${table} VALUES (:id, :name, :higher, :level );`, {
       id: Number(this.id),
@@ -170,9 +172,9 @@ export class ClassificationNode {
       level: Number(level),
     });
 
-    return this.children.reduce(
-      (sql, child) => `${sql} ${child.importSql(this.id, level + 1)}`,
-      sql
+    return (
+      sql +
+      this.children.reduce((sql, child) => `${sql} ${child.importSql(this.id, level + 1)}`, "")
     );
   }
 
@@ -208,7 +210,7 @@ export class ClassificationNode {
       warnings.push(
         new AnalyzerWarning(
           CLASSIFICATION_WARNINGS.TOO_LONG_CLASSIFICATION_VALUE,
-          `La valeur de ${this.classification} "${this.name}" est trop longue (max ${NODE_NAME_MAX_LENGTH})`
+          `La valeur de ${this.classification.frenchName} "${this.name}" est trop longue (max ${NODE_NAME_MAX_LENGTH})`
         )
       );
     }
@@ -217,7 +219,7 @@ export class ClassificationNode {
       warnings.push(
         new AnalyzerWarning(
           CLASSIFICATION_WARNINGS.INVALID_CLASSIFICATION_VALUE_TYPE,
-          `La valeur de ${this.classification} "${this.name}" devrait être du texte`
+          `La valeur de ${this.classification.frenchName} "${this.name}" devrait être du texte`
         )
       );
     }

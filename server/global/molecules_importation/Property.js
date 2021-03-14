@@ -20,9 +20,11 @@ export default class Property {
    * @param {any[][]} matrix The matrix of data
    * @param {string} name The property name
    * @param {number} id The property id
+   * @param {string} frenchName The property french name
    */
-  constructor(matrix, name, id) {
+  constructor(matrix, name, id, frenchName) {
     this.name = name;
+    this.frenchName = frenchName;
     this.id = id;
 
     /** @type {PropertyValue[]} */
@@ -36,7 +38,7 @@ export default class Property {
         if (this.getValueByName(value)) {
           continue;
         }
-        const newValue = new PropertyValue(uniqueId(), value, this.id);
+        const newValue = new PropertyValue(uniqueId(), value, this);
         this.values.push(newValue);
       }
     }
@@ -65,7 +67,7 @@ export default class Property {
       (group) =>
         new AnalyzerWarning(
           PROPERTY_WARNINGS.TOO_CLOSE_PROPERTY_VALUES,
-          `Ces valeurs de ${this.name} sont très proches : "${group.join('", "')}"`
+          `Ces valeurs de ${this.frenchName} sont très proches : "${group.join('", "')}"`
         )
     );
 
@@ -108,12 +110,12 @@ export class PropertyValue {
    * Create a property value
    * @param {number} id The value id
    * @param {string} name The value id
-   * @param {number} propertyId The if of the property
+   * @param {Property} property The if of the property
    */
-  constructor(id, name, propertyId) {
+  constructor(id, name, property) {
     this.id = id;
     this.name = name;
-    this.propertyId = propertyId;
+    this.property = property;
   }
 
   /**
@@ -124,7 +126,7 @@ export class PropertyValue {
     return queryFormat(`INSERT INTO property_value VALUES (:id, :name, :property); `, {
       id: Number(this.id),
       name: String(this.name).substring(0, PROPERTY_VALUE_MAX_LENGTH),
-      property: Number(this.propertyId),
+      property: Number(this.property.id),
     });
   }
 
@@ -150,7 +152,7 @@ export class PropertyValue {
       warnings.push(
         new AnalyzerWarning(
           PROPERTY_WARNINGS.TOO_LONG_PROPERTY_VALUE,
-          `La valeur de ${this.classification} "${this.name}" est trop longue (max ${PROPERTY_VALUE_MAX_LENGTH})`
+          `La valeur de ${this.property.frenchName} "${this.name}" est trop longue (max ${PROPERTY_VALUE_MAX_LENGTH})`
         )
       );
     }
@@ -159,7 +161,7 @@ export class PropertyValue {
       warnings.push(
         new AnalyzerWarning(
           PROPERTY_WARNINGS.INVALID_PROPERTY_VALUE_TYPE,
-          `La valeur de ${this.classification} "${this.name}" devrait être du texte`
+          `La valeur de ${this.property.frenchName} "${this.name}" devrait être du texte`
         )
       );
     }
