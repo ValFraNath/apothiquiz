@@ -123,7 +123,7 @@ async function generateQuestion(req, res) {
   const config = await fetchConfigFromDB();
 
   try {
-    let { type, title, subject, goodAnswer, answers, wording } = await generateQuestion();
+    const { type, title, subject, goodAnswer, answers, wording } = await generateQuestion();
 
     res.sendResponse(200, {
       type,

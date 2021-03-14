@@ -2,7 +2,6 @@ import PropTypes from "prop-types";
 import React from "react";
 
 const Question = ({ numero, maxQuestion = -1, text, image }) => {
-  console.log(image);
   return (
     <div id="quiz-question">
       <h2>
