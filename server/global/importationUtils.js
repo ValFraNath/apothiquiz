@@ -134,16 +134,8 @@ export function createSqlToInsertInto(table) {
   };
 }
 
-/**
- * Create the sql script to begin a transaction
- * @returns {string}
- */
 export const TRANSACTION_BEGIN_SQL = "START TRANSACTION; SET AUTOCOMMIT=0; ";
 
-/**
- * Create the sql script to complete a transaction
- * @returns {string}
- */
 export const TRANSACTION_END_SQL = "COMMIT; SET AUTOCOMMIT=1; ";
 
 /**
