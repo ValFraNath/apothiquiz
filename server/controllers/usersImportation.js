@@ -81,7 +81,7 @@ async function importUsers(req, res) {
     const data = await parseUsersFromCsv(filepath);
 
     if (confirmed === "true") {
-      const insertionScript = data.importSql();
+      const insertionScript = data.createImportSql();
 
       await queryPromise(insertionScript);
 

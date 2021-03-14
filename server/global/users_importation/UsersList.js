@@ -9,8 +9,8 @@ import {
   AnalyzerWarning,
   getDuplicates,
   getTooCloseValues,
-  transationBeginSql,
-  transationEndSql,
+  TRANSACTION_BEGIN_SQL,
+  TRANSACTION_END_SQL,
 } from "../importationUtils.js";
 
 export const USER_WARNINGS = {
@@ -66,14 +66,14 @@ export default class UsersList {
    * Create the sql script to import the users list in database
    * @returns {string}
    */
-  importSql() {
-    let script = transationBeginSql();
+  createImportSql() {
+    let script = TRANSACTION_BEGIN_SQL;
 
-    script += this.deleteRemovedUserSql();
+    script += this.createSqlToArchiveRemovedUsers();
 
-    script += this.list.reduce((sql, user) => sql + user.importSql(), "");
+    script += this.list.reduce((sql, user) => sql + user.createImportSql(), "");
 
-    script += transationEndSql();
+    script += TRANSACTION_END_SQL;
 
     return script;
   }
@@ -99,10 +99,10 @@ export default class UsersList {
 
     warnings.push(
       ...getDuplicates(userLogins).map(
-        (duplicates) =>
+        (duplicate) =>
           new AnalyzerWarning(
             USER_WARNINGS.DUPLICATED_LOGINS,
-            `Duplication du login "${duplicates}"`
+            `Le nom d'utilisateur "${duplicate}" est présent plusieurs fois`
           )
       )
     );
@@ -112,7 +112,7 @@ export default class UsersList {
         (group) =>
           new AnalyzerWarning(
             USER_WARNINGS.TOO_CLOSE_LOGINS,
-            `Ces logins sont très proche : "${group.join('", "')}"`
+            `Ces noms d'utilisateur sont très proches : "${group.join('", "')}"`
           )
       )
     );
@@ -128,7 +128,7 @@ export default class UsersList {
    * Create the script to delete all user that have not been imported again
    * @returns {string}
    */
-  deleteRemovedUserSql() {
+  createSqlToArchiveRemovedUsers() {
     const date = mysql.escape(dateFormat(new Date(), "yyyy-mm-dd"));
     let escapedLogins = this.list
       .map(({ login }) => mysql.escape(String(login).substr(0, LOGIN_MAX_LENGTH).toLowerCase()))
@@ -178,7 +178,7 @@ export class User {
    * Create the script to import the user in database
    * @returns {string}
    */
-  importSql() {
+  createImportSql() {
     const sql =
       "INSERT INTO user (us_login,us_admin,us_avatar) \
 				VALUES (:login,:admin,:avatar) \

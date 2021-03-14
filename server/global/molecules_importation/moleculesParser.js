@@ -10,8 +10,8 @@ import {
   // eslint-disable-next-line no-unused-vars
   AnalyzerWarning,
   clearDatabaseTablesSql,
-  transationBeginSql,
-  transationEndSql,
+  TRANSACTION_BEGIN_SQL,
+  TRANSACTION_END_SQL,
 } from "../importationUtils.js";
 
 import MoleculeList from "../molecules_importation/MoleculesList.js";
@@ -101,7 +101,7 @@ export async function parseMoleculesFromCsv(filepath) {
   return {
     /**
      * Extract all data into a JSON object
-     * @returns
+     * @returns {string} JSON representation of the object
      */
     toJSON: () =>
       JSON.stringify(
@@ -123,8 +123,8 @@ export async function parseMoleculesFromCsv(filepath) {
      * Create the sql script to import all data
      * @returns {string}
      */
-    importSql: () => {
-      let script = transationBeginSql();
+    createImportSql: () => {
+      let script = TRANSACTION_BEGIN_SQL;
       script += clearDatabaseTablesSql(
         "molecule",
         "class",
@@ -141,9 +141,9 @@ export async function parseMoleculesFromCsv(filepath) {
         "interactions",
         "sideEffects",
         "molecules",
-      ].reduce((sql, key) => sql + data[key].importSql(), "");
+      ].reduce((sql, key) => sql + data[key].createImportSql(), "");
 
-      script += transationEndSql();
+      script += TRANSACTION_END_SQL;
 
       return script;
     },

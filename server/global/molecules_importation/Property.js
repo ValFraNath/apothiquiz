@@ -84,13 +84,13 @@ export default class Property {
    * Create the sql script to insert the propertu in the database
    * @returns {string}
    */
-  importSql() {
+  createImportSql() {
     const sql = queryFormat(`INSERT INTO property VALUES (:id, :name); `, {
       id: Number(this.id),
       name: String(this.name).substring(0, PROPERTY_NAME_MAX_LENGTH),
     });
 
-    return this.values.reduce((sql, value) => `${sql} ${value.importSql()}`, sql);
+    return this.values.reduce((sql, value) => `${sql} ${value.createImportSql()}`, sql);
   }
 
   /**
@@ -122,7 +122,7 @@ export class PropertyValue {
    * Create the sql script to insert the property value in database
    * @returns {string}
    */
-  importSql() {
+  createImportSql() {
     return queryFormat(`INSERT INTO property_value VALUES (:id, :name, :property); `, {
       id: Number(this.id),
       name: String(this.name).substring(0, PROPERTY_VALUE_MAX_LENGTH),

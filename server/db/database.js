@@ -186,15 +186,12 @@ export function queryFormat(query, values) {
     return query;
   }
 
-  return query.replace(
-    /:(\w+)/g,
-    function (identifier, key) {
-      if (Object.getOwnPropertyNames(values).includes(key)) {
-        return mysql.escape(values[key]);
-      }
-      return identifier;
-    }.bind(this)
-  );
+  return query.replace(/:(\w+)/g, (identifier, key) => {
+    if (Object.getOwnPropertyNames(values).includes(key)) {
+      return mysql.escape(values[key]);
+    }
+    return identifier;
+  });
 }
 
 connection.config.queryFormat = queryFormat;

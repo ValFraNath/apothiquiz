@@ -39,21 +39,23 @@ export default class Classification {
     for (const row of matrix) {
       /** @type {ClassificationNode} */
       let parent = null;
+
       for (const value of row) {
         if (!value) return;
 
         const same = parent ? parent.getChildByName(value) : this.getElementByName(value);
         if (same) {
           parent = same;
-        } else {
-          const newNode = new ClassificationNode(autoIncrement++, value, this);
-          if (parent === null) {
-            this.elements.push(newNode);
-          } else {
-            parent.children.push(newNode);
-          }
-          parent = newNode;
+          continue;
         }
+
+        const newNode = new ClassificationNode(autoIncrement++, value, this);
+        if (parent === null) {
+          this.elements.push(newNode);
+        } else {
+          parent.children.push(newNode);
+        }
+        parent = newNode;
       }
     }
   }
@@ -62,8 +64,8 @@ export default class Classification {
    * Create the script to insert a classification in database
    * @returns {string} The sql script
    */
-  importSql() {
-    return this.elements.reduce((sql, element) => `${sql} ${element.importSql()}`, "");
+  createImportSql() {
+    return this.elements.reduce((sql, element) => `${sql} ${element.createImportSql()}`, "");
   }
 
   /**
@@ -158,7 +160,7 @@ export class ClassificationNode {
    * @param {number} level The level in the hierarchy
    * @returns {string} The sql script
    */
-  importSql(higher = null, level = 1) {
+  createImportSql(higher = null, level = 1) {
     if (!this.id || !this.classification) {
       throw new Error("A classification node must be linked to a classification");
     }
@@ -174,7 +176,10 @@ export class ClassificationNode {
 
     return (
       sql +
-      this.children.reduce((sql, child) => `${sql} ${child.importSql(this.id, level + 1)}`, "")
+      this.children.reduce(
+        (sql, child) => `${sql} ${child.createImportSql(this.id, level + 1)}`,
+        ""
+      )
     );
   }
 

@@ -87,8 +87,8 @@ export default class MoleculeList {
    * Create the sql script to import the molecules list in database
    * @returns {string}
    */
-  importSql() {
-    return this.list.reduce((script, molecule) => script + molecule.importSql(), "");
+  createImportSql() {
+    return this.list.reduce((script, molecule) => script + molecule.createImportSql(), "");
   }
 }
 
@@ -189,7 +189,7 @@ export class Molecule {
    * Create the sql script to insert the molecule in database
    * @returns {string}
    */
-  importSql() {
+  createImportSql() {
     const insertMoleculeSql = `INSERT INTO molecule VALUES (:id, :dci, :difficulty, :skeletalFormula, :ntr, :class, :system, NULL); `;
 
     let script = queryFormat(insertMoleculeSql, {

@@ -69,7 +69,7 @@ describe("Test if values are well imported", function () {
         if (!file.snapshot) {
           this.skip();
         }
-        // Uncomment the following line to update the snapshot files, /!\ Make sur the snapshots are valid !
+        // Uncomment the following line to update the snapshot files, /!\ Make sure the snapshots are valid !
         //fs.writeFileSync(path.resolve(snapshotsFolderPath, file.snapshot), JSON.stringify(data));
         let expectedData = fs.readFileSync(path.resolve(snapshotsFolderPath, file.snapshot));
         expect(data).to.be.deep.equals(JSON.parse(expectedData));

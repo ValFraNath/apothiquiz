@@ -47,7 +47,9 @@ describe("Users Importer", () => {
       });
 
       it("Insert users", async () => {
-        const script = (await parseUsersFromCsv(path.resolve(FILES_DIR, test.file))).importSql();
+        const script = (
+          await parseUsersFromCsv(path.resolve(FILES_DIR, test.file))
+        ).createImportSql();
         await queryPromise(script);
       });
 
@@ -79,7 +81,9 @@ describe("Users deleted after new import", () => {
   });
 
   before("Insert users", async () => {
-    const script = (await parseUsersFromCsv(path.resolve(FILES_DIR, "students.csv"))).importSql();
+    const script = (
+      await parseUsersFromCsv(path.resolve(FILES_DIR, "students.csv"))
+    ).createImportSql();
     await queryPromise(script);
   });
 
@@ -99,7 +103,9 @@ describe("Users deleted after new import", () => {
   });
 
   it("Good deleted users", async () => {
-    const script = (await parseUsersFromCsv(path.resolve(FILES_DIR, "small.csv"))).importSql();
+    const script = (
+      await parseUsersFromCsv(path.resolve(FILES_DIR, "small.csv"))
+    ).createImportSql();
     await queryPromise(script);
 
     const res = await queryPromise("SELECT us_login, us_admin, us_deleted FROM user");

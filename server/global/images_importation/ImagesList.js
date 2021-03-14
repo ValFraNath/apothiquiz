@@ -113,7 +113,7 @@ export default class ImagesList {
 
     for (const filename of Object.keys(matches)) {
       updateSql += queryFormat(
-        `UPDATE molecule SET mo_image = :image WHERE mo_dci = :molecule ; `,
+        "UPDATE molecule SET mo_image = :image WHERE mo_dci = :molecule ; ",
         { image: filename, molecule: matches[filename] }
       );
     }

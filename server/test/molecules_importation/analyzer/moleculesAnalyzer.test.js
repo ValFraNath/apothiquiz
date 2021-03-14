@@ -145,7 +145,7 @@ describe("Molecules analyzer", () => {
       });
 
       it("Can import without errors", async () => {
-        const sql = data.importSql();
+        const sql = data.createImportSql();
         await queryPromise(sql);
       });
     });
