@@ -3,7 +3,7 @@ import React from "react";
 
 /* ---------- Buttons ---------- */
 
-const AnswerBtn = ({ value, isRight, showResult, onClick }) => {
+const AnswerBtn = ({ value, isRight, showResult, onClick, isImage }) => {
   let classBtn = "";
   if (showResult) classBtn = isRight ? "good-answer" : "bad-answer";
 
@@ -15,7 +15,7 @@ const AnswerBtn = ({ value, isRight, showResult, onClick }) => {
         onClick(value);
       }}
     >
-      {value}
+      {isImage ? <img src={value} alt="Answer" /> : value}
     </button>
   );
 };
@@ -25,11 +25,12 @@ AnswerBtn.propTypes = {
   isRight: PropTypes.bool.isRequired,
   showResult: PropTypes.bool.isRequired,
   onClick: PropTypes.func.isRequired,
+  isImage: PropTypes.bool,
 };
 
 /* ---------- List of buttons ---------- */
 
-const Answers = ({ inProgress, answers, goodAnswerIndex, lastClicked, onClick }) => {
+const Answers = ({ inProgress, answers, goodAnswerIndex, lastClicked, onClick, areImage }) => {
   return (
     <div id="quiz-answers">
       {answers.map((value, index) => (
@@ -39,6 +40,7 @@ const Answers = ({ inProgress, answers, goodAnswerIndex, lastClicked, onClick })
           isRight={index === goodAnswerIndex}
           showResult={!inProgress && (index === goodAnswerIndex || lastClicked === value)}
           onClick={onClick}
+          isImage={areImage}
         />
       ))}
     </div>
@@ -51,6 +53,7 @@ Answers.propTypes = {
   answers: PropTypes.arrayOf(PropTypes.string).isRequired,
   lastClicked: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
+  areImage: PropTypes.bool,
 };
 
 export default Answers;

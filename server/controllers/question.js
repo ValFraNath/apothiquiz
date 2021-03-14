@@ -75,7 +75,7 @@ const generatorInfosByType = {
   11: {
     filename: "question_IM.sql",
     before: "",
-    createWording: (subject) => `Quelle molécule a la structure chimique '${subject}' ?`,
+    createWording: () => `Quelle molécule a la structure chimique suivante ?`,
     title: "1 structure chimique - 4 molécules",
   },
   12: {
@@ -124,16 +124,6 @@ async function generateQuestion(req, res) {
 
   try {
     let { type, title, subject, goodAnswer, answers, wording } = await generateQuestion();
-
-    // Questions with images
-    if (type === 11 || type === 12) {
-      const imagesRoute = `/api/v1/${IMAGES_ROUTE}`;
-      if (type === 12) {
-        answers = answers.map((answer) => `${imagesRoute}/${answer}`);
-      } else {
-        subject = `${imagesRoute}/${subject}`;
-      }
-    }
 
     res.sendResponse(200, {
       type,
@@ -207,6 +197,16 @@ export function createGeneratorOfType(type) {
   return async () => {
     const { before, filename } = typeInfos;
     const question = await queryQuestion(filename, type, before);
+
+    // Questions with images
+    if (type === 11 || type === 12) {
+      const imagesRoute = `/api/v1/${IMAGES_ROUTE}`;
+      if (type === 12) {
+        question.answers = question.answers.map((answer) => `${imagesRoute}/${answer}`);
+      } else {
+        question.subject = `${imagesRoute}/${question.subject}`;
+      }
+    }
 
     return Object.assign(question, {
       wording: typeInfos.createWording(question.subject),
