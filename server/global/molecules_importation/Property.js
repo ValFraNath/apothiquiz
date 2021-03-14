@@ -81,7 +81,7 @@ export default class Property {
   }
 
   /**
-   * Create the sql script to insert the propertu in the database
+   * Create the sql script to insert the property in the database
    * @returns {string}
    */
   createImportSql() {
