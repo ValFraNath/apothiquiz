@@ -152,3 +152,9 @@
     }
   }
 }
+
+body.dark #quiz {
+  #quiz-topbar div:last-of-type button {
+    color: white;
+  }
+}

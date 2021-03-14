@@ -514,6 +514,7 @@ async function insertResultInDatabase(id, username, answers) {
 
   const updatedAnswers = JSON.stringify([...previousAnswers, answers]);
   const currentDate = formatDate();
+
   const sql =
     "UPDATE results \
     SET re_answers = :answers, re_last_time = :time \

@@ -77,7 +77,7 @@ const files = [
       { code: MoleculesAnalyzerWarning.DUPLICATE_CLASSIFICATION_NODE, count: 1 },
       { code: MoleculesAnalyzerWarning.TOO_CLOSE_VALUES, count: 3 },
       { code: MoleculesAnalyzerWarning.INVALID_TYPE, count: 4 },
-      { code: MoleculesAnalyzerWarning.INVALID_DCI, count: 3 },
+      { code: MoleculesAnalyzerWarning.INVALID_DCI, count: 2 },
     ],
   },
 ];

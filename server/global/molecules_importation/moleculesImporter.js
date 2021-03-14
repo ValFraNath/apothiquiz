@@ -5,7 +5,7 @@ import { parseMoleculesFromCsv } from "./moleculesParser.js";
 
 export const MOLECULES_MAX_LENGTHS = {
   DCI: 128,
-  PROPERTY_VALUE: 64,
+  PROPERTY_VALUE: 128,
   CLASSIFICATION_VALUE: 128,
   SKELETAL_FORMULA: 64,
 };
@@ -203,7 +203,7 @@ class FormattedMolecule {
     this.skeletalFormula = molecule.skeletalFormula
       ? String(molecule.skeletalFormula).substr(0, MOLECULES_MAX_LENGTHS.SKELETAL_FORMULA)
       : "";
-    this.difficulty = molecule.levelHard ? "HARD" : "EASY";
+    this.difficulty = molecule.levelEasy ? "EASY" : "HARD";
     this.properties = Object.create(null);
     this.properties.indications = molecule.indications.slice();
     this.properties.sideEffects = molecule.sideEffects.slice();
