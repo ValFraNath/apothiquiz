@@ -3,11 +3,11 @@ import path from "path";
 import chai from "chai";
 
 import { queryPromise } from "../../../db/database.js";
-import { AnalyzerWarning } from "../../../global/importationUtils.js";
+
 import { CLASSIFICATION_WARNINGS } from "../../../global/molecules_importation/Classification.js";
 import { MOLECULE_WARNINGS } from "../../../global/molecules_importation/MoleculesList.js";
-import { PROPERTY_WARNINGS } from "../../../global/molecules_importation/Property.js";
 import { parseMoleculesFromCsv } from "../../../global/molecules_importation/moleculesParser.js";
+import { PROPERTY_WARNINGS } from "../../../global/molecules_importation/Property.js";
 import { forceTruncateTables } from "../../index.test.js";
 
 const { expect } = chai;
