@@ -1,8 +1,6 @@
 import levenshtein from "js-levenshtein";
 import mysql from "mysql";
 
-// ***** DATA ANALYZE *****
-
 /**
  * Test if a variable is a string
  * @param {*} v
@@ -17,7 +15,36 @@ export const isString = (v) => typeof v === "string" || v instanceof String;
  */
 export const isNumber = (v) => typeof v === "number" || v instanceof Number;
 
-const escapeRegex = (string) => String(string).replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&");
+/**
+ * Escape a regex
+ * @param {string} regex The regex
+ * @returns {string} the escaped regex
+ */
+const escapeRegex = (regex) => String(regex).replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&");
+
+/**
+ * Remove special chars from a string
+ * @param {string} string The string to normalize
+ * @returns {string} The normalized string
+ */
+const normalizeString = (string) =>
+  String(string)
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+
+/**
+ * Checks if two strings are equal regardless of case and accents
+ * @param {string} str1 The first string
+ * @param {string} str2 The second string
+ * @returns {boolean}
+ */
+export function isSameString(str1, str2) {
+  const normalizedStr1 = normalizeString(str1);
+  const normalizedStr2 = normalizeString(str2);
+  const regex = new RegExp(`^${escapeRegex(normalizedStr1)}$`, "i");
+
+  return regex.test(normalizedStr2);
+}
 
 /**
  * Returns values that appear more than once in the list
@@ -28,16 +55,19 @@ export function getDuplicates(values) {
   return [
     ...new Set(
       values.filter((value, i) =>
-        values
-          .slice(i + 1)
-          .find(
-            (other) =>
-              other === value ||
-              new RegExp(`^${escapeRegex(String(value))}$`, "i").test(String(other))
-          )
+        values.slice(i + 1).find((other) => other === value || isSameString(value, other))
       )
     ),
   ];
+}
+
+// ********** ANALYZE **********
+
+export class AnalyzerWarning {
+  constructor(code, message) {
+    this.code = code;
+    this.message = message;
+  }
 }
 
 /**
@@ -102,13 +132,6 @@ export function createSqlToInsertInto(table) {
       return sql + `VALUES (${values.map(mysql.escape).join(", ")});\n`;
     };
   };
-}
-
-export class AnalyzerWarning {
-  constructor(code, message) {
-    this.code = code;
-    this.message = message;
-  }
 }
 
 /**

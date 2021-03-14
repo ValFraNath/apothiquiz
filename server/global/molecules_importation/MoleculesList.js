@@ -168,7 +168,7 @@ export class Molecule {
   }
 
   /**
-   *
+   * Get ids of given property values
    * @param {Property} property
    * @param {PropertyValue[]} values
    * @returns

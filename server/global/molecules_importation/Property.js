@@ -1,5 +1,5 @@
 import { queryFormat } from "../../db/database.js";
-import { AnalyzerWarning, isString, getTooCloseValues } from "../importationUtils.js";
+import { AnalyzerWarning, isString, getTooCloseValues, isSameString } from "../importationUtils.js";
 
 const PROPERTY_NAME_MAX_LENGTH = 64;
 const PROPERTY_VALUE_MAX_LENGTH = 128;
@@ -48,8 +48,7 @@ export default class Property {
    * @returns {PropertyValue}
    */
   getValueByName(name) {
-    // TODO use regex to compare without case
-    return this.values.find((value) => value.name === name);
+    return this.values.find((value) => isSameString(name, value.name));
   }
 
   /**

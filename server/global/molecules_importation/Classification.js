@@ -4,6 +4,7 @@ import {
   isString,
   getTooCloseValues,
   getDuplicates,
+  isSameString,
 } from "../importationUtils.js";
 
 const NODE_NAME_MAX_LENGTH = 128;
@@ -69,7 +70,7 @@ export default class Classification {
    * @returns {ClassificationNode} The found element
    */
   getElementByName(name) {
-    return this.elements.find((element) => element.name === name);
+    return this.elements.find((element) => isSameString(name, element.name));
   }
 
   /**
@@ -181,7 +182,7 @@ export class ClassificationNode {
    * @returns {ClassificationNode} The found child
    */
   getChildByName(name) {
-    return this.children.find((child) => child.name === name);
+    return this.children.find((child) => isSameString(name, child.name));
   }
 
   /**
