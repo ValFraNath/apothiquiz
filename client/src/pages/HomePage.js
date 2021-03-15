@@ -11,7 +11,9 @@ import Avatar from "../components/Avatar";
 import Plural from "../components/Plural";
 import Loading from "../components/status/Loading";
 import PageError from "../components/status/PageError";
-import FightPilette from "../images/fight.png";
+
+import fightAnimAction from "../images/fight-action.png";
+import fightAnimLoop from "../images/fight-loop.png";
 import waitingAnimAction from "../images/waiting-action.png";
 import waitingAnimLoop from "../images/waiting-loop.png";
 
@@ -83,7 +85,21 @@ const HomePage = () => {
 
       <section>
         <h2>
-          <img src={FightPilette} alt="Pilette est prête à affronter ses adversaires" /> Ton tour
+          <AnimationWithAction
+            size={90}
+            loopImage={{
+              imageLink: fightAnimLoop,
+              nbFrames: 14,
+              duration: 1,
+            }}
+            actionImage={{
+              imageLink: fightAnimAction,
+              nbFrames: 14,
+              duration: 1,
+            }}
+            timeBetweenAction={[2, 6]}
+          />
+          Ton tour
         </h2>
         {duels.toPlay.length === 0 ? (
           <p>Aucun défi à relever pour le moment.</p>
