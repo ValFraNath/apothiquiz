@@ -12,10 +12,10 @@ import Plural from "../components/Plural";
 import Loading from "../components/status/Loading";
 import PageError from "../components/status/PageError";
 
-import fightAnimAction from "../images/fight-action.png";
-import fightAnimLoop from "../images/fight-loop.png";
-import waitingAnimAction from "../images/waiting-action.png";
-import waitingAnimLoop from "../images/waiting-loop.png";
+import fightAnimAction from "../images/sprites/fight-action.png";
+import fightAnimLoop from "../images/sprites/fight-loop.png";
+import waitingAnimAction from "../images/sprites/waiting-action.png";
+import waitingAnimLoop from "../images/sprites/waiting-loop.png";
 
 const HomePageHeader = ({ user }) => (
   <header>
