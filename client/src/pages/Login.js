@@ -48,8 +48,8 @@ class Login extends Component {
             <summary>Vous n'avez pas de compte ?</summary>
             Prenez donc celui-ci :
             <ul>
-              <li>Nom d'utilisateur : « test »</li>
-              <li>Mot de passe : « 1234 »</li>
+              <li>Nom d'utilisateur : « test »</li>
+              <li>Mot de passe : « 1234 »</li>
             </ul>
           </details>
           <form onSubmit={this.handleFormSubmit}>
