@@ -1,0 +1,22 @@
+.loading {
+  min-height: calc(100% - 50px);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  .animation {
+    animation: resize 1s infinite;
+
+    @keyframes resize {
+      50% {
+        transform: scale(98%);
+      }
+    }
+  }
+
+  span {
+    font-size: 1.5em;
+  }
+}
