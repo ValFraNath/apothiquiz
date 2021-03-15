@@ -49,3 +49,15 @@ body.dark .page-error img {
     text-align: center;
   }
 }
+body.dark .floating-error img {
+  @include white-outline;
+}
+
+.floating-error {
+  display: flex;
+  align-items: center;
+
+  img {
+    height: 3em;
+  }
+}
