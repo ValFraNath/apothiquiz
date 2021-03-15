@@ -37,10 +37,15 @@ const AnimationWithAction = ({ size, loopImage, actionImage, timeBetweenAction }
       launchActionAnim();
     }, 1000 * (2 + 8 * Math.random()));
 
+    // Preload image
+    const img = new Image();
+    img.src = actionImage.imageLink;
+
+    // Remove timeout when unmounting
     return function cleanup() {
       clearTimeout(timerIdRef.current);
     };
-  }, [launchActionAnim, size]);
+  }, [launchActionAnim, actionImage]);
 
   if (isAction) {
     return <AnimationInfinite size={size} {...actionImage} />;
