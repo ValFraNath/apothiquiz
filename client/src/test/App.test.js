@@ -3,10 +3,9 @@ import React from "react";
 
 import App from "../App";
 
-/* eslint-disable */
 describe("Good display", () => {
-  it("renders without crashing", async () => {
+  it("renders without crashing", () => {
     const wrapper = shallow(<App />);
-    await wrapper.instance().componentDidMount();
+    wrapper.instance().componentDidMount();
   });
 });
