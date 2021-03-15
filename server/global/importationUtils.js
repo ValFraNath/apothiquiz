@@ -16,34 +16,13 @@ export const isString = (v) => typeof v === "string" || v instanceof String;
 export const isNumber = (v) => typeof v === "number" || v instanceof Number;
 
 /**
- * Escape a regex
- * @param {string} regex The regex
- * @returns {string} the escaped regex
- */
-const escapeRegex = (regex) => String(regex).replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&");
-
-/**
- * Remove special chars from a string
- * @param {string} string The string to normalize
- * @returns {string} The normalized string
- */
-const normalizeString = (string) =>
-  String(string)
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "");
-
-/**
  * Checks if two strings are equal regardless of case and accents
  * @param {string} str1 The first string
  * @param {string} str2 The second string
  * @returns {boolean}
  */
 export function isSameString(str1, str2) {
-  const normalizedStr1 = normalizeString(str1);
-  const normalizedStr2 = normalizeString(str2);
-  const regex = new RegExp(`^${escapeRegex(normalizedStr1)}$`, "i");
-
-  return regex.test(normalizedStr2);
+  return Boolean(String(str1).localeCompare(String(str2), "fr", { sensitivity: "base" }) === 0);
 }
 
 /**
