@@ -95,7 +95,7 @@ const HomePage = () => {
             actionImage={{
               imageLink: fightAnimAction,
               nbFrames: 14,
-              duration: 1,
+              duration: 0.8,
             }}
             timeBetweenAction={[2, 6]}
           />

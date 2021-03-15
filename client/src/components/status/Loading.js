@@ -2,11 +2,11 @@ import { React } from "react";
 
 import loadingAnim from "../../images/loading.png";
 
-import AnimationInfinite from "../animations/AnimationInfinite";
+import AnimationLoop from "../animations/AnimationLoop";
 
 const Loading = () => (
   <div className="loading">
-    <AnimationInfinite imageLink={loadingAnim} size={300} nbFrames={14} duration={1.0} />
+    <AnimationLoop imageLink={loadingAnim} size={300} nbFrames={14} duration={1.0} />
     <span>Chargement</span>
   </div>
 );

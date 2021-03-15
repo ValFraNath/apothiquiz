@@ -1,7 +1,7 @@
 import { PropTypes } from "prop-types";
 import React, { useState, useEffect, useCallback, useRef } from "react";
 
-import AnimationInfinite from "./AnimationInfinite";
+import AnimationLoop from "./AnimationLoop";
 
 /**
  * AnimationWithAction renders an infinite animation from a looped sprite,
@@ -48,10 +48,10 @@ const AnimationWithAction = ({ size, loopImage, actionImage, timeBetweenAction }
   }, [launchActionAnim, actionImage]);
 
   if (isAction) {
-    return <AnimationInfinite size={size} {...actionImage} />;
+    return <AnimationLoop size={size} {...actionImage} />;
   }
 
-  return <AnimationInfinite size={size} {...loopImage} />;
+  return <AnimationLoop size={size} {...loopImage} />;
 };
 
 AnimationWithAction.propTypes = {

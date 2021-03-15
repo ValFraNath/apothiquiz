@@ -1,8 +1,10 @@
 import { PropTypes } from "prop-types";
 import React from "react";
 
-const AnimationInfinite = ({ imageLink, nbFrames, size, duration }) => {
-  const animationName = `animation-${imageLink.replaceAll(".", "").split("/").pop()}-${duration}`;
+const AnimationLoop = ({ imageLink, nbFrames, size, duration }) => {
+  const animationName = `animation-${imageLink.split("/").pop()}-${duration}`.replaceAll(".", "");
+
+  console.debug(duration);
 
   return (
     <div className="animation" style={{ height: size, width: size }}>
@@ -29,11 +31,11 @@ const AnimationInfinite = ({ imageLink, nbFrames, size, duration }) => {
   );
 };
 
-AnimationInfinite.propTypes = {
+AnimationLoop.propTypes = {
   imageLink: PropTypes.string.isRequired,
   nbFrames: PropTypes.number.isRequired,
   size: PropTypes.number.isRequired,
   duration: PropTypes.number.isRequired,
 };
 
-export default AnimationInfinite;
+export default AnimationLoop;
