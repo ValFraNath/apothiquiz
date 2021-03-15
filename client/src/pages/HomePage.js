@@ -6,12 +6,14 @@ import { useQuery } from "react-query";
 
 import { Link } from "react-router-dom";
 
+import AnimationWithAction from "../components/animations/AnimationWithAction";
 import Avatar from "../components/Avatar";
 import Plural from "../components/Plural";
 import Loading from "../components/status/Loading";
 import PageError from "../components/status/PageError";
-import WaitPilette from "../images/attente.png";
 import FightPilette from "../images/fight.png";
+import waitingAnimAction from "../images/waiting-action.png";
+import waitingAnimLoop from "../images/waiting-loop.png";
 
 const HomePageHeader = ({ user }) => (
   <header>
@@ -105,7 +107,21 @@ const HomePage = () => {
 
       <section>
         <h2>
-          <img src={WaitPilette} alt="Pilette attend patiemment" /> En attente
+          <AnimationWithAction
+            size={50}
+            loopImage={{
+              imageLink: waitingAnimLoop,
+              nbFrames: 24,
+              duration: 1,
+            }}
+            actionImage={{
+              imageLink: waitingAnimAction,
+              nbFrames: 24,
+              duration: 1,
+            }}
+            timeBetweenAction={[2, 6]}
+          />
+          En attente
         </h2>
         {duels.pending.length === 0 ? (
           <p>Aucun défi à en attente pour le moment.</p>

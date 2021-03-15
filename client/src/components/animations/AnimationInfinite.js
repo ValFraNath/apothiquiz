@@ -1,7 +1,7 @@
 import { PropTypes } from "prop-types";
 import React from "react";
 
-const AnimationSimple = ({ imageLink, nbFrames, size, duration }) => {
+const AnimationInfinite = ({ imageLink, nbFrames, size, duration }) => {
   const animationName = `animation-${imageLink.replaceAll(".", "").split("/").pop()}-${duration}`;
 
   return (
@@ -21,20 +21,19 @@ const AnimationSimple = ({ imageLink, nbFrames, size, duration }) => {
       <div
         className="animation-inside"
         style={{
-          animation: `${animationName} ${duration}s infinite`,
+          animation: `${animationName} ${duration}s infinite steps(${nbFrames})`,
           backgroundImage: `url(${imageLink})`,
-          animationTimingFunction: `steps(${nbFrames})`,
         }}
       />
     </div>
   );
 };
 
-AnimationSimple.propTypes = {
+AnimationInfinite.propTypes = {
   imageLink: PropTypes.string.isRequired,
   nbFrames: PropTypes.number.isRequired,
   size: PropTypes.number.isRequired,
   duration: PropTypes.number.isRequired,
 };
 
-export default AnimationSimple;
+export default AnimationInfinite;

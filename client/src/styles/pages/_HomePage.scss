@@ -64,9 +64,12 @@
       color: #252525;
       margin-bottom: 0.8rem;
 
+      .animation,
       img {
+        display: inline-block;
         vertical-align: middle;
         height: 3rem;
+        padding-right: 1rem;
       }
     }
 
