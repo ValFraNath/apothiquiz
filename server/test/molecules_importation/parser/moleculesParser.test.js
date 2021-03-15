@@ -27,6 +27,11 @@ describe("Test if values are well imported", function () {
       expectation: expectations.firstVersion,
     },
     {
+      name: "molecules_v2.csv",
+      snapshot: "molecules_v2.json",
+      expectation: expectations.secondVersion,
+    },
+    {
       name: "molecules_moved_columns.csv",
       snapshot: "moved_columns.json",
       expectation: expectations.firstVersion,
