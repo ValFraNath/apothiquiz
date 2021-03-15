@@ -25,7 +25,7 @@ export function analyzeData(data) {
 
   warnings.push(...analyzeProperty("indications", data.indications, 128));
   warnings.push(...analyzeProperty("effets indésirables", data.sideEffects, 128));
-  warnings.push(...analyzeProperty("intéractions", data.interactions, 128));
+  warnings.push(...analyzeProperty("interactions", data.interactions, 128));
 
   warnings.push(...analyzeMolecules(data.molecules));
 
