@@ -9,7 +9,8 @@ const { describe, it, before } = mocha;
 chai.use(deepEqualAnyOrder);
 
 import { queryPromise } from "../../../db/database.js";
-import { parseAndCreateSqlToInsertAllData } from "../../../global/molecules_importation/moleculesImporter.js";
+
+import { parseMoleculesFromCsv } from "../../../global/molecules_importation/moleculesParser.js";
 import { forceTruncateTables } from "../../index.test.js";
 
 import { expectations } from "./expectations.js";
@@ -23,22 +24,22 @@ const files = [
 
 for (let file of files) {
   describe("Data are well imported in database", function () {
-    before("Import data", function (done) {
+    before("Import data", async function () {
       this.timeout(10000);
-      forceTruncateTables(
+      await forceTruncateTables(
         "molecule",
         "property",
         "property_value",
         "molecule_property",
         "class",
         "system"
-      ).then(() =>
-        parseAndCreateSqlToInsertAllData(
-          path.resolve("test", "molecules_importation", "importer", "files", file.name)
-        ).then((script) => {
-          queryPromise(script).then(() => done());
-        })
       );
+      const script = (
+        await parseMoleculesFromCsv(
+          path.resolve("test", "molecules_importation", "importer", "files", file.name)
+        )
+      ).createImportSql();
+      await queryPromise(script);
     });
 
     it("Good number of molecule", async () => {

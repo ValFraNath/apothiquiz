@@ -2,12 +2,8 @@ import path from "path";
 
 import chai from "chai";
 
-import {
-  analyzeUsers,
-  UsersAnalyzerWarning,
-} from "../../../global/users_importation/usersAnalyzer.js";
+import { USER_WARNINGS } from "../../../global/users_importation/UsersList.js";
 import { parseUsersFromCsv } from "../../../global/users_importation/usersParser.js";
-
 const { expect } = chai;
 const FILES_DIR = path.resolve("test", "users_importation", "analyzer", "files");
 
@@ -15,89 +11,71 @@ const tests = [
   {
     file: "students.csv",
     warnings: [
-      { code: UsersAnalyzerWarning.DUPLICATE_LOGIN, count: 0 },
-      { code: UsersAnalyzerWarning.TOO_CLOSE_LOGIN, count: 0 },
-      { code: UsersAnalyzerWarning.INVALID_LOGIN, count: 0 },
-      { code: UsersAnalyzerWarning.INVALID_ADMIN, count: 0 },
-      { code: UsersAnalyzerWarning.NO_ADMIN, count: 0 },
-      { code: UsersAnalyzerWarning.NO_USERS, count: 0 },
-    ],
-  },
-  {
-    file: "invalid_admin.csv",
-    warnings: [
-      { code: UsersAnalyzerWarning.DUPLICATE_LOGIN, count: 0 },
-      { code: UsersAnalyzerWarning.TOO_CLOSE_LOGIN, count: 0 },
-      { code: UsersAnalyzerWarning.INVALID_LOGIN, count: 0 },
-      { code: UsersAnalyzerWarning.INVALID_ADMIN, count: 3 },
-      { code: UsersAnalyzerWarning.NO_ADMIN, count: 0 },
-      { code: UsersAnalyzerWarning.NO_USERS, count: 0 },
+      { code: USER_WARNINGS.DUPLICATED_LOGINS, count: 0 },
+      { code: USER_WARNINGS.TOO_CLOSE_LOGINS, count: 0 },
+      { code: USER_WARNINGS.INVALID_LOGIN, count: 0 },
+      { code: USER_WARNINGS.NO_ADMIN, count: 0 },
+      { code: USER_WARNINGS.NO_USER, count: 0 },
     ],
   },
   {
     file: "invalid_login.csv",
     warnings: [
-      { code: UsersAnalyzerWarning.DUPLICATE_LOGIN, count: 0 },
-      { code: UsersAnalyzerWarning.TOO_CLOSE_LOGIN, count: 0 },
-      { code: UsersAnalyzerWarning.INVALID_LOGIN, count: 2 },
-      { code: UsersAnalyzerWarning.INVALID_ADMIN, count: 0 },
-      { code: UsersAnalyzerWarning.NO_ADMIN, count: 0 },
-      { code: UsersAnalyzerWarning.NO_USERS, count: 0 },
+      { code: USER_WARNINGS.DUPLICATED_LOGINS, count: 0 },
+      { code: USER_WARNINGS.TOO_CLOSE_LOGINS, count: 0 },
+      { code: USER_WARNINGS.INVALID_LOGIN, count: 2 },
+      { code: USER_WARNINGS.NO_ADMIN, count: 0 },
+      { code: USER_WARNINGS.NO_USER, count: 0 },
     ],
   },
   {
     file: "duplicates_login.csv",
     warnings: [
-      { code: UsersAnalyzerWarning.DUPLICATE_LOGIN, count: 2 },
-      { code: UsersAnalyzerWarning.TOO_CLOSE_LOGIN, count: 0 },
-      { code: UsersAnalyzerWarning.INVALID_LOGIN, count: 0 },
-      { code: UsersAnalyzerWarning.INVALID_ADMIN, count: 0 },
-      { code: UsersAnalyzerWarning.NO_ADMIN, count: 0 },
-      { code: UsersAnalyzerWarning.NO_USERS, count: 0 },
+      { code: USER_WARNINGS.DUPLICATED_LOGINS, count: 2 },
+      { code: USER_WARNINGS.TOO_CLOSE_LOGINS, count: 0 },
+      { code: USER_WARNINGS.INVALID_LOGIN, count: 0 },
+      { code: USER_WARNINGS.NO_ADMIN, count: 0 },
+      { code: USER_WARNINGS.NO_USER, count: 0 },
     ],
   },
   {
     file: "close_logins.csv",
     warnings: [
-      { code: UsersAnalyzerWarning.DUPLICATE_LOGIN, count: 0 },
-      { code: UsersAnalyzerWarning.TOO_CLOSE_LOGIN, count: 3 },
-      { code: UsersAnalyzerWarning.INVALID_LOGIN, count: 0 },
-      { code: UsersAnalyzerWarning.INVALID_ADMIN, count: 0 },
-      { code: UsersAnalyzerWarning.NO_ADMIN, count: 0 },
-      { code: UsersAnalyzerWarning.NO_USERS, count: 0 },
+      { code: USER_WARNINGS.DUPLICATED_LOGINS, count: 0 },
+      { code: USER_WARNINGS.TOO_CLOSE_LOGINS, count: 3 },
+      { code: USER_WARNINGS.INVALID_LOGIN, count: 0 },
+      { code: USER_WARNINGS.NO_ADMIN, count: 0 },
+      { code: USER_WARNINGS.NO_USER, count: 0 },
     ],
   },
   {
     file: "worst.csv",
     warnings: [
-      { code: UsersAnalyzerWarning.DUPLICATE_LOGIN, count: 1 },
-      { code: UsersAnalyzerWarning.TOO_CLOSE_LOGIN, count: 1 },
-      { code: UsersAnalyzerWarning.INVALID_LOGIN, count: 2 },
-      { code: UsersAnalyzerWarning.INVALID_ADMIN, count: 5 },
-      { code: UsersAnalyzerWarning.NO_ADMIN, count: 1 },
-      { code: UsersAnalyzerWarning.NO_USERS, count: 0 },
+      { code: USER_WARNINGS.DUPLICATED_LOGINS, count: 1 },
+      { code: USER_WARNINGS.TOO_CLOSE_LOGINS, count: 1 },
+      { code: USER_WARNINGS.INVALID_LOGIN, count: 2 },
+      { code: USER_WARNINGS.NO_ADMIN, count: 1 },
+      { code: USER_WARNINGS.NO_USER, count: 0 },
     ],
   },
   {
     file: "no_users.csv",
     warnings: [
-      { code: UsersAnalyzerWarning.DUPLICATE_LOGIN, count: 0 },
-      { code: UsersAnalyzerWarning.TOO_CLOSE_LOGIN, count: 0 },
-      { code: UsersAnalyzerWarning.INVALID_LOGIN, count: 0 },
-      { code: UsersAnalyzerWarning.INVALID_ADMIN, count: 0 },
-      { code: UsersAnalyzerWarning.NO_ADMIN, count: 1 },
-      { code: UsersAnalyzerWarning.NO_USERS, count: 1 },
+      { code: USER_WARNINGS.DUPLICATED_LOGINS, count: 0 },
+      { code: USER_WARNINGS.TOO_CLOSE_LOGINS, count: 0 },
+      { code: USER_WARNINGS.INVALID_LOGIN, count: 0 },
+      { code: USER_WARNINGS.NO_ADMIN, count: 1 },
+      { code: USER_WARNINGS.NO_USER, count: 1 },
     ],
   },
   {
     file: "no_admins.csv",
     warnings: [
-      { code: UsersAnalyzerWarning.DUPLICATE_LOGIN, count: 0 },
-      { code: UsersAnalyzerWarning.TOO_CLOSE_LOGIN, count: 0 },
-      { code: UsersAnalyzerWarning.INVALID_LOGIN, count: 0 },
-      { code: UsersAnalyzerWarning.INVALID_ADMIN, count: 0 },
-      { code: UsersAnalyzerWarning.NO_ADMIN, count: 1 },
-      { code: UsersAnalyzerWarning.NO_USERS, count: 0 },
+      { code: USER_WARNINGS.DUPLICATED_LOGINS, count: 0 },
+      { code: USER_WARNINGS.TOO_CLOSE_LOGINS, count: 0 },
+      { code: USER_WARNINGS.INVALID_LOGIN, count: 0 },
+      { code: USER_WARNINGS.NO_ADMIN, count: 1 },
+      { code: USER_WARNINGS.NO_USER, count: 0 },
     ],
   },
 ];
@@ -109,15 +87,12 @@ describe("Users analyzer", () => {
   for (const test of tests) {
     describe(`File ${test.file}`, () => {
       let users;
-      before("Parse file", (done) => {
-        parseUsersFromCsv(path.resolve(FILES_DIR, test.file)).then((data) => {
-          users = JSON.parse(data);
-          done();
-        });
+      before("Parse file", async () => {
+        users = await parseUsersFromCsv(path.resolve(FILES_DIR, test.file));
       });
 
       it("Expected warnings", (done) => {
-        const warnings = analyzeUsers(users);
+        const warnings = users.analyze();
 
         test.warnings.forEach((warning) =>
           expect(warningsCounter(warnings, warning.code), "Type " + warning.code).equals(
