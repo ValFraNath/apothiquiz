@@ -13,6 +13,6 @@
 ## Screenshots
 <!-- Remove if useless -->
 
-			Light theme        		|  			Dark theme
+      Light theme           |       Dark theme
 :--------------------------:|:-------------------------:
-Drop image here 					 	|  Drop image here
+    Drop image here         |     Drop image here
