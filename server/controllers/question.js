@@ -10,67 +10,68 @@ import { queryPromise } from "../db/database.js";
 import { HttpResponseWrapper } from "../global/HttpControllerWrapper.js";
 
 const IMAGES_ROUTE = "files/images";
+/* eslint-disable no-irregular-whitespace */
 
 const generatorInfosByType = {
   1: {
     filename: "question_CM.sql",
     before: "",
-    createWording: (subject) => `Quelle molécule appartient à la classe '${subject}' ?`,
+    createWording: (subject) => `Quelle molécule appartient à la classe « ${subject} » ?`,
     title: "1 classe - 4 molécules",
   },
   2: {
     filename: "question_MC.sql",
     before: "",
-    createWording: (subject) => `À quelle classe appartient la molécule '${subject}' ?`,
+    createWording: (subject) => `À quelle classe la molécule « ${subject} » appartient-elle ?`,
     title: "1 molecule - 4 classes",
   },
   3: {
     filename: "question_SM.sql",
     before: "",
-    createWording: (subject) => `Quelle molécule appartient au système '${subject}' ?`,
+    createWording: (subject) => `Quelle molécule appartient au système « ${subject} » ?`,
     title: "1 système - 4 molécules",
   },
   4: {
     filename: "question_MS.sql",
     before: "",
-    createWording: (subject) => `À quel système appartient la molécule '${subject}' ?`,
+    createWording: (subject) => `À quel système la molécule « ${subject} » appartient-elle ?`,
     title: "1 molecule - 4 systèmes",
   },
   5: {
     filename: "question_PM.sql",
     before: "SET @property = 'indications';",
-    createWording: (subject) => `Quelle molécule a comme indication '${subject}' ?`,
+    createWording: (subject) => `Quelle molécule a comme indication « ${subject} » ?`,
     title: "1 indication - 4 molecules",
   },
   6: {
     filename: "question_PM.sql",
     before: "SET @property = 'sideEffects';",
-    createWording: (subject) => `Quelle molécule a comme effet indésirable '${subject}' ?`,
+    createWording: (subject) => `Quelle molécule a comme effet indésirable « ${subject} » ?`,
     title: "1 effet indésirable - 4 molecules",
   },
   7: {
     filename: "question_PM.sql",
     before: "SET @property = 'interactions';",
-    createWording: (subject) => `Quelle molécule a comme intéraction '${subject}' ?`,
-    title: "1 intéraction - 4 molecules",
+    createWording: (subject) => `Quelle molécule a comme interaction « ${subject} » ?`,
+    title: "1 interaction - 4 molecules",
   },
   8: {
     filename: "question_MP.sql",
     before: "SET @property = 'indications';",
-    createWording: (subject) => `Quelle indication a la molécule '${subject}' ?`,
+    createWording: (subject) => `Quelle indication la molécule « ${subject} » a-t-elle ?`,
     title: "1 molécule - 4 indications",
   },
   9: {
     filename: "question_MP.sql",
     before: "SET @property = 'sideEffects';",
-    createWording: (subject) => `Quel effet indésirable a la molécule '${subject}' ?`,
+    createWording: (subject) => `Quel effet indésirable la molécule « ${subject} » a-t-elle ?`,
     title: "1 molécule - 4 effets indésirables",
   },
   10: {
     filename: "question_MP.sql",
     before: "SET @property = 'interactions';",
-    createWording: (subject) => `Quelle intéraction a la molécule '${subject}' ?`,
-    title: "1 molécule - 4 intéractions",
+    createWording: (subject) => `Quelle interaction la molécule « ${subject} » a-t-elle ?`,
+    title: "1 molécule - 4 interactions",
   },
   11: {
     filename: "question_IM.sql",

@@ -61,7 +61,7 @@ describe("Images importation", () => {
     const res = await importImagesViaAPI(path.resolve(FILES_DIR, "warnings"), false, token);
     expect(res.status).equals(202);
     expect(res.body.imported).to.be.false;
-    expect(res.body.warnings).to.have.length(4);
+    expect(res.body.warnings).to.have.length(5);
   });
 
   it("Can import (confirmed)", async () => {
