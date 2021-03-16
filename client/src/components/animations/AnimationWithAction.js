@@ -45,7 +45,7 @@ const AnimationWithAction = ({ size, loopImage, actionImage, timeBetweenAction }
     return function cleanup() {
       clearTimeout(timerIdRef.current);
     };
-  }, [launchActionAnim, actionImage]);
+  }, [launchActionAnim, actionImage, randomTime]);
 
   if (isAction) {
     return <AnimationLoop size={size} {...actionImage} />;
