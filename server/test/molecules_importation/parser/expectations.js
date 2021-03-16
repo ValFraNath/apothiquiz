@@ -570,6 +570,17 @@ export const expectations = {
         difficulty: "HARD",
         skeletalFormula: null,
       },
+      {
+        dci: "octréotide",
+        system: "endocrinologie",
+        class: "inhibiteurs de la sécrétion de l’hormone de croissance",
+        indications: ["acromégalie"],
+        interactions: [],
+        sideEffects: [],
+        ntr: null,
+        difficulty: "HARD",
+        skeletalFormula: null,
+      },
     ],
   },
   littleSample: {
