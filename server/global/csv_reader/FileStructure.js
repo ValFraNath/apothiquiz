@@ -12,11 +12,11 @@ export default class FileStructure {
    */
   constructor(header, columnsSpecs) {
     this.header = header;
-    this.propertiesIndexes = Object.create(null);
+    this.propertiesIndexes = {};
     this.columnsSpecs = columnsSpecs;
 
-    forEachCorrespondingColumns(this, (column, index) => {
-      addProperty(this, column.property, index);
+    this._forEachCorrespondingColumns((column, index) => {
+      this._addProperty(column.property, index);
     });
   }
 
@@ -26,45 +26,34 @@ export default class FileStructure {
    * @return {number[]} Indexes
    */
   getIndexesFor(property) {
-    return (this.propertiesIndexes[property] || []).slice();
+    return (this.propertiesIndexes[property] || []).slice(); // slice to return a copy
   }
 
   /**
-   * @returns {ColumnSpecifications[]} The columns specifications
+   * Add a property to the structure
+   * @param {ColumnSpecifications} property
+   * @param {number} index
    */
-  getColumnsSpecifications() {
-    return this.columnsSpecs;
+  _addProperty(property, index) {
+    let currentIndexes = this.propertiesIndexes[property];
+    if (currentIndexes) {
+      currentIndexes.push(index);
+    } else {
+      this.propertiesIndexes[property] = [index];
+    }
   }
-}
 
-// ***** INTERNAL FUNCTIONS *****
-
-/**
- * Add a property to the structure
- * @param {FileStructure} structure The struture to which we add the property
- * @param {ColumnSpecifications} property
- * @param {number} index
- */
-function addProperty(structure, property, index) {
-  let currentIndexes = structure.propertiesIndexes[property];
-  if (currentIndexes) {
-    currentIndexes.push(index);
-  } else {
-    structure.propertiesIndexes[property] = [index];
-  }
-}
-
-/**
- * Iterate through all the header columns and run a callback for each one corresponding to a column in specifications
- * @param {FileStructure} structure The structure to itearate
- * @param {function(ColumnSpecifications,number)} callback - Function to execute for each column corresponding to a property
- */
-function forEachCorrespondingColumns(structure, callback) {
-  structure.header.forEach((headerColumn, index) => {
-    structure.columnsSpecs.forEach((columnSpecs) => {
-      if (columnSpecs.matchTitle(headerColumn)) {
-        callback(columnSpecs, index);
-      }
+  /**
+   * Iterate through all the header columns and run a callback for each one corresponding to a column in specifications
+   * @param {function(ColumnSpecifications,number)} callback - Function to execute for each column corresponding to a property
+   */
+  _forEachCorrespondingColumns(callback) {
+    this.header.forEach((headerColumn, index) => {
+      this.columnsSpecs.forEach((columnSpecs) => {
+        if (columnSpecs.matchTitle(headerColumn)) {
+          callback(columnSpecs, index);
+        }
+      });
     });
-  });
+  }
 }
