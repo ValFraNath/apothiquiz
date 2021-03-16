@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
 
@@ -23,63 +23,34 @@ UserBadge.propTypes = {
 };
 
 const OfflineBanner = () => {
-  const [isOnline, setOnline] = useState(navigator.onLine);
-  const [spriteSheet, setSpriteSheet] = useState(null);
+  const initialState = useMemo(() => navigator.onLine, []);
 
-  /**
-   * This function is executed when the online state is changed
-   */
+  const [playAnimation, setPlayAnimation] = useState(0);
+
+  // Set the event listener for online and offline at mouting
   useEffect(() => {
-    if (spriteSheet === null) {
-      return;
-    }
-    if (isOnline) {
-      spriteSheet.setCurrentFrame(-1);
-      spriteSheet.setDirection("reverse");
-    } else {
-      spriteSheet.setCurrentFrame(0);
-      spriteSheet.setDirection("normal");
-    }
-    spriteSheet.play();
-  }, [isOnline, spriteSheet]);
-
-  /**
-   * This function is executed when the spritesheet is changed ( normally only once )
-   */
-  useEffect(() => {
-    if (spriteSheet === null) {
-      return;
-    }
-    if (navigator.onLine) {
-      spriteSheet.setCurrentFrame(0);
-    } else {
-      spriteSheet.setCurrentFrame(36);
-    }
-
     function updateOnlineStatus() {
-      setOnline(navigator.onLine);
+      setPlayAnimation((c) => c + 1);
     }
 
     window.addEventListener("online", updateOnlineStatus);
     window.addEventListener("offline", updateOnlineStatus);
 
-    return () => {
+    return function cleanup() {
       window.removeEventListener("online", updateOnlineStatus);
       window.removeEventListener("offline", updateOnlineStatus);
     };
-  }, [spriteSheet]);
+  }, []);
 
   return (
-    <div id={"offlineBanner"} className={isOnline ? "online" : "offline"}>
+    <div id={"offlineBanner"}>
       <AnimTransition
-        image={connectionAnim}
-        frameHeight={35}
-        frameWidth={35}
-        steps={37}
-        timing={1.5}
-        get={(sp) => {
-          setSpriteSheet(sp);
-        }}
+        imageLink={connectionAnim}
+        nbFrames={37}
+        size={35}
+        duration={1.5}
+        initialState={initialState ? "end" : "start"}
+        play={playAnimation}
       />
     </div>
   );

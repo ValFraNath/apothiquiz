@@ -3,6 +3,8 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 
 import AnimationLoop from "./AnimLoop";
 
+const randomTime = ([begin, end]) => 1000 * (begin + (end - begin) * Math.random());
+
 /**
  * AnimationWithAction renders an infinite animation from a looped sprite,
  * and sometimes (random generated within timeBetweenAction[0] and timeBetweenAction[1])
@@ -11,12 +13,6 @@ import AnimationLoop from "./AnimLoop";
 const AnimationWithAction = ({ size, loopImage, actionImage, timeBetweenAction }) => {
   const [isAction, setIsAction] = useState(false);
   const timerIdRef = useRef(0);
-
-  const randomTime = useCallback(() => {
-    return (
-      1000 * (timeBetweenAction[0] + (timeBetweenAction[1] - timeBetweenAction[0]) * Math.random())
-    );
-  }, [timeBetweenAction]);
 
   const launchActionAnim = useCallback(() => {
     setIsAction(true);
@@ -27,15 +23,15 @@ const AnimationWithAction = ({ size, loopImage, actionImage, timeBetweenAction }
       // Setup the next action animation
       timerIdRef.current = setTimeout(() => {
         launchActionAnim();
-      }, randomTime());
+      }, randomTime(timeBetweenAction));
     }, 1000 * actionImage.duration);
-  }, [actionImage.duration, randomTime]);
+  }, [actionImage.duration, timeBetweenAction]);
 
   useEffect(() => {
     // When component mounts
     timerIdRef.current = setTimeout(() => {
       launchActionAnim();
-    }, randomTime());
+    }, randomTime(timeBetweenAction));
 
     // Preload image
     const img = new Image();
@@ -45,7 +41,7 @@ const AnimationWithAction = ({ size, loopImage, actionImage, timeBetweenAction }
     return function cleanup() {
       clearTimeout(timerIdRef.current);
     };
-  }, [launchActionAnim, actionImage, randomTime]);
+  }, [launchActionAnim, actionImage, timeBetweenAction]);
 
   if (isAction) {
     return <AnimationLoop size={size} {...actionImage} />;

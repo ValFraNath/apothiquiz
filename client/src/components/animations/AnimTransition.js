@@ -1,116 +1,71 @@
 import PropTypes from "prop-types";
-import React, { Component } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
-class AnimTransition extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      currentFrame: 0,
-      direction: 1,
-      currentTimer: null,
-    };
-  }
+// Update the play prop when you want the animation to launch
+const AnimTransition = ({ imageLink, nbFrames, size, duration, initialState, play }) => {
+  const timerIdRef = useRef(0);
+  const [direction, setDirection] = useState(initialState === "end" ? 1 : -1);
+  const [currentFrame, setCurrentFrame] = useState(initialState === "end" ? nbFrames - 1 : 0);
 
-  /**
-   * Set the animation direction
-   * @param {string} direction normal | reverse
-   */
-  setDirection = (direction) => {
-    if (direction === "normal") {
-      this.setState({ direction: 1 });
-    } else if (direction === "reverse") {
-      this.setState({ direction: -1 });
-    } else {
-      throw new Error("Invalid direction");
-    }
-  };
+  const updateFrame = useCallback(
+    (oldFrame, direction) => {
+      clearTimeout(timerIdRef.current);
 
-  /**
-   * Set the spritesheet current frame
-   * @param {number} newCurrentFrame The new current frame
-   */
-  setCurrentFrame = (newCurrentFrame) => {
-    if (
-      newCurrentFrame == null ||
-      !Number.isInteger(newCurrentFrame) ||
-      newCurrentFrame < -1 ||
-      newCurrentFrame >= this.props.steps
-    ) {
-      throw new Error("Invalid frame number");
-    }
-    this.setState({
-      currentFrame: newCurrentFrame === -1 ? this.props.steps - 1 : newCurrentFrame,
-    });
-  };
+      const newFrame = oldFrame + direction;
+      setCurrentFrame(newFrame);
 
-  /**
-   * Run the animation
-   * @param {function|null} onEachStep Function to call every time a new frame is displayed
-   * @param {function|null} onAnimationEnd Function to call when the animation is finished
-   */
-  play = (onEachStep = null, onAnimationEnd) => {
-    let int = setInterval(() => {
-      const { currentFrame: frame, direction } = this.state;
-      if (
-        (frame === this.props.steps - 1 && direction === 1) ||
-        (frame === 0 && direction === -1)
-      ) {
-        clearInterval(int);
-        this.setState({
-          interval: null,
-        });
-        if (onAnimationEnd) {
-          onAnimationEnd(this.state.currentFrame, this.state.direction);
-        }
+      if (newFrame <= 0 || newFrame >= nbFrames - 1) {
         return;
       }
 
-      this.setState({
-        currentFrame: this.state.currentFrame + this.state.direction,
-      });
-      if (onEachStep) {
-        onEachStep(this.state.currentFrame, this.state.direction);
-      }
-    }, (1000 * this.props.timing) / this.props.steps);
+      timerIdRef.current = setTimeout(() => {
+        updateFrame(newFrame, direction);
+      }, (1000 * duration) / nbFrames);
+    },
+    [nbFrames, duration]
+  );
 
-    this.setState({ currentTimer: int });
-  };
+  // At mount
+  useEffect(() => {
+    // Delete timeout when umounting
+    return function cleanup() {
+      clearTimeout(timerIdRef.current);
+    };
+  }, []);
 
-  componentDidMount() {
-    if (this.props.get) {
-      this.props.get(this);
-    }
-  }
+  // Launch timer when play prop changes
+  useEffect(
+    () => {
+      clearTimeout(timerIdRef.current);
+      console.debug("change direction", direction * -1);
+      updateFrame(currentFrame, direction * -1);
+      setDirection((d) => d * -1);
+    },
+    [play, updateFrame] // eslint-disable-line react-hooks/exhaustive-deps
+    // because we only need to run the hook when play is changed
+  );
 
-  componentWillUnmount() {
-    clearInterval(this.state.currentTimer);
-  }
-
-  render() {
-    return (
-      <div
-        className="spritesheet"
-        style={{
-          height: `${this.props.frameHeight}px`,
-          width: `${this.props.frameWidth}px`,
-          backgroundImage: `url(${this.props.image})`,
-          backgroundSize: `${this.props.frameWidth * this.props.steps}px ${
-            this.props.frameHeight
-          }px`,
-          backgroundPositionX: `${-this.state.currentFrame * this.props.frameWidth}px`,
-        }}
-      />
-    );
-  }
-}
+  return (
+    <div
+      className="animation"
+      style={{
+        height: size,
+        width: size,
+        backgroundImage: `url(${imageLink})`,
+        backgroundSize: `${size * nbFrames}px ${size}px`,
+        backgroundPositionX: `${-size * currentFrame}px`,
+      }}
+    ></div>
+  );
+};
 
 AnimTransition.propTypes = {
-  image: PropTypes.string.isRequired,
-  frameHeight: PropTypes.number.isRequired,
-  frameWidth: PropTypes.number.isRequired,
-  steps: PropTypes.number.isRequired,
-  timing: PropTypes.number.isRequired,
-  get: PropTypes.func,
+  imageLink: PropTypes.string.isRequired,
+  nbFrames: PropTypes.number.isRequired,
+  size: PropTypes.number.isRequired,
+  duration: PropTypes.number.isRequired,
+  initialState: PropTypes.oneOf(["start", "end"]).isRequired,
+  play: PropTypes.any.isRequired,
 };
 
 export default AnimTransition;
