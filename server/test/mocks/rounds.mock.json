@@ -6,7 +6,7 @@
       "goodAnswer": 1,
       "answers": ["TELBIVUDINE", "PYRAZINAMIDE", "RITONAVIR", "TINIDAZOLE"],
       "type": 3,
-      "wording": "Quelle molécule appartient au système 'ANTIBIOTIQUE' ?"
+      "wording": "Quelle molécule appartient au système « ANTIBIOTIQUE » ?"
     },
     {
       "subject": "ANTIVIRAL",
@@ -14,7 +14,7 @@
       "goodAnswer": 2,
       "answers": ["CEFIXIME", "SPIRAMYCINE", "RILPIVIRINE", "ALBENDAZOLE"],
       "type": 3,
-      "wording": "Quelle molécule appartient au système 'ANTIVIRAL' ?"
+      "wording": "Quelle molécule appartient au système « ANTIVIRAL » ?"
     },
     {
       "subject": "ANTIPARASITAIRE",
@@ -22,7 +22,7 @@
       "goodAnswer": 2,
       "answers": ["OXYTETRACYCLINE", "CEFPODOXIME", "NICLOSAMIDE", "TIGECYCLINE"],
       "type": 3,
-      "wording": "Quelle molécule appartient au système 'ANTIPARASITAIRE' ?"
+      "wording": "Quelle molécule appartient au système « ANTIPARASITAIRE » ?"
     },
     {
       "subject": "ANTIRIEN",
@@ -30,7 +30,7 @@
       "goodAnswer": 1,
       "answers": ["VANCOMYCINE", "NEXISTPA", "LYMECYCLINE", "TIPRANAVIR"],
       "type": 3,
-      "wording": "Quelle molécule appartient au système 'ANTIRIEN' ?"
+      "wording": "Quelle molécule appartient au système « ANTIRIEN » ?"
     },
     {
       "subject": "ANTIPARASITAIRE",
@@ -38,7 +38,7 @@
       "goodAnswer": 0,
       "answers": ["ORNIDAZOLE", "COLISTINE", "OXACILLINE", "SULFAMETHOXAZOLE"],
       "type": 3,
-      "wording": "Quelle molécule appartient au système 'ANTIPARASITAIRE' ?"
+      "wording": "Quelle molécule appartient au système « ANTIPARASITAIRE » ?"
     }
   ],
   [
@@ -53,7 +53,7 @@
         "OXAZOLIDINONES"
       ],
       "type": 2,
-      "wording": "À quelle classe appartient la molécule 'ZANAMIVIR' ?"
+      "wording": "À quelle classe la molécule « ZANAMIVIR » appartient-elle ?"
     },
     {
       "subject": "ATAZANAVIR",
@@ -66,7 +66,7 @@
         "INHIBITEUR DE FUSION"
       ],
       "type": 2,
-      "wording": "À quelle classe appartient la molécule 'ATAZANAVIR' ?"
+      "wording": "À quelle classe la molécule « ATAZANAVIR » appartient-elle ?"
     },
     {
       "subject": "LOMEFLOXACINE",
@@ -74,7 +74,7 @@
       "goodAnswer": 0,
       "answers": ["FLUOROQUINOLONE", "INHIBITEUR POLYMERASE NS5B", "BENZIMIDAZOLES", "SULFAMIDES"],
       "type": 2,
-      "wording": "À quelle classe appartient la molécule 'LOMEFLOXACINE' ?"
+      "wording": "À quelle classe la molécule « LOMEFLOXACINE » appartient-elle ?"
     },
     {
       "subject": "SOFOSBUVIR",
@@ -87,7 +87,7 @@
         "MONOBACTAM"
       ],
       "type": 2,
-      "wording": "À quelle classe appartient la molécule 'SOFOSBUVIR' ?"
+      "wording": "À quelle classe la molécule « SOFOSBUVIR » appartient-elle ?"
     },
     {
       "subject": "OXACILLINE",
@@ -95,7 +95,7 @@
       "goodAnswer": 2,
       "answers": ["CARBOXYPÉNICILLINES", "UREIDO-PENICILLINES", "PENICILLINE M", "PENICILLINE V"],
       "type": 2,
-      "wording": "À quelle classe appartient la molécule 'OXACILLINE' ?"
+      "wording": "À quelle classe la molécule « OXACILLINE » appartient-elle ?"
     }
   ],
   [
@@ -105,7 +105,7 @@
       "goodAnswer": 0,
       "answers": ["LYMECYCLINE", "RITONAVIR", "RALTEGRAVIR", "ABACAVIR"],
       "type": 6,
-      "wording": "Quelle molécule a comme effet indésirable 'oesophagite' ?"
+      "wording": "Quelle molécule a comme effet indésirable « oesophagite » ?"
     },
     {
       "subject": "Diminution seuil epileptogene",
@@ -113,7 +113,7 @@
       "goodAnswer": 1,
       "answers": ["ACIDE CLAVULANIQUE", "NORFLOXACINE", "EFAVIRENZ", "DIETHYLCARBAMAZINE"],
       "type": 6,
-      "wording": "Quelle molécule a comme effet indésirable 'Diminution seuil epileptogene' ?"
+      "wording": "Quelle molécule a comme effet indésirable « Diminution seuil epileptogene » ?"
     },
     {
       "subject": "oesophagite",
@@ -121,7 +121,7 @@
       "goodAnswer": 1,
       "answers": ["STREPTOMYCINE", "OXYTETRACYCLINE", "BICTEGRAVIR", "DALBAVANCINE"],
       "type": 6,
-      "wording": "Quelle molécule a comme effet indésirable 'oesophagite' ?"
+      "wording": "Quelle molécule a comme effet indésirable « oesophagite » ?"
     },
     {
       "subject": "Torsade de pointe",
@@ -129,7 +129,7 @@
       "goodAnswer": 2,
       "answers": ["LYMECYCLINE", "CEFUROXIME", "AZITHROMYCINE", "CEFPODOXIME"],
       "type": 6,
-      "wording": "Quelle molécule a comme effet indésirable 'Torsade de pointe' ?"
+      "wording": "Quelle molécule a comme effet indésirable « Torsade de pointe » ?"
     },
     {
       "subject": "Nephrotoxicité",
@@ -137,49 +137,49 @@
       "goodAnswer": 1,
       "answers": ["CEFTAROLINE", "FOSCARNET", "ALBENDAZOLE", "ERYTHROMYCINE"],
       "type": 6,
-      "wording": "Quelle molécule a comme effet indésirable 'Nephrotoxicité' ?"
+      "wording": "Quelle molécule a comme effet indésirable « Nephrotoxicité » ?"
     }
   ],
   [
     {
       "subject": "CYP3A4",
-      "title": "1 intéraction - 4 molécules",
+      "title": "1 interaction - 4 molécules",
       "goodAnswer": 2,
       "answers": ["NITROFURANTOÏNE", "GANCICLOVIR", "ERYTHROMYCINE", "CEFAMANDOLE"],
       "type": 7,
-      "wording": "Quelle molécule a comme intéraction 'CYP3A4' ?"
+      "wording": "Quelle molécule a comme interaction « CYP3A4' »?"
     },
     {
       "subject": "Allongement QT",
-      "title": "1 intéraction - 4 molécules",
+      "title": "1 interaction - 4 molécules",
       "goodAnswer": 1,
       "answers": ["AMPICILLINE", "MOXIFLOXACINE", "SPIRAMYCINE", "ZIDOVUDINE"],
       "type": 7,
-      "wording": "Quelle molécule a comme intéraction 'Allongement QT' ?"
+      "wording": "Quelle molécule a comme interaction « Allongement QT » ?"
     },
     {
       "subject": "Syndrome serotoninergique",
-      "title": "1 intéraction - 4 molécules",
+      "title": "1 interaction - 4 molécules",
       "goodAnswer": 2,
       "answers": ["CEFEPIME", "GANCICLOVIR", "LINEZOLIDE", "ENFUVIRTIDE"],
       "type": 7,
-      "wording": "Quelle molécule a comme intéraction 'Syndrome serotoninergique' ?"
+      "wording": "Quelle molécule a comme interaction « Syndrome serotoninergique » ?"
     },
     {
       "subject": "Allongement QT",
-      "title": "1 intéraction - 4 molécules",
+      "title": "1 interaction - 4 molécules",
       "goodAnswer": 0,
       "answers": ["LEVOFLOXACINE", "CEFTOBIPROL", "SULFADIAZINE", "ENTECAVIR"],
       "type": 7,
-      "wording": "Quelle molécule a comme intéraction 'Allongement QT' ?"
+      "wording": "Quelle molécule a comme interaction « Allongement QT » ?"
     },
     {
       "subject": "Allongement QT",
-      "title": "1 intéraction - 4 molécules",
+      "title": "1 interaction - 4 molécules",
       "goodAnswer": 0,
       "answers": ["OFLOXACINE", "TINIDAZOLE", "COBICISTAT", "NITROFURANTOÏNE"],
       "type": 7,
-      "wording": "Quelle molécule a comme intéraction 'Allongement QT' ?"
+      "wording": "Quelle molécule a comme interaction « Allongement QT » ?"
     }
   ],
   [
@@ -194,7 +194,7 @@
         "Diminution seuil epileptogene"
       ],
       "type": 9,
-      "wording": "Quel effet indésirable a la molécule 'ROXITHROMYCINE' ?"
+      "wording": "Quel effet indésirable la molécule « ROXITHROMYCINE » a-t-elle ?"
     },
     {
       "subject": "LEVOFLOXACINE",
@@ -207,7 +207,7 @@
         "hypotension orthostatique"
       ],
       "type": 9,
-      "wording": "Quel effet indésirable a la molécule 'LEVOFLOXACINE' ?"
+      "wording": "Quel effet indésirable la molécule « LEVOFLOXACINE » a-t-elle ?"
     },
     {
       "subject": "AMIKACINE",
@@ -220,7 +220,7 @@
         "Hypoplasie email dentaire"
       ],
       "type": 9,
-      "wording": "Quel effet indésirable a la molécule 'AMIKACINE' ?"
+      "wording": "Quel effet indésirable la molécule « AMIKACINE » a-t-elle ?"
     },
     {
       "subject": "GENTAMICINE",
@@ -233,7 +233,7 @@
         "Diminution seuil epileptogene"
       ],
       "type": 9,
-      "wording": "Quel effet indésirable a la molécule 'GENTAMICINE,' ?"
+      "wording": "Quel effet indésirable a lmolécule « GENTAMICINE, » a-t-elle ?"
     },
     {
       "subject": "DOXYCYCLINE",
@@ -246,7 +246,7 @@
         "Ototoxicité"
       ],
       "type": 9,
-      "wording": "Quel effet indésirable a la molécule 'DOXYCYCLINE' ?"
+      "wording": "Quel effet indésirable la molécule « DOXYCYCLINE » a-t-elle ?"
     }
   ]
 ]
