@@ -4,7 +4,3 @@
   -webkit-user-select: none;
   -ms-user-select: none;
 }
-
-@mixin white-outline {
-  filter: drop-shadow(2px 1px 3px $text-color-black) drop-shadow(-1px -1px 3px $text-color-black);
-}

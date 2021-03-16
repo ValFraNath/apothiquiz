@@ -1,7 +1,3 @@
-body.dark .loading .animation {
-  @include white-outline;
-}
-
 .loading {
   min-height: calc(100% - 50px);
 
@@ -26,10 +22,6 @@ body.dark .loading .animation {
   }
 }
 
-body.dark .page-error img {
-  @include white-outline;
-}
-
 .page-error {
   min-height: calc(100% - 50px);
 
@@ -48,9 +40,6 @@ body.dark .page-error img {
     padding: 0 1em;
     text-align: center;
   }
-}
-body.dark .floating-error img {
-  @include white-outline;
 }
 
 .floating-error {
