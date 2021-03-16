@@ -2,15 +2,15 @@ import { expect, assert } from "chai";
 import { shallow } from "enzyme";
 import React from "react";
 
-import SpriteSheet from "../components/SpriteSheet";
-import spritesheet from "../images/connection_status.png";
+import SpriteSheet from "../components/animations/SpriteSheet";
+import sprite from "../images/sprites/network-status.png";
 
 describe("sprite sheet component have a good behavior", () => {
   let sp = null;
   beforeEach((done) => {
     shallow(
       <SpriteSheet
-        image={spritesheet}
+        image={sprite}
         frameHeight={54}
         frameWidth={64}
         steps={37}
