@@ -139,7 +139,7 @@ async function createAndInsertFakeDuelsWithAPI(users, number) {
     for (let i = 0; i < NUMBER_OF_BATCH; i++) {
       const currentBatchSize = Math.min(BATCH_SIZE, number - i * BATCH_SIZE);
 
-      console.debug(`  Duel batch of ${currentBatchSize} duels (${1 + i} / ${NUMBER_OF_BATCH})`);
+      console.info(`  Duel batch of ${currentBatchSize} duels (${1 + i} / ${NUMBER_OF_BATCH})`);
 
       const promises = Array(currentBatchSize)
         .fill()
