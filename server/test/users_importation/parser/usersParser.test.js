@@ -15,13 +15,13 @@ const tests = [
   {
     file: "students.csv",
     expecation: [
-      { login: "fpoguet", admin: 0 },
-      { login: "nhoun", admin: 0 },
-      { login: "vperigno", admin: 0 },
-      { login: "pwater", admin: null },
-      { login: "fdadeau", admin: 1 },
-      { login: "alclairet", admin: 0 },
-      { login: "mpudlo", admin: 1 },
+      { login: "fpoguet", isAdmin: 0 },
+      { login: "nhoun", isAdmin: 0 },
+      { login: "vperigno", isAdmin: 0 },
+      { login: "pwater", isAdmin: null },
+      { login: "fdadeau", isAdmin: 1 },
+      { login: "alclairet", isAdmin: 0 },
+      { login: "mpudlo", isAdmin: 1 },
     ],
   },
 ];
@@ -29,11 +29,9 @@ const tests = [
 for (const test of tests) {
   describe("Users parser", () => {
     let users;
-    before("Parse file", (done) => {
-      parseUsersFromCsv(path.resolve(FILES_DIR, test.file)).then((list) => {
-        users = JSON.parse(list);
-        done();
-      });
+    before("Parse file", async () => {
+      const usersList = await parseUsersFromCsv(path.resolve(FILES_DIR, test.file));
+      users = JSON.parse(usersList.toJSON());
     });
 
     it("Good list of users", () => {

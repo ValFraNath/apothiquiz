@@ -174,7 +174,7 @@ export async function queryPromise(sql, values = []) {
  * @param {object|string[]} values The escaped values
  * @returns {string} The fully escaped query
  */
-connection.config.queryFormat = function (query, values) {
+export function queryFormat(query, values) {
   if (!values) {
     return query;
   }
@@ -187,15 +187,14 @@ connection.config.queryFormat = function (query, values) {
     return query;
   }
 
-  return query.replace(
-    /:(\w+)/g,
-    function (identifier, key) {
-      if (Object.getOwnPropertyNames(values).includes(key)) {
-        return this.escape(values[key]);
-      }
-      return identifier;
-    }.bind(this)
-  );
-};
+  return query.replace(/:(\w+)/g, (identifier, key) => {
+    if (Object.getOwnPropertyNames(values).includes(key)) {
+      return mysql.escape(values[key]);
+    }
+    return identifier;
+  });
+}
+
+connection.config.queryFormat = queryFormat;
 
 export default { start };

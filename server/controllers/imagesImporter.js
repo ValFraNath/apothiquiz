@@ -7,10 +7,10 @@ import express from "express";
 import { createDir, deleteFiles, getSortedFiles, moveFile } from "../global/files.js";
 // eslint-disable-next-line no-unused-vars
 import { HttpResponseWrapper } from "../global/HttpControllerWrapper.js";
-import { analyseImagesFilenames } from "../global/images_importation/imagesAnayzer.js";
-import { bindImagesToMolecules } from "../global/images_importation/imagesImporter.js";
+
+import ImagesList from "../global/images_importation/ImagesList.js";
 import Logger from "../global/Logger.js";
-import { normalizeDCI } from "../global/molecules_importation/moleculesAnalyzer.js";
+import { Molecule } from "../global/molecules_importation/MoleculesList.js";
 
 import { updateNumberOfRoundsPerDuel } from "./config.js";
 
@@ -79,8 +79,10 @@ async function importImages(req, res) {
   const deleteUploadedFiles = () => deleteFiles(...req.files.map((f) => f.path)).catch(() => {});
 
   try {
+    const imagesList = new ImagesList(ogNames);
+
     if (confirmed !== "true") {
-      const warnings = await analyseImagesFilenames(ogNames);
+      const warnings = await imagesList.analyze();
 
       res.sendResponse(202, {
         message: "Images tested but not imported ",
@@ -90,14 +92,14 @@ async function importImages(req, res) {
     } else {
       await createDir(IMAGES_DIR_PATH);
 
-      const imported = await bindImagesToMolecules(ogNames);
+      const imported = await imagesList.bindImagesToMolecules();
 
       await deletePreviousImages();
 
       await Promise.all(
         imported.map((file) => {
           const filepath = req.files.find((f) => f.originalname === file).path;
-          return moveFile(filepath, path.resolve(IMAGES_DIR_PATH, normalizeDCI(file)));
+          return moveFile(filepath, path.resolve(IMAGES_DIR_PATH, Molecule.normalizeDCI(file)));
         })
       );
 
