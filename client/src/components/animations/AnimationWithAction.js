@@ -35,7 +35,7 @@ const AnimationWithAction = ({ size, loopImage, actionImage, timeBetweenAction }
     // When component mounts
     timerIdRef.current = setTimeout(() => {
       launchActionAnim();
-    }, 1000 * (2 + 8 * Math.random()));
+    }, randomTime());
 
     // Preload image
     const img = new Image();
