@@ -390,7 +390,7 @@ function createShuffledQuestionTypesArray() {
  * @returns {Promise<object>} The formatted duel
  */
 async function getDuel(id, username) {
-  let res = await queryPromise("CALL getDuel(?,?);", [id, username]);
+  const res = await queryPromise("CALL getDuel(?,?);", [id, username]);
 
   if (res[0].length === 0) {
     return null;

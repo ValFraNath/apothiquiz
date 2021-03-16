@@ -245,6 +245,7 @@ describe("Procedures duels", () => {
   it("Get a duel", async () => {
     const res = await queryPromise("CALL getDuel(?,?);", [duelIds[0], "fpoguet"]);
     const duel = res[0];
+    console.log(duel);
     expect(duel).has.length(2);
     expect(duel.find((p) => p.us_login === "fpoguet")).not.undefined;
     expect(duel.find((p) => p.us_login === "nhoun")).not.undefined;
