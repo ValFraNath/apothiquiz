@@ -53,10 +53,10 @@ const HomePage = () => {
     return "Vous avez perdu :";
   }
 
-  function getRemainingTime(playedTime) {
+  function getRemainingTime(playedTimeEpoch) {
     const MAX_TIME = 24;
-    const remaining = MAX_TIME - (new Date().getTime() - playedTime.getTime());
-    return remaining >= 0 ? remaining : 0;
+    const remaining = MAX_TIME - (new Date().getTime() - playedTimeEpoch) / 36e5;
+    return remaining >= 0 ? Math.ceil(remaining) : 0;
   }
 
   const { isLoading, data: duels, isError } = useQuery("duels");
@@ -101,7 +101,7 @@ const HomePage = () => {
                     <h3>{value.opponent}</h3>
                     <p className="time">
                       <LapTimerIcon />
-                      {getRemainingTime(new Date())} h
+                      {getRemainingTime(value.opponentLastPlayed)} h
                     </p>
                     <p>
                       Tour {value.currentRound} : {value.userScore} - {value.opponentScore}
@@ -128,7 +128,7 @@ const HomePage = () => {
                   <h3>{value.opponent}</h3>
                   <p className="time">
                     <LapTimerIcon />
-                    {getRemainingTime(new Date())} h
+                    {getRemainingTime(value.lastPlayed)} h
                   </p>
                   <p>En train de jouer le tour {value.currentRound}...</p>
                 </Link>
