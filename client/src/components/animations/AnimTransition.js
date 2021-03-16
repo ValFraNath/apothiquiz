@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
 
-class SpriteSheet extends Component {
+class AnimTransition extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -104,7 +104,7 @@ class SpriteSheet extends Component {
   }
 }
 
-SpriteSheet.propTypes = {
+AnimTransition.propTypes = {
   image: PropTypes.string.isRequired,
   frameHeight: PropTypes.number.isRequired,
   frameWidth: PropTypes.number.isRequired,
@@ -113,4 +113,4 @@ SpriteSheet.propTypes = {
   get: PropTypes.func,
 };
 
-export default SpriteSheet;
+export default AnimTransition;

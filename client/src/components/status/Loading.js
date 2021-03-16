@@ -2,7 +2,7 @@ import { React } from "react";
 
 import loadingAnim from "../../images/sprites/loading-loop.png";
 
-import AnimationLoop from "../animations/AnimationLoop";
+import AnimationLoop from "../animations/AnimLoop";
 
 const Loading = () => (
   <div className="loading">

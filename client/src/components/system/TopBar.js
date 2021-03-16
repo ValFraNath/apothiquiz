@@ -4,7 +4,7 @@ import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
 
 import connectionAnim from "../../images/sprites/network-status.png";
-import SpriteSheet from "../animations/SpriteSheet";
+import AnimTransition from "../animations/AnimTransition";
 import Avatar from "../Avatar";
 
 const UserBadge = ({ username }) => {
@@ -71,7 +71,7 @@ const OfflineBanner = () => {
 
   return (
     <div id={"offlineBanner"} className={isOnline ? "online" : "offline"}>
-      <SpriteSheet
+      <AnimTransition
         image={connectionAnim}
         frameHeight={35}
         frameWidth={35}

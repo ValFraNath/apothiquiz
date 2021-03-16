@@ -1,7 +1,7 @@
 import { PropTypes } from "prop-types";
 import React, { useState, useEffect, useCallback, useRef } from "react";
 
-import AnimationLoop from "./AnimationLoop";
+import AnimationLoop from "./AnimLoop";
 
 /**
  * AnimationWithAction renders an infinite animation from a looped sprite,

@@ -6,7 +6,7 @@ import { useQuery } from "react-query";
 
 import { Link } from "react-router-dom";
 
-import AnimationWithAction from "../components/animations/AnimationWithAction";
+import AnimationWithAction from "../components/animations/AnimAction";
 import Avatar from "../components/Avatar";
 import Plural from "../components/Plural";
 import Loading from "../components/status/Loading";
