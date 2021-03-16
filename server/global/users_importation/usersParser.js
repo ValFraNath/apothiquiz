@@ -3,6 +3,8 @@ import FileStructure from "../csv_reader/FileStructure.js";
 import HeaderChecker from "../csv_reader/HeaderChecker.js";
 import { readCSV } from "../csv_reader/reader.js";
 
+import UsersList from "./UsersList.js";
+
 const columnsSpecs = [
   new ColumnSpecifications("LOGIN", "login", ColumnSpecifications.UNIQUE),
   new ColumnSpecifications("ADMIN", "admin", ColumnSpecifications.UNIQUE),
@@ -11,7 +13,6 @@ const columnsSpecs = [
 /**
  * Import users list from a CSV file
  * @param {string} filepath The path to the file
- * @returns {Promise<JSON>} Either the JSON list or format errors
  */
 export async function parseUsersFromCsv(filepath) {
   const usersMatrix = await readCSV(filepath);
@@ -29,15 +30,13 @@ export async function parseUsersFromCsv(filepath) {
     structure.getIndexesFor("login")[0]
   );
 
-  const users = [];
+  const users = new UsersList(cleanedUsersMatrix, structure);
 
-  for (const row of cleanedUsersMatrix) {
-    const login = row[structure.getIndexesFor("login")[0]];
-    const admin = row[structure.getIndexesFor("admin")[0]];
-    users.push({ login, admin });
-  }
-
-  return JSON.stringify(users);
+  return {
+    toJSON: () => JSON.stringify(users.extract()),
+    analyze: () => users.analyze(),
+    createImportSql: () => users.createImportSql(),
+  };
 }
 
 /**
