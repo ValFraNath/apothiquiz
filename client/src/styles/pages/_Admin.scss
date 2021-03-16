@@ -102,6 +102,7 @@ main#administration {
     width: max-content;
     margin: 1rem;
     user-select: none;
+    max-width: 100%;
 
     svg {
       width: 1.5rem;
@@ -119,6 +120,7 @@ main#administration {
     label {
       font-size: 1.2rem;
       margin-left: 1rem;
+      max-width: 100%;
     }
   }
 }
