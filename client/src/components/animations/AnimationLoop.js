@@ -4,8 +4,6 @@ import React from "react";
 const AnimationLoop = ({ imageLink, nbFrames, size, duration }) => {
   const animationName = `animation-${imageLink.split("/").pop()}-${duration}`.replaceAll(".", "");
 
-  console.debug(duration);
-
   return (
     <div className="animation" style={{ height: size, width: size }}>
       <style>
