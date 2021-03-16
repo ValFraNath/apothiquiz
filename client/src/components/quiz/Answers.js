@@ -32,7 +32,7 @@ AnswerBtn.propTypes = {
 
 const Answers = ({ inProgress, answers, goodAnswerIndex, lastClicked, onClick, areImage }) => {
   return (
-    <div id="quiz-answers">
+    <div id="quiz-answers" className={areImage ? "answers-images" : ""}>
       {answers.map((value, index) => (
         <AnswerBtn
           key={index}
