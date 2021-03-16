@@ -39,6 +39,12 @@ $timer-size: 100px;
     }
   }
 
+  img {
+    display: block;
+    margin: auto;
+    width: 75%;
+  }
+
   @media screen and (max-width: $screen-smartphone-small) {
     min-height: auto;
     padding: 2.5rem 1rem 1.8rem 1rem;
@@ -62,6 +68,10 @@ $timer-size: 100px;
 
 body.dark #quiz-question {
   background-color: $color-gray-dark;
+
+  img {
+    filter: invert(1);
+  }
 }
 
 /* ---------- Timer ---------- */
