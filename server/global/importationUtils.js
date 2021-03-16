@@ -1,8 +1,6 @@
 import levenshtein from "js-levenshtein";
 import mysql from "mysql";
 
-// ***** DATA ANALYZE *****
-
 /**
  * Test if a variable is a string
  * @param {*} v
@@ -18,6 +16,16 @@ export const isString = (v) => typeof v === "string" || v instanceof String;
 export const isNumber = (v) => typeof v === "number" || v instanceof Number;
 
 /**
+ * Checks if two strings are equal regardless of case and accents
+ * @param {string} str1 The first string
+ * @param {string} str2 The second string
+ * @returns {boolean}
+ */
+export function isSameString(str1, str2) {
+  return String(str1).localeCompare(String(str2), "fr", { sensitivity: "base" }) === 0;
+}
+
+/**
  * Returns values that appear more than once in the list
  * @param {any[]} values
  * @returns {any[]} duplicates values
@@ -26,10 +34,19 @@ export function getDuplicates(values) {
   return [
     ...new Set(
       values.filter((value, i) =>
-        values.slice(i + 1).find((other) => new RegExp(`^${value}$`, "i").test(other))
+        values.slice(i + 1).find((other) => other === value || isSameString(value, other))
       )
     ),
   ];
+}
+
+// ********** ANALYZE **********
+
+export class AnalyzerWarning {
+  constructor(code, message) {
+    this.code = code;
+    this.message = message;
+  }
 }
 
 /**
@@ -94,4 +111,20 @@ export function createSqlToInsertInto(table) {
       return sql + `VALUES (${values.map(mysql.escape).join(", ")});\n`;
     };
   };
+}
+
+export const TRANSACTION_BEGIN_SQL = "START TRANSACTION; SET AUTOCOMMIT=0; ";
+
+export const TRANSACTION_END_SQL = "COMMIT; SET AUTOCOMMIT=1; ";
+
+/**
+ * Create the sql script to clear the given tables
+ * @returns
+ */
+export function clearDatabaseTablesSql(...tables) {
+  return (
+    "SET FOREIGN_KEY_CHECKS = 0; " +
+    tables.reduce((script, table) => script + `DELETE FROM ${table}; `, "") +
+    "SET FOREIGN_KEY_CHECKS = 1; "
+  );
 }
