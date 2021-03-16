@@ -14,6 +14,13 @@ main#administration {
     margin: 1rem 0;
   }
 
+  #adminGuide {
+    display: block;
+    margin: auto;
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+  }
+
   p.notEnoughData {
     margin: 1rem;
     &::before {

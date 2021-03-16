@@ -13,12 +13,19 @@ import AuthMiddleware from "../middlewares/auth.middleware.js";
 import { createMulter } from "../middlewares/multer.middleware.js";
 
 const ONLY_ADMINS = true;
+const MULTIPLE_FILES = true;
 
 const apiRouter = express.Router();
 
+// ********** Status **********
+
 apiRouter.get("/status", HttpControllerWrapper(ApiController.status));
 
+// ********** Question **********
+
 apiRouter.get("/question/:type", HttpControllerWrapper(QuestionController.generateQuestion));
+
+// ********** Users **********
 
 apiRouter.get("/users/", AuthMiddleware(), HttpControllerWrapper(UserController.getAll));
 
@@ -38,6 +45,8 @@ apiRouter.patch(
   HttpControllerWrapper(UserController.saveInfos)
 );
 
+// ********** Duels **********
+
 apiRouter.post("/duels/new", AuthMiddleware(), HttpControllerWrapper(DuelController.create));
 
 apiRouter.get("/duels/", AuthMiddleware(), HttpControllerWrapper(DuelController.fetchAll));
@@ -45,6 +54,8 @@ apiRouter.get("/duels/", AuthMiddleware(), HttpControllerWrapper(DuelController.
 apiRouter.get("/duels/:id", AuthMiddleware(), HttpControllerWrapper(DuelController.fetch));
 
 apiRouter.post("/duels/:id/:round", AuthMiddleware(), HttpControllerWrapper(DuelController.play));
+
+// ********** Files **********
 
 const FILES_DIR = process.env.NODE_ENV === "test" ? "files-test" : "files";
 
@@ -57,6 +68,10 @@ apiRouter.use(
 apiRouter.use("/files/users", AuthMiddleware(ONLY_ADMINS), express.static(`${FILES_DIR}/users`));
 
 apiRouter.use("/files/images", express.static(`${FILES_DIR}/images`));
+
+apiRouter.use("/resources", express.static("resources"));
+
+// ********** Import **********
 
 apiRouter.post(
   "/import/molecules",
@@ -74,7 +89,7 @@ apiRouter.get(
 apiRouter.post(
   "/import/images",
   AuthMiddleware(ONLY_ADMINS),
-  createMulter(true),
+  createMulter(MULTIPLE_FILES),
   HttpControllerWrapper(ImagesImporterController.importImages)
 );
 
@@ -97,6 +112,8 @@ apiRouter.get(
   createMulter(),
   HttpControllerWrapper(UsersImporterController.getLastImportedUsers)
 );
+
+// ********** Config **********
 
 apiRouter.get(
   "/config",
