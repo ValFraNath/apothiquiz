@@ -22,7 +22,7 @@ export const isNumber = (v) => typeof v === "number" || v instanceof Number;
  * @returns {boolean}
  */
 export function isSameString(str1, str2) {
-  return Boolean(String(str1).localeCompare(String(str2), "fr", { sensitivity: "base" }) === 0);
+  return String(str1).localeCompare(String(str2), "fr", { sensitivity: "base" }) === 0;
 }
 
 /**
