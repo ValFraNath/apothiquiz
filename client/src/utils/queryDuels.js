@@ -57,9 +57,11 @@ export function makeGetDuelDetails(duelId) {
       opponent: users[opponent],
       currentUserScore: duel.userScore,
       opponentScore: duel.opponentScore,
-      // eslint-disable-next-line eqeqeq
+      // eslint-disable-next-line
       inProgress: duel.inProgress == true,
       rounds: duel.rounds,
+      finishedDate: duel.finishedDate,
+      TTL: duel.TTL,
     };
   };
 }
