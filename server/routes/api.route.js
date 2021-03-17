@@ -12,6 +12,9 @@ import HttpControllerWrapper from "../global/HttpControllerWrapper.js";
 import AuthMiddleware from "../middlewares/auth.middleware.js";
 import { createMulter } from "../middlewares/multer.middleware.js";
 
+import duelsApiRouter from "./duels.route.js";
+import usersApiRouter from "./users.route.js";
+
 const ONLY_ADMINS = true;
 
 const apiRouter = express.Router();
@@ -20,31 +23,9 @@ apiRouter.get("/status", HttpControllerWrapper(ApiController.status));
 
 apiRouter.get("/question/:type", HttpControllerWrapper(QuestionController.generateQuestion));
 
-apiRouter.get("/users/", AuthMiddleware(), HttpControllerWrapper(UserController.getAll));
+apiRouter.use("/users", usersApiRouter);
 
-apiRouter.post("/users/", AuthMiddleware(), HttpControllerWrapper(UserController.severalGetInfos));
-
-apiRouter.post("/users/login", HttpControllerWrapper(UserController.login));
-
-apiRouter.post("/users/token", HttpControllerWrapper(UserController.generateAccessToken));
-
-apiRouter.post("/users/logout", AuthMiddleware(), HttpControllerWrapper(UserController.logout));
-
-apiRouter.get("/users/:pseudo", AuthMiddleware(), HttpControllerWrapper(UserController.getInfos));
-
-apiRouter.patch(
-  "/users/:pseudo",
-  AuthMiddleware(),
-  HttpControllerWrapper(UserController.saveInfos)
-);
-
-apiRouter.post("/duels/new", AuthMiddleware(), HttpControllerWrapper(DuelController.create));
-
-apiRouter.get("/duels/", AuthMiddleware(), HttpControllerWrapper(DuelController.fetchAll));
-
-apiRouter.get("/duels/:id", AuthMiddleware(), HttpControllerWrapper(DuelController.fetch));
-
-apiRouter.post("/duels/:id/:round", AuthMiddleware(), HttpControllerWrapper(DuelController.play));
+apiRouter.use("/duels", duelsApiRouter);
 
 const FILES_DIR = process.env.NODE_ENV === "test" ? "files-test" : "files";
 
