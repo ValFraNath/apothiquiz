@@ -1,4 +1,4 @@
-import { LapTimerIcon } from "@modulz/radix-icons";
+import { LapTimerIcon, CounterClockwiseClockIcon } from "@modulz/radix-icons";
 
 import { PropTypes } from "prop-types";
 import React from "react";
@@ -151,7 +151,7 @@ const HomePage = () => {
                   <Link to={`/duel/${value.id}`} className="challenges-text">
                     <h3>{value.opponent} </h3>
                     <p className="time">
-                      <LapTimerIcon />
+                      <CounterClockwiseClockIcon />
                       {new Date(value.finishedDate).toLocaleDateString("fr-FR", {
                         day: "numeric",
                         month: "long",
