@@ -390,12 +390,17 @@ function createShuffledQuestionTypesArray() {
  * @returns {Promise<object>} The formatted duel
  */
 async function getDuel(id, username) {
-  const res = await queryPromise("CALL getDuel(?,?);", [id, username]);
-
-  if (res[0].length === 0) {
+  const res = await queryPromise(
+    "SELECT `value` FROM `server_informations` WHERE `key` = 'config_duel_rounds_per_duel'; CALL getDuel(?,?);",
+    [id, username]
+  );
+  if (res[1].length === 0) {
     return null;
   }
-  return formatDuel(res[0], username);
+
+  const format = formatDuel(res[1], username);
+  format.TTL = res[0][0].value;
+  return format;
 }
 
 /**
@@ -432,6 +437,16 @@ function formatDuel(duel, username) {
   const inProgress = duel[0].du_inProgress;
 
   const questionTimerDuration = Number(duel[0].du_questionTimerDuration);
+
+  const finishedDate = duel[0].du_finished ? Number(new Date(duel[0].du_finished).getTime()) : null;
+  const [lastPlayed, opponentLastPlayed] = (function () {
+    const duelIdCurrentPlayer = duel[0].us_login === username ? 0 : 1;
+    const times = [
+      duel[duelIdCurrentPlayer].re_last_time,
+      duel[1 - duelIdCurrentPlayer].re_last_time,
+    ];
+    return times.map((value) => Number(value.getTime()));
+  })();
 
   const userAnswers = JSON.parse(duel.find((player) => player.us_login === username).re_answers);
   const opponentAnswers = JSON.parse(
@@ -481,6 +496,9 @@ function formatDuel(duel, username) {
     inProgress,
     rounds: formattedRound,
     questionTimerDuration,
+    finishedDate,
+    lastPlayed,
+    opponentLastPlayed,
   };
 
   const scores = computeScores(formattedDuel);

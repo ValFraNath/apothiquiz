@@ -1,4 +1,4 @@
-import { ChevronRightIcon } from "@modulz/radix-icons";
+import { LapTimerIcon, CounterClockwiseClockIcon } from "@modulz/radix-icons";
 
 import { PropTypes } from "prop-types";
 import React from "react";
@@ -52,9 +52,15 @@ HomePageHeader.propTypes = {
 
 const HomePage = () => {
   function displayResultDuel(user, opponent) {
-    if (user === opponent) return "Égalité !";
-    if (user > opponent) return "Vous avez gagné !";
-    return "Vous avez perdu";
+    if (user === opponent) return "Égalité :";
+    if (user > opponent) return "Vous avez gagné :";
+    return "Vous avez perdu :";
+  }
+
+  function getRemainingTime(playedTimeEpoch) {
+    const MAX_TIME = 24;
+    const remaining = MAX_TIME - (new Date().getTime() - playedTimeEpoch) / 36e5;
+    return remaining >= 0 ? Math.ceil(remaining) : 0;
   }
 
   const { isLoading, data: duels, isError } = useQuery("duels");
@@ -105,15 +111,20 @@ const HomePage = () => {
           <p>Aucun défi à relever pour le moment.</p>
         ) : (
           <>
-            {duels.toPlay.map((value, index) => (
-              <article key={index}>
+            {duels.toPlay.map((value) => (
+              <article key={value.id}>
                 <Avatar size="75px" infos={usersData[value.opponent]?.avatar} />
                 <Link to={`/duel/${value.id}`} className="challenges-text">
                   <div>
                     <h3>{value.opponent}</h3>
-                    <p>Vous pouvez jouer le round {value.currentRound}</p>
+                    <p className="time">
+                      <LapTimerIcon />
+                      {getRemainingTime(value.opponentLastPlayed)} h
+                    </p>
+                    <p>
+                      Tour {value.currentRound} : {value.userScore} - {value.opponentScore}
+                    </p>
                   </div>
-                  <ChevronRightIcon />
                 </Link>
               </article>
             ))}
@@ -143,11 +154,15 @@ const HomePage = () => {
           <p>Aucun défi à en attente pour le moment.</p>
         ) : (
           <>
-            {duels.pending.map((value, index) => (
-              <article key={index}>
+            {duels.pending.map((value) => (
+              <article key={value.id}>
                 <Link to={`/duel/${value.id}`} className="challenges-text">
                   <h3>{value.opponent}</h3>
-                  <p>En train de jouer le round {value.currentRound}</p>
+                  <p className="time">
+                    <LapTimerIcon />
+                    {getRemainingTime(value.lastPlayed)} h
+                  </p>
+                  <p>En train de jouer le tour {value.currentRound}...</p>
                 </Link>
                 <Avatar size="75px" infos={usersData[value.opponent]?.avatar} />
               </article>
@@ -160,15 +175,27 @@ const HomePage = () => {
         <section>
           <h2>Terminés</h2>
           <>
-            {duels.finished.map((value, index) => (
-              <article key={index}>
-                <Avatar size="75px" infos={usersData[value.opponent]?.avatar} />
-                <Link to={`/duel/${value.id}`} className="challenges-text">
-                  <h3>{value.opponent}</h3>
-                  <p>{displayResultDuel(value.userScore, value.opponentScore)}</p>
-                </Link>
-              </article>
-            ))}
+            {duels.finished
+              .sort((a, b) => b.finishedDate - a.finishedDate)
+              .map((value) => (
+                <article key={value.id}>
+                  <Avatar size="75px" infos={usersData[value.opponent]?.avatar} />
+                  <Link to={`/duel/${value.id}`} className="challenges-text">
+                    <h3>{value.opponent} </h3>
+                    <p className="time">
+                      <CounterClockwiseClockIcon />
+                      {new Date(value.finishedDate).toLocaleDateString("fr-FR", {
+                        day: "numeric",
+                        month: "long",
+                      })}
+                    </p>
+                    <p>
+                      {displayResultDuel(value.userScore, value.opponentScore)} {value.userScore} -{" "}
+                      {value.opponentScore}
+                    </p>
+                  </Link>
+                </article>
+              ))}
           </>
         </section>
       )}
