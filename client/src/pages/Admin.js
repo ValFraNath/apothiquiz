@@ -242,7 +242,7 @@ const Configuration = ({ lastImport }) => {
       ) : (
         <>
           <NumberInput
-            label="Durée du timer de réponse"
+            label="Durée du timer de réponse en secondes"
             defaultValue={config.questionTimerDuration.value}
             onChange={(value) => updateConfig("questionTimerDuration", value)}
             min={config.questionTimerDuration.min}
@@ -266,7 +266,7 @@ const Configuration = ({ lastImport }) => {
           />
 
           <NumberInput
-            label="Durée de sauvegarde d'un duel terminé avant suppression"
+            label="Nombre de jours de sauvegarde d'un duel terminé avant suppression"
             defaultValue={config.duelLifetime.value}
             onChange={(value) => updateConfig("duelLifetime", value)}
             min={config.duelLifetime.min}
