@@ -391,11 +391,20 @@ function createShuffledQuestionTypesArray() {
  */
 async function getDuel(id, username) {
   const res = await queryPromise("CALL getDuel(?,?);", [id, username]);
-
   if (res[0].length === 0) {
     return null;
   }
-  return formatDuel(res[0], username);
+
+  const TTL = await (async function () {
+    const res = await queryPromise(
+      "SELECT `value` FROM `server_informations` WHERE `key` = 'config_duel_rounds_per_duel';"
+    );
+    return res[0].value;
+  })();
+
+  const format = formatDuel(res[0], username);
+  format.TTL = TTL;
+  return format;
 }
 
 /**
@@ -430,7 +439,6 @@ function formatDuel(duel, username) {
   const currentRound = duel[0].du_currentRound;
   const rounds = JSON.parse(duel[0].du_content);
   const inProgress = duel[0].du_inProgress;
-  const TTL = Number(duel[0].value);
 
   const questionTimerDuration = Number(duel[0].du_questionTimerDuration);
 
@@ -495,7 +503,6 @@ function formatDuel(duel, username) {
     finishedDate,
     lastPlayed,
     opponentLastPlayed,
-    TTL,
   };
 
   const scores = computeScores(formattedDuel);
