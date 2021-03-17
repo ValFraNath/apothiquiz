@@ -390,15 +390,16 @@ function createShuffledQuestionTypesArray() {
  * @returns {Promise<object>} The formatted duel
  */
 async function getDuel(id, username) {
-  const res = await queryPromise("CALL getDuel(?,?);", [id, username]);
+  const res = await queryPromise(
+    "CALL getDuel(?,?); SELECT `value` FROM `server_informations` WHERE `key` = 'config_duel_rounds_per_duel';",
+    [id, username]
+  );
   if (res[0].length === 0) {
     return null;
   }
 
-  const TTL = (await queryPromise( "SELECT `value` FROM `server_informations` WHERE `key` = 'config_duel_rounds_per_duel';" ))[0].value;
-
   const format = formatDuel(res[0], username);
-  format.TTL = TTL;
+  format.TTL = res[2][0].value;
   return format;
 }
 

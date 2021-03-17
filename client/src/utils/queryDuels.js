@@ -57,7 +57,7 @@ export function makeGetDuelDetails(duelId) {
       opponent: users[opponent],
       currentUserScore: duel.userScore,
       opponentScore: duel.opponentScore,
-      // eslint-disable-next-line
+      // eslint-disable-next-line eqeqeq
       inProgress: duel.inProgress == true,
       rounds: duel.rounds,
       finishedDate: duel.finishedDate,
