@@ -395,12 +395,7 @@ async function getDuel(id, username) {
     return null;
   }
 
-  const TTL = await (async function () {
-    const res = await queryPromise(
-      "SELECT `value` FROM `server_informations` WHERE `key` = 'config_duel_rounds_per_duel';"
-    );
-    return res[0].value;
-  })();
+  const TTL = (await queryPromise( "SELECT `value` FROM `server_informations` WHERE `key` = 'config_duel_rounds_per_duel';" ))[0].value;
 
   const format = formatDuel(res[0], username);
   format.TTL = TTL;
