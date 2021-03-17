@@ -124,8 +124,8 @@ const DuelOverview = ({
             opponentScore={opponentScore}
           />
           <p id="TTL">
-            Le duel sera supprimé dans {remainingTimeBefeoreRemove}{" "}
-            <Plural word="jour" count={remainingTimeBefeoreRemove} />
+            Le duel sera supprimé dans {remainingTimeBeforeRemove}{" "}
+            <Plural word="jour" count={remainingTimeBeforeRemove} />
           </p>
         </>
       )}
