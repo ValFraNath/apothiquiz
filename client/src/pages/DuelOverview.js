@@ -91,7 +91,7 @@ const DuelOverview = ({
 
   const { currentUserScore, opponentScore, opponent, inProgress, finishedDate, TTL } = data;
 
-  const remainingTimeBefeoreRemove = (function () {
+  const remainingTimeBeforeRemove = (function () {
     if (!finishedDate) return TTL;
     const timeDiff = new Date().getTime() - finishedDate;
     return TTL - Math.floor(timeDiff / (1000 * 60 * 60 * 24));
