@@ -391,15 +391,15 @@ function createShuffledQuestionTypesArray() {
  */
 async function getDuel(id, username) {
   const res = await queryPromise(
-    "CALL getDuel(?,?); SELECT `value` FROM `server_informations` WHERE `key` = 'config_duel_rounds_per_duel';",
+    "SELECT `value` FROM `server_informations` WHERE `key` = 'config_duel_rounds_per_duel'; CALL getDuel(?,?);",
     [id, username]
   );
-  if (res[0].length === 0) {
+  if (res[1].length === 0) {
     return null;
   }
 
-  const format = formatDuel(res[0], username);
-  format.TTL = res[2][0].value;
+  const format = formatDuel(res[1], username);
+  format.TTL = res[0][0].value;
   return format;
 }
 
