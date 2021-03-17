@@ -76,7 +76,7 @@ const generatorInfosByType = {
   11: {
     filename: "question_IM.sql",
     before: "",
-    createWording: () => `Quelle molécule a la structure chimique suivante ?`,
+    createWording: () => `Quelle molécule possède la structure chimique suivante ?`,
     title: "1 structure chimique - 4 molécules",
   },
   12: {
