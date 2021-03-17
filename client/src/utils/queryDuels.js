@@ -60,6 +60,8 @@ export function makeGetDuelDetails(duelId) {
       // eslint-disable-next-line eqeqeq
       inProgress: duel.inProgress == true,
       rounds: duel.rounds,
+      finishedDate: duel.finishedDate,
+      TTL: duel.TTL,
     };
   };
 }
