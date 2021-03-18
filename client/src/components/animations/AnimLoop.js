@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 const AnimationLoop = ({ imageLink, nbFrames, size, duration }) => {
   const [currentFrame, setCurrentFrame] = useState(0);
 
-  // At mount
+  // Launch the animation interval at mount
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentFrame((c) => (c + 1) % nbFrames);
