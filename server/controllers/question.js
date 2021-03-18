@@ -82,8 +82,8 @@ const generatorInfosByType = {
   12: {
     filename: "question_MI.sql",
     before: "",
-    createWording: (subject) => `Quelle structure chimique correspond à la molécule '${subject}' ?`,
-    title: "1 molécules - 4 structure chimique",
+    createWording: (subject) => `Quelle structure chimique correspond à la molécule « ${subject} » ?`,
+    title: "1 molécule - 4 structures chimiques",
   },
 };
 

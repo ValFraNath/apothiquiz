@@ -195,7 +195,7 @@ describe("Question generation", function () {
     );
   });
 
-  it("Type 10 : Consistent values", async () => {
+  it("Type 10: Consistent values", async () => {
     const res = await requestAPI("question/10");
     const { answers, subject, goodAnswer } = res.body;
 
@@ -208,7 +208,7 @@ describe("Question generation", function () {
     );
   });
 
-  it("Type 11 : Good image url", async () => {
+  it("Type 11: Good image url", async () => {
     const {
       body: { subject },
     } = await requestAPI("question/11");
@@ -217,7 +217,7 @@ describe("Question generation", function () {
     expect(res.status).equal(200);
   });
 
-  it("Type 12 : Good image url", async () => {
+  it("Type 12: Good image url", async () => {
     const {
       body: { answers },
     } = await requestAPI("question/12");
