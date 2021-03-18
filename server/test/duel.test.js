@@ -119,7 +119,7 @@ describe("Duels", () => {
         expect(res.body).haveOwnProperty("id");
 
         duel = (await requestAPI(`duels/${res.body.id}`, { token: tokens.vperigno })).body;
-      });
+      }).timeout(5000);
 
       it("Good number of rounds & questions", (done) => {
         expect(duel.rounds).to.have.length(DEFAULT_CONFIG.ROUNDS_PER_DUEL);

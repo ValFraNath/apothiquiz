@@ -4,6 +4,7 @@ import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
 
 import Avatar from "../components/Avatar";
+import Plural from "../components/Plural";
 import DuelResults from "../components/quiz/DuelResults";
 import Loading from "../components/status/Loading";
 import PageError from "../components/status/PageError";
@@ -88,7 +89,13 @@ const DuelOverview = ({
     return <PageError message="Échec du chargement du duel" />;
   }
 
-  const { currentUserScore, opponentScore, opponent, inProgress } = data;
+  const { currentUserScore, opponentScore, opponent, inProgress, finishedDate, TTL } = data;
+
+  const remainingTimeBeforeRemove = (function () {
+    if (!finishedDate) return TTL;
+    const timeDiff = new Date().getTime() - finishedDate;
+    return TTL - Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+  })();
 
   // Can the current user play the current round?
   const answersToLastRound = answers[answers.length - 1].user;
@@ -109,12 +116,18 @@ const DuelOverview = ({
           {userCanPlay ? `Jouer le tour ${answers.length}` : "En attente de l'adversaire"}
         </Link>
       ) : (
-        <DuelResults
-          user={currentUser}
-          opponent={opponent}
-          score={currentUserScore}
-          opponentScore={opponentScore}
-        />
+        <>
+          <DuelResults
+            user={currentUser}
+            opponent={opponent}
+            score={currentUserScore}
+            opponentScore={opponentScore}
+          />
+          <p id="TTL">
+            Le duel sera supprimé dans {remainingTimeBeforeRemove}{" "}
+            <Plural word="jour" count={remainingTimeBeforeRemove} />
+          </p>
+        </>
       )}
 
       {answers.map((answer, index) => (

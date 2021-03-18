@@ -5,6 +5,9 @@ import React, { Component, useEffect, useState } from "react";
 
 import AuthService from "../services/auth.service";
 
+const ADMIN_GUIDE_URL =
+  "https://raw.githubusercontent.com/wiki/ValFraNath/guacamole/ressources/admin_guide.pdf";
+
 class FileImporter extends Component {
   constructor(props) {
     super(props);
@@ -15,6 +18,7 @@ class FileImporter extends Component {
       selectedFiles: null,
       canConfirm: false,
       imported: false,
+      isLoading: false,
     };
   }
 
@@ -32,7 +36,7 @@ class FileImporter extends Component {
     if (this.state.canConfirm) {
       requestData.append("confirmed", "true");
     }
-
+    this.setState({ isLoading: true });
     axios
       .post(this.props.endpoint, requestData)
       .then(({ data: { imported, warnings: receivedWarnings } }) => {
@@ -43,6 +47,7 @@ class FileImporter extends Component {
           errors: [],
           canConfirm: !this.state.canConfirm,
           imported,
+          isLoading: false,
         });
 
         if (imported && this.props.onImport) {
@@ -57,6 +62,7 @@ class FileImporter extends Component {
             warnings: [],
             canConfirm: false,
             imported: error.response.data.imported,
+            isLoading: false,
           });
           return;
         }
@@ -115,6 +121,7 @@ class FileImporter extends Component {
   }
 
   render() {
+    const { canConfirm, errors, warnings, imported, isLoading, selectedFiles } = this.state;
     return (
       <div className="file-importer">
         <form onSubmit={this.sendSelectedFile.bind(this)}>
@@ -127,17 +134,14 @@ class FileImporter extends Component {
           />
           <input
             type="submit"
-            disabled={this.state.selectedFiles === null}
-            value={this.state.canConfirm ? "Confirmer" : "Tester"}
-            className="btn"
+            disabled={selectedFiles === null || isLoading}
+            value={isLoading ? "Chargement" : canConfirm ? "Confirmer" : "Tester"}
           />
         </form>
-        {this.state.imported && <p className="success">Importation réalisée avec succès</p>}
-        {this.state.canConfirm && this.state.warnings.length === 0 && (
-          <p className="success">Aucun problème détecté</p>
-        )}
-        {this.displayList(this.state.warnings, "warnings")}
-        {this.displayList(this.state.errors, "errors")}
+        {imported && <p className="success">Importation réalisée avec succès</p>}
+        {canConfirm && warnings.length === 0 && <p className="success">Aucun problème détecté</p>}
+        {this.displayList(warnings, "warnings")}
+        {this.displayList(errors, "errors")}
       </div>
     );
   }
@@ -241,7 +245,7 @@ const Configuration = ({ lastImport }) => {
       ) : (
         <>
           <NumberInput
-            label="Durée du timer de réponse"
+            label="Durée du timer de réponse en secondes"
             defaultValue={config.questionTimerDuration.value}
             onChange={(value) => updateConfig("questionTimerDuration", value)}
             min={config.questionTimerDuration.min}
@@ -265,7 +269,7 @@ const Configuration = ({ lastImport }) => {
           />
 
           <NumberInput
-            label="Durée de sauvegarde d'un duel terminé avant suppression"
+            label="Nombre de jours de sauvegarde d'un duel terminé avant suppression"
             defaultValue={config.duelLifetime.value}
             onChange={(value) => updateConfig("duelLifetime", value)}
             min={config.duelLifetime.min}
@@ -327,6 +331,9 @@ const Admin = () => {
   return (
     <main id="administration">
       <h1>Espace Administration</h1>
+      <a id="adminGuide" href={ADMIN_GUIDE_URL}>
+        Télécharger le guide de l'administrateur
+      </a>
       <details open>
         <summary>Importer des molécules</summary>
         <FileDownloader

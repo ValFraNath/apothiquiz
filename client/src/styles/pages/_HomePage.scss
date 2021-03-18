@@ -62,11 +62,18 @@
       font-size: 1.3rem;
       font-weight: bold;
       color: #252525;
-      margin-bottom: 0.8rem;
 
+      display: flex;
+      align-items: center;
+      height: 4.2rem;
+      overflow: hidden;
+
+      .animation,
       img {
+        display: inline-block;
         vertical-align: middle;
         height: 3rem;
+        padding-right: 1rem;
       }
     }
 
@@ -93,11 +100,23 @@
         padding: 0.8rem 1rem;
         border-radius: 7px;
         flex-grow: 1;
+        position: relative;
 
         h3 {
           font-size: 1.2rem;
-          margin-bottom: 0.3rem;
+          margin-bottom: 0.4rem;
           color: black;
+        }
+
+        p.time {
+          position: absolute;
+          font-size: 0.8rem;
+          top: 0.7rem;
+          right: 0.8rem;
+
+          svg {
+            margin-right: 0.2rem;
+          }
         }
       }
     }
@@ -114,12 +133,6 @@
         a {
           margin-right: 0.5rem;
         }
-
-        svg {
-          width: 1.5rem;
-          height: auto;
-          color: $button-bg;
-        }
       }
     }
 
@@ -127,9 +140,14 @@
       article {
         justify-content: flex-end;
 
-        & > a {
+        & > a.challenges-text {
           &:first-of-type {
             text-align: right;
+          }
+
+          p.time {
+            left: 0.8rem;
+            right: auto;
           }
         }
       }

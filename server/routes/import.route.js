@@ -6,6 +6,8 @@ import UsersImporterController from "../controllers/usersImportation.js";
 import HttpControllerWrapper from "../global/HttpControllerWrapper.js";
 import { createMulter } from "../middlewares/multer.middleware.js";
 
+const MULTIPLE_FILES = true;
+
 const importApiRouter = express.Router();
 
 importApiRouter.post(
@@ -21,7 +23,7 @@ importApiRouter.get(
 
 importApiRouter.post(
   "/images",
-  createMulter(true),
+  createMulter(MULTIPLE_FILES),
   HttpControllerWrapper(ImagesImporterController.importImages)
 );
 

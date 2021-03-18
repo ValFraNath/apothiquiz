@@ -172,6 +172,7 @@ class Duel extends Component {
           numero={currentQuestionNum}
           maxQuestion={duelData.rounds[duelData.currentRound - 1].length}
           text={currentQuestion.wording}
+          image={currentQuestion.type === 11 ? currentQuestion.subject : null}
         />
 
         {inProgress ? (
@@ -194,6 +195,7 @@ class Duel extends Component {
           answers={currentQuestion.answers}
           lastClicked={lastClicked}
           onClick={this.handleAnswerClick}
+          areImage={currentQuestion.type === 12}
         />
       </main>
     );
