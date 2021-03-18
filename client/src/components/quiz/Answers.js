@@ -15,7 +15,7 @@ const AnswerBtn = ({ value, isRight, showResult, onClick, isImage }) => {
         onClick(value);
       }}
     >
-      {isImage ? <img src={value} alt="Image de la réponse" /> : value}
+      {isImage ? <img src={value} alt="Réponse" /> : value}
     </button>
   );
 };
