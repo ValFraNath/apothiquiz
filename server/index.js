@@ -9,7 +9,6 @@ import { checkDuelsTask, removeDuelsTask } from "./files-script/cron-tasks.js";
 import Logger from "./global/Logger.js";
 import RequestSyntaxErrorHandler from "./middlewares/error.middleware.js";
 import apiRouter from "./routes/api.route.js";
-import reactRouter from "./routes/react.route.js";
 
 dotenv.config();
 
@@ -24,9 +23,7 @@ checkEnv();
 fs.mkdirSync(FILES_DIR, { recursive: true });
 
 app.use(bodyParser.json());
-app.use(express.static("../client/build/"));
 app.use("/api/v1/", apiRouter);
-app.use("/", reactRouter);
 app.use(RequestSyntaxErrorHandler);
 
 startServer();
