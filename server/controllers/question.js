@@ -9,9 +9,8 @@ import { queryPromise } from "../db/database.js";
 // eslint-disable-next-line no-unused-vars
 import { HttpResponseWrapper } from "../global/HttpControllerWrapper.js";
 
-/* eslint-disable no-irregular-whitespace */
-
-const generatorInfosByType = {
+const IMAGES_ROUTE = "files/images"; // For non-breaking spaces around French quotes
+/* eslint-disable no-irregular-whitespace */ const generatorInfosByType = {
   1: {
     filename: "question_CM.sql",
     before: "",
@@ -71,6 +70,19 @@ const generatorInfosByType = {
     before: "SET @property = 'interactions';",
     createWording: (subject) => `Quelle interaction la molécule « ${subject} » a-t-elle ?`,
     title: "1 molécule - 4 interactions",
+  },
+  11: {
+    filename: "question_IM.sql",
+    before: "",
+    createWording: () => `Quelle molécule possède la structure chimique suivante ?`,
+    title: "1 structure chimique - 4 molécules",
+  },
+  12: {
+    filename: "question_MI.sql",
+    before: "",
+    createWording: (subject) =>
+      `Quelle structure chimique correspond à la molécule « ${subject} » ?`,
+    title: "1 molécule - 4 structures chimiques",
   },
 };
 
@@ -185,6 +197,16 @@ export function createGeneratorOfType(type) {
   return async () => {
     const { before, filename } = typeInfos;
     const question = await queryQuestion(filename, type, before);
+
+    // Questions with images
+    if (type === 11 || type === 12) {
+      const imagesRoute = `/api/v1/${IMAGES_ROUTE}`;
+      if (type === 12) {
+        question.answers = question.answers.map((answer) => `${imagesRoute}/${answer}`);
+      } else {
+        question.subject = `${imagesRoute}/${question.subject}`;
+      }
+    }
 
     return Object.assign(question, {
       wording: typeInfos.createWording(question.subject),
