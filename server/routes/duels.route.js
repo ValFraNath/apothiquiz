@@ -2,9 +2,6 @@ import express from "express";
 
 import DuelController from "../controllers/duels.js";
 import HttpControllerWrapper from "../global/HttpControllerWrapper.js";
-import AuthMiddleware from "../middlewares/auth.middleware.js";
-
-const ONLY_ADMINS = true;
 
 const duelApiRouter = express.Router();
 
