@@ -14,20 +14,10 @@ import { createMulter } from "../middlewares/multer.middleware.js";
 
 const ONLY_ADMINS = true;
 
-const usersApiRouter = express.Router();
+const configApiRouter = express.Router();
 
-usersApiRouter.get("/", AuthMiddleware(), HttpControllerWrapper(UserController.getAll));
+configApiRouter.get("/", HttpControllerWrapper(ConfigController.fetchConfig));
 
-usersApiRouter.post("/", AuthMiddleware(), HttpControllerWrapper(UserController.severalGetInfos));
+configApiRouter.patch("/", HttpControllerWrapper(ConfigController.setConfig));
 
-usersApiRouter.post("/login", HttpControllerWrapper(UserController.login));
-
-usersApiRouter.post("/token", HttpControllerWrapper(UserController.generateAccessToken));
-
-usersApiRouter.post("/logout", AuthMiddleware(), HttpControllerWrapper(UserController.logout));
-
-usersApiRouter.get("/:pseudo", AuthMiddleware(), HttpControllerWrapper(UserController.getInfos));
-
-usersApiRouter.patch("/:pseudo", AuthMiddleware(), HttpControllerWrapper(UserController.saveInfos));
-
-export default usersApiRouter;
+export default configApiRouter;

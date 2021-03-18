@@ -12,83 +12,32 @@ import HttpControllerWrapper from "../global/HttpControllerWrapper.js";
 import AuthMiddleware from "../middlewares/auth.middleware.js";
 import { createMulter } from "../middlewares/multer.middleware.js";
 
+import configApiRouter from "./config.route.js";
 import duelsApiRouter from "./duels.route.js";
+import filesApiRouter from "./files.route.js";
+import importApiRouter from "./import.route.js";
 import usersApiRouter from "./users.route.js";
 
 const ONLY_ADMINS = true;
 
 const apiRouter = express.Router();
 
-apiRouter.get("/status", HttpControllerWrapper(ApiController.status));
-
-apiRouter.get("/question/:type", HttpControllerWrapper(QuestionController.generateQuestion));
+/** Sub routes */
 
 apiRouter.use("/users", usersApiRouter);
 
-apiRouter.use("/duels", duelsApiRouter);
+apiRouter.use("/duels", AuthMiddleware(), duelsApiRouter);
 
-const FILES_DIR = process.env.NODE_ENV === "test" ? "files-test" : "files";
+apiRouter.use("/files", filesApiRouter);
 
-apiRouter.use(
-  "/files/molecules",
-  AuthMiddleware(ONLY_ADMINS),
-  express.static(`${FILES_DIR}/molecules`)
-);
+apiRouter.use("/import", AuthMiddleware(ONLY_ADMINS), importApiRouter);
 
-apiRouter.use("/files/users", AuthMiddleware(ONLY_ADMINS), express.static(`${FILES_DIR}/users`));
+apiRouter.use("/config", AuthMiddleware(ONLY_ADMINS), configApiRouter);
 
-apiRouter.use("/files/images", express.static(`${FILES_DIR}/images`));
+/** Top level routes */
 
-apiRouter.post(
-  "/import/molecules",
-  AuthMiddleware(ONLY_ADMINS),
-  createMulter(),
-  HttpControllerWrapper(MoleculesImporterController.importMolecules)
-);
+apiRouter.get("/status", HttpControllerWrapper(ApiController.status));
 
-apiRouter.get(
-  "/import/molecules",
-  AuthMiddleware(ONLY_ADMINS),
-  HttpControllerWrapper(MoleculesImporterController.getLastImportedFile)
-);
-
-apiRouter.post(
-  "/import/images",
-  AuthMiddleware(ONLY_ADMINS),
-  createMulter(true),
-  HttpControllerWrapper(ImagesImporterController.importImages)
-);
-
-apiRouter.get(
-  "/import/images",
-  AuthMiddleware(ONLY_ADMINS),
-  HttpControllerWrapper(ImagesImporterController.getLastImportedFile)
-);
-
-apiRouter.post(
-  "/import/users",
-  AuthMiddleware(ONLY_ADMINS),
-  createMulter(),
-  HttpControllerWrapper(UsersImporterController.importUsers)
-);
-
-apiRouter.get(
-  "/import/users",
-  AuthMiddleware(ONLY_ADMINS),
-  createMulter(),
-  HttpControllerWrapper(UsersImporterController.getLastImportedUsers)
-);
-
-apiRouter.get(
-  "/config",
-  AuthMiddleware(ONLY_ADMINS),
-  HttpControllerWrapper(ConfigController.fetchConfig)
-);
-
-apiRouter.patch(
-  "/config",
-  AuthMiddleware(ONLY_ADMINS),
-  HttpControllerWrapper(ConfigController.setConfig)
-);
+apiRouter.get("/question/:type", HttpControllerWrapper(QuestionController.generateQuestion));
 
 export default apiRouter;
