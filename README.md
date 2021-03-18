@@ -1,6 +1,6 @@
 # guacamole
 
-[![Preview environment](https://img.shields.io/badge/Preview-deployed-brightgreen)](https://beta.guacamole.nathanaelhoun.fr)
+[![Preview environment](https://img.shields.io/badge/Preview-deployed-brightgreen)](https://guacamole.valentin-perignon.fr)
 [![Build and test CI](https://github.com/ValFraNath/guacamole/actions/workflows/node.js.yml/badge.svg)](https://github.com/ValFraNath/guacamole/actions/workflows/node.js.yml)
 
 A third year undergraduate project by [Nathanaël Houn](https://nathanaelhoun.fr), [Valentin Perignon](https://valentin-perignon.fr) and [François Poguet](https://francois.poguet.com), three students at the Université de _Franche-Comté_ (FR).
