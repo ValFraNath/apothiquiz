@@ -23,6 +23,11 @@ const DuelCreate = ({ history }) => {
     }
   );
 
+  const test = true;
+  if (test) {
+    return <Loading />;
+  }
+
   if (isError) {
     return <PageError message="Erreur lors du chargement de la page" />;
   }
