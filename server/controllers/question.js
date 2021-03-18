@@ -10,7 +10,7 @@ import { queryPromise } from "../db/database.js";
 import { HttpResponseWrapper } from "../global/HttpControllerWrapper.js";
 
 const IMAGES_ROUTE = "files/images";
-/* eslint-disable no-irregular-whitespace */
+/* eslint-disable no-irregular-whitespace */ // For non-breaking spaces around French quotes
 
 const generatorInfosByType = {
   1: {
