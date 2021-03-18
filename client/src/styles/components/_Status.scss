@@ -1,0 +1,52 @@
+.loading {
+  min-height: calc(100% - 50px);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  .animation {
+    animation: resize 1s infinite;
+
+    @keyframes resize {
+      50% {
+        transform: scale(98%);
+      }
+    }
+  }
+
+  span {
+    font-size: 1.5em;
+    text-align: center;
+  }
+}
+
+.page-error {
+  min-height: calc(100% - 50px);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    width: 80%;
+  }
+
+  span {
+    margin-top: 1em;
+    font-size: 2em;
+    padding: 0 1em;
+    text-align: center;
+  }
+}
+
+.floating-error {
+  display: flex;
+  align-items: center;
+
+  img {
+    height: 3em;
+  }
+}
