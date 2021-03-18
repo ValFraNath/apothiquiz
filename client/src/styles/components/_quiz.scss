@@ -39,6 +39,12 @@ $timer-size: 100px;
     }
   }
 
+  img {
+    display: block;
+    margin: auto;
+    width: 75%;
+  }
+
   @media screen and (max-width: $screen-smartphone-small) {
     min-height: auto;
     padding: 2.5rem 1rem 1.8rem 1rem;
@@ -62,6 +68,10 @@ $timer-size: 100px;
 
 body.dark #quiz-question {
   background-color: $color-gray-dark;
+
+  img {
+    filter: invert(1);
+  }
 }
 
 /* ---------- Timer ---------- */
@@ -112,6 +122,29 @@ body.dark #timer {
   display: flex;
   flex-direction: column;
   margin-top: 1.2rem;
+
+  &.answers-images {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    column-gap: 0.3rem;
+    row-gap: 0.3rem;
+
+    button {
+      padding: 0.3rem;
+      margin-bottom: 0;
+
+      &:before {
+        content: "";
+        display: none;
+      }
+
+      img {
+        width: 100%;
+        filter: invert(1);
+      }
+    }
+  }
 
   button {
     padding: 1rem 0.8rem;
@@ -181,13 +214,23 @@ body.dark #timer {
   }
 }
 
-body.dark #quiz-answers button {
-  border: 3px solid $color-gray-dark;
-  background-color: $color-gray-dark;
+body.dark #quiz-answers {
+  button {
+    background-color: $color-gray-dark;
+    border: 3px solid $color-gray-dark;
 
-  &:not(.good-answer):before,
-  &:not(.bad-answer):before {
-    background-color: #43444a;
+    &:not(.good-answer):before,
+    &:not(.bad-answer):before {
+      background-color: #43444a;
+    }
+
+    &.good-answer {
+      border: 3px solid $color-green-success;
+    }
+
+    &.bad-answer {
+      border: 3px solid $color-red-error;
+    }
   }
 }
 

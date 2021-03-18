@@ -36,6 +36,13 @@ main#duel-overview {
     text-align: center;
   }
 
+  p#TTL {
+    text-align: center;
+    padding: 1.1rem 0 0.6rem 0;
+    font-size: 0.9rem;
+    font-style: italic;
+  }
+
   section {
     $title-height: 35px;
     $color-bg-color: $color-gray;

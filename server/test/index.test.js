@@ -1,3 +1,4 @@
+import fsSync from "fs";
 import fs from "fs/promises";
 import path from "path";
 
@@ -5,6 +6,7 @@ import chai from "chai";
 import chaiHttp from "chai-http";
 
 import { queryPromise } from "../db/database.js";
+import { getSortedFiles } from "../global/files.js";
 import app from "../index.js";
 
 chai.use(chaiHttp);
@@ -92,4 +94,34 @@ export async function resetConfig() {
   await queryPromise(sql);
 
   await insertData("config.sql");
+}
+
+/**
+ * Send request to import files of a given directory
+ * @param {string} dir The directory containing files to send
+ * @param {string} confirmed Tell if the importation is confirmed
+ * @param {string} token The user token
+ */
+export function importImagesViaAPI(dir, confirmed = "", token = "") {
+  return new Promise((resolve, reject) => {
+    const req = chai
+      .request(app)
+      .post("/api/v1/import/images")
+      .set("Authorization", token ? "Bearer " + token : "")
+      .set("Content-Type", "image/*")
+      .field("confirmed", confirmed);
+
+    getSortedFiles(dir).then((files) => {
+      files.forEach((file) => {
+        req.attach("file", fsSync.readFileSync(path.resolve(dir, file)), file);
+      });
+      req.end((err, res) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve(res);
+      });
+    });
+  });
 }

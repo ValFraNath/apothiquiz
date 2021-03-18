@@ -5,10 +5,12 @@
 @import "base/App";
 @import "base/shared";
 
+@import "components/Animations";
 @import "components/Avatar";
 @import "components/buttons";
 @import "components/ChooseAvatar";
 @import "components/quiz";
+@import "components/Status";
 @import "components/TopBar";
 
 @import "pages/About";

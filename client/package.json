@@ -64,6 +64,7 @@
       "no-unused-vars": "warn",
       "no-useless-rename": "error",
       "prefer-arrow-callback": "error",
+      "react/prop-types": "warn",
       "prefer-destructuring": [
         "warn",
         {
