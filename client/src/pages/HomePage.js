@@ -92,7 +92,7 @@ const HomePage = () => {
       <section>
         <h2>
           <AnimationWithAction
-            size={90}
+            size={120}
             loopImage={{
               imageLink: fightAnimLoop,
               nbFrames: 14,
@@ -135,7 +135,7 @@ const HomePage = () => {
       <section>
         <h2>
           <AnimationWithAction
-            size={50}
+            size={60}
             loopImage={{
               imageLink: waitingAnimLoop,
               nbFrames: 24,
