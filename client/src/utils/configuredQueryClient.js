@@ -1,7 +1,7 @@
 import { QueryClient } from "react-query";
 
 import { getAllDuels } from "./queryDuels";
-import { makeGetUserInfo } from "./queryUsers";
+import { getChallengeableUsers, makeGetUserInfo } from "./queryUsers";
 
 const queryClient = new QueryClient();
 
@@ -35,6 +35,11 @@ queryClient.setQueryDefaults("duels", {
   queryFn: getAllDuels,
   staleTime: 60 * 1000,
   refetchOnMount: "always",
+});
+
+queryClient.setQueryDefaults(["users", "challengeable"], {
+  queryFn: getChallengeableUsers,
+  staleTime: 60 * 60 * 1000,
 });
 
 export default queryClient;

@@ -136,17 +136,27 @@ async function generateAccessToken(req, res) {
  */
 
 /**
- * @api {get} /users/ Get data of all users
+ * @api {get} /users/ Get data of users
  * @apiName GetAllUsersData
  * @apiGroup User
  *
- * @apiSuccess (200) {object[]} users  All users in an array
+ * @apiPermission LoggedIn
+ *
+ * @apiParam {Boolean} challengeable=false      Query parameter: Only get challengeable users
+ *
+ * @apiSuccess (200) {object[]} users           All users in an array
+ * @apiSuccess (200) {string}   users.pseudo    Pseudo of the user
+ * @apiSuccess (200) {int}      users.victories Number of victories
+ * @apiSuccess (200) {int}      users.defeats   Number of defeats
+ * @apiSuccess (200) {string}   users.avatar    JSONified avatar informations
  *
  * @apiUse ErrorServer
  *
  * @param {HttpResponseWrapper} res The http response
  */
-async function getAll(_, res) {
+async function getAll(req, res) {
+  const currentUser = req.body._auth.user;
+
   const sql =
     "SELECT us_login AS pseudo, \
             us_victories AS victories, \
@@ -156,15 +166,24 @@ async function getAll(_, res) {
       WHERE us_deleted IS NULL;";
 
   const sqlRes = await queryPromise(sql);
-  const usersData = {};
 
+  let challengedUsers;
+  if (req.query.challengeable === "true") {
+    challengedUsers = (await queryPromise("CALL getDuelsOf(?);", [currentUser]))[0]
+      .map((c) => c.us_login)
+      .filter((u) => u !== currentUser);
+  }
+
+  const usersData = {};
   for (let value of sqlRes) {
-    usersData[value.pseudo] = {
-      pseudo: value.pseudo,
-      victories: Number(value.victories),
-      defeats: Number(value.defeats),
-      avatar: JSON.parse(value.avatar),
-    };
+    if (req.query.challengeable !== "true" || challengedUsers.every((u) => u !== value.pseudo)) {
+      usersData[value.pseudo] = {
+        pseudo: value.pseudo,
+        victories: Number(value.victories),
+        defeats: Number(value.defeats),
+        avatar: JSON.parse(value.avatar),
+      };
+    }
   }
 
   res.sendResponse(200, usersData);
@@ -174,6 +193,8 @@ async function getAll(_, res) {
  * @api {post} /users/ Get data of several users
  * @apiName GetUsersData
  * @apiGroup User
+ *
+ * @apiPermission LoggedIn
  *
  * @apiParam {string[]} listOfUsers  Pseudo of several users
  *

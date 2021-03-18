@@ -7,21 +7,13 @@ import Avatar from "../components/Avatar";
 import ButtonFullWidth from "../components/buttons/ButtonFullWidth";
 import Loading from "../components/status/Loading";
 import PageError from "../components/status/PageError";
-import { getChallengeableUsers } from "../utils/queryUsers";
 
 const DuelCreate = ({ history }) => {
   const [searchRegex, setSearchRegex] = useState(null);
   const [selected, setSelected] = useState(null);
   const queryClient = useQueryClient();
 
-  const { data: listOfUsers, isSuccess, isError } = useQuery(
-    ["users", "challengeable"],
-    getChallengeableUsers,
-    {
-      staleTime: 60 * 60 * 1000,
-      refetchOnMount: false,
-    }
-  );
+  const { data: listOfUsers, isSuccess, isError } = useQuery(["users", "challengeable"]);
 
   if (isError) {
     return <PageError message="Erreur lors du chargement de la page" />;
