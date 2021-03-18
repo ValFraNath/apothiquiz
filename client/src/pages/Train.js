@@ -113,7 +113,11 @@ class PlayView extends Component {
           </div>
         </div>
 
-        <Question numero={questionNum} text={question.wording} />
+        <Question
+          numero={questionNum}
+          text={question.wording}
+          image={question.type === 11 ? question.subject : null}
+        />
 
         {inProgress ? (
           <Timer inProgress={inProgress} duration={timer} updateParent={this.updateTimer} />
@@ -131,6 +135,7 @@ class PlayView extends Component {
           answers={question.answers}
           lastClicked={lastClicked}
           onClick={this.handleAnswerClick}
+          areImage={question.type === 12}
         />
       </>
     );
@@ -226,7 +231,7 @@ class Train extends Component {
    */
   getNewQuestion = (nthRetry = 0) => {
     const minQuestionType = 1,
-      maxQuestionType = 10;
+      maxQuestionType = 12;
 
     const questionType =
       Math.floor(Math.random() * (maxQuestionType + 1 - minQuestionType)) + minQuestionType;

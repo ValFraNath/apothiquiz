@@ -62,11 +62,18 @@
       font-size: 1.3rem;
       font-weight: bold;
       color: #252525;
-      margin-bottom: 0.8rem;
 
+      display: flex;
+      align-items: center;
+      height: 4.2rem;
+      overflow: hidden;
+
+      .animation,
       img {
+        display: inline-block;
         vertical-align: middle;
         height: 3rem;
+        padding-right: 1rem;
       }
     }
 

@@ -8,9 +8,15 @@ import chaiHttp from "chai-http";
 import equalInAnyOrder from "deep-equal-in-any-order";
 
 import { queryPromise } from "../../../db/database.js";
-import { createDir, deleteFiles, getSortedFiles } from "../../../global/files.js";
+import { createDir, deleteFiles } from "../../../global/files.js";
 import app from "../../../index.js";
-import { forceTruncateTables, getToken, insertData, requestAPI } from "../../index.test.js";
+import {
+  forceTruncateTables,
+  getToken,
+  insertData,
+  requestAPI,
+  importImagesViaAPI,
+} from "../../index.test.js";
 import { uploadFile } from "../../molecules_importation/importation_route/importMolecule.test.js";
 
 const { expect } = chai;
@@ -45,27 +51,27 @@ describe("Images importation", () => {
   });
 
   it("Can import (not confirmed)", async () => {
-    const res = await importImagesViaAPI("default", false, token);
+    const res = await importImagesViaAPI(path.resolve(FILES_DIR, "default"), false, token);
     expect(res.status).equals(202);
     expect(res.body.imported).to.be.false;
     expect(res.body.warnings).to.have.length(0);
   });
 
   it("Can import (not confirmed with warnings)", async () => {
-    const res = await importImagesViaAPI("warnings", false, token);
+    const res = await importImagesViaAPI(path.resolve(FILES_DIR, "warnings"), false, token);
     expect(res.status).equals(202);
     expect(res.body.imported).to.be.false;
     expect(res.body.warnings).to.have.length(5);
   });
 
   it("Can import (confirmed)", async () => {
-    const res = await importImagesViaAPI("default", "true", token);
+    const res = await importImagesViaAPI(path.resolve(FILES_DIR, "default"), "true", token);
     expect(res.status).equals(201);
     expect(res.body.imported).to.be.true;
   });
 
   it("Can import (confirmed twice)", async () => {
-    const res = await importImagesViaAPI("warnings", "true", token);
+    const res = await importImagesViaAPI(path.resolve(FILES_DIR, "warnings"), "true", token);
     expect(res.status).equals(201);
     expect(res.body.imported).to.be.true;
   });
@@ -129,36 +135,6 @@ describe("Images importation", () => {
     ]);
   });
 });
-
-/**
- * Send request to import files of a given directory
- * @param {string} dir The directory containing files to send
- * @param {string} confirmed Tell if the importation is confirmed
- * @param {string} token The user token
- */
-function importImagesViaAPI(dir, confirmed = "", token = "") {
-  return new Promise((resolve, reject) => {
-    const req = chai
-      .request(app)
-      .post("/api/v1/import/images")
-      .set("Authorization", token ? "Bearer " + token : "")
-      .set("Content-Type", "image/*")
-      .field("confirmed", confirmed);
-
-    getSortedFiles(path.resolve(FILES_DIR, dir)).then((files) => {
-      files.forEach((file) => {
-        req.attach("file", fs.readFileSync(path.resolve(FILES_DIR, dir, file)), file);
-      });
-      req.end((err, res) => {
-        if (err) {
-          reject(err);
-          return;
-        }
-        resolve(res);
-      });
-    });
-  });
-}
 
 /**
  * Download the images archive and save it in the tmp directory
