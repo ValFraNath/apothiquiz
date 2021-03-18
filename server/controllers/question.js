@@ -9,10 +9,8 @@ import { queryPromise } from "../db/database.js";
 // eslint-disable-next-line no-unused-vars
 import { HttpResponseWrapper } from "../global/HttpControllerWrapper.js";
 
-const IMAGES_ROUTE = "files/images";
-/* eslint-disable no-irregular-whitespace */ // For non-breaking spaces around French quotes
-
-const generatorInfosByType = {
+const IMAGES_ROUTE = "files/images"; // For non-breaking spaces around French quotes
+/* eslint-disable no-irregular-whitespace */ const generatorInfosByType = {
   1: {
     filename: "question_CM.sql",
     before: "",
@@ -82,7 +80,8 @@ const generatorInfosByType = {
   12: {
     filename: "question_MI.sql",
     before: "",
-    createWording: (subject) => `Quelle structure chimique correspond à la molécule « ${subject} » ?`,
+    createWording: (subject) =>
+      `Quelle structure chimique correspond à la molécule « ${subject} » ?`,
     title: "1 molécule - 4 structures chimiques",
   },
 };
