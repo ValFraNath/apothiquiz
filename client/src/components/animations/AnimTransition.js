@@ -37,7 +37,6 @@ const AnimTransition = ({ imageLink, nbFrames, size, duration, initialState, pla
   useEffect(
     () => {
       clearTimeout(timerIdRef.current);
-      console.debug("change direction", direction * -1);
       updateFrame(currentFrame, direction * -1);
       setDirection((d) => d * -1);
     },
