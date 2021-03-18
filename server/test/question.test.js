@@ -117,7 +117,7 @@ describe("Question generation", function () {
     );
   });
 
-  it("Type 4 : Consistent values", async () => {
+  it("Type 4: Consistent values", async () => {
     const res = await requestAPI("question/4");
     const { answers, subject, goodAnswer } = res.body;
 
