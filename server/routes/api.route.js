@@ -69,8 +69,6 @@ apiRouter.use("/files/users", AuthMiddleware(ONLY_ADMINS), express.static(`${FIL
 
 apiRouter.use("/files/images", express.static(`${FILES_DIR}/images`));
 
-apiRouter.use("/resources", express.static("resources"));
-
 // ********** Import **********
 
 apiRouter.post(

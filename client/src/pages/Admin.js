@@ -5,6 +5,9 @@ import React, { Component, useEffect, useState } from "react";
 
 import AuthService from "../services/auth.service";
 
+const ADMIN_GUIDE_URL =
+  "https://raw.githubusercontent.com/wiki/ValFraNath/guacamole/ressources/admin_guide.pdf";
+
 class FileImporter extends Component {
   constructor(props) {
     super(props);
@@ -328,8 +331,8 @@ const Admin = () => {
   return (
     <main id="administration">
       <h1>Espace Administration</h1>
-      <a id="adminGuide" href="/api/v1/resources/admin_guide.pdf">
-        Guide de l'administrateur
+      <a id="adminGuide" href={ADMIN_GUIDE_URL}>
+        Télécharger le guide de l'administrateur
       </a>
       <details open>
         <summary>Importer des molécules</summary>
