@@ -10,7 +10,7 @@ const Question = ({ numero, maxQuestion = -1, text, image }) => {
       </h2>
       <h1>
         {text}
-        {image && <img src={image} alt="Question subject" />}
+        {image && <img src={image} alt="Molécule du sujet de la question" />}
       </h1>
     </div>
   );
