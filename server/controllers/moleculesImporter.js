@@ -89,7 +89,7 @@ async function importMolecules(req, res) {
   const { confirmed } = req.body;
 
   if (!req.file) {
-    return res.sendUsageError(400, "Missing file");
+    return res.sendUsageError(400, "Fichier manquant");
   }
 
   const { path: filepath, filename, originalname } = req.file;
@@ -98,7 +98,7 @@ async function importMolecules(req, res) {
 
   try {
     if (!/\.csv$/i.test(originalname)) {
-      res.sendUsageError(400, "Invalid file format : must be csv ");
+      res.sendUsageError(400, "Format de fichier invalide : CSV uniquement ");
       return;
     }
 
@@ -107,7 +107,7 @@ async function importMolecules(req, res) {
     if (confirmed !== "true") {
       const warnings = data.analyze();
       res.sendResponse(202, {
-        message: "File tested but not imported",
+        message: "Fichier testé mais pas importé",
         warnings,
         imported: false,
       });
@@ -136,7 +136,7 @@ async function importMolecules(req, res) {
     }
   } catch (error) {
     if (HeaderErrors.isInstance(error)) {
-      res.sendUsageError(422, "Badly formatted file", {
+      res.sendUsageError(422, "Fichier mal formatté", {
         errors: error.errors,
         imported: false,
       });

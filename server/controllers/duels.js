@@ -39,21 +39,21 @@ async function create(req, res) {
     const { opponent } = req.body;
 
     if (!opponent) {
-      return res.sendUsageError(400, "Missing opponent");
+      return res.sendUsageError(400, "Vous devez renseigner un adversaire");
     }
 
     if (username === opponent) {
-      return res.sendUsageError(400, "You can't challenge yourself");
+      return res.sendUsageError(400, "Vous ne pouvez pas vous défier vous-même");
     }
 
     const usersExist = await doUsersExist(username, opponent);
 
     if (!usersExist) {
-      return res.sendUsageError(404, "Opponent not found");
+      return res.sendUsageError(404, "L'adversaire renseigné est inconnu");
     }
 
     if (await doesDuelExist([username, opponent])) {
-      return res.sendUsageError(400, "This duel is already in progress");
+      return res.sendUsageError(400, "Vous avez déjà un duel en cours avec cet adversaire");
     }
 
     const config = await fetchConfigFromDB();
@@ -65,7 +65,7 @@ async function create(req, res) {
     res.sendResponse(201, { id });
   } catch (error) {
     if (NotEnoughDataError.isInstance(error)) {
-      res.sendUsageError(422, "Not enough data to generate the duel", {
+      res.sendUsageError(422, "Il n'y a pas assez de données pour générer un duel", {
         code: error.code,
       });
       return;
@@ -172,12 +172,12 @@ async function fetch(req, res) {
   const duelID = Number(req.params.id);
 
   if (!duelID) {
-    return res.sendUsageError(400, "Missing or invalid duel ID");
+    return res.sendUsageError(400, "L'ID du duel est manquant ou invalide");
   }
 
   const duel = await getDuel(duelID, username);
   if (!duel) {
-    return res.sendUsageError(404, "Duel not found");
+    return res.sendUsageError(404, "Ce duel n'existe pas");
   }
   res.sendResponse(200, duel);
 }
@@ -233,29 +233,29 @@ async function play(req, res) {
   const answers = req.body.answers || [];
 
   if (!id) {
-    return res.sendUsageError(400, "Invalid or missing duel id");
+    return res.sendUsageError(400, "L'ID du duel est invalide ou manquant");
   }
 
   const duel = await getDuel(id, username);
 
   if (!duel) {
-    return res.sendUsageError(404, "Duel not found");
+    return res.sendUsageError(404, "Ce duel n'existe pas");
   }
 
   if (!duel.inProgress) {
-    return res.sendUsageError(400, "This duel is finished");
+    return res.sendUsageError(400, "Ce duel est terminé");
   }
 
   if (duel.currentRound !== round) {
-    return res.sendUsageError(400, "Invalid duel round");
+    return res.sendUsageError(400, "La manche du duel est invalide");
   }
 
   if (duel.rounds[round - 1][0].userAnswer !== undefined) {
-    return res.sendUsageError(400, "You can only play a round once");
+    return res.sendUsageError(400, "Vous avez déjà joué cette manche");
   }
 
   if (answers.length !== duel.rounds[round - 1].length) {
-    return res.sendUsageError(400, "Incorrect number of answers");
+    return res.sendUsageError(400, "Le nombre de réponses est incorrect");
   }
 
   let updatedDuel = await insertResultInDatabase(id, username, answers);
