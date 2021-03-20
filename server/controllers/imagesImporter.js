@@ -85,7 +85,7 @@ async function importImages(req, res) {
       const warnings = await imagesList.analyze();
 
       res.sendResponse(202, {
-        message: "Images tested but not imported ",
+        message: "Images testées mais pas importées",
         warnings,
         imported: false,
       });
@@ -104,7 +104,7 @@ async function importImages(req, res) {
       );
 
       res.sendResponse(201, {
-        message: "Images imported",
+        message: "Images importées",
         warnings: [],
         imported: true,
       });

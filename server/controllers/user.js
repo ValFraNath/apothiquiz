@@ -33,13 +33,13 @@ async function login(req, res) {
   const { userPseudo, userPassword } = req.body;
 
   if (!userPseudo || !userPassword) {
-    return res.sendUsageError(400, "Bad request format.");
+    return res.sendUsageError(400, "Pseudo ou mot de passe invalide");
   }
 
   const userExists = await doesUserExist(userPseudo);
 
   if (!userExists) {
-    res.sendUsageError(404, "User not found.");
+    res.sendUsageError(404, "Utilisateur inconnu");
     return;
   }
 
@@ -55,7 +55,7 @@ async function login(req, res) {
       isAdmin,
     });
   } else {
-    res.sendUsageError(401, "Authentication failed");
+    res.sendUsageError(401, "Echec de l'authentification");
   }
 }
 
@@ -78,12 +78,12 @@ async function logout(req, res) {
   const { refreshToken } = req.body;
 
   if (!refreshToken) {
-    return res.sendUsageError(400, "The refresh token is missing");
+    return res.sendUsageError(400, "Le refresh token est manquant");
   }
 
   await Tokens.deleteToken(refreshToken);
 
-  res.sendResponse(200, "User has successfully logged out");
+  res.sendResponse(200, "Utilisateur déconnecté avec succès");
 }
 
 /**
@@ -106,13 +106,13 @@ async function generateAccessToken(req, res) {
   const { refreshToken } = req.body;
 
   if (!refreshToken) {
-    return res.sendUsageError(400, "Refresh token is missing");
+    return res.sendUsageError(400, "Le refresh token est manquant");
   }
 
   const tokenExists = await Tokens.doesRefreshTokenExist(refreshToken);
 
   if (!tokenExists) {
-    return res.sendUsageError(400, "Invalid or expired refresh token");
+    return res.sendUsageError(400, "Ce refresh token n'existe pas");
   }
 
   const accessToken = Tokens.createAccessToken(refreshToken);

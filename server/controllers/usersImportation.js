@@ -67,14 +67,14 @@ async function importUsers(req, res) {
   const { confirmed } = req.body;
 
   if (!req.file) {
-    return res.sendUsageError(400, "Missing file");
+    return res.sendUsageError(400, "Fichier manquant");
   }
 
   const { path: filepath, filename, originalname } = req.file;
 
   try {
     if (!/\.csv$/i.test(originalname)) {
-      res.sendUsageError(400, "Invalid file format: must be csv ");
+      res.sendUsageError(400, "Format de fichier invalide : uniquement CSV");
       return;
     }
 
@@ -94,21 +94,21 @@ async function importUsers(req, res) {
       await deleteFiles(...files.slice(MAX_FILE_KEPT).map((file) => `${USERS_DIR}/${file}`));
 
       res.sendResponse(201, {
-        message: "File imported",
+        message: "Fichier importé",
         warnings: [],
         imported: true,
       });
     } else {
       const warnings = data.analyze();
       res.sendResponse(202, {
-        message: "File tested but not imported",
+        message: "Fichié testé mais pas importé",
         warnings,
         imported: false,
       });
     }
   } catch (error) {
     if (HeaderErrors.isInstance(error)) {
-      res.sendUsageError(422, "Badly formatted file", {
+      res.sendUsageError(422, "Fichier mal formatté", {
         errors: error.errors,
         imported: false,
       });

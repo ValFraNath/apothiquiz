@@ -29,7 +29,7 @@ export default class ImagesList {
 
   /**
    * Analyze the images list
-   * @returns {AnalyzerWarning[]} A list of warnings
+   * @returns {Promise<AnalyzerWarning[]>} A list of warnings
    */
   async analyze() {
     const warnings = [];
