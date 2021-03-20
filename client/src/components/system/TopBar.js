@@ -3,7 +3,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
 
-import connectionAnim from "../../images/sprites/network-status.png";
+import connectionAnim from "../../images/sprites/network-status-60.png";
 import AnimTransition from "../animations/AnimTransition";
 import Avatar from "../Avatar";
 
