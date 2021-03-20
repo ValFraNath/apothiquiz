@@ -12,7 +12,7 @@ import Property, { PropertyValue } from "./Property.js";
 const MOLECULE_DCI_MAX_LENGTH = 128;
 const MOLECULE_DCI_MIN_DISTANCE = 1;
 const MOLECULE_SKELETAL_FORMULA_MAX_LENGTH = 64;
-const VALID_DCI_REGEX = /^[a-z_]+$/i;
+const VALID_NORMALIZED_DCI_REGEX = /^[a-z_]+$/i;
 
 export const MOLECULE_WARNINGS = {
   INVALID_DCI: "INVALID_DCI",
@@ -250,7 +250,7 @@ export class Molecule {
    * @returns {boolean}
    */
   static isMoleculeDCIValid(dci) {
-    return VALID_DCI_REGEX.test(Molecule.normalizeDCI(dci));
+    return VALID_NORMALIZED_DCI_REGEX.test(Molecule.normalizeDCI(dci));
   }
 
   /**
