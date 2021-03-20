@@ -32,7 +32,17 @@ const DuelCreate = ({ history }) => {
         queryClient.invalidateQueries(["users", "challengeable"]);
         history.push(`/duel/${id}`);
       })
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        if (err.response.status === 409) {
+          // Duels already exists => redirecting to it
+          const { id } = err.response.data;
+          queryClient.invalidateQueries(["users", "challengeable"]);
+          history.push(`/duel/${id}`);
+          return;
+        }
+
+        console.error(err);
+      });
   }
 
   return (
