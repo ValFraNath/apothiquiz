@@ -157,6 +157,8 @@ async function generateAccessToken(req, res) {
 async function getAll(req, res) {
   const currentUser = req.body._auth.user;
 
+  const filterChallengeable = req.query.challengeable === "true";
+
   const sql =
     "SELECT us_login AS pseudo, \
             us_victories AS victories, \
@@ -165,25 +167,30 @@ async function getAll(req, res) {
       FROM user \
       WHERE us_deleted IS NULL;";
 
-  const sqlRes = await queryPromise(sql);
+  const sqlRes = await Promise.all([
+    queryPromise(sql),
+    filterChallengeable ? queryPromise("CALL getDuelsOf(?);", [currentUser]) : () => {},
+  ]);
 
-  let challengedUsers;
-  if (req.query.challengeable === "true") {
-    challengedUsers = (await queryPromise("CALL getDuelsOf(?);", [currentUser]))[0]
-      .map((c) => c.us_login)
-      .filter((u) => u !== currentUser);
-  }
+  const challengedUsers = filterChallengeable
+    ? sqlRes[1][0].map((c) => c.us_login).filter((u) => u !== currentUser)
+    : undefined;
 
   const usersData = {};
-  for (let value of sqlRes) {
-    if (req.query.challengeable !== "true" || challengedUsers.every((u) => u !== value.pseudo)) {
-      usersData[value.pseudo] = {
-        pseudo: value.pseudo,
-        victories: Number(value.victories),
-        defeats: Number(value.defeats),
-        avatar: JSON.parse(value.avatar),
-      };
+  for (const value of sqlRes[0]) {
+    if (
+      filterChallengeable &&
+      (value.pseudo === currentUser || challengedUsers.some((u) => u === value.pseudo))
+    ) {
+      continue;
     }
+
+    usersData[value.pseudo] = {
+      pseudo: value.pseudo,
+      victories: Number(value.victories),
+      defeats: Number(value.defeats),
+      avatar: JSON.parse(value.avatar),
+    };
   }
 
   res.sendResponse(200, usersData);
