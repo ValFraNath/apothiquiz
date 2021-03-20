@@ -129,7 +129,7 @@ async function importMolecules(req, res) {
       await updateNumberOfRoundsPerDuel();
 
       res.sendResponse(201, {
-        message: "File imported",
+        message: "Fichier importé",
         warnings: [],
         imported: true,
       });
