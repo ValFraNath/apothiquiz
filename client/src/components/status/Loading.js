@@ -1,6 +1,6 @@
 import { React } from "react";
 
-import loadingAnim from "../../images/sprites/loading-loop.png";
+import loadingAnim from "../../images/sprites/loading-loop-300.png";
 
 import AnimationLoop from "../animations/AnimLoop";
 
