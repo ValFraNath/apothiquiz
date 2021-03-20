@@ -1,28 +1,29 @@
 import { PropTypes } from "prop-types";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 const AnimationLoop = ({ imageLink, nbFrames, size, duration }) => {
-  const animationName = `animation-${imageLink.split("/").pop()}-${duration}`.replaceAll(".", "");
+  const [currentFrame, setCurrentFrame] = useState(0);
+
+  // Launch the animation interval at mount
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentFrame((c) => (c + 1) % nbFrames);
+    }, (1000 * duration) / nbFrames);
+
+    // Delete timeout when umounting
+    return function cleanup() {
+      clearTimeout(interval);
+    };
+  }, [duration, nbFrames]);
 
   return (
     <div className="animation" style={{ height: size, width: size }}>
-      <style>
-        {`
-           @keyframes ${animationName} {
-            from {
-              background-position-x: 0;
-            }
-            to {
-              background-position-x: ${-size * nbFrames}px;
-            }
-          }
-        `}
-      </style>
       <div
         className="animation-inside"
         style={{
-          animation: `${animationName} ${duration}s infinite steps(${nbFrames})`,
           backgroundImage: `url(${imageLink})`,
+          backgroundSize: `${size * nbFrames}px ${size}px`,
+          backgroundPositionX: `${-size * currentFrame}px`,
         }}
       />
     </div>
