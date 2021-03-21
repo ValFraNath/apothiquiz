@@ -38,7 +38,7 @@ import { getSystemInformation } from "../db/database.js";
 async function status(_, res) {
   const version = await getSystemInformation("api_version");
   const response = {
-    status: "connected",
+    status: "connecté",
     apiVersion: version,
   };
 

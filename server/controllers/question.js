@@ -117,7 +117,7 @@ async function generateQuestion(req, res) {
   const generateQuestion = createGeneratorOfType(type);
 
   if (!generateQuestion) {
-    res.sendUsageError(404, "Incorrect type of question");
+    res.sendUsageError(404, "Type de question incorrect");
     return;
   }
   const config = await fetchConfigFromDB();
@@ -136,7 +136,7 @@ async function generateQuestion(req, res) {
     });
   } catch (error) {
     if (NotEnoughDataError.isInstance(error)) {
-      res.sendUsageError(422, "Not enough data to generate this type of question", {
+      res.sendUsageError(422, "Pas assez de données disponibles pour ce type de question", {
         code: error.code,
       });
       return;
