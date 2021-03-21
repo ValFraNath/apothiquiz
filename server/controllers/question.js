@@ -136,7 +136,7 @@ async function generateQuestion(req, res) {
     });
   } catch (error) {
     if (NotEnoughDataError.isInstance(error)) {
-      res.sendUsageError(422, "Pas assez de données sont disponible pour ce type de question", {
+      res.sendUsageError(422, "Pas assez de données disponibles pour ce type de question", {
         code: error.code,
       });
       return;

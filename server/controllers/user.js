@@ -55,7 +55,7 @@ async function login(req, res) {
       isAdmin,
     });
   } else {
-    res.sendUsageError(401, "Echec de l'authentification");
+    res.sendUsageError(401, "Échec de l'authentification");
   }
 }
 

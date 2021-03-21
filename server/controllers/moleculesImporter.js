@@ -136,7 +136,7 @@ async function importMolecules(req, res) {
     }
   } catch (error) {
     if (HeaderErrors.isInstance(error)) {
-      res.sendUsageError(422, "Fichier mal formatté", {
+      res.sendUsageError(422, "Fichier mal formaté", {
         errors: error.errors,
         imported: false,
       });
