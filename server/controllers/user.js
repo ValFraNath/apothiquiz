@@ -33,13 +33,13 @@ async function login(req, res) {
   const { userPseudo, userPassword } = req.body;
 
   if (!userPseudo || !userPassword) {
-    return res.sendUsageError(400, "Bad request format.");
+    return res.sendUsageError(400, "Pseudo ou mot de passe invalide");
   }
 
   const userExists = await doesUserExist(userPseudo);
 
   if (!userExists) {
-    res.sendUsageError(404, "User not found.");
+    res.sendUsageError(404, "Utilisateur inconnu");
     return;
   }
 
@@ -55,7 +55,7 @@ async function login(req, res) {
       isAdmin,
     });
   } else {
-    res.sendUsageError(401, "Authentication failed");
+    res.sendUsageError(401, "Échec de l'authentification");
   }
 }
 
@@ -78,12 +78,12 @@ async function logout(req, res) {
   const { refreshToken } = req.body;
 
   if (!refreshToken) {
-    return res.sendUsageError(400, "The refresh token is missing");
+    return res.sendUsageError(400, "Le refresh token est manquant");
   }
 
   await Tokens.deleteToken(refreshToken);
 
-  res.sendResponse(200, "User has successfully logged out");
+  res.sendResponse(200, "Utilisateur déconnecté avec succès");
 }
 
 /**
@@ -106,13 +106,13 @@ async function generateAccessToken(req, res) {
   const { refreshToken } = req.body;
 
   if (!refreshToken) {
-    return res.sendUsageError(400, "Refresh token is missing");
+    return res.sendUsageError(400, "Le refresh token est manquant");
   }
 
   const tokenExists = await Tokens.doesRefreshTokenExist(refreshToken);
 
   if (!tokenExists) {
-    return res.sendUsageError(400, "Invalid or expired refresh token");
+    return res.sendUsageError(400, "Ce refresh token n'existe pas");
   }
 
   const accessToken = Tokens.createAccessToken(refreshToken);
@@ -191,7 +191,7 @@ async function severalGetInfos(req, res) {
     listOfUsers.length === 0 ||
     listOfUsers.some((user) => typeof user !== "string")
   ) {
-    return res.sendUsageError(401, "Bad request format.");
+    return res.sendUsageError(401, "Liste d'utilisateurs invalide");
   }
 
   const sqlWhere = listOfUsers.map(() => "us_login = ?");
@@ -236,7 +236,7 @@ async function getInfos(req, res) {
 
   const infos = await getUserInformations(user);
   if (!infos) {
-    return res.sendUsageError(404, "User not found");
+    return res.sendUsageError(404, "Utilisateur introuvable");
   }
   res.sendResponse(200, infos);
 }
@@ -274,30 +274,30 @@ async function saveInfos(req, res) {
   const user = param === "me" ? req.body._auth.user : param;
 
   if (req.body._auth.user !== user) {
-    return res.sendUsageError(403, "Operation not allowed");
+    return res.sendUsageError(403, "Opération non autorisée");
   }
 
   const { avatar } = req.body;
 
   if (!avatar && true) {
     // true will be replaced by another fields of the request
-    return res.sendUsageError(400, "No information given");
+    return res.sendUsageError(400, "Informations manquantes");
   }
 
   if (avatar) {
     const wantedProperties = ["colorBG", "eyes", "hands", "hat", "mouth", "colorBody"];
     if (!wantedProperties.every((p) => Object.prototype.hasOwnProperty.call(avatar, p))) {
-      return res.sendUsageError(400, "Bad request");
+      return res.sendUsageError(400, "Mauvaise requête");
     }
 
     const integerProperties = ["eyes", "hands", "hat", "mouth"];
     if (!integerProperties.every((p) => Number(avatar[p]) === avatar[p])) {
-      return res.sendUsageError(400, "Bad request");
+      return res.sendUsageError(400, "Mauvaise requête");
     }
 
     const hexColorProperties = ["colorBG", "colorBody"];
     if (!hexColorProperties.every((p) => /^#[0-9A-Fa-f]{6}$/i.test(avatar[p]))) {
-      return res.sendUsageError(400, "Bad request");
+      return res.sendUsageError(400, "Mauvaise requête");
     }
   }
 

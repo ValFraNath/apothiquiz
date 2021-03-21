@@ -29,7 +29,7 @@ export default class ImagesList {
 
   /**
    * Analyze the images list
-   * @returns {AnalyzerWarning[]} A list of warnings
+   * @returns {Promise<AnalyzerWarning[]>} A list of warnings
    */
   async analyze() {
     const warnings = [];
@@ -77,7 +77,7 @@ export default class ImagesList {
 
   /**
    * Binds the images to existing molecules
-   * @returns {string[]} The list of imported images
+   * @returns {Promise<string[]>} The list of imported images
    */
   async bindImagesToMolecules() {
     const filenames = this.list.map((image) => image.name).filter(Image.isFormatValid);

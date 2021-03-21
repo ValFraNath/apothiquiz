@@ -15,7 +15,7 @@ describe("GET /status", function () {
       .end((err, res) => {
         expect(res.status).to.be.equal(200);
         expect(res.body).to.be.deep.equal({
-          status: "connected",
+          status: "connecté",
           apiVersion: currentAPIVersion(),
         });
         done();
