@@ -171,7 +171,8 @@ describe("Duels", () => {
           body: { opponent: "nhoun" },
         });
 
-        expect(res.status).equals(400);
+        expect(res.status).equals(409);
+        expect(res.body.id).equals(ids[0]);
       });
 
       before("Create against val", async () => {

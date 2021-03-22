@@ -26,7 +26,8 @@ import { createGeneratorOfType, NotEnoughDataError, getAllQuestionTypes } from "
  *     "id" : 42
  * }
  * @apiSuccess (201) {number} id The created duel ID
- * @apiError (404) OpponentNotFound The specified opponent does not exist
+ * @apiError (404) OpponentNotFound  The specified opponent does not exist
+ * @apiError (409) DuelAlreadyExists A duel against this user already exists
  * @apiUse NotEnoughDataError
  *
  * @param {object} req The http request
@@ -52,8 +53,11 @@ async function create(req, res) {
       return res.sendUsageError(404, "L'adversaire renseigné est inconnu");
     }
 
-    if (await doesDuelExist([username, opponent])) {
-      return res.sendUsageError(400, "Vous avez déjà un duel en cours avec cet adversaire");
+    const existingDuelId = await getDuelId([username, opponent]);
+    if (-1 !== existingDuelId) {
+      return res.sendUsageError(409, "Vous avez déjà un duel en cours avec cet adversaire", {
+        id: existingDuelId,
+      });
     }
 
     const config = await fetchConfigFromDB();
@@ -621,10 +625,10 @@ function computeScores(duel) {
 /**
  * Check if two users have a duel in progress
  * @param {string[]} users
- * @returns {Promise<boolean>}
+ * @returns {Promise<Int>} the duel id or -1
  */
-async function doesDuelExist(users) {
-  const sql = `SELECT COUNT(*) as duelExists \
+async function getDuelId(users) {
+  const sql = `SELECT du_id \
 								FROM duel AS D	\
 								WHERE D.du_inProgress = 1 \
 								AND 2 = ( SELECT COUNT(*) \
@@ -633,6 +637,10 @@ async function doesDuelExist(users) {
 														AND ( R.us_login = ? \
 																OR R.us_login = ?));`;
 
-  const { duelExists } = (await queryPromise(sql, users))[0];
-  return Boolean(Number(duelExists));
+  const res = await queryPromise(sql, users);
+  if (0 === res.length) {
+    return -1;
+  }
+
+  return Number(res[0].du_id);
 }

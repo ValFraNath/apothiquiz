@@ -174,6 +174,83 @@ describe("User test", function () {
     });
   });
 
+  describe("Get all users data", async function () {
+    let token;
+    before(async function () {
+      // Authenticate
+      const res = await requestAPI("users/login", {
+        body: {
+          userPseudo: "fpoguet",
+          userPassword: "1234",
+        },
+        method: "post",
+      });
+      expect(res.status).to.be.equal(200);
+      expect(Object.keys(res.body)).to.contains("user");
+      expect(Object.keys(res.body)).to.contains("accessToken");
+      // eslint-disable-next-line prefer-destructuring
+      token = res.body.accessToken;
+    });
+
+    before("Create some duels", async () => {
+      await Promise.all([
+        await requestAPI("duels/new", {
+          token: token,
+          method: "post",
+          body: { opponent: "nhoun" },
+        }),
+        await requestAPI("duels/new", {
+          token: token,
+          method: "post",
+          body: { opponent: "vperigno" },
+        }),
+      ]);
+    });
+
+    it("Get all users", async function () {
+      const res = await requestAPI("users", {
+        token: token,
+        method: "get",
+      });
+
+      expect(res.status, res.error).to.be.equal(200);
+
+      expect(Object.keys(res.body)).to.have.lengthOf(5);
+      expect(Object.keys(res.body)).to.contains("nhoun");
+      expect(Object.keys(res.body)).to.contains("fpoguet");
+      expect(Object.keys(res.body)).to.contains("vperigno");
+      expect(Object.keys(res.body)).to.contains("fdadeau");
+      expect(Object.keys(res.body)).to.contains("test");
+
+      const firstUser = res.body["nhoun"];
+      expect(Object.keys(firstUser)).to.contains("pseudo");
+      expect(firstUser.pseudo).to.be.equal("nhoun");
+      expect(Object.keys(firstUser)).to.contains("defeats");
+      expect(Object.keys(firstUser)).to.contains("victories");
+      expect(Object.keys(firstUser)).to.contains("avatar");
+    });
+
+    it("Get all challengeable users", async function () {
+      const res = await requestAPI("users?challengeable=true", {
+        token: token,
+        method: "get",
+      });
+
+      expect(res.status, res.error).to.be.equal(200);
+
+      expect(Object.keys(res.body)).to.have.lengthOf(2);
+      expect(Object.keys(res.body)).to.contains("fdadeau");
+      expect(Object.keys(res.body)).to.contains("test");
+
+      const firstUser = res.body["test"];
+      expect(Object.keys(firstUser)).to.contains("pseudo");
+      expect(firstUser.pseudo).to.be.equal("test");
+      expect(Object.keys(firstUser)).to.contains("defeats");
+      expect(Object.keys(firstUser)).to.contains("victories");
+      expect(Object.keys(firstUser)).to.contains("avatar");
+    });
+  });
+
   describe("Get data from several users", function () {
     let token;
     before(async function () {

@@ -19,8 +19,8 @@ before("Wait until the database is ready", function (done) {
   app.waitReady(() => done());
 });
 
-before("Insert configuration data", (done) => {
-  resetConfig().then(() => done());
+before("Insert configuration data", async () => {
+  await resetConfig();
 });
 
 /**
