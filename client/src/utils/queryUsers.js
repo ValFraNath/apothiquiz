@@ -15,6 +15,6 @@ export function makeGetUserInfo(username) {
  * @returns {Promise<Array>} An array with all the users that we can challenge
  */
 export async function getChallengeableUsers() {
-  const { data } = await axios.get("/api/v1/users?challengeable=true");
+  const { data } = await axios.get("/api/v1/users/?challengeable=true");
   return data;
 }
