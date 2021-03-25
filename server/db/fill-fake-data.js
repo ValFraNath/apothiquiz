@@ -166,6 +166,12 @@ function createFakeDuelWithAPI(config, usernames, MAX_ANSWER, index) {
 
       try {
         const [user1, user2] = faker.random.arrayElements(usernames, 2);
+        if (user1 === user2) {
+          console.warn(`     ${user1} can't defy himself/herself!`);
+          resolve(false);
+          return;
+        }
+
         const [token1, token2] = await Promise.all([
           getToken(user1, "1234"),
           getToken(user2, "1234"),
@@ -177,7 +183,7 @@ function createFakeDuelWithAPI(config, usernames, MAX_ANSWER, index) {
           body: { opponent: user2 },
         });
 
-        if (resp.statusCode === 400) {
+        if (resp.statusCode === 409) {
           console.warn(`    ${strIndex}. Duel already exists between ${user1} and ${user2}`);
           resolve(false);
           return;
