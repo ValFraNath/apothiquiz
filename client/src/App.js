@@ -49,7 +49,7 @@ axios.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    let { refreshToken } = AuthService.getCurrentUser() || {};
+    const { refreshToken } = AuthService.getCurrentUser() || {};
 
     if (refreshToken && error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
