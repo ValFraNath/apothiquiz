@@ -44,16 +44,23 @@ axios.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-    let { refreshToken } = AuthService.getCurrentUser() || {};
+    if (originalRequest.url === "/api/v1/users/logout") {
+      // to avoid loop
+      return Promise.reject(error);
+    }
+
+    const { refreshToken } = AuthService.getCurrentUser() || {};
 
     if (refreshToken && error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-      const res = await axios.post(`/api/v1/users/token`, { refreshToken });
-
-      if (res.status === 200) {
-        AuthService.updateAccesToken(res.data.accessToken);
-        console.log("Access token refreshed!");
+      try {
+        const res = await axios.post("/api/v1/users/token", { refreshToken });
+        AuthService.updateAccessToken(res.data.accessToken);
+        console.info("Access token refreshed!");
         return axios(originalRequest);
+      } catch {
+        await AuthService.logout();
+        window.location.replace("/login");
       }
     }
     return Promise.reject(error);

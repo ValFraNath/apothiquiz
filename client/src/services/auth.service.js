@@ -39,7 +39,7 @@ async function login(pseudo, password) {
  * Update the user access token
  * @param {string} newAccessToken The new access token
  */
-function updateAccesToken(newAccessToken) {
+function updateAccessToken(newAccessToken) {
   const currentInfos = getCurrentUser();
   localStorage.setItem(
     LOCAL_STORAGE_KEY,
@@ -59,9 +59,10 @@ async function logout() {
     await axios.post("/api/v1/users/logout", { refreshToken });
   } catch {
     // Ignore error
+  } finally {
+    localStorage.removeItem(LOCAL_STORAGE_KEY);
+    queryClient.clear();
   }
-  localStorage.removeItem(LOCAL_STORAGE_KEY);
-  queryClient.clear();
 }
 
 /**
@@ -72,4 +73,4 @@ function getCurrentUser() {
   return JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
 }
 
-export default { login, logout, getCurrentUser, updateAccesToken };
+export default { login, logout, getCurrentUser, updateAccessToken };
