@@ -55,11 +55,9 @@ axios.interceptors.response.use(
       originalRequest._retry = true;
       try {
         const res = await axios.post("/api/v1/users/token", { refreshToken });
-        if (res.status === 200) {
-          AuthService.updateAccesToken(res.data.accessToken);
-          console.info("Access token refreshed!");
-          return axios(originalRequest);
-        }
+        AuthService.updateAccesToken(res.data.accessToken);
+        console.info("Access token refreshed!");
+        return axios(originalRequest);
       } catch {
         await AuthService.logout();
       }
