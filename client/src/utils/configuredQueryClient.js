@@ -39,7 +39,8 @@ queryClient.setQueryDefaults("duels", {
 
 queryClient.setQueryDefaults(["users", "challengeable"], {
   queryFn: getChallengeableUsers,
-  staleTime: 60 * 60 * 1000,
+  staleTime: 60 * 1000,
+  refetchOnMount: "always",
 });
 
 export default queryClient;
