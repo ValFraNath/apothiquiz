@@ -59,9 +59,11 @@ async function logout() {
     await axios.post("/api/v1/users/logout", { refreshToken });
   } catch {
     // Ignore error
+  } finally {
+    localStorage.removeItem(LOCAL_STORAGE_KEY);
+    queryClient.clear();
+    window.location.replace("/login");
   }
-  localStorage.removeItem(LOCAL_STORAGE_KEY);
-  queryClient.clear();
 }
 
 /**
