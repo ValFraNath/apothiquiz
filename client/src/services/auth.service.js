@@ -62,7 +62,6 @@ async function logout() {
   } finally {
     localStorage.removeItem(LOCAL_STORAGE_KEY);
     queryClient.clear();
-    window.location.replace("/login");
   }
 }
 
