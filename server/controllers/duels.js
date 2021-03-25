@@ -566,6 +566,7 @@ async function updateDuelState(duel, username) {
 
   if (duel.rounds[currentRound - 1][0].opponentAnswer !== undefined) {
     if (currentRound === duel.rounds.length) {
+      duel.inProgress = 0;
       sql += "UPDATE duel SET du_inProgress = false WHERE du_id = :id ;";
       const scores = computeScores(duel);
       if (scores.user !== scores.opponent) {
@@ -584,6 +585,9 @@ async function updateDuelState(duel, username) {
     }
   }
   sql += "CALL getDuel(:id,:username);";
+
+  console.log({ winner, looser });
+  console.log(sql);
 
   const res = await queryPromise(sql, {
     id: duel.id,
