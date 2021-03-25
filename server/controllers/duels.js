@@ -586,9 +586,6 @@ async function updateDuelState(duel, username) {
   }
   sql += "CALL getDuel(:id,:username);";
 
-  console.log({ winner, looser });
-  console.log(sql);
-
   const res = await queryPromise(sql, {
     id: duel.id,
     username,
