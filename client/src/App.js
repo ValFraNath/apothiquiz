@@ -43,12 +43,12 @@ axios.interceptors.request.use((config) => {
 axios.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (error.config.url === "/api/v1/users/logout") {
+    const originalRequest = error.config;
+    if (originalRequest.url === "/api/v1/users/logout") {
       // to avoid loop
       return Promise.reject(error);
     }
 
-    const originalRequest = error.config;
     let { refreshToken } = AuthService.getCurrentUser() || {};
 
     if (refreshToken && error.response.status === 401 && !originalRequest._retry) {
