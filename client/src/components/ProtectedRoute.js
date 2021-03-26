@@ -2,10 +2,10 @@ import PropTypes from "prop-types";
 import React from "react";
 import { Route, Redirect } from "react-router-dom";
 
-import AuthService from "../services/auth.service";
+import Auth from "../utils/authentication";
 
 const ProtectedRoute = ({ component, onlyAdmin, ...rest }) => {
-  const currentUser = AuthService.getCurrentUser();
+  const currentUser = Auth.getCurrentUser();
   const isAuthenticated = currentUser !== null;
 
   if (!isAuthenticated) {

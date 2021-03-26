@@ -3,7 +3,7 @@ import axios from "axios";
 import PropTypes from "prop-types";
 import React, { Component, useEffect, useState } from "react";
 
-import AuthService from "../services/auth.service";
+import Auth from "../utils/authentication";
 
 const ADMIN_GUIDE_URL =
   "https://raw.githubusercontent.com/wiki/ValFraNath/guacamole/ressources/admin_guide.pdf";
@@ -390,7 +390,7 @@ async function getLastImportedFile(endpoint) {
     data: { shortpath },
   } = await axios.get(endpoint);
 
-  const { accessToken } = AuthService.getCurrentUser() || {};
+  const { accessToken } = Auth.getCurrentUser() || {};
 
   const res = await fetch(shortpath, {
     headers: {

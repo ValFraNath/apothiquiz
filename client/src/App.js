@@ -13,8 +13,8 @@ import TopBar from "./components/system/TopBar";
 
 import HomePage from "./pages/HomePage";
 import Menu from "./pages/Menu";
-import AuthService from "./services/auth.service";
 import * as serviceWorker from "./serviceWorker";
+import Auth from "./utils/authentication";
 import queryClient from "./utils/configuredQueryClient";
 
 const About = lazy(() => import("./pages/About"));
@@ -30,7 +30,7 @@ const Train = lazy(() => import("./pages/Train"));
  * Set up the authorization header in all request if the user is logged in
  */
 axios.interceptors.request.use((config) => {
-  const { accessToken, pseudo } = AuthService.getCurrentUser() || {};
+  const { accessToken, pseudo } = Auth.getCurrentUser() || {};
   if (accessToken && pseudo) {
     config.headers.Authorization = `Bearer ${accessToken}`;
   }
@@ -49,17 +49,17 @@ axios.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    const { refreshToken } = AuthService.getCurrentUser() || {};
+    const { refreshToken } = Auth.getCurrentUser() || {};
 
     if (refreshToken && error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       try {
         const res = await axios.post("/api/v1/users/token", { refreshToken });
-        AuthService.updateAccessToken(res.data.accessToken);
+        Auth.updateAccessToken(res.data.accessToken);
         console.info("Access token refreshed!");
         return axios(originalRequest);
       } catch {
-        await AuthService.logout();
+        await Auth.logout();
         window.location.replace("/login");
       }
     }
@@ -90,7 +90,7 @@ export default class App extends Component {
   constructor(props) {
     super(props);
 
-    let { pseudo } = AuthService.getCurrentUser() || {};
+    let { pseudo } = Auth.getCurrentUser() || {};
 
     this.state = {
       waitingServiceWorker: null,

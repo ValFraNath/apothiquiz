@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
 
-import AuthService from "../services/auth.service";
+import Auth from "../utils/authentication";
 
 class Login extends Component {
   constructor(props) {
@@ -17,7 +17,7 @@ class Login extends Component {
     e.preventDefault();
     const { pseudoInput, passwordInput } = e.target.elements;
 
-    AuthService.login(pseudoInput.value.trim(), passwordInput.value)
+    Auth.login(pseudoInput.value.trim(), passwordInput.value)
       .then((user) => {
         console.info(`User ${user} successfully logged in`);
         document.location.replace("/homepage");
@@ -35,7 +35,7 @@ class Login extends Component {
   }
 
   render() {
-    if (AuthService.getCurrentUser() !== null) {
+    if (Auth.getCurrentUser() !== null) {
       return <Redirect to="/homepage" />;
     }
 
