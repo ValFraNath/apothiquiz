@@ -1,5 +1,5 @@
 import { PropTypes } from "prop-types";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
 
@@ -8,6 +8,7 @@ import Plural from "../components/Plural";
 import DuelResults from "../components/quiz/DuelResults";
 import Loading from "../components/status/Loading";
 import PageError from "../components/status/PageError";
+import AntiCheat from "../utils/antiCheat";
 import { makeGetDuelDetails } from "../utils/queryDuels";
 
 const UserBadge = ({ user, reversed }) => (
@@ -76,6 +77,12 @@ const DuelOverview = ({
     params: { id: duelId },
   },
 }) => {
+  useEffect(() => {
+    if (AntiCheat.isDuelBroken(duelId)) {
+      window.location.replace("/homepage");
+    }
+  });
+
   const { isLoading, data, isError } = useQuery(["duel", duelId], makeGetDuelDetails(duelId));
   const { data: currentUser } = useQuery(["user", "me"]);
 
