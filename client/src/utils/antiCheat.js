@@ -29,7 +29,7 @@ function setBrokenDuels(duels) {
  * @returns {boolean}
  */
 function isDuelBroken(duelId) {
-  return getBrokendDuels().includes(duelId);
+  return getBrokendDuels().includes(Number(duelId));
 }
 
 /**
@@ -37,7 +37,7 @@ function isDuelBroken(duelId) {
  * @param {number} duelId The broken duel id
  */
 function markDuelAsBroken(duelId) {
-  setBrokenDuels([...getBrokendDuels(), duelId]);
+  setBrokenDuels([...getBrokendDuels(), Number(duelId)]);
 }
 
 /**
