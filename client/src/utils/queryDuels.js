@@ -13,24 +13,19 @@ export async function getAllDuels() {
 
   const unvalidatedRounds = AntiCheat.getBrokendDuels();
 
-  console.log("here");
   const outdatedDuels = [
     ...new Set(
       duelsList.filter((duel) => unvalidatedRounds.includes(duel.id)).map((duel) => duel.id)
     ),
   ];
 
-  console.log("here");
-
   if (outdatedDuels.length > 0) {
-    console.log("Invalid duels !!!");
     for (const duelId of outdatedDuels) {
-      console.log(duelId);
       const duel = duelsList.find(({ id }) => id === duelId);
-      const { currentRound } = duel;
-      const numberOfAnswers = duel.rounds[currentRound - 1].length;
+      const { currentRound, rounds } = duel;
+      const numberOfAnswers = rounds[currentRound - 1].length;
       const answers = Array(numberOfAnswers).fill(-1);
-      console.log(answers);
+
       await axios.post(`/api/v1/duels/${duelId}/${currentRound}`, { answers });
       AntiCheat.validateDuel(duelId);
     }

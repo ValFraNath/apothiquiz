@@ -11,9 +11,7 @@ const decode = (o) => JSON.parse(atob(o));
  */
 function getBrokendDuels() {
   const encodedDuels = window.localStorage.getItem(LOCAL_STORAGE_KEY);
-  console.log(encodedDuels);
   const duels = encodedDuels ? decode(encodedDuels) : [];
-  console.log(duels);
   return duels.map(Number);
 }
 
