@@ -11,9 +11,9 @@ import Auth from "./authentication";
 export async function getAllDuels() {
   const { data: duelsList } = await axios.get("/api/v1/duels/");
 
-  const unvalidatedRounds = AntiCheat.getBrokendDuels();
+  const brokenDuels = AntiCheat.getBrokendDuels();
 
-  const outdatedDuels = duelsList.filter(({ id }) => unvalidatedRounds.includes(id));
+  const outdatedDuels = duelsList.filter(({ id }) => brokenDuels.includes(id));
 
   if (outdatedDuels.length > 0) {
     for (const duel of outdatedDuels) {
