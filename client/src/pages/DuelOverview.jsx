@@ -1,7 +1,7 @@
 import { PropTypes } from "prop-types";
 import React, { useEffect, useMemo } from "react";
 import { useQuery } from "react-query";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
 import Avatar from "../components/Avatar";
 import Plural from "../components/Plural";
@@ -77,9 +77,10 @@ const DuelOverview = ({
     params: { id: duelId },
   },
 }) => {
+  const history = useHistory();
   useEffect(() => {
     if (AntiCheat.isDuelBroken(duelId)) {
-      window.location.replace("/homepage");
+      history.push("/homepage");
     }
   });
 
