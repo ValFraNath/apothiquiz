@@ -13,21 +13,16 @@ export async function getAllDuels() {
 
   const unvalidatedRounds = AntiCheat.getBrokendDuels();
 
-  const outdatedDuels = [
-    ...new Set(
-      duelsList.filter((duel) => unvalidatedRounds.includes(duel.id)).map((duel) => duel.id)
-    ),
-  ];
+  const outdatedDuels = [...new Set(duelsList.filter(({ id }) => unvalidatedRounds.includes(id)))];
 
   if (outdatedDuels.length > 0) {
-    for (const duelId of outdatedDuels) {
-      const duel = duelsList.find(({ id }) => id === duelId);
-      const { currentRound, rounds } = duel;
+    for (const duel of outdatedDuels) {
+      const { currentRound, rounds, id } = duel;
       const numberOfAnswers = rounds[currentRound - 1].length;
       const answers = Array(numberOfAnswers).fill(-1);
 
-      await axios.post(`/api/v1/duels/${duelId}/${currentRound}`, { answers });
-      AntiCheat.validateDuel(duelId);
+      await axios.post(`/api/v1/duels/${id}/${currentRound}`, { answers });
+      AntiCheat.validateDuel(id);
     }
     return getAllDuels();
   }
