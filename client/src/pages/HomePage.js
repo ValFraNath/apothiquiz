@@ -11,6 +11,8 @@ import Avatar from "../components/Avatar";
 import Plural from "../components/Plural";
 import Loading from "../components/status/Loading";
 import PageError from "../components/status/PageError";
+import RemainingTime from "../components/RemainingTime";
+import { increaseDate } from "../utils/handleDates";
 
 import fightAnimAction from "../images/sprites/fight-action-240.png";
 import fightAnimLoop from "../images/sprites/fight-loop-240.png";
@@ -119,7 +121,9 @@ const HomePage = () => {
                     <h3>{value.opponent}</h3>
                     <p className="time">
                       <LapTimerIcon />
-                      {getRemainingTime(value.opponentLastPlayed)} h
+                      <RemainingTime
+                        finalDate={increaseDate({ hours: 24 }, new Date(value.opponentLastPlayed))}
+                      />
                     </p>
                     <p>
                       Tour {value.currentRound} : {value.userScore} - {value.opponentScore}
@@ -160,7 +164,9 @@ const HomePage = () => {
                   <h3>{value.opponent}</h3>
                   <p className="time">
                     <LapTimerIcon />
-                    {getRemainingTime(value.lastPlayed)} h
+                    <RemainingTime
+                      finalDate={increaseDate({ hours: 24 }, new Date(value.lastPlayed))}
+                    />
                   </p>
                   <p>En train de jouer le tour {value.currentRound}...</p>
                 </Link>

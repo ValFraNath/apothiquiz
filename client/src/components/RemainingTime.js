@@ -1,16 +1,16 @@
 import { PropTypes } from "prop-types";
 import React from "react";
 
-import Plural from "Plural";
+import Plural from "./Plural";
 
-const RemainingTime = ({ currentDate, finalDate }) => {
+const RemainingTime = ({ finalDate, currentDate = new Date() }) => {
   const diffDates = finalDate.getTime() - currentDate.getTime();
 
   if (diffDates <= 1000 * 60 * 60 * 24) {
-    const resInHours = finalDate.getHours() - currentDate.getHours();
+    const resInHours = diffDates / (1000 * 60 * 60);
     return (
-      <span className={resInHours <= 3 && "time-important"}>
-        {resInHours >= 0 ? resInHours : 0} h
+      <span className={resInHours <= 3 ? "time-important" : ""}>
+        {resInHours >= 0 ? Math.round(resInHours) : 0} h
       </span>
     );
   }
@@ -24,8 +24,8 @@ const RemainingTime = ({ currentDate, finalDate }) => {
 };
 
 RemainingTime.propTypes = {
-  currentDate: PropTypes.object.isRequired,
   finalDate: PropTypes.object.isRequired,
+  currentDate: PropTypes.object,
 };
 
 export default RemainingTime;
