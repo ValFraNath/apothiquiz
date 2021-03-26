@@ -167,24 +167,12 @@ async function getAll(req, res) {
       FROM user \
       WHERE us_deleted IS NULL;";
 
-  const sqlRes = await Promise.all([
-    queryPromise(sql),
-    filterChallengeable ? queryPromise("CALL getDuelsOf(?);", [currentUser]) : () => {},
-  ]);
-
-  const challengedUsers = filterChallengeable
-    ? sqlRes[1][0].map((c) => c.us_login).filter((u) => u !== currentUser)
-    : undefined;
+  const sqlRes = filterChallengeable
+    ? (await queryPromise("CALL getChallengeableUsers(?);", [currentUser]))[0]
+    : await queryPromise(sql);
 
   const usersData = {};
-  for (const value of sqlRes[0]) {
-    if (
-      filterChallengeable &&
-      (value.pseudo === currentUser || challengedUsers.some((u) => u === value.pseudo))
-    ) {
-      continue;
-    }
-
+  for (const value of sqlRes) {
     usersData[value.pseudo] = {
       pseudo: value.pseudo,
       victories: Number(value.victories),
