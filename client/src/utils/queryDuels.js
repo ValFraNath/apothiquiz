@@ -13,7 +13,7 @@ export async function getAllDuels() {
 
   const unvalidatedRounds = AntiCheat.getBrokendDuels();
 
-  const outdatedDuels = [...new Set(duelsList.filter(({ id }) => unvalidatedRounds.includes(id)))];
+  const outdatedDuels = duelsList.filter(({ id }) => unvalidatedRounds.includes(id));
 
   if (outdatedDuels.length > 0) {
     for (const duel of outdatedDuels) {
