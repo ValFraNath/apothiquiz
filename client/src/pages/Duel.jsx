@@ -7,6 +7,9 @@ import ButtonCircle from "../components/buttons/ButtonCircle";
 import Answers from "../components/quiz/Answers";
 import Question from "../components/quiz/Question";
 import Timer from "../components/quiz/Timer";
+import FloatingError from "../components/status/FloatingError";
+import Loading from "../components/status/Loading";
+import PageError from "../components/status/PageError";
 import AntiCheat from "../utils/antiCheat.js";
 
 class Duel extends Component {
@@ -19,6 +22,8 @@ class Duel extends Component {
       lastClicked: "",
       timer: null,
       userAnswers: [],
+      isFetchError: false,
+      isValidateError: false,
     };
   }
 
@@ -43,7 +48,7 @@ class Duel extends Component {
         }
         AntiCheat.markDuelAsBroken(duelId, duel.currentRound);
       })
-      .catch((err) => console.error(err));
+      .catch(() => this.setState({ isFetchError: true }));
   }
 
   /**
@@ -146,12 +151,16 @@ class Duel extends Component {
         AntiCheat.markDuelAsValidated(duelData.id);
         this.props.history.push(`/duel/${duelId}`);
       })
-      .catch((error) => console.error(error));
+      .catch(() => this.setState({ isValidateError: true }));
   };
 
   render() {
+    if (this.state.isFetchError) {
+      return <PageError message="Impossible de récupérer le duel" />;
+    }
+
     if (this.state.duelData === null) {
-      return <p>Chargement en cours</p>;
+      return <Loading message="Chargement du duel..." />;
     }
 
     const { duelData, currentQuestionNum, inProgress, lastClicked, timer } = this.state;
@@ -184,6 +193,9 @@ class Duel extends Component {
           <Timer inProgress={inProgress} duration={timer} updateParent={this.updateTimer} />
         ) : (
           <div id="next-btn">
+            {this.state.isValidateError && (
+              <FloatingError message="Impossible de valider ce duel" />
+            )}
             <ButtonCircle onClick={this.nextQuestion}>
               {currentQuestionNum === this.getCurrentRound().length ? (
                 <RocketIcon />
