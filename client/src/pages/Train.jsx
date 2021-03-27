@@ -323,7 +323,7 @@ class Train extends Component {
 
     return (
       <main id="quiz" className={additionalClass}>
-        {error !== null ? <PageError message={error} />  : this.switchComponent()}
+        {error !== null ? <PageError message={error} /> : this.switchComponent()}
       </main>
     );
   }
