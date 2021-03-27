@@ -5,7 +5,6 @@ import { registerRoute } from "workbox-routing";
 import { NetworkOnly, StaleWhileRevalidate } from "workbox-strategies";
 
 /* eslint-disable no-restricted-globals */
-// needed for variable self
 
 /*
  * Configure the workbox cache name
