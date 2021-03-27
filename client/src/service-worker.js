@@ -1,4 +1,6 @@
 import { precacheAndRoute } from "workbox-precaching";
+import { registerRoute } from "workbox-routing";
+import { StaleWhileRevalidate } from "workbox-strategies";
 
 /* eslint-disable no-restricted-globals */
 
@@ -22,15 +24,18 @@ self.addEventListener("activate", (e) => {
   console.info("[Service Worker] Activate");
 });
 
+function matchRegularRoute({ url }) {
+  return !url.pathname.startsWith("/api");
+}
+
+registerRoute(matchRegularRoute, new StaleWhileRevalidate());
+
 /**
  * Fetch resources
  * If it is a call to the API, it is performed as usual
  * Otherwise, either the resource is cached and returned to the user, or the resource is not
  * cached, it is cached and returned.
  */
-self.addEventListener("fetch", (e) => {
-  console.info("[Service Worker] Fetch");
-});
 
 self.addEventListener("message", (e) => {
   if (e.data.type && e.data.type === "SKIP_WAITING") {
