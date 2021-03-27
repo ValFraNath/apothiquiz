@@ -48,4 +48,6 @@ const bgSyncPlugin = new BackgroundSyncPlugin("apiQueue", {
   maxRetentionTime: 24 * 60, // retry for max 24 hours
 });
 const matchRouteBackgroundSync = ({ url }) => url.pathname.startsWith("/api");
-registerRoute(matchRouteBackgroundSync, new NetworkOnly({ plugins: [bgSyncPlugin] }));
+registerRoute(matchRouteBackgroundSync, new NetworkOnly({ plugins: [bgSyncPlugin] }), "PATCH");
+registerRoute(matchRouteBackgroundSync, new NetworkOnly({ plugins: [bgSyncPlugin] }), "POST");
+registerRoute(matchRouteBackgroundSync, new NetworkOnly({ plugins: [bgSyncPlugin] }), "PUT");
