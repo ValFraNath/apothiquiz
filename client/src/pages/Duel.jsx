@@ -107,7 +107,7 @@ class Duel extends Component {
     const { currentQuestionNum } = this.state;
 
     if (currentQuestionNum === this.getCurrentRound().length) {
-      this.markDuelAsValidated();
+      this.validateDuel();
       return;
     }
 
@@ -134,7 +134,7 @@ class Duel extends Component {
   /**
    *Sends user answers to the server
    */
-  markDuelAsValidated = () => {
+  validateDuel = () => {
     const { duelData, userAnswers } = this.state;
 
     const duelId = this.props.match.params.id;
