@@ -7,6 +7,7 @@ import ButtonCircle from "../components/buttons/ButtonCircle";
 import Answers from "../components/quiz/Answers";
 import Question from "../components/quiz/Question";
 import Timer from "../components/quiz/Timer";
+import AntiCheat from "../utils/antiCheat.js";
 
 class Duel extends Component {
   constructor(props) {
@@ -22,11 +23,11 @@ class Duel extends Component {
   }
 
   componentDidMount() {
-    const duelId = this.props.match.params.id;
+    const duelId = Number(this.props.match.params.id);
     axios
       .get(`/api/v1/duels/${duelId}`)
       .then(({ data: duel }) => {
-        if (duel.inProgress === 0) {
+        if (duel.inProgress === 0 || AntiCheat.isDuelBroken(duelId)) {
           this.props.history.push("/homepage");
           return;
         }
@@ -40,6 +41,7 @@ class Duel extends Component {
         if (firstQuestion.userAnswer !== undefined) {
           this.props.history.push(`/duel/${duelId}`);
         }
+        AntiCheat.markDuelAsBroken(duelId, duel.currentRound);
       })
       .catch((err) => console.error(err));
   }
@@ -140,7 +142,10 @@ class Duel extends Component {
       .post(`/api/v1/duels/${duelData.id}/${duelData.currentRound}`, {
         answers: userAnswers,
       })
-      .then(() => this.props.history.push(`/duel/${duelId}`))
+      .then(() => {
+        AntiCheat.markDuelAsValidated(duelData.id);
+        this.props.history.push(`/duel/${duelId}`);
+      })
       .catch((error) => console.error(error));
   };
 

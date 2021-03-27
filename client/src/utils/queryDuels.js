@@ -1,6 +1,7 @@
 import axios from "axios";
 
-import AuthService from "../services/auth.service";
+import AntiCheat from "./antiCheat";
+import Auth from "./authentication";
 
 /**
  * Get all duels
@@ -10,13 +11,29 @@ import AuthService from "../services/auth.service";
 export async function getAllDuels() {
   const { data: duelsList } = await axios.get("/api/v1/duels/");
 
+  const brokenDuels = AntiCheat.getBrokendDuelIDs();
+
+  const outdatedDuels = duelsList.filter(({ id }) => brokenDuels.includes(id));
+
+  if (outdatedDuels.length > 0) {
+    for (const duel of outdatedDuels) {
+      const { currentRound, rounds, id } = duel;
+      const numberOfAnswers = rounds[currentRound - 1].length;
+      const answers = Array(numberOfAnswers).fill(-1);
+
+      await axios.post(`/api/v1/duels/${id}/${currentRound}`, { answers });
+      AntiCheat.markDuelAsValidated(id);
+    }
+    return getAllDuels();
+  }
+
   const duels = {
     finished: [],
     pending: [],
     toPlay: [],
   };
 
-  const listDefiedOfUsers = new Set([AuthService.getCurrentUser().pseudo]);
+  const listDefiedOfUsers = new Set([Auth.getCurrentUser().pseudo]);
 
   duelsList.forEach((val) => {
     if (val.inProgress === 0) {
@@ -46,11 +63,9 @@ export async function getAllDuels() {
 export function makeGetDuelDetails(duelId) {
   return async () => {
     const { data: duel } = await axios.get(`/api/v1/duels/${duelId}`);
-    // TODO : move this user information request into
-    // TODO > the request duel request body to prevent request chaining
     const { opponent } = duel;
 
-    const currentUser = AuthService.getCurrentUser();
+    const currentUser = Auth.getCurrentUser();
     const { data: users } = await axios.post("/api/v1/users/", [currentUser.pseudo, opponent]);
 
     return {
