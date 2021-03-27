@@ -1,10 +1,8 @@
-import { ReloadIcon } from "@modulz/radix-icons";
 import axios from "axios";
-import PropTypes from "prop-types";
 import React, { lazy, Suspense, Component } from "react";
 import { QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
-import { BrowserRouter as Router, Route, Switch, useLocation } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 import "./styles/styles.scss";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -113,7 +111,7 @@ export default class App extends Component {
   };
 
   render() {
-    const { user, isUpdateAvailable, installPromptEvent, updateRequired, theme } = this.state;
+    const { user, installPromptEvent, theme } = this.state;
 
     // add theme
     switch (theme) {
