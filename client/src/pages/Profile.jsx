@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 
 import Avatar from "../components/Avatar";
 import AvatarChooser from "../components/AvatarChooser";
+import FloatingError from "../components/status/FloatingError.jsx";
 import Loading from "../components/status/Loading";
 import Auth from "../utils/authentication";
 
@@ -26,37 +27,55 @@ const Profile = ({ history, updateTheme, theme }) => {
     setAvatar((prevAvatar) => ({ ...prevAvatar, [valueName]: newValue }));
   }
 
+  const createAvatarComponent = () => {
+    if (isError) {
+      return <FloatingError message="Impossible de récupérer l'avatar'" />;
+    }
+
+    if (!isInitialized) {
+      return <Loading message="Chargement de l'avatar..." />;
+    }
+    return (
+      <div className="profile-avatar">
+        <div className="profile-avatar-image">
+          <Avatar size="256px" infos={avatar} />
+        </div>
+        <div className="profile-avatar-editor">
+          <Collapsible.Root>
+            <Collapsible.Button className="btn">
+              Personnaliser mon avatar
+              <CaretSortIcon height="20px" width="20px" style={{ marginLeft: "10px" }} />
+            </Collapsible.Button>
+
+            <Collapsible.Content>
+              {!isInitialized ? (
+                <Loading />
+              ) : (
+                <AvatarChooser
+                  choiceEyes={avatar?.eyes}
+                  choiceHands={avatar?.hands}
+                  choiceHat={avatar?.hat}
+                  choiceMouth={avatar?.mouth}
+                  choiceColorBody={avatar?.colorBody}
+                  choiceColorBG={avatar?.colorBG}
+                  handleInputEyes={(val) => updateValue("eyes", parseInt(val))}
+                  handleInputHands={(val) => updateValue("hands", parseInt(val))}
+                  handleInputHat={(val) => updateValue("hat", parseInt(val))}
+                  handleInputMouth={(val) => updateValue("mouth", parseInt(val))}
+                  handleInputColorBody={(val) => updateValue("colorBody", val)}
+                  handleInputColorBG={(val) => updateValue("colorBG", val)}
+                />
+              )}
+            </Collapsible.Content>
+          </Collapsible.Root>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <main id="profile">
-      <Avatar size="256px" infos={avatar} />
-
-      <Collapsible.Root>
-        <Collapsible.Button className="btn">
-          Personnaliser mon avatar
-          <CaretSortIcon height="20px" width="20px" style={{ marginLeft: "10px" }} />
-        </Collapsible.Button>
-
-        <Collapsible.Content>
-          {!isInitialized ? (
-            <Loading />
-          ) : (
-            <AvatarChooser
-              choiceEyes={avatar?.eyes}
-              choiceHands={avatar?.hands}
-              choiceHat={avatar?.hat}
-              choiceMouth={avatar?.mouth}
-              choiceColorBody={avatar?.colorBody}
-              choiceColorBG={avatar?.colorBG}
-              handleInputEyes={(val) => updateValue("eyes", parseInt(val))}
-              handleInputHands={(val) => updateValue("hands", parseInt(val))}
-              handleInputHat={(val) => updateValue("hat", parseInt(val))}
-              handleInputMouth={(val) => updateValue("mouth", parseInt(val))}
-              handleInputColorBody={(val) => updateValue("colorBody", val)}
-              handleInputColorBG={(val) => updateValue("colorBG", val)}
-            />
-          )}
-        </Collapsible.Content>
-      </Collapsible.Root>
+      {createAvatarComponent()}
 
       {isAdmin && (
         <Link to="/admin" className="btn">
