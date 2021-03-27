@@ -1,5 +1,6 @@
 const LOCAL_STORAGE_KEY = "unvalidated_rounds";
 
+// base64 encoding
 const encode = (o) => btoa(JSON.stringify(o));
 const decode = (o) => JSON.parse(atob(o));
 
@@ -9,7 +10,7 @@ const decode = (o) => JSON.parse(atob(o));
  * Get all broken duels
  * @returns {number[]} The duel ids list
  */
-function getBrokendDuels() {
+function getBrokendDuelIDs() {
   const encodedDuels = window.localStorage.getItem(LOCAL_STORAGE_KEY);
   const duels = encodedDuels ? decode(encodedDuels) : [];
   return duels.map(Number);
@@ -29,7 +30,7 @@ function setBrokenDuels(duels) {
  * @returns {boolean}
  */
 function isDuelBroken(duelId) {
-  return getBrokendDuels().includes(Number(duelId));
+  return getBrokendDuelIDs().includes(Number(duelId));
 }
 
 /**
@@ -37,16 +38,16 @@ function isDuelBroken(duelId) {
  * @param {number} duelId The broken duel id
  */
 function markDuelAsBroken(duelId) {
-  setBrokenDuels([...getBrokendDuels(), Number(duelId)]);
+  setBrokenDuels([...getBrokendDuelIDs(), Number(duelId)]);
 }
 
 /**
  * Remove the given duel from the broken duels list
  * @param {number} duelId The duel id
  */
-function validateDuel(duelId) {
-  const duels = getBrokendDuels().filter((v) => v !== duelId);
+function markDuelAsValidated(duelId) {
+  const duels = getBrokendDuelIDs().filter((v) => v !== duelId);
   setBrokenDuels(duels);
 }
 
-export default { getBrokendDuels, markDuelAsBroken, validateDuel, isDuelBroken };
+export default { getBrokendDuelIDs, markDuelAsBroken, markDuelAsValidated, isDuelBroken };

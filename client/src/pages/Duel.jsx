@@ -107,7 +107,7 @@ class Duel extends Component {
     const { currentQuestionNum } = this.state;
 
     if (currentQuestionNum === this.getCurrentRound().length) {
-      this.validateDuel();
+      this.markDuelAsValidated();
       return;
     }
 
@@ -134,7 +134,7 @@ class Duel extends Component {
   /**
    *Sends user answers to the server
    */
-  validateDuel = () => {
+  markDuelAsValidated = () => {
     const { duelData, userAnswers } = this.state;
 
     const duelId = this.props.match.params.id;
@@ -143,7 +143,7 @@ class Duel extends Component {
         answers: userAnswers,
       })
       .then(() => {
-        AntiCheat.validateDuel(duelData.id);
+        AntiCheat.markDuelAsValidated(duelData.id);
         this.props.history.push(`/duel/${duelId}`);
       })
       .catch((error) => console.error(error));

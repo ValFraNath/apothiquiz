@@ -11,7 +11,7 @@ import Auth from "./authentication";
 export async function getAllDuels() {
   const { data: duelsList } = await axios.get("/api/v1/duels/");
 
-  const brokenDuels = AntiCheat.getBrokendDuels();
+  const brokenDuels = AntiCheat.getBrokendDuelIDs();
 
   const outdatedDuels = duelsList.filter(({ id }) => brokenDuels.includes(id));
 
@@ -22,7 +22,7 @@ export async function getAllDuels() {
       const answers = Array(numberOfAnswers).fill(-1);
 
       await axios.post(`/api/v1/duels/${id}/${currentRound}`, { answers });
-      AntiCheat.validateDuel(id);
+      AntiCheat.markDuelAsValidated(id);
     }
     return getAllDuels();
   }
@@ -63,8 +63,6 @@ export async function getAllDuels() {
 export function makeGetDuelDetails(duelId) {
   return async () => {
     const { data: duel } = await axios.get(`/api/v1/duels/${duelId}`);
-    // TODO : move this user information request into
-    // TODO > the request duel request body to prevent request chaining
     const { opponent } = duel;
 
     const currentUser = Auth.getCurrentUser();
