@@ -1,7 +1,8 @@
+import { BackgroundSyncPlugin } from "workbox-background-sync";
 import { setCacheNameDetails } from "workbox-core";
 import { precacheAndRoute } from "workbox-precaching";
 import { registerRoute } from "workbox-routing";
-import { StaleWhileRevalidate } from "workbox-strategies";
+import { NetworkOnly, StaleWhileRevalidate } from "workbox-strategies";
 
 /* eslint-disable no-restricted-globals */
 // needed for variable self
@@ -40,3 +41,12 @@ self.addEventListener("activate", () => {
  */
 const matchRouteToCache = ({ url }) => !url.pathname.startsWith("/api");
 registerRoute(matchRouteToCache, new StaleWhileRevalidate());
+
+/*
+ * Background Sync
+ */
+const bgSyncPlugin = new BackgroundSyncPlugin("apiQueue", {
+  maxRetentionTime: 24 * 60, // retry for max 24 hours
+});
+const matchRouteBackgroundSync = ({ url }) => url.pathname.startsWith("/api");
+registerRoute(matchRouteBackgroundSync, new NetworkOnly({ plugins: [bgSyncPlugin] }));
