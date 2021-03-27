@@ -125,7 +125,7 @@ const DuelOverview = ({
             opponentScore={opponentScore}
           />
           <p id="TTL">
-            Le duel sera supprimé dans <RemainingTime finalDate={removeTime} />
+            Temps avant suppression du duel : <RemainingTime finalDate={removeTime} />
           </p>
         </>
       )}
