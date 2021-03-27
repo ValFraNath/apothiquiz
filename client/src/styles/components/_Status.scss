@@ -47,7 +47,8 @@
   align-items: center;
   justify-content: center;
   width: 100%;
-
+  box-sizing: border-box;
+  padding: 0.5rem;
   img {
     height: 3em;
   }
