@@ -67,25 +67,6 @@ axios.interceptors.response.use(
   }
 );
 
-const UpdateButton = ({ updateRequired, updateSW }) => {
-  const location = useLocation();
-  if (location.pathname === "/train" || /\/duel\/[0-9]+\/play/.test(location.pathname)) {
-    return "";
-  }
-
-  return (
-    <button id="update-app" className={updateRequired ? "update-animation" : ""} onClick={updateSW}>
-      <ReloadIcon />
-      {!updateRequired ? "Mettre à jour l'app" : "Mise à jour..."}
-    </button>
-  );
-};
-
-UpdateButton.propTypes = {
-  updateRequired: PropTypes.bool.isRequired,
-  updateSW: PropTypes.func.isRequired,
-};
-
 export default class App extends Component {
   constructor(props) {
     super(props);
@@ -103,20 +84,7 @@ export default class App extends Component {
 
   componentDidMount() {
     // Install service-worker
-    const newUpdateAvailable = (newSW) => {
-      this.setState({
-        waitingServiceWorker: newSW,
-        isUpdateAvailable: true,
-      });
-    };
-    serviceWorker.register({
-      onUpdate: (reg) => {
-        newUpdateAvailable(reg);
-      },
-      onWaiting: (reg) => {
-        newUpdateAvailable(reg);
-      },
-    });
+    serviceWorker.register();
 
     // Display installation button
     window.addEventListener("beforeinstallprompt", (event) => {
@@ -137,13 +105,6 @@ export default class App extends Component {
       });
     }
   }
-
-  updateServiceWorker = () => {
-    this.setState({ updateRequired: true });
-
-    this.state.waitingServiceWorker.postMessage({ type: "SKIP_WAITING" });
-    window.location.reload();
-  };
 
   updateTheme = (event) => {
     const { value } = event.target;
@@ -174,9 +135,6 @@ export default class App extends Component {
       <QueryClientProvider client={queryClient}>
         <Router>
           <TopBar username={user} />
-          {isUpdateAvailable && (
-            <UpdateButton updateSW={this.updateServiceWorker} updateRequired={updateRequired} />
-          )}
 
           <Suspense fallback={<Loading />}>
             <Switch>

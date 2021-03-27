@@ -4,9 +4,10 @@ import { registerRoute } from "workbox-routing";
 import { StaleWhileRevalidate } from "workbox-strategies";
 
 /* eslint-disable no-restricted-globals */
+// needed for variable self
 
 /*
- * Configure the workbox cache
+ * Configure the workbox cache name
  */
 setCacheNameDetails({
   prefix: "guacamole",
@@ -16,7 +17,7 @@ setCacheNameDetails({
 /**
  * Install event
  */
-self.addEventListener("install", (e) => {
+self.addEventListener("install", () => {
   console.info("[Service Worker] Install");
 });
 
@@ -28,13 +29,14 @@ precacheAndRoute(self.__WB_MANIFEST);
 /**
  * Activate event
  */
-self.addEventListener("activate", (e) => {
+self.addEventListener("activate", () => {
   console.info("[Service Worker] Activate");
 });
 
 /**
  * Fetch resources
- * TODO: Blabla
+ * Workbox responds with the files in the cache, and then updates them through the network
+ * API requests are not cached
  */
 const matchRouteToCache = ({ url }) => !url.pathname.startsWith("/api");
 registerRoute(matchRouteToCache, new StaleWhileRevalidate());
