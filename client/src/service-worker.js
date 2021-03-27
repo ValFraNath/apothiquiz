@@ -15,12 +15,13 @@ setCacheNameDetails({
 });
 
 /*
+ * Precache assets
  * When the service-worker is installed, Workbox precache all /static files
  */
 precacheAndRoute(self.__WB_MANIFEST);
 
 /**
- * Fetch resources
+ * Fetch resources (GET requests)
  * Workbox responds with the files in the cache, and then updates them through the network
  * API requests are not cached
  */
@@ -29,6 +30,7 @@ registerRoute(matchRouteToCache, new StaleWhileRevalidate());
 
 /*
  * Background Sync
+ * If the user has no network or the server is not working, the API request (PATCH, POST, PUT) is saved until it works again
  */
 const bgSyncPlugin = new BackgroundSyncPlugin("apiQueue", {
   maxRetentionTime: 24 * 60, // retry for max 24 hours
