@@ -15,7 +15,7 @@ setCacheNameDetails({
 });
 
 /*
- * Precache assets
+ * Precaching
  * When the service-worker is installed, Workbox precache all /static files
  */
 precacheAndRoute(self.__WB_MANIFEST);
