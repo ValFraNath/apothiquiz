@@ -1,13 +1,14 @@
 import { PropTypes } from "prop-types";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useQuery } from "react-query";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
 import Avatar from "../components/Avatar";
 import DuelResults from "../components/quiz/DuelResults";
 import RemainingTime from "../components/RemainingTime";
 import Loading from "../components/status/Loading";
 import PageError from "../components/status/PageError";
+import AntiCheat from "../utils/antiCheat";
 import { increaseDate, setDateToNextHour } from "../utils/handleDates";
 import { makeGetDuelDetails } from "../utils/queryDuels";
 
@@ -77,6 +78,13 @@ const DuelOverview = ({
     params: { id: duelId },
   },
 }) => {
+  const history = useHistory();
+  useEffect(() => {
+    if (AntiCheat.isDuelBroken(duelId)) {
+      history.push("/homepage");
+    }
+  });
+
   const { isLoading, data, isError } = useQuery(["duel", duelId], makeGetDuelDetails(duelId));
   const { data: currentUser } = useQuery(["user", "me"]);
 

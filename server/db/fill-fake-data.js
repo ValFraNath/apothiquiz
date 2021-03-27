@@ -158,82 +158,64 @@ async function createAndInsertFakeDuelsWithAPI(users, number) {
   return nbCreatedDuels;
 }
 
-function createFakeDuelWithAPI(config, usernames, MAX_ANSWER, index) {
-  return new Promise((resolve, reject) => {
-    (async () => {
-      // For printing
-      const strIndex = index.toString().padStart(Math.log10(NUMBER_OF_DUELS));
+async function createFakeDuelWithAPI(config, usernames, MAX_ANSWER, index) {
+  // For printing
+  const strIndex = index.toString().padStart(Math.log10(NUMBER_OF_DUELS));
 
-      try {
-        const [user1, user2] = faker.random.arrayElements(usernames, 2);
-        if (user1 === user2) {
-          console.warn(`     ${user1} can't defy himself/herself!`);
-          resolve(false);
-          return;
-        }
+  const [user1, user2] = faker.random.arrayElements(usernames, 2);
+  if (user1 === user2) {
+    console.warn(`     ${user1} can't defy himself/herself!`);
+    return false;
+  }
 
-        const [token1, token2] = await Promise.all([
-          getToken(user1, "1234"),
-          getToken(user2, "1234"),
-        ]);
+  const [token1, token2] = await Promise.all([getToken(user1, "1234"), getToken(user2, "1234")]);
 
-        const resp = await postToAPI("duels/new", {
-          token: token1,
-          method: "post",
-          body: { opponent: user2 },
-        });
-
-        if (resp.statusCode === 409) {
-          console.warn(`    ${strIndex}. Duel already exists between ${user1} and ${user2}`);
-          resolve(false);
-          return;
-        }
-
-        if (resp.statusCode !== 201) {
-          reject("Can't create duel: " + resp.statusCode + " " + resp.error.text);
-          return;
-        }
-
-        const duelID = resp.body.id;
-
-        const numberOfRoundsPlayed = faker.random.number(config.roundsPerDuel);
-        const nbQuestions = Number(config.questionsPerRound);
-
-        for (let i = 1; i <= numberOfRoundsPlayed; i++) {
-          const res = await sendFakeAnswersWithAPI(nbQuestions, MAX_ANSWER, duelID, i, token1);
-
-          if (res.statusCode !== 200) {
-            reject(
-              `User 1 ${user1} can't play round ${i}. Error ${res.statusCode} ${res.error.text}`
-            );
-          }
-
-          // Sometimes the second user doesn't play the last round
-          if (i !== numberOfRoundsPlayed || faker.random.boolean()) {
-            const res = await sendFakeAnswersWithAPI(nbQuestions, MAX_ANSWER, duelID, i, token2);
-
-            if (res.statusCode !== 200) {
-              reject(
-                `User 2 ${user2} can't play round ${i}. Error ${res.statusCode} ${res.error.text}`
-              );
-            }
-          }
-        }
-
-        // Printing
-        const strDuelId = duelID.toString().padEnd(6);
-        const strUser1 = user1.padEnd(8);
-        const strUser2 = user2.padEnd(8);
-        console.info(
-          `    ${strIndex}. Generated duel ${strDuelId} between ${strUser1} and ${strUser2} with ${numberOfRoundsPlayed} played rounds`
-        );
-
-        resolve(true);
-      } catch (err) {
-        reject("Error " + err);
-      }
-    })();
+  const resp = await postToAPI("duels/new", {
+    token: token1,
+    method: "post",
+    body: { opponent: user2 },
   });
+
+  if (resp.statusCode === 409) {
+    console.warn(`    ${strIndex}. Duel already exists between ${user1} and ${user2}`);
+    return false;
+  }
+
+  if (resp.statusCode !== 201) {
+    throw "Can't create duel: " + resp.statusCode + " " + resp.error.text;
+  }
+
+  const duelID = resp.body.id;
+
+  const numberOfRoundsPlayed = faker.random.number(config.roundsPerDuel);
+  const nbQuestions = Number(config.questionsPerRound);
+
+  for (let i = 1; i <= numberOfRoundsPlayed; i++) {
+    const res = await sendFakeAnswersWithAPI(nbQuestions, MAX_ANSWER, duelID, i, token1);
+
+    if (res.statusCode !== 200) {
+      throw `User 1 ${user1} can't play round ${i}. Error ${res.statusCode} ${res.error.text}`;
+    }
+
+    // Sometimes the second user doesn't play the last round
+    if (i !== numberOfRoundsPlayed || faker.random.boolean()) {
+      const res = await sendFakeAnswersWithAPI(nbQuestions, MAX_ANSWER, duelID, i, token2);
+
+      if (res.statusCode !== 200) {
+        throw `User 2 ${user2} can't play round ${i}. Error ${res.statusCode} ${res.error.text}`;
+      }
+    }
+  }
+
+  // Printing
+  const strDuelId = duelID.toString().padEnd(6);
+  const strUser1 = user1.padEnd(8);
+  const strUser2 = user2.padEnd(8);
+  console.info(
+    `    ${strIndex}. Generated duel ${strDuelId} between ${strUser1} and ${strUser2} with ${numberOfRoundsPlayed} played rounds`
+  );
+
+  return true;
 }
 
 async function sendFakeAnswersWithAPI(nbQuestionPerRound, MAX_ANSWER, duelID, roundID, userToken) {

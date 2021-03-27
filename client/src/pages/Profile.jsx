@@ -9,13 +9,13 @@ import { Link } from "react-router-dom";
 import Avatar from "../components/Avatar";
 import AvatarChooser from "../components/AvatarChooser";
 import Loading from "../components/status/Loading";
-import AuthService from "../services/auth.service";
+import Auth from "../utils/authentication";
 
 const Profile = ({ history, updateTheme, theme }) => {
   const [isInitialized, setIsInitialized] = useState(false);
   const [avatar, setAvatar] = useState();
   const { data, isPlaceholderData, isError } = useQuery(["user", "me"]);
-  const { isAdmin } = AuthService.getCurrentUser();
+  const { isAdmin } = Auth.getCurrentUser();
 
   if (!isInitialized && !isPlaceholderData && !isError) {
     setAvatar(data.avatar);
@@ -76,7 +76,7 @@ const Profile = ({ history, updateTheme, theme }) => {
       <button
         className="btn"
         onClick={async () => {
-          await AuthService.logout();
+          await Auth.logout();
           document.location.replace("/");
         }}
       >

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import queryClient from "../utils/configuredQueryClient";
+import queryClient from "./configuredQueryClient";
 
 const LOCAL_STORAGE_KEY = "user_informations";
 
