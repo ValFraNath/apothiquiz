@@ -1,43 +1,25 @@
-/* eslint-disable no-restricted-globals */
+import { precacheAndRoute } from "workbox-precaching";
 
-let cacheName = "guacamolePWA-v1";
-caches.has(cacheName).then((res) => {
-  if (res) {
-    cacheName = "guacamolePWA-v2";
-  }
-});
+/* eslint-disable no-restricted-globals */
 
 /**
  * Install the service worker
- * JavaScript files and assets (e.g. images) are cached
  */
 self.addEventListener("install", (e) => {
   console.info("[Service Worker] Install");
-
-  const contentToCache = self.__WB_MANIFEST;
-  e.waitUntil(
-    caches.open(cacheName).then((cache) => {
-      console.info("[Service Worker] Caching all");
-      return cache.addAll(contentToCache.map((value) => value.url));
-    })
-  );
 });
+
+/*
+ * When the service-worker is installed, Workbox precache all /static files
+ */
+precacheAndRoute(self.__WB_MANIFEST);
 
 /**
  * Activate the service worker
  * Older versions of the cache (with a different cache name than the current one) are deleted.
  */
 self.addEventListener("activate", (e) => {
-  e.waitUntil(
-    caches
-      .keys()
-      .then((keyList) => {
-        return Promise.all(
-          keyList.filter((key) => key !== cacheName).map((key) => caches.delete(key))
-        );
-      })
-      .catch((err) => console.error("Error: can't retrieve cache keys", err))
-  );
+  console.info("[Service Worker] Activate");
 });
 
 /**
@@ -47,46 +29,7 @@ self.addEventListener("activate", (e) => {
  * cached, it is cached and returned.
  */
 self.addEventListener("fetch", (e) => {
-  const currentLocation = self.location.origin;
-  if (
-    !e.request.url ||
-    !e.request.url.startsWith("http") ||
-    new RegExp(`^${currentLocation}/api/v[1-9][0-9]*/`).test(e.request.url)
-  ) {
-    return;
-  }
-
-  e.respondWith(
-    caches
-      .match(e.request)
-      .then((res) => {
-        if (res) {
-          return res;
-        }
-
-        return fetch(e.request)
-          .then((r) => {
-            if (!r || r.status !== 200 || r.type !== "basic") {
-              return r;
-            }
-            const newResource = r.clone();
-            caches
-              .open(cacheName)
-              .then((cache) => {
-                console.info(`[Service Worker] Caching new resource: ${e.request.url}`);
-                return cache
-                  .put(e.request, newResource)
-                  .then(() => {
-                    return r;
-                  })
-                  .catch((err) => console.warn("Warning: can't put resources in cache", err));
-              })
-              .catch((err) => console.warn("Warning: can't open cache", err));
-          })
-          .catch((err) => console.warn("Warning: can't fetch resources", e.request, err));
-      })
-      .catch((err) => console.warn("Warning: can't match request", err))
-  );
+  console.info("[Service Worker] Fetch");
 });
 
 self.addEventListener("message", (e) => {

@@ -23,7 +23,8 @@
     "react-git-info": "^2.0.0",
     "react-query": "^3.8.2",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "^4.0.1"
+    "react-scripts": "^4.0.1",
+    "workbox-precaching": "^5.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
