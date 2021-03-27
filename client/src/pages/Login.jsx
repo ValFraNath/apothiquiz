@@ -23,8 +23,12 @@ class Login extends Component {
         document.location.replace("/homepage");
       })
       .catch((error) => {
-        console.error(`An error has occurred : ${error}`);
-        this.setState({ error: String(error) });
+        const messages = {
+          404: "Utilisateur inconnu",
+          401: "Mot de passe incorrect",
+          500: "Impossible de joindre le serveur",
+        };
+        this.setState({ error: messages[error.response.status] || "Erreur" });
       });
   }
 

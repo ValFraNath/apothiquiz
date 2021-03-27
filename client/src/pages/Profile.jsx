@@ -29,7 +29,7 @@ const Profile = ({ history, updateTheme, theme }) => {
 
   const createAvatarComponent = () => {
     if (isError) {
-      return <FloatingError message="Impossible de récupérer l'avatar'" />;
+      return <FloatingError message="Impossible de récupérer l'avatar" />;
     }
 
     if (!isInitialized) {
