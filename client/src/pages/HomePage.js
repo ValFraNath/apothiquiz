@@ -9,15 +9,16 @@ import { Link } from "react-router-dom";
 import AnimationWithAction from "../components/animations/AnimAction";
 import Avatar from "../components/Avatar";
 import Plural from "../components/Plural";
+import RemainingTime from "../components/RemainingTime";
 import Loading from "../components/status/Loading";
 import PageError from "../components/status/PageError";
-import RemainingTime from "../components/RemainingTime";
-import { increaseDate } from "../utils/handleDates";
 
 import fightAnimAction from "../images/sprites/fight-action-240.png";
 import fightAnimLoop from "../images/sprites/fight-loop-240.png";
 import waitingAnimAction from "../images/sprites/waiting-action-120.png";
 import waitingAnimLoop from "../images/sprites/waiting-loop-120.png";
+
+import { increaseDate } from "../utils/handleDates";
 
 const HomePageHeader = ({ user }) => (
   <header>
@@ -57,12 +58,6 @@ const HomePage = () => {
     if (user === opponent) return "Égalité :";
     if (user > opponent) return "Vous avez gagné :";
     return "Vous avez perdu :";
-  }
-
-  function getRemainingTime(playedTimeEpoch) {
-    const MAX_TIME = 24;
-    const remaining = MAX_TIME - (new Date().getTime() - playedTimeEpoch) / 36e5;
-    return remaining >= 0 ? Math.ceil(remaining) : 0;
   }
 
   const { isLoading, data: duels, isError } = useQuery("duels");

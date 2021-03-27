@@ -10,12 +10,12 @@ const RemainingTime = ({ finalDate, currentDate = new Date() }) => {
     const resInHours = diffDates / (1000 * 60 * 60);
     return (
       <span className={resInHours <= 3 ? "time-important" : ""}>
-        {resInHours >= 0 ? Math.round(resInHours) : 0} h
+        {resInHours >= 0 ? `${Math.round(resInHours)} h` : "bientôt"}
       </span>
     );
   }
 
-  const resInDays = diffDates / (1000 * 60 * 60 * 24);
+  const resInDays = Math.round(diffDates / (1000 * 60 * 60 * 24));
   return (
     <span>
       {resInDays} <Plural word="jour" count={resInDays} />
