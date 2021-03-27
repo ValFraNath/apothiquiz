@@ -7,31 +7,17 @@ import { NetworkOnly, StaleWhileRevalidate } from "workbox-strategies";
 /* eslint-disable no-restricted-globals */
 
 /*
- * Configure the workbox cache name
+ * Configure workbox caches name
  */
 setCacheNameDetails({
   prefix: "guacamole",
   suffix: "v1",
 });
 
-/**
- * Install event
- */
-self.addEventListener("install", () => {
-  console.info("[Service Worker] Install");
-});
-
 /*
  * When the service-worker is installed, Workbox precache all /static files
  */
 precacheAndRoute(self.__WB_MANIFEST);
-
-/**
- * Activate event
- */
-self.addEventListener("activate", () => {
-  console.info("[Service Worker] Activate");
-});
 
 /**
  * Fetch resources
