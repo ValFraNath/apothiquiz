@@ -18,7 +18,7 @@ import fightAnimLoop from "../images/sprites/fight-loop-240.png";
 import waitingAnimAction from "../images/sprites/waiting-action-120.png";
 import waitingAnimLoop from "../images/sprites/waiting-loop-120.png";
 
-import { increaseDate } from "../utils/handleDates";
+import { incrementDate } from "../utils/handleDates";
 
 const HomePageHeader = ({ user }) => (
   <header>
@@ -117,7 +117,7 @@ const HomePage = () => {
                     <p className="time">
                       <LapTimerIcon />
                       <RemainingTime
-                        finalDate={increaseDate({ hours: 24 }, new Date(value.opponentLastPlayed))}
+                        finalDate={incrementDate({ hours: 24 }, new Date(value.opponentLastPlayed))}
                       />
                     </p>
                     <p>
@@ -160,7 +160,7 @@ const HomePage = () => {
                   <p className="time">
                     <LapTimerIcon />
                     <RemainingTime
-                      finalDate={increaseDate({ hours: 24 }, new Date(value.lastPlayed))}
+                      finalDate={incrementDate({ hours: 24 }, new Date(value.lastPlayed))}
                     />
                   </p>
                   <p>En train de jouer le tour {value.currentRound}...</p>
