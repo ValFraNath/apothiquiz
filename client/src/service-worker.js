@@ -1,98 +1,41 @@
+import { BackgroundSyncPlugin } from "workbox-background-sync";
+import { setCacheNameDetails } from "workbox-core";
+import { precacheAndRoute } from "workbox-precaching";
+import { registerRoute } from "workbox-routing";
+import { NetworkOnly, StaleWhileRevalidate } from "workbox-strategies";
+
 /* eslint-disable no-restricted-globals */
 
-let cacheName = "guacamolePWA-v1";
-caches.has(cacheName).then((res) => {
-  if (res) {
-    cacheName = "guacamolePWA-v2";
-  }
+/*
+ * Configure workbox caches name
+ */
+setCacheNameDetails({
+  prefix: "guacamole",
+  suffix: "v1",
 });
+
+/*
+ * Precaching
+ * When the service-worker is installed, Workbox precache all /static files
+ */
+precacheAndRoute(self.__WB_MANIFEST);
 
 /**
- * Install the service worker
- * JavaScript files and assets (e.g. images) are cached
+ * Fetch resources (GET requests)
+ * Workbox responds with the files in the cache, and then updates them through the network
+ * API requests are not cached
  */
-self.addEventListener("install", (e) => {
-  console.info("[Service Worker] Install");
+const matchRouteToCache = ({ url }) => !url.pathname.startsWith("/api");
+registerRoute(matchRouteToCache, new StaleWhileRevalidate());
 
-  const contentToCache = self.__WB_MANIFEST;
-  e.waitUntil(
-    caches.open(cacheName).then((cache) => {
-      console.info("[Service Worker] Caching all");
-      return cache.addAll(contentToCache.map((value) => value.url));
-    })
-  );
-});
-
-/**
- * Activate the service worker
- * Older versions of the cache (with a different cache name than the current one) are deleted.
+/*
+ * Background Sync
+ * If the user has no network or the server is not working, the API request (PATCH, POST, PUT) is saved until it works again
  */
-self.addEventListener("activate", (e) => {
-  e.waitUntil(
-    caches
-      .keys()
-      .then((keyList) => {
-        return Promise.all(
-          keyList.filter((key) => key !== cacheName).map((key) => caches.delete(key))
-        );
-      })
-      .catch((err) => console.error("Error: can't retrieve cache keys", err))
-  );
+const bgSyncPlugin = new BackgroundSyncPlugin("apiQueue", {
+  maxRetentionTime: 24 * 60, // retry for max 24 hours
 });
-
-/**
- * Fetch resources
- * If it is a call to the API, it is performed as usual
- * Otherwise, either the resource is cached and returned to the user, or the resource is not
- * cached, it is cached and returned.
- */
-self.addEventListener("fetch", (e) => {
-  const currentLocation = self.location.origin;
-  if (
-    !e.request.url ||
-    !e.request.url.startsWith("http") ||
-    new RegExp(`^${currentLocation}/api/v[1-9][0-9]*/`).test(e.request.url)
-  ) {
-    return;
-  }
-
-  e.respondWith(
-    caches
-      .match(e.request)
-      .then((res) => {
-        if (res) {
-          return res;
-        }
-
-        return fetch(e.request)
-          .then((r) => {
-            if (!r || r.status !== 200 || r.type !== "basic") {
-              return r;
-            }
-            const newResource = r.clone();
-            caches
-              .open(cacheName)
-              .then((cache) => {
-                console.info(`[Service Worker] Caching new resource: ${e.request.url}`);
-                return cache
-                  .put(e.request, newResource)
-                  .then(() => {
-                    return r;
-                  })
-                  .catch((err) => console.warn("Warning: can't put resources in cache", err));
-              })
-              .catch((err) => console.warn("Warning: can't open cache", err));
-          })
-          .catch((err) => console.warn("Warning: can't fetch resources", e.request, err));
-      })
-      .catch((err) => console.warn("Warning: can't match request", err))
-  );
-});
-
-self.addEventListener("message", (e) => {
-  if (e.data.type && e.data.type === "SKIP_WAITING") {
-    self
-      .skipWaiting()
-      .catch((err) => console.error("Error: can't skip waiting service-worker", err));
-  }
-});
+const matchRouteBackgroundSync = ({ url }) => url.pathname.startsWith("/api");
+registerRoute(matchRouteBackgroundSync, new NetworkOnly({ plugins: [bgSyncPlugin] }), "PATCH");
+registerRoute(matchRouteBackgroundSync, new NetworkOnly({ plugins: [bgSyncPlugin] }), "POST");
+registerRoute(matchRouteBackgroundSync, new NetworkOnly({ plugins: [bgSyncPlugin] }), "PUT");
