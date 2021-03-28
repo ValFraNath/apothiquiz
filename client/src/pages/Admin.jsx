@@ -191,7 +191,7 @@ const FileDownloader = ({ filename, endpoint, text }) => {
   return (
     <>
       {isError && <FloatingError message="Impossible de télécharger le fichier" />}
-      <a href={"none"} download={filename} onClick={fetchAndOpenFile}>
+      <a href="none" download={filename} onClick={fetchAndOpenFile}>
         {text}
       </a>
     </>
