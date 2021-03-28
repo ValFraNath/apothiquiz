@@ -101,8 +101,8 @@ const DuelOverview = ({
   const { currentUserScore, opponentScore, opponent, inProgress, finishedDate, TTL } = data;
 
   const removingTime = (function () {
-    const d = incrementDate({ days: Number(TTL) }, new Date(finishedDate));
-    return setDateToNextHour(d, 0, 1);
+    const date = incrementDate({ days: Number(TTL) }, new Date(finishedDate));
+    return setDateToNextHour(date, 0, 1);
   })();
 
   // Can the current user play the current round?
