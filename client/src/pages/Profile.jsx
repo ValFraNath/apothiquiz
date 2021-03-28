@@ -2,7 +2,7 @@ import { CaretSortIcon } from "@modulz/radix-icons";
 import * as Collapsible from "@radix-ui/react-collapsible";
 
 import { PropTypes } from "prop-types";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
 
@@ -27,7 +27,7 @@ const Profile = ({ history, updateTheme, theme }) => {
     setAvatar((prevAvatar) => ({ ...prevAvatar, [valueName]: newValue }));
   }
 
-  const createAvatarComponent = () => {
+  const AvatarComponent = useCallback(({ isError, isInitialized, avatar }) => {
     if (isError) {
       return <FloatingError message="Impossible de récupérer l'avatar" />;
     }
@@ -35,6 +35,7 @@ const Profile = ({ history, updateTheme, theme }) => {
     if (!isInitialized) {
       return <Loading message="Chargement de l'avatar..." />;
     }
+
     return (
       <div className="profile-avatar">
         <div className="profile-avatar-image">
@@ -71,11 +72,11 @@ const Profile = ({ history, updateTheme, theme }) => {
         </div>
       </div>
     );
-  };
+  }, []);
 
   return (
     <main id="profile">
-      {createAvatarComponent()}
+      <AvatarComponent isError={isError} isInitialized={isInitialized} avatar={avatar} />
 
       {isAdmin && (
         <Link to="/admin" className="btn">
