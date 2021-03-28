@@ -6,7 +6,7 @@ import errorImg from "../../images/error.png";
 const FloatingError = ({ message }) => (
   <div className="floating-error">
     <img src={errorImg} alt="Pilette abimée par l'erreur" />
-    {message}
+    <p>{message}</p>
   </div>
 );
 

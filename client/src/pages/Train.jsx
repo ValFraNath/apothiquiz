@@ -6,9 +6,9 @@ import React, { Component } from "react";
 import ButtonCircle from "../components/buttons/ButtonCircle";
 import ButtonDefault from "../components/buttons/ButtonDefault";
 import Answers from "../components/quiz/Answers";
-import Message from "../components/quiz/Message";
 import Question from "../components/quiz/Question";
 import Timer from "../components/quiz/Timer";
+import PageError from "../components/status/PageError.jsx";
 import InformationPilette from "../images/information_crop.png";
 
 /* ---------- Introduction view ---------- */
@@ -252,6 +252,7 @@ class Train extends Component {
           this.getNewQuestion(nthRetry + 1);
           return;
         }
+        console.error(error);
         this.setState({
           error: "Impossible de récupérer les données depuis le serveur.",
         });
@@ -323,8 +324,7 @@ class Train extends Component {
 
     return (
       <main id="quiz" className={additionalClass}>
-        {error !== null && <Message type="error" content={error} />}
-        {this.switchComponent()}
+        {error !== null ? <PageError message={error} /> : this.switchComponent()}
       </main>
     );
   }

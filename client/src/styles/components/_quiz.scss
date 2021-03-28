@@ -112,6 +112,7 @@ body.dark #timer {
 
 #next-btn {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   height: 100px;
 }
