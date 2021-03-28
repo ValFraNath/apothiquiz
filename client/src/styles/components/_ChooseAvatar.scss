@@ -69,3 +69,9 @@
     text-align: center;
   }
 }
+
+body.dark #change-avatar {
+  div.choice .disabled {
+    color: #5d5d5d;
+  }
+}
