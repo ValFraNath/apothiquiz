@@ -104,7 +104,8 @@ const AvatarChooser = (props) => {
         setAvatarChooserState("saved");
         queryClient.invalidateQueries(["user", "me"]);
       })
-      .catch(() => {
+      .catch((error) => {
+        console.error(error);
         setError("Impossible de sauvegarder l'avatar");
         setAvatarChooserState("not-saved");
       });

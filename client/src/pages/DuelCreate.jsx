@@ -42,6 +42,7 @@ const DuelCreate = ({ history }) => {
           history.push(`/duel/${id}`);
           return;
         }
+        console.error(error);
         setError("Impossible de créer ce duel");
       });
   }

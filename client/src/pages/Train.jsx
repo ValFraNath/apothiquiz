@@ -252,6 +252,7 @@ class Train extends Component {
           this.getNewQuestion(nthRetry + 1);
           return;
         }
+        console.error(error);
         this.setState({
           error: "Impossible de récupérer les données depuis le serveur.",
         });

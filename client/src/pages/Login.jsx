@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
 
+import FloatingError from "../components/status/FloatingError";
 import Auth from "../utils/authentication";
 
 class Login extends Component {
@@ -8,6 +9,7 @@ class Login extends Component {
     super(props);
     this.state = {
       isLogged: true,
+      error: null,
     };
 
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
@@ -23,6 +25,7 @@ class Login extends Component {
         document.location.replace("/homepage");
       })
       .catch((error) => {
+        console.error(error);
         const messages = {
           404: "Utilisateur inconnu",
           401: "Mot de passe incorrect",
@@ -62,7 +65,7 @@ class Login extends Component {
             <input type="submit" value="Se connecter" />
           </form>
 
-          {this.state.error && <p className="error">{this.state.error}</p>}
+          {this.state.error && <FloatingError message={this.state.error} />}
         </main>
       )
     );

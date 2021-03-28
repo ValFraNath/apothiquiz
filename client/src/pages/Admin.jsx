@@ -182,7 +182,10 @@ const FileDownloader = ({ filename, endpoint, text }) => {
         link.click();
         link.href = "none";
       })
-      .catch(() => setError(true));
+      .catch((error) => {
+        console.error(error);
+        setError(true);
+      });
   }
 
   return (
@@ -229,7 +232,10 @@ const Configuration = ({ lastImport }) => {
         setIsSaved(false);
         setFetchError(false);
       })
-      .catch(() => setFetchError(true));
+      .catch((error) => {
+        console.error(error);
+        setFetchError(true);
+      });
   }, [lastImport]);
 
   function saveConfig(e) {
@@ -246,7 +252,10 @@ const Configuration = ({ lastImport }) => {
         setIsSaved(true);
         setSaveError(false);
       })
-      .catch(() => setSaveError(true));
+      .catch((error) => {
+        console.error(error);
+        setSaveError(true);
+      });
   }
 
   if (isFetchError) {

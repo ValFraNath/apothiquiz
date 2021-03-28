@@ -48,7 +48,10 @@ class Duel extends Component {
         }
         AntiCheat.markDuelAsBroken(duelId, duel.currentRound);
       })
-      .catch(() => this.setState({ isFetchError: true }));
+      .catch((error) => {
+        console.error(error);
+        this.setState({ isFetchError: true });
+      });
   }
 
   /**
@@ -151,7 +154,10 @@ class Duel extends Component {
         AntiCheat.markDuelAsValidated(duelData.id);
         this.props.history.push(`/duel/${duelId}`);
       })
-      .catch(() => this.setState({ isValidateError: true }));
+      .catch((error) => {
+        console.error(error);
+        this.setState({ isValidateError: true });
+      });
   };
 
   render() {
