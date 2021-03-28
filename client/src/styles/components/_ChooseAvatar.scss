@@ -1,5 +1,12 @@
 #change-avatar {
+  position: relative;
   display: grid;
+
+  &.error {
+    // to properly display the floating error component
+    display: block;
+  }
+
   padding: 10px;
   vertical-align: middle;
 

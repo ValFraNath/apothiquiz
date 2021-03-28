@@ -6,6 +6,8 @@ import { useQueryClient } from "react-query";
 
 import variables from "../styles/base/_variables.module.scss";
 
+import FloatingError from "./status/FloatingError.jsx";
+
 const NUMBER_OF_EYES = Number(variables.numberChoicesEyes);
 const NUMBER_OF_HANDS = Number(variables.numberChoicesHands);
 const NUMBER_OF_HATS = Number(variables.numberChoicesHats);
@@ -71,6 +73,7 @@ function randomHexColor() {
 
 const AvatarChooser = (props) => {
   const [avatarChooserState, setAvatarChooserState] = useState("saved");
+  const [error, setError] = useState(null);
   const queryClient = useQueryClient();
 
   function randomAvatar() {
@@ -103,8 +106,17 @@ const AvatarChooser = (props) => {
       })
       .catch((error) => {
         console.error(error);
+        setError("Impossible de sauvegarder l'avatar");
         setAvatarChooserState("not-saved");
       });
+  }
+
+  if (error) {
+    return (
+      <div id="change-avatar" className="error">
+        <FloatingError message={error} />
+      </div>
+    );
   }
 
   return (

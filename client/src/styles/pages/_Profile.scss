@@ -6,8 +6,11 @@ main#profile {
     text-align: center;
   }
 
-  & > .avatar {
-    margin: auto;
+  .profile-avatar {
+    position: relative;
+    &-image > .avatar {
+      margin: auto;
+    }
   }
 
   .btn {

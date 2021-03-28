@@ -5,12 +5,14 @@ import { useQuery, useQueryClient } from "react-query";
 
 import Avatar from "../components/Avatar";
 import ButtonFullWidth from "../components/buttons/ButtonFullWidth";
+import FloatingError from "../components/status/FloatingError";
 import Loading from "../components/status/Loading";
 import PageError from "../components/status/PageError";
 
 const DuelCreate = ({ history }) => {
   const [searchRegex, setSearchRegex] = useState(null);
   const [selected, setSelected] = useState(null);
+  const [error, setError] = useState(null);
   const queryClient = useQueryClient();
 
   const { data: listOfUsers, isSuccess, isError } = useQuery(["users", "challengeable"]);
@@ -32,21 +34,22 @@ const DuelCreate = ({ history }) => {
         queryClient.invalidateQueries(["users", "challengeable"]);
         history.push(`/duel/${id}`);
       })
-      .catch((err) => {
-        if (err.response.status === 409) {
+      .catch((error) => {
+        if (error.response.status === 409) {
           // Duels already exists => redirecting to it
-          const { id } = err.response.data;
+          const { id } = error.response.data;
           queryClient.invalidateQueries(["users", "challengeable"]);
           history.push(`/duel/${id}`);
           return;
         }
-
-        console.error(err);
+        console.error(error);
+        setError("Impossible de créer ce duel");
       });
   }
 
   return (
     <main id="create-duel">
+      {error && <FloatingError message={error} />}
       <section>
         <h1>Créer un nouveau duel</h1>
         <input
