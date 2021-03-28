@@ -16,7 +16,7 @@ export function incrementDate(toAdd, from = new Date()) {
 /**
  * Move a date to the next requested time
  * If it is March 1st, 6pm, and you want the next date at 5pm, the function
- * will return the date of March 2nd, 5pm
+ * will return the date of March 2nd, 5pm.
  *
  * @param {Date} from Date to increment
  * @param {number} hours The
