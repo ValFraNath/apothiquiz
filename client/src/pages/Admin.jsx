@@ -3,6 +3,8 @@ import axios from "axios";
 import PropTypes from "prop-types";
 import React, { Component, useEffect, useState } from "react";
 
+import FloatingError from "../components/status/FloatingError";
+
 import Auth from "../utils/authentication";
 
 const ADMIN_GUIDE_URL =
@@ -160,6 +162,8 @@ FileImporter.defaultProps = { multiple: false };
  * Component which, on click, fetches a file and opens it.
  */
 const FileDownloader = ({ filename, endpoint, text }) => {
+  const [isError, setError] = useState(false);
+
   /**
    * Fetch the file and open it
    * @param {MouseEvent} e
@@ -173,17 +177,24 @@ const FileDownloader = ({ filename, endpoint, text }) => {
 
     getLastImportedFile(endpoint)
       .then((url) => {
+        setError(false);
         link.href = url;
         link.click();
         link.href = "none";
       })
-      .catch((error) => console.error("Can't download the file", error));
+      .catch((error) => {
+        console.error(error);
+        setError(true);
+      });
   }
 
   return (
-    <a href={"none"} download={filename} onClick={fetchAndOpenFile}>
-      {text}
-    </a>
+    <>
+      {isError && <FloatingError message="Impossible de télécharger le fichier" />}
+      <a href="none" download={filename} onClick={fetchAndOpenFile}>
+        {text}
+      </a>
+    </>
   );
 };
 
@@ -201,6 +212,9 @@ const Configuration = ({ lastImport }) => {
     duelLifetime: 0,
   });
 
+  const [isFetchError, setFetchError] = useState(false);
+  const [isSaveError, setSaveError] = useState(false);
+
   const [isSaved, setIsSaved] = useState(false);
 
   const updateConfig = (key, value) => {
@@ -216,8 +230,12 @@ const Configuration = ({ lastImport }) => {
       .then(({ data }) => {
         setConfig(data);
         setIsSaved(false);
+        setFetchError(false);
       })
-      .catch(console.error);
+      .catch((error) => {
+        console.error(error);
+        setFetchError(true);
+      });
   }, [lastImport]);
 
   function saveConfig(e) {
@@ -232,54 +250,65 @@ const Configuration = ({ lastImport }) => {
       .then(({ data }) => {
         setConfig(data);
         setIsSaved(true);
+        setSaveError(false);
       })
-      .catch(console.error);
+      .catch((error) => {
+        console.error(error);
+        setSaveError(true);
+      });
+  }
+
+  if (isFetchError) {
+    return <FloatingError message="Impossible de récupérer les données" />;
   }
 
   return (
-    <form className="configuration" onSubmit={saveConfig}>
-      {config.roundsPerDuel.max < 1 ? (
-        <p className="notEnoughData">
-          Il n'y a pas assez de données dans la base de données pour générer des duels
-        </p>
-      ) : (
-        <>
-          <NumberInput
-            label="Durée du timer de réponse en secondes"
-            defaultValue={config.questionTimerDuration.value}
-            onChange={(value) => updateConfig("questionTimerDuration", value)}
-            min={config.questionTimerDuration.min}
-            max={config.questionTimerDuration.max}
-          />
-
-          <NumberInput
-            label="Nombre de questions dans une manche"
-            defaultValue={config.questionsPerRound.value}
-            onChange={(value) => updateConfig("questionsPerRound", value)}
-            min={config.questionsPerRound.min}
-            max={config.questionsPerRound.max}
-          />
-
-          <NumberInput
-            label="Nombre de manches dans un duel"
-            defaultValue={config.roundsPerDuel.value}
-            onChange={(value) => updateConfig("roundsPerDuel", value)}
-            min={config.roundsPerDuel.min}
-            max={config.roundsPerDuel.max}
-          />
-
-          <NumberInput
-            label="Nombre de jours de sauvegarde d'un duel terminé avant suppression"
-            defaultValue={config.duelLifetime.value}
-            onChange={(value) => updateConfig("duelLifetime", value)}
-            min={config.duelLifetime.min}
-            max={config.duelLifetime.max}
-          />
-          <input type="submit" value="Enregistrer" className="btn" />
-        </>
-      )}
+    <>
+      {isSaveError && <FloatingError message="Une erreur est survenue durant la sauvegarde" />}
       {isSaved && <p className="success">Configuration sauvegardée avec succès</p>}
-    </form>
+      <form className="configuration" onSubmit={saveConfig}>
+        {config.roundsPerDuel.max < 1 ? (
+          <p className="notEnoughData">
+            Il n'y a pas assez de données dans la base de données pour générer des duels
+          </p>
+        ) : (
+          <>
+            <NumberInput
+              label="Durée du timer de réponse en secondes"
+              defaultValue={config.questionTimerDuration.value}
+              onChange={(value) => updateConfig("questionTimerDuration", value)}
+              min={config.questionTimerDuration.min}
+              max={config.questionTimerDuration.max}
+            />
+
+            <NumberInput
+              label="Nombre de questions dans une manche"
+              defaultValue={config.questionsPerRound.value}
+              onChange={(value) => updateConfig("questionsPerRound", value)}
+              min={config.questionsPerRound.min}
+              max={config.questionsPerRound.max}
+            />
+
+            <NumberInput
+              label="Nombre de manches dans un duel"
+              defaultValue={config.roundsPerDuel.value}
+              onChange={(value) => updateConfig("roundsPerDuel", value)}
+              min={config.roundsPerDuel.min}
+              max={config.roundsPerDuel.max}
+            />
+
+            <NumberInput
+              label="Nombre de jours de sauvegarde d'un duel terminé avant suppression"
+              defaultValue={config.duelLifetime.value}
+              onChange={(value) => updateConfig("duelLifetime", value)}
+              min={config.duelLifetime.min}
+              max={config.duelLifetime.max}
+            />
+            <input type="submit" value="Enregistrer" className="btn" />
+          </>
+        )}
+      </form>
+    </>
   );
 };
 
