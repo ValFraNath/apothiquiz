@@ -9,7 +9,7 @@ import RemainingTime from "../components/RemainingTime";
 import Loading from "../components/status/Loading";
 import PageError from "../components/status/PageError";
 import AntiCheat from "../utils/antiCheat";
-import { increaseDate, setDateToNextHour } from "../utils/handleDates";
+import { incrementDate, setDateToNextHour } from "../utils/handleDates";
 import { makeGetDuelDetails } from "../utils/queryDuels";
 
 const UserBadge = ({ user, reversed }) => (
@@ -100,10 +100,9 @@ const DuelOverview = ({
 
   const { currentUserScore, opponentScore, opponent, inProgress, finishedDate, TTL } = data;
 
-  const removeTime = (function () {
-    const d = increaseDate({ days: Number(TTL) }, new Date(finishedDate));
-    const up = setDateToNextHour(d, 0, 1);
-    return up;
+  const removingTime = (function () {
+    const d = incrementDate({ days: Number(TTL) }, new Date(finishedDate));
+    return setDateToNextHour(d, 0, 1);
   })();
 
   // Can the current user play the current round?
@@ -133,7 +132,7 @@ const DuelOverview = ({
             opponentScore={opponentScore}
           />
           <p id="TTL">
-            Temps avant suppression du duel : <RemainingTime finalDate={removeTime} />
+            Temps avant suppression du duel : <RemainingTime finalDate={removingTime} />
           </p>
         </>
       )}

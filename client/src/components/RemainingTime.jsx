@@ -10,7 +10,7 @@ const RemainingTime = ({ finalDate, currentDate = new Date() }) => {
     const resInHours = diffDates / (1000 * 60 * 60);
     return (
       <span className={resInHours <= 3 ? "time-important" : ""}>
-        {resInHours >= 0 ? `${Math.round(resInHours)} h` : "bientôt"}
+        {resInHours >= 0 ? `${Math.round(resInHours)} h` : "moins d'une heure"}
       </span>
     );
   }
