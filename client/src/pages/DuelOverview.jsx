@@ -4,11 +4,12 @@ import { useQuery } from "react-query";
 import { Link, useHistory } from "react-router-dom";
 
 import Avatar from "../components/Avatar";
-import Plural from "../components/Plural";
 import DuelResults from "../components/quiz/DuelResults";
+import RemainingTime from "../components/RemainingTime";
 import Loading from "../components/status/Loading";
 import PageError from "../components/status/PageError";
 import AntiCheat from "../utils/antiCheat";
+import { incrementDate, setDateToNextHour } from "../utils/handleDates";
 import { makeGetDuelDetails } from "../utils/queryDuels";
 
 const UserBadge = ({ user, reversed }) => (
@@ -99,10 +100,9 @@ const DuelOverview = ({
 
   const { currentUserScore, opponentScore, opponent, inProgress, finishedDate, TTL } = data;
 
-  const remainingTimeBeforeRemove = (function () {
-    if (!finishedDate) return TTL;
-    const timeDiff = new Date().getTime() - finishedDate;
-    return TTL - Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+  const removingTime = (function () {
+    const date = incrementDate({ days: Number(TTL) }, new Date(finishedDate));
+    return setDateToNextHour(date, 0, 1);
   })();
 
   // Can the current user play the current round?
@@ -132,8 +132,7 @@ const DuelOverview = ({
             opponentScore={opponentScore}
           />
           <p id="TTL">
-            Le duel sera supprimé dans {remainingTimeBeforeRemove}{" "}
-            <Plural word="jour" count={remainingTimeBeforeRemove} />
+            Temps avant suppression du duel : <RemainingTime finalDate={removingTime} />
           </p>
         </>
       )}

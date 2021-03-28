@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import AnimationWithAction from "../components/animations/AnimAction";
 import Avatar from "../components/Avatar";
 import Plural from "../components/Plural";
+import RemainingTime from "../components/RemainingTime";
 import Loading from "../components/status/Loading";
 import PageError from "../components/status/PageError";
 
@@ -16,6 +17,8 @@ import fightAnimAction from "../images/sprites/fight-action-240.png";
 import fightAnimLoop from "../images/sprites/fight-loop-240.png";
 import waitingAnimAction from "../images/sprites/waiting-action-120.png";
 import waitingAnimLoop from "../images/sprites/waiting-loop-120.png";
+
+import { incrementDate } from "../utils/handleDates";
 
 const HomePageHeader = ({ user }) => (
   <header>
@@ -55,12 +58,6 @@ const HomePage = () => {
     if (user === opponent) return "Égalité :";
     if (user > opponent) return "Vous avez gagné :";
     return "Vous avez perdu :";
-  }
-
-  function getRemainingTime(playedTimeEpoch) {
-    const MAX_TIME = 24;
-    const remaining = MAX_TIME - (new Date().getTime() - playedTimeEpoch) / 36e5;
-    return remaining >= 0 ? Math.ceil(remaining) : 0;
   }
 
   const { isLoading, data: duels, isError } = useQuery("duels");
@@ -119,7 +116,9 @@ const HomePage = () => {
                     <h3>{value.opponent}</h3>
                     <p className="time">
                       <LapTimerIcon />
-                      {getRemainingTime(value.opponentLastPlayed)} h
+                      <RemainingTime
+                        finalDate={incrementDate({ hours: 24 }, new Date(value.opponentLastPlayed))}
+                      />
                     </p>
                     <p>
                       Tour {value.currentRound} : {value.userScore} - {value.opponentScore}
@@ -160,7 +159,9 @@ const HomePage = () => {
                   <h3>{value.opponent}</h3>
                   <p className="time">
                     <LapTimerIcon />
-                    {getRemainingTime(value.lastPlayed)} h
+                    <RemainingTime
+                      finalDate={incrementDate({ hours: 24 }, new Date(value.lastPlayed))}
+                    />
                   </p>
                   <p>En train de jouer le tour {value.currentRound}...</p>
                 </Link>
