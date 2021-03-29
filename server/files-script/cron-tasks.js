@@ -37,7 +37,7 @@ const removeDuelsTask = cron.schedule(
  */
 const checkDuelsTask = cron.schedule(
   "* * */3 * * *",
-  async function duelsToPlay() {
+  async function () {
     const sql = `SELECT duel.du_id, du_content, us_login, re_answers, re_last_time \
                  FROM results, duel \
                  WHERE results.du_id = duel.du_id \
