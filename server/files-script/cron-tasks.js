@@ -37,51 +37,57 @@ const removeDuelsTask = cron.schedule(
  */
 const checkDuelsTask = cron.schedule(
   "* * */3 * * *",
-  async function () {
-    const sql = `SELECT duel.du_id, us_login, re_answers, re_last_time \
-               FROM results, duel \
-               WHERE results.du_id = duel.du_id \
-                 AND duel.du_inProgress = 1;`;
+  async function duelsToPlay() {
+    const sql = `SELECT duel.du_id, du_content, us_login, re_answers, re_last_time \
+                 FROM results, duel \
+                 WHERE results.du_id = duel.du_id \
+                   AND duel.du_inProgress = 1;`;
 
     try {
+      const listOfDuels = {};
+
       const res = await queryPromise(sql);
-
-      const duelsTime = {};
-
-      res.forEach((data) => {
-        const lastTime = data.re_last_time;
-        if (!duelsTime[data.du_id]) {
-          duelsTime[data.du_id] = [];
-        }
-        duelsTime[data.du_id].push({
-          user: data.us_login,
-          answers: data.re_answers,
-          time: lastTime === null ? null : new Date(lastTime),
+      res.forEach((element) => {
+        if (!listOfDuels[element.du_id]) listOfDuels[element.du_id] = [];
+        listOfDuels[element.du_id].push({
+          login: element.us_login,
+          content: element.du_content,
+          answers: element.re_answers,
+          lastTime: element.re_last_time,
         });
       });
 
-      for (const key in duelsTime) {
-        const currentRound = duelsTime[key];
+      await Promise.all(
+        Object.keys(listOfDuels).map(async (duelID) => {
+          const currentDuel = listOfDuels[duelID];
 
-        let indexLastPlayed;
-        if (currentRound[0].time === null || currentRound[1].time === null) {
-          indexLastPlayed = currentRound[0].time ? 0 : 1;
-        } else {
-          indexLastPlayed = currentRound[0].time > currentRound[1].time ? 0 : 1;
-        }
+          let needToPlayID = 0;
+          if (currentDuel[0].answers.length === currentDuel[1].answers.length) {
+            needToPlayID =
+              new Date(currentDuel[0].lastTime) > new Date(currentDuel[1].lastTime) ? 1 : 0;
+          } else {
+            needToPlayID = currentDuel[0].answers.length > currentDuel[1].answers.length ? 1 : 0;
+          }
 
-        if (diffDateInHour(new Date(), currentRound[indexLastPlayed].time) >= 24) {
-          const resSample = JSON.parse(currentRound[indexLastPlayed].answers)[0];
-          if (resSample === undefined) return; // no date provided
-          const looser = currentRound[indexLastPlayed ^ 1];
+          const hoursSinceLastPlay = diffDateInHour(
+            new Date(),
+            new Date(currentDuel[needToPlayID].lastTime)
+          );
+          if (Math.ceil(hoursSinceLastPlay) >= 24) {
+            const numberOfAnswers = JSON.parse(currentDuel[needToPlayID].content)[0].length;
+            const fakeAnswers = new Array(numberOfAnswers).fill(-1);
 
-          const results = new Array(resSample.length).fill(-1);
-          const updatedDuels = await Duels.insertResultInDatabase(key, looser.user, results);
-          await Duels.updateDuelState(updatedDuels, looser.user);
-        }
-      }
+            const updatedDuels = await Duels.insertResultInDatabase(
+              duelID,
+              currentDuel[needToPlayID].login,
+              fakeAnswers
+            );
+            await Duels.updateDuelState(updatedDuels, currentDuel[needToPlayID].login);
+          }
+        })
+      );
     } catch (err) {
-      Logger.error(err, "Can't check duels");
+      Logger.error(err);
     }
   },
   {
