@@ -1,5 +1,5 @@
 import { BackgroundSyncPlugin } from "workbox-background-sync";
-import { setCacheNameDetails } from "workbox-core";
+import { setCacheNameDetails, skipWaiting, clientsClaim } from "workbox-core";
 import { precacheAndRoute } from "workbox-precaching";
 import { registerRoute } from "workbox-routing";
 import { NetworkOnly, StaleWhileRevalidate } from "workbox-strategies";
@@ -13,6 +13,8 @@ setCacheNameDetails({
   prefix: "guacamole",
   suffix: "v1",
 });
+skipWaiting();
+clientsClaim();
 
 /*
  * Precaching
