@@ -87,7 +87,7 @@ const checkDuelsTask = cron.schedule(
         })
       );
     } catch (err) {
-      Logger.error(err);
+      Logger.error(err, "Can't check duels");
     }
   },
   {
