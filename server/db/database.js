@@ -26,6 +26,7 @@ const versions = [
   "2021-03-02",
   "2021-03-06",
   "2021-03-11",
+  "2021-03-26",
 ];
 
 /**
@@ -124,7 +125,7 @@ async function update(version = versions[0]) {
   }
 
   if (!versions.includes(version)) {
-    throw new Error("Invalid database version found");
+    throw new Error(`Invalid database version found: ${version}`);
   }
 
   let i = versions.indexOf(version) + 1;

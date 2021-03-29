@@ -3,6 +3,8 @@ import chaiHttp from "chai-http";
 import jwt from "jsonwebtoken";
 import sinon from "sinon";
 
+import { queryPromise } from "../db/database.js";
+
 import app from "../index.js";
 
 import { forceTruncateTables, insertData, requestAPI } from "./index.test.js";
@@ -192,18 +194,76 @@ describe("User test", function () {
       token = res.body.accessToken;
     });
 
-    before("Create some duels", async () => {
+    before("Create some duels, including a finished one", async () => {
+      const fakeQuestions = [
+        [
+          {
+            subject: "nifédipine",
+            goodAnswer: 3,
+            answers: ["urologie", "Douleurs-inflammation", "hémostase", "Cardio-vasculaire"],
+            type: 4,
+            wording: "À quel système la molécule « nifédipine » appartient-elle ?",
+            title: "1 molecule - 4 systèmes",
+          },
+          {
+            subject: "DOLUTEGRAVIR",
+            goodAnswer: 1,
+            answers: ["thrombose veineuse profonde", "VIH", "VZV", "asthme/BPCO"],
+            type: 8,
+            wording: "Quelle indication la molécule « DOLUTEGRAVIR » a-t-elle ?",
+            title: "1 molécule - 4 indications",
+          },
+        ],
+        [
+          {
+            subject: "CLARITHROMYCINE",
+            goodAnswer: 0,
+            answers: ["CYP3A4", "Allongement QT", "substrat CYP452", "substrat à risque du CYP452"],
+            type: 10,
+            wording: "Quelle interaction la molécule « CLARITHROMYCINE » a-t-elle ?",
+            title: "1 molécule - 4 interactions",
+          },
+          {
+            subject: "cancers",
+            goodAnswer: 2,
+            answers: ["ROXITHROMYCINE", "argatroban", "temsirolimus", "bosentan"],
+            type: 5,
+            wording: "Quelle molécule a comme indication « cancers » ?",
+            title: "1 indication - 4 molecules",
+          },
+        ],
+      ];
+
+      const duelID = 2147483647;
+
+      const sql = `
+        INSERT INTO duel(du_id,du_content,du_currentRound,du_inProgress,du_questionTimerDuration,du_finished)
+        VALUES (
+          ${duelID},
+          '${JSON.stringify(fakeQuestions)}',
+          ${fakeQuestions.length},
+          ${false},
+          10,
+          '2021-03-29 15:11:29'
+        );
+        INSERT INTO 
+          results (us_login,  du_id,      re_answers,     re_last_time)
+        VALUES    ('fpoguet', ${duelID}, '[[0,0],[0,0]]', '2021-03-29 15:11:29'),
+                  ('fdadeau', ${duelID}, '[[0,1],[2,3]]', '2021-03-29 15:11:25')
+      `;
+
       await Promise.all([
-        await requestAPI("duels/new", {
+        requestAPI("duels/new", {
           token: token,
           method: "post",
           body: { opponent: "nhoun" },
         }),
-        await requestAPI("duels/new", {
+        requestAPI("duels/new", {
           token: token,
           method: "post",
           body: { opponent: "vperigno" },
         }),
+        queryPromise(sql),
       ]);
     });
 
