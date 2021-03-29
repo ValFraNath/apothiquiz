@@ -125,7 +125,7 @@ async function update(version = versions[0]) {
   }
 
   if (!versions.includes(version)) {
-    throw new Error("Invalid database version found");
+    throw new Error(`Invalid database version found: ${version}`);
   }
 
   let i = versions.indexOf(version) + 1;
