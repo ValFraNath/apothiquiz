@@ -61,28 +61,28 @@ const checkDuelsTask = cron.schedule(
         Object.keys(listOfDuels).map(async (duelID) => {
           const currentDuel = listOfDuels[duelID];
 
-          let needToPlayID = 0;
+          let needToPlayIndex = 0;
           if (currentDuel[0].answers.length === currentDuel[1].answers.length) {
-            needToPlayID =
+            needToPlayIndex =
               new Date(currentDuel[0].lastTime) > new Date(currentDuel[1].lastTime) ? 1 : 0;
           } else {
-            needToPlayID = currentDuel[0].answers.length > currentDuel[1].answers.length ? 1 : 0;
+            needToPlayIndex = currentDuel[0].answers.length > currentDuel[1].answers.length ? 1 : 0;
           }
 
           const hoursSinceLastPlay = diffDateInHour(
             new Date(),
-            new Date(currentDuel[needToPlayID].lastTime)
+            new Date(currentDuel[needToPlayIndex].lastTime)
           );
           if (Math.ceil(hoursSinceLastPlay) >= 24) {
-            const numberOfAnswers = JSON.parse(currentDuel[needToPlayID].content)[0].length;
+            const numberOfAnswers = JSON.parse(currentDuel[needToPlayIndex].content)[0].length;
             const fakeAnswers = new Array(numberOfAnswers).fill(-1);
 
             const updatedDuels = await Duels.insertResultInDatabase(
               duelID,
-              currentDuel[needToPlayID].login,
+              currentDuel[needToPlayIndex].login,
               fakeAnswers
             );
-            await Duels.updateDuelState(updatedDuels, currentDuel[needToPlayID].login);
+            await Duels.updateDuelState(updatedDuels, currentDuel[needToPlayIndex].login);
           }
         })
       );
