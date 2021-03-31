@@ -8,6 +8,8 @@ nav {
   margin: 0;
   background-color: $top-bar-bg;
   border-bottom: 1px solid #e0e0e0;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
   box-sizing: border-box;
   z-index: 100;
 
