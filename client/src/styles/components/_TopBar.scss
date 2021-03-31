@@ -1,4 +1,6 @@
 nav {
+  position: sticky;
+  top: 0;
   display: grid;
   align-items: center;
   width: 100%;
@@ -6,6 +8,7 @@ nav {
   margin: 0;
   background-color: $top-bar-bg;
   box-sizing: border-box;
+  z-index: 100;
 
   grid-template-columns: 30% 40% 30%;
 
