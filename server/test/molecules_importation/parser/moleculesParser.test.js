@@ -62,7 +62,8 @@ describe("Test if values are well imported", function () {
     describe(`File : ${file.name}`, () => {
       let data;
 
-      before("Import data", async () => {
+      before("Import data", async function () {
+        this.timeout(5000);
         const json = (
           await parseMoleculesFromCsv(path.resolve(filesFolderPath, file.name))
         ).toJSON();
