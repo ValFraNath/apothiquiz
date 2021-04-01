@@ -42,3 +42,4 @@ export default (controller) => async (req, res, next) => {
     wrappedResponse.sendServerError(e);
   }
 };
+sss;
