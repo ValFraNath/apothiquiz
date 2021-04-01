@@ -6,7 +6,7 @@ import equalInAnyOrder from "deep-equal-in-any-order";
 
 import { queryPromise } from "../../../db/database.js";
 
-import { parseUsersFromCsv } from "../../../global/users_importation/usersParser.js";
+import { parseUsersFromCsv } from "../../../global/importation/users-importation/usersParser.js";
 import { forceTruncateTables } from "../../index.test.js";
 
 import { expectations } from "./expectations.js";

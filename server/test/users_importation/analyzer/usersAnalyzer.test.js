@@ -2,8 +2,8 @@ import path from "path";
 
 import chai from "chai";
 
-import { USER_WARNINGS } from "../../../global/users_importation/UsersList.js";
-import { parseUsersFromCsv } from "../../../global/users_importation/usersParser.js";
+import { USER_WARNINGS } from "../../../global/importation/users-importation/UsersList.js";
+import { parseUsersFromCsv } from "../../../global/importation/users-importation/usersParser.js";
 const { expect } = chai;
 const FILES_DIR = path.resolve("test", "users_importation", "analyzer", "files");
 

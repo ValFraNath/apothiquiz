@@ -1,23 +1,23 @@
-import ColumnSpecifications from "../csv_reader/ColumnSpecification.js";
-import FileStructure from "../csv_reader/FileStructure.js";
-
-import HeaderChecker, {
-  // eslint-disable-next-line no-unused-vars
-  HeaderErrors,
-} from "../csv_reader/HeaderChecker.js";
-import { readCSV, extractColumns } from "../csv_reader/reader.js";
 import {
   // eslint-disable-next-line no-unused-vars
   AnalyzerWarning,
   clearDatabaseTablesSql,
   TRANSACTION_BEGIN_SQL,
   TRANSACTION_END_SQL,
-} from "../importationUtils.js";
+} from "../../importationUtils.js";
+import ColumnSpecifications from "../csv-reader/ColumnSpecification.js";
+import FileStructure from "../csv-reader/FileStructure.js";
 
-import MoleculeList from "../molecules_importation/MoleculesList.js";
-import Property from "../molecules_importation/Property.js";
+import HeaderChecker, {
+  // eslint-disable-next-line no-unused-vars
+  HeaderErrors,
+} from "../csv-reader/HeaderChecker.js";
+import { readCSV, extractColumns } from "../csv-reader/reader.js";
 
 import Classification from "./Classification.js";
+import MoleculeList from "./MoleculesList.js";
+import Property from "./Property.js";
+
 
 const columns = [
   new ColumnSpecifications("DCI", "dci", ColumnSpecifications.UNIQUE),

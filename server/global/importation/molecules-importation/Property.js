@@ -1,5 +1,10 @@
-import { queryFormat } from "../../db/database.js";
-import { AnalyzerWarning, isString, getTooCloseValues, isSameString } from "../importationUtils.js";
+import { queryFormat } from "../../../db/database.js";
+import {
+  AnalyzerWarning,
+  isString,
+  getTooCloseValues,
+  isSameString,
+} from "../../importationUtils.js";
 
 const PROPERTY_NAME_MAX_LENGTH = 64;
 const PROPERTY_VALUE_MAX_LENGTH = 128;

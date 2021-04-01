@@ -10,7 +10,7 @@ chai.use(deepEqualAnyOrder);
 
 import { queryPromise } from "../../../db/database.js";
 
-import { parseMoleculesFromCsv } from "../../../global/molecules_importation/moleculesParser.js";
+import { parseMoleculesFromCsv } from "../../../global/importation/molecules-importation/moleculesParser.js";
 import { forceTruncateTables } from "../../index.test.js";
 
 import { expectations } from "./expectations.js";

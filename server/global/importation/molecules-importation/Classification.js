@@ -1,11 +1,11 @@
-import { queryFormat } from "../../db/database.js";
+import { queryFormat } from "../../../db/database.js";
 import {
   AnalyzerWarning,
   isString,
   getTooCloseValues,
   getDuplicates,
   isSameString,
-} from "../importationUtils.js";
+} from "../../importationUtils.js";
 
 const NODE_NAME_MAX_LENGTH = 128;
 const NODE_NAMES_MIN_DISTANCE = 2;

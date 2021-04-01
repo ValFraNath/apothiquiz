@@ -4,7 +4,7 @@ import equalInAnyOrder from "deep-equal-in-any-order";
 
 import { queryPromise } from "../../db/database.js";
 
-import ImagesList from "../../global/images_importation/ImagesList.js";
+import ImagesList from "../../global/importation/images-importation/ImagesList.js";
 import { forceTruncateTables, insertData } from "../index.test.js";
 
 chai.use(equalInAnyOrder);

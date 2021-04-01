@@ -4,7 +4,7 @@ import chai from "chai";
 import equalInAnyOrder from "deep-equal-in-any-order";
 import mocha from "mocha";
 
-import { parseUsersFromCsv } from "../../../global/users_importation/usersParser.js";
+import { parseUsersFromCsv } from "../../../global/importation/users-importation/usersParser.js";
 
 chai.use(equalInAnyOrder);
 const { expect } = chai;

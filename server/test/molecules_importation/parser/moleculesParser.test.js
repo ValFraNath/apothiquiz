@@ -5,9 +5,9 @@ import chai from "chai";
 import deepEqualAnyOrder from "deep-equal-in-any-order";
 import mocha from "mocha";
 
-import { HeaderErrors } from "../../../global/csv_reader/HeaderChecker.js";
+import { HeaderErrors } from "../../../global/importation/csv-reader/HeaderChecker.js";
 
-import { parseMoleculesFromCsv } from "../../../global/molecules_importation/moleculesParser.js";
+import { parseMoleculesFromCsv } from "../../../global/importation/molecules-importation/moleculesParser.js";
 
 import { expectations } from "./expectations.js";
 

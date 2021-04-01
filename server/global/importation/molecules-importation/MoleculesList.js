@@ -1,7 +1,7 @@
-import { queryFormat } from "../../db/database.js";
+import { queryFormat } from "../../../db/database.js";
+import { getDuplicates, getTooCloseValues, AnalyzerWarning } from "../../importationUtils.js";
 // eslint-disable-next-line no-unused-vars
-import FileStructure from "../csv_reader/FileStructure.js";
-import { getDuplicates, getTooCloseValues, AnalyzerWarning } from "../importationUtils.js";
+import FileStructure from "../csv-reader/FileStructure.js";
 
 // eslint-disable-next-line no-unused-vars
 import Classification from "./Classification.js";

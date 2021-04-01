@@ -1,7 +1,7 @@
-import ColumnSpecifications from "../csv_reader/ColumnSpecification.js";
-import FileStructure from "../csv_reader/FileStructure.js";
-import HeaderChecker from "../csv_reader/HeaderChecker.js";
-import { readCSV } from "../csv_reader/reader.js";
+import ColumnSpecifications from "../csv-reader/ColumnSpecification.js";
+import FileStructure from "../csv-reader/FileStructure.js";
+import HeaderChecker from "../csv-reader/HeaderChecker.js";
+import { readCSV } from "../csv-reader/reader.js";
 
 import UsersList from "./UsersList.js";
 

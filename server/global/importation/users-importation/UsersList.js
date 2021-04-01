@@ -1,17 +1,16 @@
 import dateFormat from "dateformat";
 import mysql from "mysql";
 
-import { queryFormat } from "../../db/database.js";
-// eslint-disable-next-line no-unused-vars
-import FileStructure from "../csv_reader/FileStructure.js";
-
+import { queryFormat } from "../../../db/database.js";
 import {
   AnalyzerWarning,
   getDuplicates,
   getTooCloseValues,
   TRANSACTION_BEGIN_SQL,
   TRANSACTION_END_SQL,
-} from "../importationUtils.js";
+} from "../../importationUtils.js";
+// eslint-disable-next-line no-unused-vars
+import FileStructure from "../csv-reader/FileStructure.js";
 
 export const USER_WARNINGS = {
   NO_ADMIN: "NO_ADMIN",
