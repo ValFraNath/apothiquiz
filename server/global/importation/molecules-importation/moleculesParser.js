@@ -18,7 +18,6 @@ import Classification from "./Classification.js";
 import MoleculeList from "./MoleculesList.js";
 import Property from "./Property.js";
 
-
 const columns = [
   new ColumnSpecifications("DCI", "dci", ColumnSpecifications.UNIQUE),
   new ColumnSpecifications("FORMULE_CHIMIQUE", "skeletalFormula", ColumnSpecifications.UNIQUE),
