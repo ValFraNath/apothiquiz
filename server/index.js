@@ -4,8 +4,8 @@ import bodyParser from "body-parser";
 import dotenv from "dotenv";
 import express from "express";
 
+import { checkDuelsTask, removeDuelsTask } from "./cron-scripts/cron-tasks.js";
 import Database from "./db/database.js";
-import { checkDuelsTask, removeDuelsTask } from "./files-script/cron-tasks.js";
 import Logger from "./global/Logger.js";
 import RequestSyntaxErrorHandler from "./middlewares/error.middleware.js";
 import apiRouter from "./routes/api.route.js";

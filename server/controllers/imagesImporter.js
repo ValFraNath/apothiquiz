@@ -8,9 +8,9 @@ import { createDir, deleteFiles, getSortedFiles, moveFile } from "../global/file
 // eslint-disable-next-line no-unused-vars
 import { HttpResponseWrapper } from "../global/HttpControllerWrapper.js";
 
-import ImagesList from "../global/images_importation/ImagesList.js";
+import ImagesList from "../global/importation/images-importation/ImagesList.js";
+import { Molecule } from "../global/importation/molecules-importation/MoleculesList.js";
 import Logger from "../global/Logger.js";
-import { Molecule } from "../global/molecules_importation/MoleculesList.js";
 
 import { updateNumberOfRoundsPerDuel } from "./config.js";
 
