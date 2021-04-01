@@ -4,16 +4,22 @@ import chai from "chai";
 
 import equalInAnyOrder from "deep-equal-in-any-order";
 
-import { queryPromise } from "../../../db/database.js";
+import { queryPromise } from "../../../../db/database.js";
 
-import { parseUsersFromCsv } from "../../../global/importation/users-importation/usersParser.js";
-import { forceTruncateTables } from "../../index.test.js";
+import { parseUsersFromCsv } from "../../../../global/importation/users-importation/usersParser.js";
+import { forceTruncateTables } from "../../../index.test.js";
 
 import { expectations } from "./expectations.js";
 
 chai.use(equalInAnyOrder);
 const { expect } = chai;
-const FILES_DIR = path.resolve("test", "users_importation", "importer", "files");
+const FILES_DIR = path.resolve(
+  "test",
+  "importation-test",
+  "users-importation",
+  "importer",
+  "files"
+);
 
 const tests = [
   {

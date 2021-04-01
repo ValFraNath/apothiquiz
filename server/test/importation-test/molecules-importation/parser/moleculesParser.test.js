@@ -5,9 +5,9 @@ import chai from "chai";
 import deepEqualAnyOrder from "deep-equal-in-any-order";
 import mocha from "mocha";
 
-import { HeaderErrors } from "../../../global/importation/csv-reader/HeaderChecker.js";
+import { HeaderErrors } from "../../../../global/importation/csv-reader/HeaderChecker.js";
 
-import { parseMoleculesFromCsv } from "../../../global/importation/molecules-importation/moleculesParser.js";
+import { parseMoleculesFromCsv } from "../../../../global/importation/molecules-importation/moleculesParser.js";
 
 import { expectations } from "./expectations.js";
 
@@ -15,9 +15,21 @@ chai.use(deepEqualAnyOrder);
 const { before } = mocha;
 const { expect } = chai;
 
-const filesFolderPath = path.resolve("test", "molecules_importation", "parser", "files");
-const badFilesFolderPath = path.resolve(filesFolderPath, "bad_formatted_files");
-const snapshotsFolderPath = path.resolve("test", "molecules_importation", "parser", "snapshots");
+const FILES_DIR = path.resolve(
+  "test",
+  "importation-test",
+  "molecules-importation",
+  "parser",
+  "files"
+);
+const badFilesFolderPath = path.resolve(FILES_DIR, "bad_formatted_files");
+const SNAPSHOTS_DIR = path.resolve(
+  "test",
+  "importation-test",
+  "molecules-importation",
+  "parser",
+  "snapshots"
+);
 
 describe("Test if values are well imported", function () {
   const files = [
@@ -64,9 +76,7 @@ describe("Test if values are well imported", function () {
 
       before("Import data", async function () {
         this.timeout(5000);
-        const json = (
-          await parseMoleculesFromCsv(path.resolve(filesFolderPath, file.name))
-        ).toJSON();
+        const json = (await parseMoleculesFromCsv(path.resolve(FILES_DIR, file.name))).toJSON();
 
         data = JSON.parse(json);
       });
@@ -77,7 +87,7 @@ describe("Test if values are well imported", function () {
         }
         // Uncomment the following line to update the snapshot files, /!\ Make sure the snapshots are valid !
         //fs.writeFileSync(path.resolve(snapshotsFolderPath, file.snapshot), JSON.stringify(data));
-        let expectedData = fs.readFileSync(path.resolve(snapshotsFolderPath, file.snapshot));
+        let expectedData = fs.readFileSync(path.resolve(SNAPSHOTS_DIR, file.snapshot));
         expect(data).to.be.deep.equals(JSON.parse(expectedData));
         done();
       });

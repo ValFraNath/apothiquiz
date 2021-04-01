@@ -3,7 +3,7 @@ import path from "path";
 import chai from "chai";
 
 import { forceTruncateTables, getToken, insertData, requestAPI } from "../index.test.js";
-import { uploadFile } from "../molecules_importation/importation_route/importMolecule.test.js";
+import { uploadFile } from "../importation-test/molecules-importation/importation_route/importMolecule.test.js";
 
 const { expect } = chai;
 

@@ -7,23 +7,29 @@ import chai from "chai";
 import chaiHttp from "chai-http";
 import equalInAnyOrder from "deep-equal-in-any-order";
 
-import { queryPromise } from "../../../db/database.js";
-import { createDir, deleteFiles } from "../../../global/files.js";
-import app from "../../../index.js";
+import { queryPromise } from "../../../../db/database.js";
+import { createDir, deleteFiles } from "../../../../global/files.js";
+import app from "../../../../index.js";
 import {
   forceTruncateTables,
   getToken,
   insertData,
   requestAPI,
   importImagesViaAPI,
-} from "../../index.test.js";
-import { uploadFile } from "../../molecules_importation/importation_route/importMolecule.test.js";
+} from "../../../index.test.js";
+import { uploadFile } from "../../molecules-importation/importation_route/importMolecule.test.js";
 
 const { expect } = chai;
 chai.use(chaiHttp);
 chai.use(equalInAnyOrder);
 
-const FILES_DIR = path.resolve("test", "images_importation", "importation_route", "files");
+const FILES_DIR = path.resolve(
+  "test",
+  "importation-test",
+  "images-importation",
+  "importation_route",
+  "files"
+);
 const TMP_DIR = path.resolve("test", "tmp");
 
 describe("Images importation", () => {

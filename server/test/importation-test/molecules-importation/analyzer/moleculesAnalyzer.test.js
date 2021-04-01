@@ -2,13 +2,13 @@ import path from "path";
 
 import chai from "chai";
 
-import { queryPromise } from "../../../db/database.js";
+import { queryPromise } from "../../../../db/database.js";
 
-import { CLASSIFICATION_WARNINGS } from "../../../global/importation/molecules-importation/Classification.js";
-import { MOLECULE_WARNINGS } from "../../../global/importation/molecules-importation/MoleculesList.js";
-import { parseMoleculesFromCsv } from "../../../global/importation/molecules-importation/moleculesParser.js";
-import { PROPERTY_WARNINGS } from "../../../global/importation/molecules-importation/Property.js";
-import { forceTruncateTables } from "../../index.test.js";
+import { CLASSIFICATION_WARNINGS } from "../../../../global/importation/molecules-importation/Classification.js";
+import { MOLECULE_WARNINGS } from "../../../../global/importation/molecules-importation/MoleculesList.js";
+import { parseMoleculesFromCsv } from "../../../../global/importation/molecules-importation/moleculesParser.js";
+import { PROPERTY_WARNINGS } from "../../../../global/importation/molecules-importation/Property.js";
+import { forceTruncateTables } from "../../../index.test.js";
 
 const { expect } = chai;
 
@@ -111,7 +111,13 @@ const files = [
   },
 ];
 
-const FILES_DIR = path.resolve("test", "molecules_importation", "analyzer", "files");
+const FILES_DIR = path.resolve(
+  "test",
+  "importation-test",
+  "molecules-importation",
+  "analyzer",
+  "files"
+);
 
 const warningsCounter = (warnings) => (code) =>
   warnings.reduce((count, warning) => count + (warning.code === code), 0);

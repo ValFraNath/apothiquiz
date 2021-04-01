@@ -4,15 +4,20 @@ import path from "path";
 import chai from "chai";
 import chaiHttp from "chai-http";
 
-import { queryPromise } from "../../../db/database.js";
-import app from "../../../index.js";
-import { forceTruncateTables, getToken, insertData, requestAPI } from "../../index.test.js";
+import { queryPromise } from "../../../../db/database.js";
+import app from "../../../../index.js";
+import { forceTruncateTables, getToken, insertData, requestAPI } from "../../../index.test.js";
 
 const { expect } = chai;
 
 chai.use(chaiHttp);
 
-const __dirname = path.resolve("test", "users_importation", "importation_route");
+const __dirname = path.resolve(
+  "test",
+  "importation-test",
+  "users-importation",
+  "importation_route"
+);
 
 describe("Import users", () => {
   let mytoken;

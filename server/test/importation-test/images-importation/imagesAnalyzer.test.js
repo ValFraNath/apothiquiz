@@ -2,8 +2,8 @@ import chai from "chai";
 
 import ImagesList, {
   IMAGE_WARNINGS,
-} from "../../global/importation/images-importation/ImagesList.js";
-import { forceTruncateTables, insertData } from "../index.test.js";
+} from "../../../global/importation/images-importation/ImagesList.js";
+import { forceTruncateTables, insertData } from "../../index.test.js";
 
 const { expect } = chai;
 

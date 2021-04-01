@@ -5,15 +5,20 @@ import chai from "chai";
 import chaiHttp from "chai-http";
 import mocha from "mocha";
 
-import { queryPromise } from "../../../db/database.js";
-import app from "../../../index.js";
-import { forceTruncateTables, getToken, insertData, requestAPI } from "../../index.test.js";
+import { queryPromise } from "../../../../db/database.js";
+import app from "../../../../index.js";
+import { forceTruncateTables, getToken, insertData, requestAPI } from "../../../index.test.js";
 
 const { expect } = chai;
 const { describe, it, before } = mocha;
 chai.use(chaiHttp);
 
-const __dirname = path.resolve("test", "molecules_importation", "importation_route");
+const __dirname = path.resolve(
+  "test",
+  "importation-test",
+  "molecules-importation",
+  "importation_route"
+);
 
 describe("Import molecule", () => {
   let mytoken;

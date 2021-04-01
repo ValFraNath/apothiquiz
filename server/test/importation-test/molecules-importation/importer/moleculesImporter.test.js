@@ -8,12 +8,20 @@ const { expect } = chai;
 const { describe, it, before } = mocha;
 chai.use(deepEqualAnyOrder);
 
-import { queryPromise } from "../../../db/database.js";
+import { queryPromise } from "../../../../db/database.js";
 
-import { parseMoleculesFromCsv } from "../../../global/importation/molecules-importation/moleculesParser.js";
-import { forceTruncateTables } from "../../index.test.js";
+import { parseMoleculesFromCsv } from "../../../../global/importation/molecules-importation/moleculesParser.js";
+import { forceTruncateTables } from "../../../index.test.js";
 
 import { expectations } from "./expectations.js";
+
+const FILES_DIR = path.resolve(
+  "test",
+  "importation-test",
+  "molecules-importation",
+  "importer",
+  "files"
+);
 
 const files = [
   {
@@ -35,9 +43,7 @@ for (let file of files) {
         "system"
       );
       const script = (
-        await parseMoleculesFromCsv(
-          path.resolve("test", "molecules_importation", "importer", "files", file.name)
-        )
+        await parseMoleculesFromCsv(path.resolve(FILES_DIR, file.name))
       ).createImportSql();
       await queryPromise(script);
     });

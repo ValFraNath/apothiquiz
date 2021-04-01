@@ -2,10 +2,10 @@ import chai from "chai";
 
 import equalInAnyOrder from "deep-equal-in-any-order";
 
-import { queryPromise } from "../../db/database.js";
+import { queryPromise } from "../../../db/database.js";
 
-import ImagesList from "../../global/importation/images-importation/ImagesList.js";
-import { forceTruncateTables, insertData } from "../index.test.js";
+import ImagesList from "../../../global/importation/images-importation/ImagesList.js";
+import { forceTruncateTables, insertData } from "../../index.test.js";
 
 chai.use(equalInAnyOrder);
 const { expect } = chai;

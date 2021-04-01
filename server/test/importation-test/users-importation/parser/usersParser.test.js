@@ -4,12 +4,12 @@ import chai from "chai";
 import equalInAnyOrder from "deep-equal-in-any-order";
 import mocha from "mocha";
 
-import { parseUsersFromCsv } from "../../../global/importation/users-importation/usersParser.js";
+import { parseUsersFromCsv } from "../../../../global/importation/users-importation/usersParser.js";
 
 chai.use(equalInAnyOrder);
 const { expect } = chai;
 const { describe, it, before } = mocha;
-const FILES_DIR = path.resolve("test", "users_importation", "parser", "files");
+const FILES_DIR = path.resolve("test", "importation-test", "users-importation", "parser", "files");
 
 const tests = [
   {
