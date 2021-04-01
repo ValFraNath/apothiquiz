@@ -2,12 +2,12 @@ import path from "path";
 
 import chai from "chai";
 
-import { forceTruncateTables, getToken, insertData, requestAPI } from "../index.test.js";
 import { uploadFile } from "../importation-test/molecules-importation/importation_route/importMolecule.test.js";
+import { forceTruncateTables, getToken, insertData, requestAPI } from "../index.test.js";
 
 const { expect } = chai;
 
-const FILES_DIR = path.resolve("test", "config", "files");
+const FILES_DIR = path.resolve("test", "configuration-test", "files");
 
 describe("Configuration tests", () => {
   before("Clear & insert data", async function () {
