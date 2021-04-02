@@ -598,6 +598,7 @@ async function updateDuelState(duel, username) {
     const sql = "UPDATE duel SET du_finished = ? WHERE du_id = ?;";
     await queryPromise(sql, [currentDate, duel.id]);
   }
+  return format;
 }
 
 /**
