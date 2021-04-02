@@ -51,8 +51,8 @@ const checkDuelsTask = cron.schedule(
         if (!listOfDuels[element.du_id]) listOfDuels[element.du_id] = [];
         listOfDuels[element.du_id].push({
           login: element.us_login,
-          content: element.du_content,
-          answers: element.re_answers,
+          content: JSON.parse(element.du_content),
+          answers: JSON.parse(element.re_answers),
           lastTime: element.re_last_time,
         });
       });
@@ -74,7 +74,7 @@ const checkDuelsTask = cron.schedule(
             new Date(currentDuel[needToPlayIndex].lastTime)
           );
           if (Math.ceil(hoursSinceLastPlay) >= 24) {
-            const numberOfAnswers = JSON.parse(currentDuel[needToPlayIndex].content)[0].length;
+            const numberOfAnswers = currentDuel[needToPlayIndex].content[0].length;
             const fakeAnswers = new Array(numberOfAnswers).fill(-1);
 
             const updatedDuels = await Duels.insertResultInDatabase(
