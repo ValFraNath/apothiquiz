@@ -41,8 +41,6 @@ async function startServer() {
 
     removeDuelsTask.start();
     checkDuelsTask.start();
-
-    t();
   } catch (error) {
     Logger.error(error);
     process.exit(1);
