@@ -4,8 +4,8 @@ import bodyParser from "body-parser";
 import dotenv from "dotenv";
 import express from "express";
 
+import { checkDuelsTask, removeDuelsTask } from "./cron-scripts/cron-tasks.js";
 import Database from "./db/database.js";
-import { checkDuelsTask, removeDuelsTask } from "./files-script/cron-tasks.js";
 import Logger from "./global/Logger.js";
 import RequestSyntaxErrorHandler from "./middlewares/error.middleware.js";
 import apiRouter from "./routes/api.route.js";
@@ -67,7 +67,14 @@ app.waitReady = function (callback, interval = 100) {
  */
 function checkEnv() {
   let needToExit = false;
-  const keys = ["ACCESS_TOKEN_KEY", "REFRESH_TOKEN_KEY"];
+  const keys = [
+    "ACCESS_TOKEN_KEY",
+    "REFRESH_TOKEN_KEY",
+    "DB_HOST",
+    "DB_USER",
+    "DB_PASSWORD",
+    process.env.NODE_ENV === "test" ? "DB_DATABASE_TEST" : "DB_DATABASE",
+  ];
   for (const key of keys) {
     if (!process.env[key]) {
       Logger.error(

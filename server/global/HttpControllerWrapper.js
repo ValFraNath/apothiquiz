@@ -34,11 +34,21 @@ export class HttpResponseWrapper {
   }
 }
 
-export default (controller) => async (req, res, next) => {
-  const wrappedResponse = new HttpResponseWrapper(res);
-  try {
-    await controller(req, wrappedResponse, next);
-  } catch (e) {
-    wrappedResponse.sendServerError(e);
-  }
-};
+/**
+ * Controller which executes the given controller by passing the http response as a HttpResponseWrapper,
+ * and handle error cases
+ * @param {*} controller
+ * @returns
+ */
+function HttpControllerWrapper(controller) {
+  return async (req, res, next) => {
+    const wrappedResponse = new HttpResponseWrapper(res);
+    try {
+      await controller(req, wrappedResponse, next);
+    } catch (e) {
+      wrappedResponse.sendServerError(e);
+    }
+  };
+}
+
+export default HttpControllerWrapper;

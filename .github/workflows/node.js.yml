@@ -72,7 +72,14 @@ jobs:
         working-directory: ./server
 
       - name: Setting private key
-        run: echo "ACCESS_TOKEN_KEY=TMP_ACCESS_KEY" >> .env; echo "REFRESH_TOKEN_KEY=TMP_REFRESH_KEY" >> .env;
+        run: |
+          echo "ACCESS_TOKEN_KEY=TMP_ACCESS_KEY" >> .env; \
+          echo "REFRESH_TOKEN_KEY=TMP_REFRESH_KEY" >> .env; \
+          echo "DB_HOST=localhost" >> .env; \
+          echo "DB_USER=guacamoleUser" >> .env; \
+          echo "DB_PASSWORD=p@ssword" >> .env; \
+          echo "DB_DATABASE_TEST=guacamoleTestDb" >> .env; \
+
         working-directory: ./server
 
       - name: Wait for mariadb server to be ready
