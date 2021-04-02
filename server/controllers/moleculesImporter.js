@@ -4,13 +4,13 @@ import path from "path";
 import express from "express";
 
 import { queryPromise } from "../db/database.js";
-import { HeaderErrors } from "../global/csv_reader/HeaderChecker.js";
 import { createDir, deleteFiles, getSortedFiles, moveFile } from "../global/files.js";
 // eslint-disable-next-line no-unused-vars
 import { HttpResponseWrapper } from "../global/HttpControllerWrapper.js";
+import { HeaderErrors } from "../global/importation/csv-reader/HeaderChecker.js";
 
-import ImagesList from "../global/images_importation/ImagesList.js";
-import { parseMoleculesFromCsv } from "../global/molecules_importation/moleculesParser.js";
+import ImagesList from "../global/importation/images-importation/ImagesList.js";
+import { parseMoleculesFromCsv } from "../global/importation/molecules-importation/moleculesParser.js";
 
 import { updateNumberOfRoundsPerDuel } from "./config.js";
 
