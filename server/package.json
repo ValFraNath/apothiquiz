@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "NODE_ENV=test DB_DATABASE=guacamoleTestDb PORT=5036 mocha \"test/**/*.test.js\" --exit",
+    "test": "NODE_ENV=test PORT=5036 mocha \"test/**/*.test.js\" --exit",
     "test:generate-data": "NODE_ENV=test PORT=5037 node ./db/fill-fake-data.js",
     "start": "node .",
     "start:watch": "nodemon .",

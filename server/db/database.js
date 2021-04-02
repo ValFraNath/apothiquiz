@@ -35,11 +35,13 @@ const versions = [
  */
 export const currentAPIVersion = () => versions[versions.length - 1];
 
+const { NODE_ENV, DB_DATABASE, DB_DATABASE_TEST, DB_HOST, DB_PASSWORD, DB_USER } = process.env;
+
 export const connection = mysql.createConnection({
-  host: process.env.DB_HOST || "localhost",
-  user: process.env.DB_USER || "guacamoleUser",
-  password: process.env.DB_PASSWORD || "p@ssword",
-  database: process.env.DB_DATABASE || "guacamoleDb",
+  host: DB_HOST,
+  user: DB_USER,
+  password: DB_PASSWORD,
+  database: NODE_ENV === "test" ? DB_DATABASE_TEST : DB_DATABASE,
   multipleStatements: true,
 });
 
