@@ -155,7 +155,7 @@ export const getAllQuestionTypes = () => Object.keys(generatorInfosByType).map(N
 
 // ***** Internal functions *****
 
-const scriptsFolderPath = path.resolve("global", "question_generator_scripts");
+const scriptsFolderPath = path.resolve("global", "question-generation-scripts");
 
 /**
  * Create a question by requesting database with a given script

@@ -41,7 +41,7 @@ export async function forceTruncateTables(...tables) {
  * @returns {Promise}
  */
 export async function insertData(filename) {
-  const script = await fs.readFile(path.resolve("test", "required_data", filename), {
+  const script = await fs.readFile(path.resolve("test", "required-data", filename), {
     encoding: "utf8",
   });
   await queryPromise(script);
