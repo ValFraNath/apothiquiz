@@ -53,7 +53,7 @@ const checkDuelsTask = cron.schedule(
           login: element.us_login,
           content: JSON.parse(element.du_content),
           answers: JSON.parse(element.re_answers),
-          lastTime: element.re_last_time,
+          lastTime: new Date(element.re_last_time),
         });
       });
 
@@ -61,33 +61,42 @@ const checkDuelsTask = cron.schedule(
         Object.keys(listOfDuels).map(async (duelID) => {
           const currentDuel = listOfDuels[duelID];
 
-          let needToPlayIndex = 0;
+          const usersIndexNeedToPlay = [];
           if (currentDuel[0].answers.length === currentDuel[1].answers.length) {
-            needToPlayIndex =
-              new Date(currentDuel[0].lastTime) > new Date(currentDuel[1].lastTime) ? 1 : 0;
+            // same number of rounds played
+            usersIndexNeedToPlay.push(0, 1);
           } else {
-            needToPlayIndex = currentDuel[0].answers.length > currentDuel[1].answers.length ? 1 : 0;
+            const needToPlay =
+              currentDuel[0].answers.length > currentDuel[1].answers.length ? 1 : 0;
+            usersIndexNeedToPlay.push(needToPlay);
           }
 
-          const hoursSinceLastPlay = diffDateInHour(
-            new Date(),
-            new Date(currentDuel[needToPlayIndex].lastTime)
+          await Promise.all(
+            usersIndexNeedToPlay.map(async (userIndex) => {
+              const hoursSinceLast = diffDateInHour(
+                new Date(),
+                currentDuel[1 - userIndex].lastTime
+              );
+              if (
+                hoursSinceLast >= 24 &&
+                currentDuel[userIndex].content.length > currentDuel[userIndex].answers.length
+              ) {
+                const numberOfAnswers = currentDuel[userIndex].content[0].length;
+                const fakeAnswers = new Array(numberOfAnswers).fill(-1); // wrong answers
+
+                const updatedDuels = await Duels.insertResultInDatabase(
+                  duelID,
+                  currentDuel[userIndex].login,
+                  fakeAnswers
+                );
+                await Duels.updateDuelState(updatedDuels, currentDuel[userIndex].login);
+              }
+            })
           );
-          if (Math.ceil(hoursSinceLastPlay) >= 24) {
-            const numberOfAnswers = currentDuel[needToPlayIndex].content[0].length;
-            const fakeAnswers = new Array(numberOfAnswers).fill(-1);
-
-            const updatedDuels = await Duels.insertResultInDatabase(
-              duelID,
-              currentDuel[needToPlayIndex].login,
-              fakeAnswers
-            );
-            await Duels.updateDuelState(updatedDuels, currentDuel[needToPlayIndex].login);
-          }
         })
       );
     } catch (err) {
-      Logger.error(err, "Can't check duels");
+      Logger.error(err, "Impossible to play duels older than 24 hours");
     }
   },
   {
