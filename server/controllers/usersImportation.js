@@ -4,13 +4,13 @@ import path from "path";
 import express from "express";
 
 import { queryPromise } from "../db/database.js";
-import { HeaderErrors } from "../global/csv_reader/HeaderChecker.js";
 import { deleteFiles, moveFile, createDir, getSortedFiles } from "../global/files.js";
 
 // eslint-disable-next-line no-unused-vars
 import { HttpResponseWrapper } from "../global/HttpControllerWrapper.js";
+import { HeaderErrors } from "../global/importation/csv-reader/HeaderChecker.js";
 
-import { parseUsersFromCsv } from "../global/users_importation/usersParser.js";
+import { parseUsersFromCsv } from "../global/importation/users-importation/usersParser.js";
 
 const FILES_DIR = process.env.NODE_ENV === "test" ? "files-test" : "files";
 const USERS_DIR = path.resolve(FILES_DIR, "users");

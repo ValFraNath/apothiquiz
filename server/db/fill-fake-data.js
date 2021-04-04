@@ -52,7 +52,7 @@ async function start() {
 
     if (nbMolecules === 0) {
       console.info("  No molecule found, inserting default molecules from tests");
-      const script = await fs.readFile(path.resolve("test", "required_data", "molecules.sql"), {
+      const script = await fs.readFile(path.resolve("test", "required-data", "molecules.sql"), {
         encoding: "utf8",
       });
 

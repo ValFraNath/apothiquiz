@@ -57,7 +57,7 @@ describe("Question generation", function () {
   before("Import images", async function () {
     this.timeout(10000);
     await importImagesViaAPI(
-      path.resolve("test", "required_data", "images"),
+      path.resolve("test", "required-data", "images"),
       "true",
       await getToken("fdadeau")
     );

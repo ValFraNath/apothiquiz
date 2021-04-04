@@ -194,6 +194,10 @@ describe("User test", function () {
       token = res.body.accessToken;
     });
 
+    before("Remove existing duels", async () => {
+      await forceTruncateTables("duel", "results");
+    });
+
     before("Create some duels, including a finished one", async () => {
       const fakeQuestions = [
         [
@@ -234,7 +238,7 @@ describe("User test", function () {
         ],
       ];
 
-      const duelID = 2147483647;
+      const duelID = 9999;
 
       const sql = `
         INSERT INTO duel(du_id,du_content,du_currentRound,du_inProgress,du_questionTimerDuration,du_finished)
@@ -297,7 +301,6 @@ describe("User test", function () {
       });
 
       expect(res.status, res.error).to.be.equal(200);
-
       expect(Object.keys(res.body)).to.have.lengthOf(2);
       expect(Object.keys(res.body)).to.contains("fdadeau");
       expect(Object.keys(res.body)).to.contains("test");
