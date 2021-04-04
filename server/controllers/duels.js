@@ -266,12 +266,6 @@ async function play(req, res) {
 
   updatedDuel = await updateDuelState(updatedDuel, username);
 
-  if (updatedDuel.inProgress === 0) {
-    const currentDate = formatDate();
-    const sql = "UPDATE duel SET du_finished = ? WHERE du_id = ?;";
-    await queryPromise(sql, [currentDate, id]);
-  }
-
   res.sendResponse(200, updatedDuel);
 }
 
@@ -594,10 +588,17 @@ async function updateDuelState(duel, username) {
     looser,
   });
 
-  return formatDuel(
+  const format = formatDuel(
     res.find((e) => e instanceof Array),
     username
   );
+
+  if (format.inProgress === 0) {
+    const currentDate = formatDate();
+    const sql = "UPDATE duel SET du_finished = ? WHERE du_id = ?;";
+    await queryPromise(sql, [currentDate, duel.id]);
+  }
+  return format;
 }
 
 /**
