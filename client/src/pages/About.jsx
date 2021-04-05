@@ -54,7 +54,7 @@ const About = () => {
   return (
     <main
       id="informations"
-      style={{ height: window.innerHeight - Number.parseInt(variables.topBarHeight) }}
+      style={ { height: window.innerHeight - Number.parseInt(variables.topBarHeight) } }
     >
       <p>
         Guacamole <i>(nom temporaire)</i> est une application d'apprentissage réflexe à destination
