@@ -52,7 +52,10 @@ const About = () => {
   date.setTime(Date.parse(gitInfo.commit.date));
 
   return (
-    <main id="informations" style={{ height: window.innerHeight - Number.parseInt(variables.topBarHeight) }}>
+    <main
+      id="informations"
+      style={{ height: window.innerHeight - Number.parseInt(variables.topBarHeight) }}
+    >
       <p>
         Guacamole <i>(nom temporaire)</i> est une application d'apprentissage réflexe à destination
         des étudiants en pharmacie de l'Université de Franche-Comté.

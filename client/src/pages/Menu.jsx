@@ -12,7 +12,10 @@ const Menu = ({ installPromptEvent, user }) => {
   }
 
   return (
-    <main id="menu" style={{ height: window.innerHeight - Number.parseInt(variables.topBarHeight) }}>
+    <main
+      id="menu"
+      style={{ height: window.innerHeight - Number.parseInt(variables.topBarHeight) }}
+    >
       <section>
         <Link to="/train" className="btn btn-fw">
           Entraînement libre
