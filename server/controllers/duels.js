@@ -268,6 +268,9 @@ async function play(req, res) {
 
   res.sendResponse(200, updatedDuel);
 
+  /*
+   * Send a notification each time a round is played
+   */
   let messagingPayload = {
     title: `${username} vient de jouer !`,
     body: "C'est à ton tour de jouer.",
@@ -277,7 +280,6 @@ async function play(req, res) {
   if (addedDuel.currentRound === 1 && updatedDuel.currentRound === 1) {
     messagingPayload.title = `${username} te propose un duel !`;
   }
-
   const MessageHandler = MessagingHandlerFactory.getInstance();
   MessageHandler.sendNotificationToOneDevice(updatedDuel.opponent, messagingPayload);
 }

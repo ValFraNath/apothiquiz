@@ -3,6 +3,7 @@
 // Import Firebase scripts
 import firebase from "firebase";
 
+// Import firebase scripts
 self.importScripts("https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js");
 self.importScripts("https://www.gstatic.com/firebasejs/8.2.9/firebase-messaging.js");
 
@@ -13,13 +14,15 @@ caches.has(cacheName).then((res) => {
   }
 });
 
+// Initialize app with firebase data
+// You can create a project and get these data here: https://firebase.google.com/
 firebase.initializeApp({
-  apiKey: "AIzaSyCtGrFY1_UOzWAFn1xt1CRPNGZ40JZcaJw",
-  authDomain: "guacamole-31ba0.firebaseapp.com",
-  projectId: "guacamole-31ba0",
-  storageBucket: "guacamole-31ba0.appspot.com",
-  messagingSenderId: "46062321146",
-  appId: "1:46062321146:web:bcd9f8b8caf30c2aacf843",
+  apiKey: "YOUR_KEY",
+  authDomain: "YOUR_AUTH_DOMAIN",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_STORAGE_BUCKET",
+  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+  appId: "YOUR_APP_ID",
 });
 
 /**
@@ -100,9 +103,11 @@ self.addEventListener("message", (e) => {
 
 /**
  * Push message handling (app on background)
+ * Use functions from firebase API
  */
 const messaging = firebase.messaging();
 messaging.onBackgroundMessage((payload) => {
+  // A notification must have a title
   if (!payload.data.title) {
     console.error("Can't display notification without title");
     return;
@@ -115,6 +120,7 @@ messaging.onBackgroundMessage((payload) => {
     data: payload.data,
   };
 
+  // Show notification
   self.registration
     .showNotification(title, options)
     .catch((err) => console.error("Can't send notification: ", err));
@@ -122,6 +128,7 @@ messaging.onBackgroundMessage((payload) => {
 
 /**
  * Handle user click on a notification
+ * Display the duel page id linked to the notification
  */
 self.addEventListener("notificationclick", (e) => {
   const { notification, action } = e;

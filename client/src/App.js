@@ -124,38 +124,35 @@ export default class App extends Component {
       });
     });
 
-    // Request permission for notifications and subscribe to push
+    /*
+     * Request permission for notifications and subscribe to push
+     *
+     * The user must be logged in. We obtain his push registration
+     * token which must then be registered in the database and in localStorage.
+     */
     if (this.state.user) {
       getToken(this.state.user)
         .then((token) => console.log(token))
         .catch((err) => console.error("Error: can't retrieve token", err));
     } else {
+      // If the user is not logged in, check if there is a token in the localstorage and delete it
       checkAndRemoveToken().catch((err) => console.error("Error: can't remove token", err));
     }
 
     // Listen for notifications (in foreground)
+    // Function given by the Firebase API
     onMessage().then((payload) => {
+      // A notification must have a title
       if (!payload.data.title) {
         console.error("Can't display notification without title");
         return;
       }
 
+      // Add the notification to the state
       const { title, body } = payload.data;
       this.setState({ foregroundNotification: { title: title, body: body } });
     });
   }
-
-  /**
-   * Display the notification authorization request
-   */
-  /*displayBrowserNotificationPermission = () => {
-    Notification.requestPermission()
-      .then(() => {
-        this.setState({ requireNotificationPermission: false });
-        new MessagingHandler().saveToken();
-      })
-      .catch((err) => console.error("Can't request permission", err));
-  };*/
 
   /**
    * Send a message to the service-worker to request the new version
@@ -185,6 +182,7 @@ export default class App extends Component {
             <UpdateButton updateSW={this.updateServiceWorker} updateRequired={updateRequired} />
           )}
 
+          {/* Display a screen to ask the user permission for notifications */}
           {requireNotificationPermission && (
             <FullScreenMessage id="authorization-notification">
               <BellIcon />
@@ -203,6 +201,7 @@ export default class App extends Component {
             </FullScreenMessage>
           )}
 
+          {/* If there is a notification in foreground, display it */}
           {foregroundNotification !== null && (
             <NotificationForeground
               title={foregroundNotification.title}

@@ -7,7 +7,10 @@ import { queryPromise } from "../db/database.js";
 
 import Logger from "./Logger.js";
 
-/* Create singleton class */
+/*
+ * Create singleton class
+ * We must have only one instance of this class
+ */
 const MessagingHandlerFactory = (function () {
   let instance = null;
 
@@ -26,6 +29,11 @@ class MessagingHandler {
     this.app = this._initializeApp();
   }
 
+  /**
+   * Send notification to a user's device
+   * @param {*} user Username
+   * @param {*} data Notification data
+   */
   sendNotificationToOneDevice(user, data) {
     this.app
       .then((appInstance) => {
@@ -46,7 +54,12 @@ class MessagingHandler {
       .catch((err) => Logger.error(err));
   }
 
+  /**
+   * Initialize firebase admin app
+   * @returns App initialized
+   */
   async _initializeApp() {
+    // SERVICE_ACCOUNT_KEY_FILE is provided by firebase
     const data = await fs.readFile(
       path.resolve(process.cwd(), MessagingHandler.SERVICE_ACCOUNT_KEY_FILE),
       "utf-8"
@@ -56,6 +69,11 @@ class MessagingHandler {
     });
   }
 
+  /**
+   * Get token from username
+   * @param {*} user Username
+   * @returns User's token (promise)
+   */
   _getUserMessagingToken(user) {
     return new Promise((resolve, reject) => {
       const sql = `SELECT us_messaging_token
@@ -68,6 +86,7 @@ class MessagingHandler {
   }
 }
 
+// SERVICE_ACCOUNT_KEY_FILE is provided by firebase
 MessagingHandler.SERVICE_ACCOUNT_KEY_FILE = "files-config/serviceAccountKey.json";
 
 export default MessagingHandlerFactory;

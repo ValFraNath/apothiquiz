@@ -1,6 +1,7 @@
 import { queryPromise } from "../db/database.js";
 
 /**
+ * Update the token of a user
  *
  * @api {put} /messaging/token/add
  * @apiName SaveUserToken
@@ -43,6 +44,7 @@ async function updateToken(req, res) {
 }
 
 /**
+ * Remove the token of a user
  *
  * @api {put} /messaging/token/remove
  * @apiName RemoveUserToken
@@ -82,6 +84,9 @@ export default { updateToken, removeToken };
 
 // ***** INTERNAL FUNCTIONS *****
 
+/**
+ * Update the token of a user (add / remove)
+ */
 function _saveMessagingTokenInDatabase(user, messagingToken = undefined) {
   return new Promise((resolve, reject) => {
     const sql = `UPDATE user
