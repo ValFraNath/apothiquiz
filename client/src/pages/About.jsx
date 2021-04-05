@@ -6,6 +6,7 @@ import { useQuery } from "react-query";
 import Button from "../components/buttons/ButtonFullWidth";
 import Loading from "../components/status/Loading";
 import PageError from "../components/status/PageError";
+import variables from "../styles/base/_variables.module.scss";
 
 const TestConnection = () => {
   async function getServerInformations() {
@@ -51,7 +52,10 @@ const About = () => {
   date.setTime(Date.parse(gitInfo.commit.date));
 
   return (
-    <main id="informations">
+    <main
+      id="informations"
+      style={{ height: window.innerHeight - Number.parseInt(variables.topBarHeight) }}
+    >
       <p>
         Guacamole <i>(nom temporaire)</i> est une application d'apprentissage réflexe à destination
         des étudiants en pharmacie de l'Université de Franche-Comté.

@@ -4,7 +4,6 @@ main#menu {
   background-image: url("../../images/bg_menu.jpg");
   background-size: cover;
   background-position: top;
-  height: calc(100% - #{$top-bar-height});
 
   section {
     padding-bottom: 2.5rem;
