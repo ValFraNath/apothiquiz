@@ -15,6 +15,10 @@ body {
   height: auto;
 }
 
+body.dark {
+  background-color: $color-bg-dark;
+}
+
 body.dark #root {
   background-color: $color-bg-dark;
   color: $text-color-black;
