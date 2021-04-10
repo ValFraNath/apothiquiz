@@ -2,6 +2,9 @@
 --            TYPE 8-9-10 : 1 molecule - 4 property values
 -- ****************************************************************
 
+SET @system = ?;
+SET @idparent = (SELECT sy_id FROM system WHERE sy_name = @system); 
+SET @param1 = ?;
 CREATE TEMPORARY TABLE properties_by_molecule(
        mo_id int(11),
        mo_dci varchar(256),
@@ -12,8 +15,8 @@ CREATE TEMPORARY TABLE properties_by_molecule(
 INSERT INTO properties_by_molecule
 SELECT mo_id, mo_dci, pv_id, pv_name 
 FROM molecule_property NATURAL JOIN property_value 
-JOIN property ON pr_id = pv_property NATURAL JOIN molecule
-WHERE pr_name = @property
+JOIN property ON pr_id = pv_property NATURAL JOIN molecule m JOIN system ON sy_id = m.mo_system
+WHERE pr_name = @property AND (@idparent = sy_higher OR sy_id = @idparent OR @system = "Tout") AND m.mo_difficulty = @param1
 ORDER BY RAND();
 
 -- Get a random molecule for which there are at least 3 property values ​​that it does not have

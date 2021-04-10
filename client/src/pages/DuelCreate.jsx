@@ -1,6 +1,6 @@
 import axios from "axios";
 import { PropTypes } from "prop-types";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useQuery, useQueryClient } from "react-query";
 
 import Avatar from "../components/Avatar";
@@ -12,10 +12,19 @@ import PageError from "../components/status/PageError";
 const DuelCreate = ({ history }) => {
   const [searchRegex, setSearchRegex] = useState(null);
   const [selected, setSelected] = useState(null);
+  const [search, setSearch] = useState(null);
   const [error, setError] = useState(null);
   const queryClient = useQueryClient();
 
   const { data: listOfUsers, isSuccess, isError } = useQuery(["users", "challengeable"]);
+
+  const [system, setSystem] = useState("Tout");
+  const [level, setLevel] = useState("EASY");
+
+  const onChange = event => setSystem(event.target.value);
+  const onChange1 = event => setLevel(event.target.value);
+ 
+  const systems = ["Tout","ANTIINFECTIEUX","Cardio-vasculaire","Douleurs-inflammation","endocrinologie et diabète","hémostase","urologie","Système respiratoire"];
 
   if (isError) {
     return <PageError message="Erreur lors du chargement de la page" />;
@@ -27,8 +36,12 @@ const DuelCreate = ({ history }) => {
 
   function createDuel(opponent) {
     axios
-      .post("/api/v1/duels/new", {
-        opponent,
+      .post("/api/v1/duels/new", null, { 
+        params: {
+          opponent: opponent,
+          system: system,
+          level: level
+        }
       })
       .then(({ data: { id } }) => {
         queryClient.invalidateQueries(["users", "challengeable"]);
@@ -56,13 +69,15 @@ const DuelCreate = ({ history }) => {
           type="text"
           placeholder="Rechercher un utilisateur"
           onChange={(event) => {
+            event.target.value==="" ? (setSearch(null)) : (setSearch(true))
             setSelected(null);
-            setSearchRegex(new RegExp(event.target.value, "i"));
+            setSearchRegex(new RegExp(event.target.value, "y"));
           }}
         ></input>
       </section>
 
       <section>
+      {search ? (
         <ul>
           {Object.keys(listOfUsers)
             .filter((pseudo) => !searchRegex || searchRegex.test(pseudo))
@@ -81,14 +96,29 @@ const DuelCreate = ({ history }) => {
               );
             })}
         </ul>
-      </section>
+      ) : ( <></> )}
+      <div id="filtres">
+        <h2> Niveau des questions : </h2>
+          <label><input onChange={ onChange1 } type="radio" name="level" value="EASY" checked={true} />Débutant</label>
+          <label><input onChange={ onChange1 } type="radio" name="level" value="HARD"/>Expert</label>
+        <br/><br/>
 
-      <section>
-        {selected ? (
-          <ButtonFullWidth onClick={() => createDuel(selected)}>Lancer le duel</ButtonFullWidth>
-        ) : (
-          <p>Veuillez choisir un adversaire</p>
-        )}
+        <h2>Sélection des systèmes : </h2>
+          <select onChange={ onChange }>
+            {systems.map((value) =>
+                <option key={value} value={value}>{value}</option>
+            )};
+          </select>
+          </div>
+
+        </section>
+
+        <section>
+          {selected ? (
+            <ButtonFullWidth onClick={() => createDuel(selected,system,level)}>Lancer le duel</ButtonFullWidth>
+          ) : (
+            <p>Veuillez choisir un adversaire</p>
+          )}
       </section>
     </main>
   );

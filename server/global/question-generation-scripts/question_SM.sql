@@ -1,7 +1,9 @@
 -- **************************************************************** 
 --                  TYPE 3  : 1 system - 4 molécule
 -- **************************************************************** 
-
+SET @system = ?;
+SET @idparent = (SELECT sy_id FROM system WHERE sy_name = @system); 
+SET @param1 = ?;
 CREATE TEMPORARY TABLE systems_by_molecule(
        mo_id int(11),
        mo_dci varchar(256),
@@ -20,7 +22,8 @@ INSERT INTO systems_by_molecule(
             molecule.mo_id,
             molecule.mo_dci
         FROM system JOIN molecule 
-        	ON mo_system = sy_id
+        	ON molecule.mo_system = sy_id
+        WHERE (@idparent = sy_higher OR sy_id = @idparent OR @system = "Tout") AND molecule.mo_difficulty = @param1
         
         
         UNION ALL
