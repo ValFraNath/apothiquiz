@@ -31,6 +31,6 @@ apiRouter.use("/config", AuthMiddleware(ONLY_ADMINS), configApiRouter);
 
 apiRouter.get("/status", HttpControllerWrapper(ApiController.status));
 
-apiRouter.get("/question", HttpControllerWrapper(QuestionController.generateQuestion));
+apiRouter.get("/question/:type", HttpControllerWrapper(QuestionController.generateQuestion));
 
 export default apiRouter;

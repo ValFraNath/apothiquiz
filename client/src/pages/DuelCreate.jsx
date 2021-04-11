@@ -21,10 +21,19 @@ const DuelCreate = ({ history }) => {
   const [system, setSystem] = useState("Tout");
   const [level, setLevel] = useState("EASY");
 
-  const onChange = event => setSystem(event.target.value);
-  const onChange1 = event => setLevel(event.target.value);
- 
-  const systems = ["Tout","ANTIINFECTIEUX","Cardio-vasculaire","Douleurs-inflammation","endocrinologie et diabète","hémostase","urologie","Système respiratoire"];
+  const onChange = (event) => setSystem(event.target.value);
+  const onChange1 = (event) => setLevel(event.target.value);
+
+  const systems = [
+    "Tout",
+    "ANTIINFECTIEUX",
+    "Cardio-vasculaire",
+    "Douleurs-inflammation",
+    "endocrinologie et diabète",
+    "hémostase",
+    "urologie",
+    "Système respiratoire",
+  ];
 
   if (isError) {
     return <PageError message="Erreur lors du chargement de la page" />;
@@ -36,12 +45,12 @@ const DuelCreate = ({ history }) => {
 
   function createDuel(opponent) {
     axios
-      .post("/api/v1/duels/new", null, { 
+      .post("/api/v1/duels/new", {
+        opponent,
         params: {
-          opponent: opponent,
           system: system,
-          level: level
-        }
+          level: level,
+        },
       })
       .then(({ data: { id } }) => {
         queryClient.invalidateQueries(["users", "challengeable"]);
@@ -69,7 +78,7 @@ const DuelCreate = ({ history }) => {
           type="text"
           placeholder="Rechercher un utilisateur"
           onChange={(event) => {
-            event.target.value==="" ? (setSearch(null)) : (setSearch(true))
+            event.target.value === "" ? setSearch(null) : setSearch(true);
             setSelected(null);
             setSearchRegex(new RegExp(event.target.value, "y"));
           }}
@@ -77,48 +86,61 @@ const DuelCreate = ({ history }) => {
       </section>
 
       <section>
-      {search ? (
-        <ul>
-          {Object.keys(listOfUsers)
-            .filter((pseudo) => !searchRegex || searchRegex.test(pseudo))
-            .map((pseudo) => {
-              const user = listOfUsers[pseudo];
-              return (
-                <li
-                  key={user.pseudo}
-                  onClick={() => setSelected(user.pseudo)}
-                  onDoubleClick={() => createDuel(user.pseudo)}
-                  className={selected === user.pseudo ? "selected" : ""}
-                >
-                  <Avatar size="50px" infos={user.avatar} />
-                  <p>{user.pseudo}</p>
-                </li>
-              );
-            })}
-        </ul>
-      ) : ( <></> )}
-      <div id="filtres">
-        <h2> Niveau des questions : </h2>
-          <label><input onChange={ onChange1 } type="radio" name="level" value="EASY" checked={true} />Débutant</label>
-          <label><input onChange={ onChange1 } type="radio" name="level" value="HARD"/>Expert</label>
-        <br/><br/>
+        {search ? (
+          <ul>
+            {Object.keys(listOfUsers)
+              .filter((pseudo) => !searchRegex || searchRegex.test(pseudo))
+              .map((pseudo) => {
+                const user = listOfUsers[pseudo];
+                return (
+                  <li
+                    key={user.pseudo}
+                    onClick={() => setSelected(user.pseudo)}
+                    onDoubleClick={() => createDuel(user.pseudo)}
+                    className={selected === user.pseudo ? "selected" : ""}
+                  >
+                    <Avatar size="50px" infos={user.avatar} />
+                    <p>{user.pseudo}</p>
+                  </li>
+                );
+              })}
+          </ul>
+        ) : (
+          <></>
+        )}
+        <div id="filtres">
+          <h2> Niveau des questions : </h2>
+          <label>
+            <input onChange={onChange1} type="radio" name="level" value="EASY" checked={true} />
+            Débutant
+          </label>
+          <label>
+            <input onChange={onChange1} type="radio" name="level" value="HARD" />
+            Expert
+          </label>
+          <br />
+          <br />
 
-        <h2>Sélection des systèmes : </h2>
-          <select onChange={ onChange }>
-            {systems.map((value) =>
-                <option key={value} value={value}>{value}</option>
-            )};
+          <h2>Sélection des systèmes : </h2>
+          <select onChange={onChange}>
+            {systems.map((value) => (
+              <option key={value} value={value}>
+                {value}
+              </option>
+            ))}
+            ;
           </select>
-          </div>
+        </div>
+      </section>
 
-        </section>
-
-        <section>
-          {selected ? (
-            <ButtonFullWidth onClick={() => createDuel(selected,system,level)}>Lancer le duel</ButtonFullWidth>
-          ) : (
-            <p>Veuillez choisir un adversaire</p>
-          )}
+      <section>
+        {selected ? (
+          <ButtonFullWidth onClick={() => createDuel(selected, system, level)}>
+            Lancer le duel
+          </ButtonFullWidth>
+        ) : (
+          <p>Veuillez choisir un adversaire</p>
+        )}
       </section>
     </main>
   );

@@ -1,7 +1,7 @@
 import { ArrowRightIcon, CheckCircledIcon, CrossCircledIcon, ExitIcon } from "@modulz/radix-icons";
 import axios from "axios";
 import PropTypes from "prop-types";
-import React, { Component , useState, useEffect} from "react";
+import React, { Component, useState, useEffect } from "react";
 
 import ButtonCircle from "../components/buttons/ButtonCircle";
 import ButtonDefault from "../components/buttons/ButtonDefault";
@@ -18,16 +18,25 @@ const IntroductionView = ({ onClick }) => {
   const [level, setLevel] = useState("EASY");
 
   useEffect(() => {
-    localStorage.setItem('system', system);
+    localStorage.setItem("system", system);
   }, [system]);
   useEffect(() => {
-    localStorage.setItem('level', level);
+    localStorage.setItem("level", level);
   }, [level]);
 
-  const onChange = event => setSystem(event.target.value);
-  const onChange1 = event => setLevel(event.target.value);
+  const onChange = (event) => setSystem(event.target.value);
+  const onChange1 = (event) => setLevel(event.target.value);
 
-  const systems = ["Tout","ANTIINFECTIEUX","Cardio-vasculaire","Douleurs-inflammation","endocrinologie et diabète","hémostase","urologie","Système respiratoire"];
+  const systems = [
+    "Tout",
+    "ANTIINFECTIEUX",
+    "Cardio-vasculaire",
+    "Douleurs-inflammation",
+    "endocrinologie et diabète",
+    "hémostase",
+    "urologie",
+    "Système respiratoire",
+  ];
   return (
     <>
       <img src={InformationPilette} alt="Pilette se concentre avant l'entraînement" />
@@ -37,18 +46,28 @@ const IntroductionView = ({ onClick }) => {
         <br />
 
         <h2> Niveau des questions : </h2>
-        <label><input onChange={ onChange1 } type="radio" name="level" value="EASY" checked={true} />Débutant</label>
-        <label><input onChange={ onChange1 } type="radio" name="level" value="HARD"/>Expert</label>
-        <br/><br/>
+        <label>
+          <input onChange={onChange1} type="radio" name="level" value="EASY" checked={true} />
+          Débutant
+        </label>
+        <label>
+          <input onChange={onChange1} type="radio" name="level" value="HARD" />
+          Expert
+        </label>
+        <br />
+        <br />
 
         <h2>Sélection des systèmes : </h2>
-        <select onChange={ onChange }>
-          {systems.map((value) =>
-              <option key={value} value={value}>{value}</option>
-          )};
+        <select onChange={onChange}>
+          {systems.map((value) => (
+            <option key={value} value={value}>
+              {value}
+            </option>
+          ))}
+          ;
         </select>
       </div>
-      <ButtonDefault  onClick = { onClick} > Lancer l'entraînement </ButtonDefault>
+      <ButtonDefault onClick={onClick}> Lancer l'entraînement </ButtonDefault>
     </>
   );
 };
@@ -105,7 +124,7 @@ class PlayView extends Component {
    * Get the next question
    */
   nextQuestion = () => {
-    this.props.getNewQuestion(localStorage.getItem('system'), localStorage.getItem('level'));
+    this.props.getNewQuestion(localStorage.getItem("system"), localStorage.getItem("level"));
   };
 
   componentDidUpdate(prevProps) {
@@ -259,14 +278,14 @@ class Train extends Component {
   getNewQuestion = (system, level, nthRetry = 0) => {
     const minQuestionType = 1,
       maxQuestionType = 12;
-    const questionType = Math.floor(Math.random() * (maxQuestionType + 1 - minQuestionType)) + minQuestionType;
+    const questionType =
+      Math.floor(Math.random() * (maxQuestionType + 1 - minQuestionType)) + minQuestionType;
     axios
-      .get(`/api/v1/question/`, {
+      .get(`/api/v1/question/${questionType}`, {
         params: {
-          type: questionType,
           system: system,
-          level: level
-        }
+          level: level,
+        },
       })
       .then(({ data: question }) => {
         this.setState({
@@ -280,7 +299,11 @@ class Train extends Component {
       })
       .catch((error) => {
         if (error.response?.status === 422 && nthRetry < 10) {
-          this.getNewQuestion(localStorage.getItem('system'),localStorage.getItem('level'),nthRetry + 1);
+          this.getNewQuestion(
+            localStorage.getItem("system"),
+            localStorage.getItem("level"),
+            nthRetry + 1
+          );
           return;
         }
         console.error(error);
@@ -325,7 +348,13 @@ class Train extends Component {
   switchComponent() {
     switch (this.state.gameState) {
       case Train.STATE_INTRO:
-        return <IntroductionView onClick={() => this.getNewQuestion(localStorage.getItem('system'), localStorage.getItem('level'))} />;
+        return (
+          <IntroductionView
+            onClick={() =>
+              this.getNewQuestion(localStorage.getItem("system"), localStorage.getItem("level"))
+            }
+          />
+        );
       case Train.STATE_PLAY:
         return (
           <PlayView

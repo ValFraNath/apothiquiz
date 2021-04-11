@@ -1,5 +1,4 @@
 main#create-duel {
-
   display: flex;
   flex-direction: column;
 
@@ -65,18 +64,17 @@ main#create-duel {
     }
   }
 
-  #filtres{
-    text-align:center;
+  #filtres {
+    text-align: center;
   }
 
-
-  h2{
-    font-size:1.1rem;
-    margin-bottom:0.5rem;
-    padding-top:1rem;
+  h2 {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    padding-top: 1rem;
   }
 
-  select{
+  select {
     min-width: 15ch;
     max-width: 30ch;
     border: 1px solid black;
@@ -87,7 +85,7 @@ main#create-duel {
     line-height: 1.1;
     background-color: #fff;
     background-image: linear-gradient(to top, #f9f9f9, #fff 33%);
-  }  
+  }
 }
 
 body.dark #create-duel {
@@ -103,5 +101,4 @@ body.dark #create-duel {
   section:nth-child(3) {
     background-color: $color-gray-dark;
   }
-
 }

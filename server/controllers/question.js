@@ -113,11 +113,11 @@ const IMAGES_ROUTE = "files/images"; // For non-breaking spaces around French qu
  * @param {HttpResponseWrapper} res The http response
  */
 async function generateQuestion(req, res) {
-  const type = Number(req.query.type);
+  const type = Number(req.params.type);
   const systeme = req.query.system;
-  const level = req.query.level;
+  const { level } = req.query;
 
-  const generateQuestion = createGeneratorOfType(type,systeme,level);
+  const generateQuestion = createGeneratorOfType(type, systeme, level);
 
   if (!generateQuestion) {
     res.sendUsageError(404, "Type de question incorrect");
@@ -167,11 +167,11 @@ const scriptsFolderPath = path.resolve("global", "question-generation-scripts");
  * @param {string} before An SQL script to add at the start of the script
  * @return {Promise<object>} The question
  */
-async function queryQuestion(filename, type, systeme, level, before = "") {
+async function queryQuestion(filename, type, systeme = "Tout", level = "EASY", before = "") {
   const script = await fs.readFile(path.resolve(scriptsFolderPath, filename), {
     encoding: "utf-8",
   });
-  const res = await queryPromise(before + script, [systeme,level]);
+  const res = await queryPromise(before + script, [systeme, level]);
   const data = res.find((e) => e instanceof Array);
 
   if (data.length < 3) {
@@ -190,7 +190,7 @@ async function queryQuestion(filename, type, systeme, level, before = "") {
  * @param {number} type The question type
  * @returns {function():Promise}
  */
-export function createGeneratorOfType(type,systeme,level) {
+export function createGeneratorOfType(type, systeme, level) {
   const typeInfos = generatorInfosByType[type];
   if (!typeInfos) {
     return null;
