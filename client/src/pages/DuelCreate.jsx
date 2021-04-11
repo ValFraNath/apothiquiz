@@ -1,6 +1,6 @@
 import axios from "axios";
 import { PropTypes } from "prop-types";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useQuery, useQueryClient } from "react-query";
 
 import Avatar from "../components/Avatar";
