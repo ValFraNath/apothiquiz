@@ -3,7 +3,7 @@
 -- ****************************************************************
 SET @system = ?;
 SET @idparent = (SELECT sy_id FROM system WHERE sy_name = @system); 
-SET @param1 = ?;
+SET @difficulty = ?;
 CREATE TEMPORARY TABLE properties_by_molecule(
        mo_id int(11),
        mo_dci varchar(256),
@@ -15,7 +15,7 @@ INSERT INTO properties_by_molecule
 SELECT mo_id, mo_dci, pv_id, pv_name 
 FROM molecule_property NATURAL JOIN property_value 
 JOIN property ON pr_id = pv_property NATURAL JOIN molecule m JOIN system ON sy_id = m.mo_system
-WHERE pr_name = @property AND (@idparent = sy_higher OR sy_id = @idparent OR @system = "Tout") AND m.mo_difficulty = @param1
+WHERE pr_name = @property AND (@idparent = sy_higher OR sy_id = @idparent OR @system = "Tout") AND (m.mo_difficulty = @difficulty OR @difficulty = "ALL")
 ORDER BY RAND();
 
 

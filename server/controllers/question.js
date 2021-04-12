@@ -114,10 +114,10 @@ const IMAGES_ROUTE = "files/images"; // For non-breaking spaces around French qu
  */
 async function generateQuestion(req, res) {
   const type = Number(req.params.type);
-  const systeme = req.query.system;
-  const { level } = req.query;
+  const { system } = req.query;
+  const { difficulty } = req.query;
 
-  const generateQuestion = createGeneratorOfType(type, systeme, level);
+  const generateQuestion = createGeneratorOfType(type, system, difficulty);
 
   if (!generateQuestion) {
     res.sendUsageError(404, "Type de question incorrect");
@@ -167,11 +167,11 @@ const scriptsFolderPath = path.resolve("global", "question-generation-scripts");
  * @param {string} before An SQL script to add at the start of the script
  * @return {Promise<object>} The question
  */
-async function queryQuestion(filename, type, systeme = "Tout", level = "EASY", before = "") {
+async function queryQuestion(filename, type, system = "Tout", difficulty = "EASY", before = "") {
   const script = await fs.readFile(path.resolve(scriptsFolderPath, filename), {
     encoding: "utf-8",
   });
-  const res = await queryPromise(before + script, [systeme, level]);
+  const res = await queryPromise(before + script, [system, difficulty]);
   const data = res.find((e) => e instanceof Array);
 
   if (data.length < 3) {
@@ -190,7 +190,7 @@ async function queryQuestion(filename, type, systeme = "Tout", level = "EASY", b
  * @param {number} type The question type
  * @returns {function():Promise}
  */
-export function createGeneratorOfType(type, systeme, level) {
+export function createGeneratorOfType(type, system, difficulty) {
   const typeInfos = generatorInfosByType[type];
   if (!typeInfos) {
     return null;
@@ -198,7 +198,7 @@ export function createGeneratorOfType(type, systeme, level) {
 
   return async () => {
     const { before, filename } = typeInfos;
-    const question = await queryQuestion(filename, type, systeme, level, before);
+    const question = await queryQuestion(filename, type, system, difficulty, before);
 
     // Questions with images
     if (type === 11 || type === 12) {

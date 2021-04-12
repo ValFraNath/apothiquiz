@@ -15,17 +15,17 @@ import InformationPilette from "../images/information_crop.png";
 
 const IntroductionView = ({ onClick }) => {
   const [system, setSystem] = useState("Tout");
-  const [level, setLevel] = useState("EASY");
+  const [difficulty, setDifficulty] = useState("EASY");
 
   useEffect(() => {
     localStorage.setItem("system", system);
   }, [system]);
   useEffect(() => {
-    localStorage.setItem("level", level);
-  }, [level]);
+    localStorage.setItem("difficulty", difficulty);
+  }, [difficulty]);
 
-  const onChange = (event) => setSystem(event.target.value);
-  const onChange1 = (event) => setLevel(event.target.value);
+  const changeSystem = (event) => setSystem(event.target.value);
+  const changeDifficulty = (event) => setDifficulty(event.target.value);
 
   const systems = [
     "Tout",
@@ -47,18 +47,24 @@ const IntroductionView = ({ onClick }) => {
 
         <h2> Niveau des questions : </h2>
         <label>
-          <input onChange={onChange1} type="radio" name="level" value="EASY" checked={true} />
+          <input
+            onChange={changeDifficulty}
+            type="radio"
+            name="difficulty"
+            value="EASY"
+            checked={true}
+          />
           Débutant
         </label>
         <label>
-          <input onChange={onChange1} type="radio" name="level" value="HARD" />
+          <input onChange={changeDifficulty} type="radio" name="difficulty" value="ALL" />
           Expert
         </label>
         <br />
         <br />
 
         <h2>Sélection des systèmes : </h2>
-        <select onChange={onChange}>
+        <select onChange={changeSystem}>
           {systems.map((value) => (
             <option key={value} value={value}>
               {value}
@@ -124,7 +130,7 @@ class PlayView extends Component {
    * Get the next question
    */
   nextQuestion = () => {
-    this.props.getNewQuestion(localStorage.getItem("system"), localStorage.getItem("level"));
+    this.props.getNewQuestion(localStorage.getItem("system"), localStorage.getItem("difficulty"));
   };
 
   componentDidUpdate(prevProps) {
@@ -275,7 +281,7 @@ class Train extends Component {
    * Get a new question (random type) from the server
    * @param {number} nthRetry The number of attempts
    */
-  getNewQuestion = (system, level, nthRetry = 0) => {
+  getNewQuestion = (system, difficulty, nthRetry = 0) => {
     const minQuestionType = 1,
       maxQuestionType = 12;
     const questionType =
@@ -284,7 +290,7 @@ class Train extends Component {
       .get(`/api/v1/question/${questionType}`, {
         params: {
           system: system,
-          level: level,
+          difficulty: difficulty,
         },
       })
       .then(({ data: question }) => {
@@ -301,7 +307,7 @@ class Train extends Component {
         if (error.response?.status === 422 && nthRetry < 10) {
           this.getNewQuestion(
             localStorage.getItem("system"),
-            localStorage.getItem("level"),
+            localStorage.getItem("difficulty"),
             nthRetry + 1
           );
           return;
@@ -351,7 +357,10 @@ class Train extends Component {
         return (
           <IntroductionView
             onClick={() =>
-              this.getNewQuestion(localStorage.getItem("system"), localStorage.getItem("level"))
+              this.getNewQuestion(
+                localStorage.getItem("system"),
+                localStorage.getItem("difficulty")
+              )
             }
           />
         );

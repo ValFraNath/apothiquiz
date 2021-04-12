@@ -38,7 +38,9 @@ async function create(req, res) {
   try {
     const username = req.body._auth.user;
     const { opponent } = req.body;
-    const filtres = { system: req.query.system, level: req.query.level };
+    const { system } = req.body;
+    const { difficulty } = req.body;
+    const filters = { system: system, difficulty: difficulty };
 
     if (!opponent) {
       return res.sendUsageError(400, "Vous devez renseigner un adversaire");
@@ -63,7 +65,7 @@ async function create(req, res) {
 
     const config = await fetchConfigFromDB();
 
-    const rounds = await createRounds(config, filtres);
+    const rounds = await createRounds(config, filters);
 
     const id = await createDuelInDatabase(username, opponent, rounds);
 
@@ -330,7 +332,7 @@ async function createDuelInDatabase(player1, player2, rounds) {
  * @throws NotEnoughDataError
  * @return {Promise<object[][]>}
  */
-async function createRounds(config, filtres) {
+async function createRounds(config, filters) {
   if (mockedDuelsRounds) {
     return mockedDuelsRounds;
   }
@@ -343,7 +345,7 @@ async function createRounds(config, filtres) {
     }
 
     try {
-      rounds.push(await createRound(types.pop(), filtres, config));
+      rounds.push(await createRound(types.pop(), filters, config));
     } catch (error) {
       if (!NotEnoughDataError.isInstance(error)) {
         throw error;
@@ -363,8 +365,8 @@ async function createRounds(config, filtres) {
 /**
  "Tout" et "EASY" en attendant d'intégrer le niveau et le système pour les duels
  */
-async function createRound(type, filtres, config) {
-  const generateQuestion = createGeneratorOfType(type, filtres.system, filtres.level);
+async function createRound(type, filters, config) {
+  const generateQuestion = createGeneratorOfType(type, filters.system, filters.difficulty);
   const questions = [...Array(config.questionsPerRound)].map(generateQuestion);
 
   return await Promise.all(questions);

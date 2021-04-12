@@ -19,10 +19,10 @@ const DuelCreate = ({ history }) => {
   const { data: listOfUsers, isSuccess, isError } = useQuery(["users", "challengeable"]);
 
   const [system, setSystem] = useState("Tout");
-  const [level, setLevel] = useState("EASY");
+  const [difficulty, setDifficulty] = useState("EASY");
 
-  const onChange = (event) => setSystem(event.target.value);
-  const onChange1 = (event) => setLevel(event.target.value);
+  const changeSystem = (event) => setSystem(event.target.value);
+  const changeDifficulty = (event) => setDifficulty(event.target.value);
 
   const systems = [
     "Tout",
@@ -47,10 +47,8 @@ const DuelCreate = ({ history }) => {
     axios
       .post("/api/v1/duels/new", {
         opponent,
-        params: {
-          system: system,
-          level: level,
-        },
+        system,
+        difficulty,
       })
       .then(({ data: { id } }) => {
         queryClient.invalidateQueries(["users", "challengeable"]);
@@ -111,18 +109,24 @@ const DuelCreate = ({ history }) => {
         <div id="filtres">
           <h2> Niveau des questions : </h2>
           <label>
-            <input onChange={onChange1} type="radio" name="level" value="EASY" checked={true} />
+            <input
+              onChange={changeDifficulty}
+              type="radio"
+              name="difficulty"
+              value="EASY"
+              checked={true}
+            />
             Débutant
           </label>
           <label>
-            <input onChange={onChange1} type="radio" name="level" value="HARD" />
+            <input onChange={changeDifficulty} type="radio" name="difficulty" value="ALL" />
             Expert
           </label>
           <br />
           <br />
 
           <h2>Sélection des systèmes : </h2>
-          <select onChange={onChange}>
+          <select onChange={changeSystem}>
             {systems.map((value) => (
               <option key={value} value={value}>
                 {value}
@@ -135,7 +139,7 @@ const DuelCreate = ({ history }) => {
 
       <section>
         {selected ? (
-          <ButtonFullWidth onClick={() => createDuel(selected, system, level)}>
+          <ButtonFullWidth onClick={() => createDuel(selected, system, difficulty)}>
             Lancer le duel
           </ButtonFullWidth>
         ) : (
