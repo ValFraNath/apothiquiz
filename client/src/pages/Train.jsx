@@ -281,11 +281,16 @@ class Train extends Component {
    * Get a new question (random type) from the server
    * @param {number} nthRetry The number of attempts
    */
-  getNewQuestion = (system, difficulty, nthRetry = 0) => {
+  getNewQuestion = (system, difficulty, nthRetry = 0, prevType=[]) => {
     const minQuestionType = 1,
       maxQuestionType = 12;
-    const questionType =
+    let questionType =
       Math.floor(Math.random() * (maxQuestionType + 1 - minQuestionType)) + minQuestionType;
+    while (prevType.toString().indexOf(questionType) !== -1){
+      questionType =
+        Math.floor(Math.random() * (maxQuestionType + 1 - minQuestionType)) + minQuestionType;
+    }
+    prevType.push(questionType.toString());
     axios
       .get(`/api/v1/question/${questionType}`, {
         params: {
@@ -308,7 +313,8 @@ class Train extends Component {
           this.getNewQuestion(
             localStorage.getItem("system"),
             localStorage.getItem("difficulty"),
-            nthRetry + 1
+            nthRetry + 1,
+            prevType
           );
           return;
         }
