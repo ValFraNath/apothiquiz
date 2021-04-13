@@ -281,12 +281,12 @@ class Train extends Component {
    * Get a new question (random type) from the server
    * @param {number} nthRetry The number of attempts
    */
-  getNewQuestion = (system, difficulty, nthRetry = 0, prevType=[]) => {
+  getNewQuestion = (system, difficulty, nthRetry = 0, prevType = []) => {
     const minQuestionType = 1,
       maxQuestionType = 12;
     let questionType =
       Math.floor(Math.random() * (maxQuestionType + 1 - minQuestionType)) + minQuestionType;
-    while (prevType.toString().indexOf(questionType) !== -1){
+    while (prevType.toString().indexOf(questionType) !== -1) {
       questionType =
         Math.floor(Math.random() * (maxQuestionType + 1 - minQuestionType)) + minQuestionType;
     }
