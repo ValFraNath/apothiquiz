@@ -165,6 +165,8 @@ const scriptsFolderPath = path.resolve("global", "question-generation-scripts");
  * @param {string} filename The script filename
  * @param {number} type The question type
  * @param {string} before An SQL script to add at the start of the script
+ * @param {String} system Molecular system
+ * @param {String} difficulty Question difficulty
  * @return {Promise<object>} The question
  */
 async function queryQuestion(filename, type, system = "Tout", difficulty = "ALL", before = "") {
@@ -188,6 +190,8 @@ async function queryQuestion(filename, type, system = "Tout", difficulty = "ALL"
 /**
  * Create a function generator to a given type
  * @param {number} type The question type
+ * @param {String} system Molecular system
+ * @param {String} difficulty Question difficulty
  * @returns {function():Promise}
  */
 export function createGeneratorOfType(type, system, difficulty) {

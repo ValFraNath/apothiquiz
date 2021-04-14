@@ -328,6 +328,7 @@ async function createDuelInDatabase(player1, player2, rounds) {
 /**
  * Create all rounds of a duel
  * @param {object} config The configuration object
+ * @param {object} filters contains the filter's question (system/difficulty)
  * This function can be mocked : @see _initMockedDuelRounds
  * @throws NotEnoughDataError
  * @return {Promise<object[][]>}
@@ -360,10 +361,8 @@ async function createRounds(config, filters) {
  * Create a round of a given question type
  * @param {number} type The question type
  * @param {object} config The configuration object
+ * @param {object} filters contains the filter's question (system/difficulty)
  * @returns {Promise<object[]>} The list of questions
- */
-/**
- "Tout" et "EASY" en attendant d'intégrer le niveau et le système pour les duels
  */
 async function createRound(type, filters, config) {
   const generateQuestion = createGeneratorOfType(type, filters.system, filters.difficulty);

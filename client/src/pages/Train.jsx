@@ -279,7 +279,10 @@ class Train extends Component {
 
   /**
    * Get a new question (random type) from the server
+   * @param {String} system Molecular system
+   * @param {String} difficulty Question difficulty
    * @param {number} nthRetry The number of attempts
+   * @param {Array} prevType Previous types of attempts
    */
   getNewQuestion = (system, difficulty, nthRetry = 0, prevType = []) => {
     const minQuestionType = 1,

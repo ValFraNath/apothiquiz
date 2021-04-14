@@ -139,9 +139,7 @@ const DuelCreate = ({ history }) => {
 
       <section>
         {selected ? (
-          <ButtonFullWidth onClick={() => createDuel(selected, system, difficulty)}>
-            Lancer le duel
-          </ButtonFullWidth>
+          <ButtonFullWidth onClick={() => createDuel(selected)}>Lancer le duel</ButtonFullWidth>
         ) : (
           <p>Veuillez choisir un adversaire</p>
         )}
