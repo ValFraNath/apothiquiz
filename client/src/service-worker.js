@@ -10,7 +10,7 @@ import { NetworkOnly, StaleWhileRevalidate } from "workbox-strategies";
  * Configure workbox caches name
  */
 setCacheNameDetails({
-  prefix: "guacamole",
+  prefix: "apothiquiz",
   suffix: "v1",
 });
 skipWaiting();

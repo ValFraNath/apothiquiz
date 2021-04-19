@@ -8,7 +8,7 @@ import FloatingError from "../components/status/FloatingError";
 import Auth from "../utils/authentication";
 
 const ADMIN_GUIDE_URL =
-  "https://raw.githubusercontent.com/wiki/ValFraNath/guacamole/ressources/admin_guide.pdf";
+  "https://raw.githubusercontent.com/wiki/ValFraNath/apothiquiz/ressources/admin_guide.pdf";
 
 class FileImporter extends Component {
   constructor(props) {

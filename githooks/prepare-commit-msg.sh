@@ -7,7 +7,7 @@ COMMIT_MSG_FILE=$1
 API_DOC_TEXT=""
 
 function updateAPIDocs() {
-    if [ ! -d "../guacamole-api-docs" ]; then
+    if [ ! -d "../apothiquiz-api-docs" ]; then
 
         API_DOC_TEXT="Unable to auto-update API documentation, think to do it yourself!!"
         return
@@ -16,7 +16,7 @@ function updateAPIDocs() {
     ORIGINAL_FOLDER="$(pwd)"
 
     echo "Entering API repository"
-    cd "../guacamole-api-docs" || exit 1
+    cd "../apothiquiz-api-docs" || exit 1
     npm run build || exit 1
     API_DOC_TEXT="API Documentation updated regenerated, think to commit and push it!"
 

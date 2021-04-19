@@ -80,7 +80,7 @@ function checkEnv() {
       Logger.error(
         new Error(
           `The ${key} environment variable is required but not defined in .env.\
-					https://github.com/ValFraNath/guacamole/wiki/Production-deployment`
+					https://github.com/ValFraNath/apothiquiz/wiki/Production-deployment`
         )
       );
       needToExit = true;
