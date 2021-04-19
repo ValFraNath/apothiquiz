@@ -16,6 +16,7 @@ import InformationPilette from "../images/information_crop.png";
 const IntroductionView = ({ onClick }) => {
   const [system, setSystem] = useState("Tout");
   const [difficulty, setDifficulty] = useState("EASY");
+  const [dataSystems, setData] = useState([]);
 
   useEffect(() => {
     localStorage.setItem("system", system);
@@ -23,20 +24,20 @@ const IntroductionView = ({ onClick }) => {
   useEffect(() => {
     localStorage.setItem("difficulty", difficulty);
   }, [difficulty]);
+  useEffect(() => {
+    async function createData() {
+      const result = await axios.get(`/api/v1/chemicals/systems`);
+      setData(result.data);
+    }
+    createData();
+  }, []);
 
   const changeSystem = (event) => setSystem(event.target.value);
   const changeDifficulty = (event) => setDifficulty(event.target.value);
 
-  const systems = [
-    "Tout",
-    "ANTIINFECTIEUX",
-    "Cardio-vasculaire",
-    "Douleurs-inflammation",
-    "endocrinologie et diabète",
-    "hémostase",
-    "urologie",
-    "Système respiratoire",
-  ];
+  const systems = Object.keys(dataSystems).map((key) => dataSystems[key].sy_name);
+  systems.push("Tout");
+
   return (
     <>
       <img src={InformationPilette} alt="Pilette se concentre avant l'entraînement" />
@@ -313,12 +314,7 @@ class Train extends Component {
       })
       .catch((error) => {
         if (error.response?.status === 422 && nthRetry < 10) {
-          this.getNewQuestion(
-            localStorage.getItem("system"),
-            localStorage.getItem("difficulty"),
-            nthRetry + 1,
-            prevType
-          );
+          this.getNewQuestion(system, difficulty, nthRetry + 1, prevType);
           return;
         }
         console.error(error);
