@@ -69,8 +69,7 @@ const IntroductionView = ({ onClick }) => {
         </select>
       </div>
       <ButtonDefault onClick={() => onClick(system, difficulty)}>
-        {" "}
-        Lancer l'entraînement{" "}
+        Lancer l'entraînement
       </ButtonDefault>
     </>
   );
