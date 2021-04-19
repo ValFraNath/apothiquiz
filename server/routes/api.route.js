@@ -5,6 +5,7 @@ import QuestionController from "../controllers/question.js";
 import HttpControllerWrapper from "../global/HttpControllerWrapper.js";
 import AuthMiddleware from "../middlewares/auth.middleware.js";
 
+import chemicalsApiRouter from "./chemicals.route.js";
 import configApiRouter from "./config.route.js";
 import duelsApiRouter from "./duels.route.js";
 import filesApiRouter from "./files.route.js";
@@ -26,6 +27,8 @@ apiRouter.use("/files", filesApiRouter);
 apiRouter.use("/import", AuthMiddleware(ONLY_ADMINS), importApiRouter);
 
 apiRouter.use("/config", AuthMiddleware(ONLY_ADMINS), configApiRouter);
+
+apiRouter.use("/chemicals", chemicalsApiRouter);
 
 /** Top level routes */
 

@@ -57,8 +57,8 @@ const About = () => {
       style={{ height: window.innerHeight - Number.parseInt(variables.topBarHeight) }}
     >
       <p>
-        Guacamole <i>(nom temporaire)</i> est une application d'apprentissage réflexe à destination
-        des étudiants en pharmacie de l'Université de Franche-Comté.
+        Apothiquiz est une application d'apprentissage réflexe à destination des étudiants en
+        pharmacie de l'Université de Franche-Comté.
       </p>
       <p>Elle est réalisée dans le cadre d'un projet tutoré de Licence 3 Informatique 2020-2021.</p>
       <p>
