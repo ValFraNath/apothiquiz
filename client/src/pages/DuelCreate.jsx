@@ -1,6 +1,6 @@
 import axios from "axios";
 import { PropTypes } from "prop-types";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useQuery, useQueryClient } from "react-query";
 
 import Avatar from "../components/Avatar";
@@ -20,21 +20,20 @@ const DuelCreate = ({ history }) => {
 
   const [system, setSystem] = useState("Tout");
   const [difficulty, setDifficulty] = useState("EASY");
-  const [dataSystems, setData] = useState([]);
 
   const changeSystem = (event) => setSystem(event.target.value);
   const changeDifficulty = (event) => setDifficulty(event.target.value);
 
-  useEffect(() => {
-    async function createData() {
-      const result = await axios.get(`/api/v1/systems`);
-      setData(result.data);
-    }
-    createData();
-  }, []);
-
-  const systems = Object.keys(dataSystems).map((key) => dataSystems[key].sy_name);
-  systems.push("Tout");
+  const systems = [
+    "Tout",
+    "ANTIINFECTIEUX",
+    "Cardio-vasculaire",
+    "Douleurs-inflammation",
+    "endocrinologie et diabète",
+    "hémostase",
+    "urologie",
+    "Système respiratoire",
+  ];
 
   if (isError) {
     return <PageError message="Erreur lors du chargement de la page" />;
@@ -142,7 +141,7 @@ const DuelCreate = ({ history }) => {
         {selected ? (
           <ButtonFullWidth onClick={() => createDuel(selected)}>Lancer le duel</ButtonFullWidth>
         ) : (
-          <p>Veuillez saisir le pseudo de votre adversaire</p>
+          <p>Veuillez choisir un adversaire</p>
         )}
       </section>
     </main>

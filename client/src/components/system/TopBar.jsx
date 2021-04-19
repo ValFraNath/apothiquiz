@@ -60,7 +60,7 @@ const TopBar = ({ username }) => (
   <nav>
     {username ? <UserBadge username={username} /> : <span></span>}
     <h1>
-      <Link to={username ? "/homepage" : "/"}>Apothiquiz</Link>
+      <Link to={username ? "/homepage" : "/"}>Guacamole</Link>
     </h1>
     <OfflineBanner />
   </nav>
