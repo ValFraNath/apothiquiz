@@ -27,7 +27,7 @@ const DuelCreate = ({ history }) => {
 
   useEffect(() => {
     async function createData() {
-      const result = await axios.get(`/api/v1/systems`);
+      const result = await axios.get(`/api/v1/chemicals/systems`);
       setData(result.data);
     }
     createData();
