@@ -19,12 +19,6 @@ const IntroductionView = ({ onClick }) => {
   const [dataSystems, setData] = useState([]);
 
   useEffect(() => {
-    localStorage.setItem("system", system);
-  }, [system]);
-  useEffect(() => {
-    localStorage.setItem("difficulty", difficulty);
-  }, [difficulty]);
-  useEffect(() => {
     async function createData() {
       const result = await axios.get(`/api/v1/chemicals/systems`);
       setData(result.data);
@@ -74,7 +68,7 @@ const IntroductionView = ({ onClick }) => {
           ;
         </select>
       </div>
-      <ButtonDefault onClick={onClick}> Lancer l'entraînement </ButtonDefault>
+      <ButtonDefault onClick={onClick(system, difficulty)}> Lancer l'entraînement </ButtonDefault>
     </>
   );
 };
@@ -131,7 +125,7 @@ class PlayView extends Component {
    * Get the next question
    */
   nextQuestion = () => {
-    this.props.getNewQuestion(localStorage.getItem("system"), localStorage.getItem("difficulty"));
+    this.props.getNewQuestion();
   };
 
   componentDidUpdate(prevProps) {
@@ -275,6 +269,8 @@ class Train extends Component {
       result: { good: [], bad: [] },
       error: null,
       questionNum: 0,
+      system: "Tout",
+      difficulty: "ALL",
     };
   }
 
@@ -285,7 +281,7 @@ class Train extends Component {
    * @param {number} nthRetry The number of attempts
    * @param {Array} prevType Previous types of attempts
    */
-  getNewQuestion = (system, difficulty, nthRetry = 0, prevType = []) => {
+  getNewQuestion = (nthRetry = 0, prevType = []) => {
     const minQuestionType = 1,
       maxQuestionType = 12;
     let questionType =
@@ -298,8 +294,8 @@ class Train extends Component {
     axios
       .get(`/api/v1/question/${questionType}`, {
         params: {
-          system: system,
-          difficulty: difficulty,
+          system: this.state.system,
+          difficulty: this.state.difficulty,
         },
       })
       .then(({ data: question }) => {
@@ -314,7 +310,7 @@ class Train extends Component {
       })
       .catch((error) => {
         if (error.response?.status === 422 && nthRetry < 10) {
-          this.getNewQuestion(system, difficulty, nthRetry + 1, prevType);
+          this.getNewQuestion(nthRetry + 1, prevType);
           return;
         }
         console.error(error);
@@ -361,12 +357,11 @@ class Train extends Component {
       case Train.STATE_INTRO:
         return (
           <IntroductionView
-            onClick={() =>
-              this.getNewQuestion(
-                localStorage.getItem("system"),
-                localStorage.getItem("difficulty")
-              )
-            }
+            onClick={(system, difficulty) => {
+              this.setState({ system: system });
+              this.setState({ difficulty: difficulty });
+              this.getNewQuestion();
+            }}
           />
         );
       case Train.STATE_PLAY:
