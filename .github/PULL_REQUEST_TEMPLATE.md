@@ -11,8 +11,9 @@
 - [ ] Updated [Wiki](https://github.com/ValFraNath/apothiquiz/wiki)
 
 ## Screenshots
+
 <!-- Remove if useless -->
 
-      Light theme           |       Dark theme
-:--------------------------:|:-------------------------:
-    Drop image here         |     Drop image here
+|   Light theme   |   Dark theme    |
+| :-------------: | :-------------: |
+| Drop image here | Drop image here |
