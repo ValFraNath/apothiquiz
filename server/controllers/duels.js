@@ -39,7 +39,9 @@ async function create(req, res) {
     const username = req.body._auth.user;
     const { opponent } = req.body;
     const { system } = req.body;
-    const { difficulty } = req.body;
+    let { difficulty } = req.body;
+    difficulty === 1 ? (difficulty = "ALL") : (difficulty = "EASY");
+
     const filters = { system: system, difficulty: difficulty };
 
     if (!opponent) {

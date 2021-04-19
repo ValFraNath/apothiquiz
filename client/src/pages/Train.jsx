@@ -14,8 +14,8 @@ import InformationPilette from "../images/information_crop.png";
 /* ---------- Introduction view ---------- */
 
 const IntroductionView = ({ onClick }) => {
-  const [system, setSystem] = useState("Tout");
-  const [difficulty, setDifficulty] = useState("EASY");
+  const [system, setSystem] = useState(0);
+  const [difficulty, setDifficulty] = useState(1);
   const [dataSystems, setData] = useState([]);
 
   useEffect(() => {
@@ -29,8 +29,13 @@ const IntroductionView = ({ onClick }) => {
   const changeSystem = (event) => setSystem(event.target.value);
   const changeDifficulty = (event) => setDifficulty(event.target.value);
 
-  const systems = Object.keys(dataSystems).map((key) => dataSystems[key].sy_name);
-  systems.push("Tout");
+  const systems = dataSystems.reduce(
+    (acc, value) => {
+      acc[value.sy_id] = value.sy_name;
+      return acc;
+    },
+    { 0: "Tout" }
+  );
 
   return (
     <>
@@ -46,13 +51,13 @@ const IntroductionView = ({ onClick }) => {
             onChange={changeDifficulty}
             type="radio"
             name="difficulty"
-            value="EASY"
+            value={0}
             checked={true}
           />
           Débutant
         </label>
         <label>
-          <input onChange={changeDifficulty} type="radio" name="difficulty" value="ALL" />
+          <input onChange={changeDifficulty} type="radio" name="difficulty" value={1} />
           Expert
         </label>
         <br />
@@ -60,9 +65,9 @@ const IntroductionView = ({ onClick }) => {
 
         <h2>Sélection des systèmes : </h2>
         <select onChange={changeSystem}>
-          {systems.map((value) => (
-            <option key={value} value={value}>
-              {value}
+          {Object.keys(systems).map((id) => (
+            <option key={id} value={id}>
+              {systems[id]}
             </option>
           ))}
           ;

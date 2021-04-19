@@ -2,8 +2,7 @@
 --                  TYPE 1  : 1 class - 4 molecules 
 -- **************************************************************** 
 
-SET @system = ?;
-SET @idparent = (SELECT sy_id FROM system WHERE sy_name = @system); 
+SET @idparent = ?;
 SET @difficulty = ?;
 CREATE TEMPORARY TABLE classes_by_molecule(
        mo_id int(11),
@@ -24,7 +23,7 @@ INSERT INTO classes_by_molecule(
             molecule.mo_dci
         FROM class JOIN molecule 
         	ON mo_class = cl_id JOIN system ON mo_system = sy_id
-        WHERE (@idparent = sy_higher OR sy_id = @idparent OR @system = "Tout")  AND (mo_difficulty = @difficulty OR @difficulty = "ALL")
+        WHERE (@idparent = sy_higher OR sy_id = @idparent OR @idparent = 0)  AND (mo_difficulty = @difficulty OR @difficulty = "ALL")
         
         
         UNION ALL

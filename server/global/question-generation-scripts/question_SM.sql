@@ -1,8 +1,7 @@
 -- **************************************************************** 
 --                  TYPE 3  : 1 system - 4 molécule
 -- **************************************************************** 
-SET @system = ?;
-SET @idparent = (SELECT sy_id FROM system WHERE sy_name = @system); 
+SET @idparent = ?;
 SET @difficulty = ?;
 CREATE TEMPORARY TABLE systems_by_molecule(
        mo_id int(11),
@@ -23,7 +22,7 @@ INSERT INTO systems_by_molecule(
             molecule.mo_dci
         FROM system JOIN molecule 
         	ON molecule.mo_system = sy_id
-        WHERE (@idparent = sy_higher OR sy_id = @idparent OR @system = "Tout") AND (molecule.mo_difficulty = @difficulty OR @difficulty = "ALL")
+        WHERE (@idparent = sy_higher OR sy_id = @idparent OR @idparent = 0) AND (molecule.mo_difficulty = @difficulty OR @difficulty = "ALL")
         
         
         UNION ALL

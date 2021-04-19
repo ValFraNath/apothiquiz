@@ -18,8 +18,8 @@ const DuelCreate = ({ history }) => {
 
   const { data: listOfUsers, isSuccess, isError } = useQuery(["users", "challengeable"]);
 
-  const [system, setSystem] = useState("Tout");
-  const [difficulty, setDifficulty] = useState("EASY");
+  const [system, setSystem] = useState(0);
+  const [difficulty, setDifficulty] = useState(1);
   const [dataSystems, setData] = useState([]);
 
   const changeSystem = (event) => setSystem(event.target.value);
@@ -33,8 +33,13 @@ const DuelCreate = ({ history }) => {
     createData();
   }, []);
 
-  const systems = Object.keys(dataSystems).map((key) => dataSystems[key].sy_name);
-  systems.push("Tout");
+  const systems = dataSystems.reduce(
+    (acc, value) => {
+      acc[value.sy_id] = value.sy_name;
+      return acc;
+    },
+    { 0: "Tout" }
+  );
 
   if (isError) {
     return <PageError message="Erreur lors du chargement de la page" />;
@@ -110,17 +115,11 @@ const DuelCreate = ({ history }) => {
         <div id="filtres">
           <h2> Niveau des questions : </h2>
           <label>
-            <input
-              onChange={changeDifficulty}
-              type="radio"
-              name="difficulty"
-              value="EASY"
-              checked={true}
-            />
+            <input onChange={changeDifficulty} type="radio" name="difficulty" value={0} />
             Débutant
           </label>
           <label>
-            <input onChange={changeDifficulty} type="radio" name="difficulty" value="ALL" />
+            <input onChange={changeDifficulty} type="radio" name="difficulty" value={1} />
             Expert
           </label>
           <br />
@@ -128,9 +127,9 @@ const DuelCreate = ({ history }) => {
 
           <h2>Sélection des systèmes : </h2>
           <select onChange={changeSystem}>
-            {systems.map((value) => (
-              <option key={value} value={value}>
-                {value}
+            {Object.keys(systems).map((id) => (
+              <option key={id} value={id}>
+                {systems[id]}
               </option>
             ))}
             ;
