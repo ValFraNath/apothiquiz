@@ -68,7 +68,10 @@ const IntroductionView = ({ onClick }) => {
           ;
         </select>
       </div>
-      <ButtonDefault onClick={onClick(system, difficulty)}> Lancer l'entraînement </ButtonDefault>
+      <ButtonDefault onClick={() => onClick(system, difficulty)}>
+        {" "}
+        Lancer l'entraînement{" "}
+      </ButtonDefault>
     </>
   );
 };
@@ -269,8 +272,8 @@ class Train extends Component {
       result: { good: [], bad: [] },
       error: null,
       questionNum: 0,
-      system: "Tout",
-      difficulty: "ALL",
+      system: null,
+      difficulty: null,
     };
   }
 
