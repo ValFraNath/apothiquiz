@@ -14,7 +14,7 @@ INSERT INTO properties_by_molecule
 SELECT mo_id, mo_dci, pv_id, pv_name 
 FROM molecule_property NATURAL JOIN property_value 
 JOIN property ON pr_id = pv_property NATURAL JOIN molecule m JOIN system ON sy_id = m.mo_system
-WHERE pr_name = @property AND (@idparent = sy_higher OR sy_id = @idparent OR @idparent is null) AND (m.mo_difficulty = @difficulty OR @difficulty = "ALL")
+WHERE pr_name = @property AND (@idparent = sy_higher OR sy_id = @idparent OR @idparent is null) AND (m.mo_difficulty = @difficulty OR @difficulty = 2)
 ORDER BY RAND();
 
 

@@ -109,7 +109,7 @@ export class Molecule {
     this.dci = this.getUniquePropertyValue("dci", row, structure);
     this.skeletalFormula = this.getUniquePropertyValue("skeletalFormula", row, structure);
     this.ntr = this.getUniquePropertyValue("ntr", row, structure);
-    this.difficulty = this.getUniquePropertyValue("levelEasy", row, structure) ? "EASY" : "HARD";
+    this.difficulty = this.getUniquePropertyValue("levelEasy", row, structure) ? 0 : 1;
 
     this.indications = this.getMultivaluedPropertyValuesIds("indications", row, structure, data);
     this.interactions = this.getMultivaluedPropertyValuesIds("interactions", row, structure, data);

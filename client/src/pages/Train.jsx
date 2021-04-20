@@ -15,7 +15,7 @@ import InformationPilette from "../images/information_crop.png";
 
 const IntroductionView = ({ onClick }) => {
   const [system, setSystem] = useState(null);
-  const [difficulty, setDifficulty] = useState(1);
+  const [difficulty, setDifficulty] = useState(2);
   const [systemsList, setSystemsList] = useState([]);
 
   useEffect(() => {
@@ -57,7 +57,7 @@ const IntroductionView = ({ onClick }) => {
           Débutant
         </label>
         <label>
-          <input onChange={changeDifficulty} type="radio" name="difficulty" value={1} />
+          <input onChange={changeDifficulty} type="radio" name="difficulty" value={2} />
           Expert
         </label>
 

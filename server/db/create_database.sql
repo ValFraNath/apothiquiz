@@ -79,7 +79,7 @@ DROP TABLE IF EXISTS `molecule`;
 CREATE TABLE IF NOT EXISTS `molecule` (
   `mo_id` int(11) NOT NULL AUTO_INCREMENT,
   `mo_dci` varchar(128) COLLATE utf8_bin NOT NULL,
-  `mo_difficulty` enum('HARD','EASY') COLLATE utf8_bin NOT NULL DEFAULT 'EASY',
+  `mo_difficulty` int(11) NOT NULL DEFAULT 0,
   `mo_skeletal_formula` varchar(64) COLLATE utf8_bin NOT NULL,
   `mo_ntr` tinyint(1) NOT NULL,
   `mo_class` int(11) DEFAULT NULL,
