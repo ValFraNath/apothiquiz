@@ -5,6 +5,7 @@ import { useQuery, useQueryClient } from "react-query";
 
 import Avatar from "../components/Avatar";
 import ButtonFullWidth from "../components/buttons/ButtonFullWidth";
+import Filters from "../components/quiz/Filters";
 import FloatingError from "../components/status/FloatingError";
 import Loading from "../components/status/Loading";
 import PageError from "../components/status/PageError";
@@ -112,33 +113,13 @@ const DuelCreate = ({ history }) => {
         ) : (
           <></>
         )}
-        <div id="filtres">
-          <h2> Niveau des questions : </h2>
-          <label>
-            <input
-              onChange={changeDifficulty}
-              type="radio"
-              name="difficulty"
-              value={0}
-              defaultChecked={true}
-            />
-            Débutant
-          </label>
-          <label>
-            <input onChange={changeDifficulty} type="radio" name="difficulty" value={2} />
-            Expert
-          </label>
-
-          <h2>Sélection des systèmes : </h2>
-          <select onChange={changeSystem}>
-            {Object.keys(systems).map((id) => (
-              <option key={id} value={id}>
-                {systems[id]}
-              </option>
-            ))}
-            ;
-          </select>
-        </div>
+        {
+          <Filters
+            changeDifficulty={changeDifficulty}
+            changeSystem={changeSystem}
+            systems={systems}
+          />
+        }
       </section>
 
       <section>

@@ -27,10 +27,21 @@
         margin-bottom: 0.3rem;
       }
 
+      #about {
+        font-size: 1rem;
+      }
+    }
+
+    button {
+      margin: auto;
+    }
+
+    #filters {
+      text-align: center;
       h2 {
         font-size: 1.3rem;
-        padding-top: 0.8rem;
-        margin-bottom: 0.3rem;
+        margin-bottom: 0.5rem;
+        padding-top: 0.6rem;
       }
 
       select {
@@ -43,16 +54,7 @@
         cursor: pointer;
         line-height: 1.1;
         background-color: #fff;
-        background-image: linear-gradient(to top, #f9f9f9, #fff 33%);
       }
-
-      #about {
-        font-size: 1rem;
-      }
-    }
-
-    button {
-      margin: auto;
     }
   }
 

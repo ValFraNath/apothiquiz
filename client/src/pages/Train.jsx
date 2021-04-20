@@ -6,6 +6,7 @@ import React, { Component, useState, useEffect } from "react";
 import ButtonCircle from "../components/buttons/ButtonCircle";
 import ButtonDefault from "../components/buttons/ButtonDefault";
 import Answers from "../components/quiz/Answers";
+import Filters from "../components/quiz/Filters";
 import Question from "../components/quiz/Question";
 import Timer from "../components/quiz/Timer";
 import PageError from "../components/status/PageError.jsx";
@@ -44,32 +45,13 @@ const IntroductionView = ({ onClick }) => {
         <h1>Mode entraînement</h1>
         <p id="about">Répondez à une série de questions aléatoire.</p>
         <br />
-
-        <h2> Niveau des questions : </h2>
-        <label>
-          <input
-            onChange={changeDifficulty}
-            type="radio"
-            name="difficulty"
-            value={0}
-            defaultChecked={true}
+        {
+          <Filters
+            changeDifficulty={changeDifficulty}
+            changeSystem={changeSystem}
+            systems={systems}
           />
-          Débutant
-        </label>
-        <label>
-          <input onChange={changeDifficulty} type="radio" name="difficulty" value={2} />
-          Expert
-        </label>
-
-        <h2>Sélection des systèmes : </h2>
-        <select onChange={changeSystem}>
-          {Object.keys(systems).map((id) => (
-            <option key={id} value={id}>
-              {systems[id]}
-            </option>
-          ))}
-          ;
-        </select>
+        }
       </div>
       <ButtonDefault onClick={() => onClick(system, difficulty)}>
         Lancer l'entraînement
