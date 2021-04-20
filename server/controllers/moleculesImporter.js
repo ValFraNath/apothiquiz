@@ -163,7 +163,7 @@ async function importMolecules(req, res) {
  *
  * @apiSuccessExample Success-Response:
  *  {
-      "url": "https://guacamole.com/files/molecules/molecules_1612279095021.csv",
+      "url": "https://apothiquiz.com/files/molecules/molecules_1612279095021.csv",
       "shortpath" : "/files/molecules/molecules_1612279095021.csv",
       "file" : "molecules_1612279095021.csv"
     }

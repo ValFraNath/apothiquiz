@@ -6,7 +6,7 @@ main#informations {
   padding: 10px;
 
   text-align: center;
-  line-height: 1.1;
+  line-height: 1.2;
 
   p {
     margin: 1rem auto;
@@ -16,6 +16,14 @@ main#informations {
   #app-version {
     margin: 0.5rem auto;
     font-size: 0.9rem;
+
+    li {
+      margin-top: 0.3rem;
+
+      a {
+        color: inherit;
+      }
+    }
   }
 
   #credits {

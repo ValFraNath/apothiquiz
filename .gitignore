@@ -2,7 +2,6 @@
 node_modules/
 wiki
 server/.env
-rapport-guacamole/
 .eslintcache
 server/logs/
 server/files/

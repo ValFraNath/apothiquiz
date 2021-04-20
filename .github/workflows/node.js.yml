@@ -55,8 +55,8 @@ jobs:
         uses: getong/mariadb-action@v1.1
         with:
           mariadb version: "10.4.10"
-          mysql database: "guacamoleTestDb"
-          mysql user: "guacamoleUser"
+          mysql database: "apothiquizTestDb"
+          mysql user: "apothiquizUser"
           mysql password: ${{ secrets.CI_DATABASE_PASS }}
 
       - run: npm ci
@@ -76,9 +76,9 @@ jobs:
           echo "ACCESS_TOKEN_KEY=TMP_ACCESS_KEY" >> .env; \
           echo "REFRESH_TOKEN_KEY=TMP_REFRESH_KEY" >> .env; \
           echo "DB_HOST=localhost" >> .env; \
-          echo "DB_USER=guacamoleUser" >> .env; \
+          echo "DB_USER=apothiquizUser" >> .env; \
           echo "DB_PASSWORD=p@ssword" >> .env; \
-          echo "DB_DATABASE_TEST=guacamoleTestDb" >> .env; \
+          echo "DB_DATABASE_TEST=apothiquizTestDb" >> .env; \
 
         working-directory: ./server
 
