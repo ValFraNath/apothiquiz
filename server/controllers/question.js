@@ -117,7 +117,7 @@ async function generateQuestion(req, res) {
   const { system } = req.query;
   let { difficulty } = req.query;
 
-  difficulty === 1 ? (difficulty = "ALL") : (difficulty = "EASY");
+  difficulty === "1" ? (difficulty = "ALL") : (difficulty = "EASY");
 
   const generateQuestion = createGeneratorOfType(type, system, difficulty);
 
@@ -171,7 +171,7 @@ const scriptsFolderPath = path.resolve("global", "question-generation-scripts");
  * @param {String} difficulty Question difficulty
  * @return {Promise<object>} The question
  */
-async function queryQuestion(filename, type, system = 0, difficulty = "ALL", before = "") {
+async function queryQuestion(filename, type, system = null, difficulty = "ALL", before = "") {
   const script = await fs.readFile(path.resolve(scriptsFolderPath, filename), {
     encoding: "utf-8",
   });

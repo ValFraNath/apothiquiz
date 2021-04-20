@@ -14,14 +14,14 @@ import InformationPilette from "../images/information_crop.png";
 /* ---------- Introduction view ---------- */
 
 const IntroductionView = ({ onClick }) => {
-  const [system, setSystem] = useState(0);
+  const [system, setSystem] = useState(null);
   const [difficulty, setDifficulty] = useState(1);
-  const [dataSystems, setData] = useState([]);
+  const [systemsList, setSystemsList] = useState([]);
 
   useEffect(() => {
     async function createData() {
       const result = await axios.get(`/api/v1/chemicals/systems`);
-      setData(result.data);
+      setSystemsList(result.data);
     }
     createData();
   }, []);
@@ -29,12 +29,12 @@ const IntroductionView = ({ onClick }) => {
   const changeSystem = (event) => setSystem(event.target.value);
   const changeDifficulty = (event) => setDifficulty(event.target.value);
 
-  const systems = dataSystems.reduce(
+  const systems = systemsList.reduce(
     (acc, value) => {
       acc[value.sy_id] = value.sy_name;
       return acc;
     },
-    { 0: "Tout" }
+    { null: "Tout" }
   );
 
   return (
@@ -52,7 +52,7 @@ const IntroductionView = ({ onClick }) => {
             type="radio"
             name="difficulty"
             value={0}
-            checked={true}
+            defaultChecked={true}
           />
           Débutant
         </label>
@@ -60,8 +60,6 @@ const IntroductionView = ({ onClick }) => {
           <input onChange={changeDifficulty} type="radio" name="difficulty" value={1} />
           Expert
         </label>
-        <br />
-        <br />
 
         <h2>Sélection des systèmes : </h2>
         <select onChange={changeSystem}>
@@ -283,8 +281,6 @@ class Train extends Component {
 
   /**
    * Get a new question (random type) from the server
-   * @param {String} system Molecular system
-   * @param {String} difficulty Question difficulty
    * @param {number} nthRetry The number of attempts
    * @param {Array} prevType Previous types of attempts
    */
@@ -364,10 +360,10 @@ class Train extends Component {
       case Train.STATE_INTRO:
         return (
           <IntroductionView
-            onClick={(system, difficulty) => {
-              this.setState({ system: system });
-              this.setState({ difficulty: difficulty });
-              this.getNewQuestion();
+            onClick={(systemF, difficultyF) => {
+              this.setState({ system: systemF, difficulty: difficultyF }, () =>
+                this.getNewQuestion()
+              );
             }}
           />
         );

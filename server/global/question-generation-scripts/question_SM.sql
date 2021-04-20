@@ -22,7 +22,7 @@ INSERT INTO systems_by_molecule(
             molecule.mo_dci
         FROM system JOIN molecule 
         	ON molecule.mo_system = sy_id
-        WHERE (@idparent = sy_higher OR sy_id = @idparent OR @idparent = 0) AND (molecule.mo_difficulty = @difficulty OR @difficulty = "ALL")
+        WHERE (@idparent = sy_higher OR sy_id = @idparent OR @idparent is null) AND (molecule.mo_difficulty = @difficulty OR @difficulty = "ALL")
         
         
         UNION ALL

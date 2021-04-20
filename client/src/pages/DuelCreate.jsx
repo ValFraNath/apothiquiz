@@ -18,9 +18,9 @@ const DuelCreate = ({ history }) => {
 
   const { data: listOfUsers, isSuccess, isError } = useQuery(["users", "challengeable"]);
 
-  const [system, setSystem] = useState(0);
+  const [system, setSystem] = useState(null);
   const [difficulty, setDifficulty] = useState(1);
-  const [dataSystems, setData] = useState([]);
+  const [systemsList, setSystemsList] = useState([]);
 
   const changeSystem = (event) => setSystem(event.target.value);
   const changeDifficulty = (event) => setDifficulty(event.target.value);
@@ -28,17 +28,17 @@ const DuelCreate = ({ history }) => {
   useEffect(() => {
     async function createData() {
       const result = await axios.get(`/api/v1/chemicals/systems`);
-      setData(result.data);
+      setSystemsList(result.data);
     }
     createData();
   }, []);
 
-  const systems = dataSystems.reduce(
+  const systems = systemsList.reduce(
     (acc, value) => {
       acc[value.sy_id] = value.sy_name;
       return acc;
     },
-    { 0: "Tout" }
+    { null: "Tout" }
   );
 
   if (isError) {
@@ -84,7 +84,7 @@ const DuelCreate = ({ history }) => {
           onChange={(event) => {
             event.target.value === "" ? setSearch(null) : setSearch(true);
             setSelected(null);
-            setSearchRegex(new RegExp(event.target.value, "y"));
+            setSearchRegex(new RegExp(event.target.value, "yi"));
           }}
         ></input>
       </section>
@@ -115,15 +115,19 @@ const DuelCreate = ({ history }) => {
         <div id="filtres">
           <h2> Niveau des questions : </h2>
           <label>
-            <input onChange={changeDifficulty} type="radio" name="difficulty" value={0} />
+            <input
+              onChange={changeDifficulty}
+              type="radio"
+              name="difficulty"
+              value={0}
+              defaultChecked={true}
+            />
             Débutant
           </label>
           <label>
             <input onChange={changeDifficulty} type="radio" name="difficulty" value={1} />
             Expert
           </label>
-          <br />
-          <br />
 
           <h2>Sélection des systèmes : </h2>
           <select onChange={changeSystem}>

@@ -43,6 +43,29 @@ main#create-duel {
         padding: 0.9rem 1.6rem;
       }
     }
+
+    #filtres {
+      text-align: center;
+    }
+
+    h2 {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+      padding-top: 1rem;
+    }
+
+    select {
+      min-width: 15ch;
+      max-width: 30ch;
+      border: 1px solid black;
+      border-radius: 0.25em;
+      padding: 0.25em 0.5em;
+      font-size: 0.9rem;
+      cursor: pointer;
+      line-height: 1.1;
+      background-color: #fff;
+      background-image: linear-gradient(to top, #f9f9f9, #fff 33%);
+    }
   }
 
   li {
@@ -62,29 +85,6 @@ main#create-duel {
       font-size: 1.1rem;
       margin-left: 0.8rem;
     }
-  }
-
-  #filtres {
-    text-align: center;
-  }
-
-  h2 {
-    font-size: 1.1rem;
-    margin-bottom: 0.5rem;
-    padding-top: 1rem;
-  }
-
-  select {
-    min-width: 15ch;
-    max-width: 30ch;
-    border: 1px solid black;
-    border-radius: 0.25em;
-    padding: 0.25em 0.5em;
-    font-size: 0.9rem;
-    cursor: pointer;
-    line-height: 1.1;
-    background-color: #fff;
-    background-image: linear-gradient(to top, #f9f9f9, #fff 33%);
   }
 }
 

@@ -5,7 +5,7 @@ SET @idparent = ?;
 SET @difficulty = ?;
 SET @good = (SELECT mo_id
              FROM molecule INNER JOIN system ON sy_id = mo_system
-             WHERE mo_image IS NOT NULL AND (@idparent = sy_higher OR sy_id = @idparent OR @idparent = 0) AND (mo_difficulty = @difficulty OR @difficulty = "ALL")
+             WHERE mo_image IS NOT NULL AND (@idparent = sy_higher OR sy_id = @idparent OR @idparent is null) AND (mo_difficulty = @difficulty OR @difficulty = "ALL")
              ORDER BY RAND()
              LIMIT 1);
              
@@ -19,7 +19,7 @@ SELECT (SELECT mo_image
 FROM molecule INNER JOIN system ON sy_id = mo_system   
 WHERE mo_image IS NOT NULL
 AND mo_id <> @good
-AND (@idparent = sy_higher OR sy_id = @idparent OR @idparent = 0)  AND (mo_difficulty = @difficulty OR @difficulty = "ALL")
+AND (@idparent = sy_higher OR sy_id = @idparent OR @idparent is null)  AND (mo_difficulty = @difficulty OR @difficulty = "ALL")
 ORDER BY RAND()
 LIMIT 3
         
