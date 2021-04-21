@@ -7,12 +7,13 @@
 
 - [ ] New item
 - [ ] If my PR introduces UI changes, I have tested them on both light and dark themes
-- [ ] Updated [API documentation](https://github.com/ValFraNath/guacamole-api-docs)
-- [ ] Updated [Wiki](https://github.com/ValFraNath/guacamole/wiki)
+- [ ] Updated [API documentation](https://github.com/ValFraNath/apothiquiz-api-docs)
+- [ ] Updated [Wiki](https://github.com/ValFraNath/apothiquiz/wiki)
 
 ## Screenshots
+
 <!-- Remove if useless -->
 
-      Light theme           |       Dark theme
-:--------------------------:|:-------------------------:
-    Drop image here         |     Drop image here
+|   Light theme   |   Dark theme    |
+| :-------------: | :-------------: |
+| Drop image here | Drop image here |
