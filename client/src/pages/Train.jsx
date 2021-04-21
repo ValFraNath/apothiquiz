@@ -1,7 +1,7 @@
 import { ArrowRightIcon, CheckCircledIcon, CrossCircledIcon, ExitIcon } from "@modulz/radix-icons";
 import axios from "axios";
 import PropTypes from "prop-types";
-import React, { Component, useState, useEffect } from "react";
+import React, { Component, useState } from "react";
 
 import ButtonCircle from "../components/buttons/ButtonCircle";
 import ButtonDefault from "../components/buttons/ButtonDefault";
@@ -17,26 +17,9 @@ import InformationPilette from "../images/information_crop.png";
 const IntroductionView = ({ onClick }) => {
   const [system, setSystem] = useState(null);
   const [difficulty, setDifficulty] = useState(2);
-  const [systemsList, setSystemsList] = useState([]);
-
-  useEffect(() => {
-    async function createData() {
-      const result = await axios.get(`/api/v1/chemicals/systems`);
-      setSystemsList(result.data);
-    }
-    createData();
-  }, []);
 
   const changeSystem = (event) => setSystem(event.target.value);
   const changeDifficulty = (event) => setDifficulty(event.target.value);
-
-  const systems = systemsList.reduce(
-    (acc, value) => {
-      acc[value.sy_id] = value.sy_name;
-      return acc;
-    },
-    { null: "Tout" }
-  );
 
   return (
     <>
@@ -45,13 +28,7 @@ const IntroductionView = ({ onClick }) => {
         <h1>Mode entraînement</h1>
         <p id="about">Répondez à une série de questions aléatoire.</p>
         <br />
-        {
-          <Filters
-            changeDifficulty={changeDifficulty}
-            changeSystem={changeSystem}
-            systems={systems}
-          />
-        }
+        {<Filters changeDifficulty={changeDifficulty} changeSystem={changeSystem} />}
       </div>
       <ButtonDefault onClick={() => onClick(system, difficulty)}>
         Lancer l'entraînement

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { PropTypes } from "prop-types";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useQuery, useQueryClient } from "react-query";
 
 import Avatar from "../components/Avatar";
@@ -21,26 +21,9 @@ const DuelCreate = ({ history }) => {
 
   const [system, setSystem] = useState(null);
   const [difficulty, setDifficulty] = useState(2);
-  const [systemsList, setSystemsList] = useState([]);
 
   const changeSystem = (event) => setSystem(event.target.value);
   const changeDifficulty = (event) => setDifficulty(event.target.value);
-
-  useEffect(() => {
-    async function createData() {
-      const result = await axios.get(`/api/v1/chemicals/systems`);
-      setSystemsList(result.data);
-    }
-    createData();
-  }, []);
-
-  const systems = systemsList.reduce(
-    (acc, value) => {
-      acc[value.sy_id] = value.sy_name;
-      return acc;
-    },
-    { null: "Tout" }
-  );
 
   if (isError) {
     return <PageError message="Erreur lors du chargement de la page" />;
@@ -113,13 +96,7 @@ const DuelCreate = ({ history }) => {
         ) : (
           <></>
         )}
-        {
-          <Filters
-            changeDifficulty={changeDifficulty}
-            changeSystem={changeSystem}
-            systems={systems}
-          />
-        }
+        {<Filters changeDifficulty={changeDifficulty} changeSystem={changeSystem} />}
       </section>
 
       <section>

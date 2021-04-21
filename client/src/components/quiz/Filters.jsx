@@ -1,7 +1,25 @@
+import axios from "axios";
 import PropTypes from "prop-types";
-import React from "react";
+import React, { useState, useEffect } from "react";
 
-const Filters = ({ changeDifficulty, changeSystem, systems }) => {
+const Filters = ({ changeDifficulty, changeSystem }) => {
+  const [systemsList, setSystemsList] = useState([]);
+  useEffect(() => {
+    async function createData() {
+      const result = await axios.get(`/api/v1/chemicals/systems`);
+      setSystemsList(result.data);
+    }
+    createData();
+  }, []);
+
+  const systems = systemsList.reduce(
+    (acc, value) => {
+      acc[value.sy_id] = value.sy_name;
+      return acc;
+    },
+    { null: "Tout" }
+  );
+
   return (
     <div id="filters">
       <h2> Niveau des questions : </h2>
@@ -36,7 +54,6 @@ const Filters = ({ changeDifficulty, changeSystem, systems }) => {
 Filters.propTypes = {
   changeDifficulty: PropTypes.func.isRequired,
   changeSystem: PropTypes.func.isRequired,
-  systems: PropTypes.object.isRequired,
 };
 
 export default Filters;
