@@ -1,24 +1,10 @@
-import axios from "axios";
 import PropTypes from "prop-types";
-import React, { useState, useEffect } from "react";
+import React from "react";
+import { useQuery } from "react-query";
 
 const Filters = ({ changeDifficulty, changeSystem }) => {
-  const [systemsList, setSystemsList] = useState([]);
-  useEffect(() => {
-    async function createData() {
-      const result = await axios.get(`/api/v1/chemicals/systems`);
-      setSystemsList(result.data);
-    }
-    createData();
-  }, []);
-
-  const systems = systemsList.reduce(
-    (acc, value) => {
-      acc[value.sy_id] = value.sy_name;
-      return acc;
-    },
-    { null: "Tout" }
-  );
+  const { data: systems } = useQuery(["chemicals", "systems"]);
+  console.log(systems);
 
   return (
     <div id="filters">

@@ -1,5 +1,6 @@
 import { QueryClient } from "react-query";
 
+import { getChemicalSystems } from "./queryChemicals";
 import { getAllDuels } from "./queryDuels";
 import { getChallengeableUsers, makeGetUserInfo } from "./queryUsers";
 
@@ -41,6 +42,11 @@ queryClient.setQueryDefaults(["users", "challengeable"], {
   queryFn: getChallengeableUsers,
   staleTime: 60 * 1000,
   refetchOnMount: "always",
+});
+
+queryClient.setQueryDefaults(["chemicals", "systems"], {
+  queryFn: getChemicalSystems,
+  staleTime: 60 * 1000,
 });
 
 export default queryClient;
