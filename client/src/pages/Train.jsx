@@ -16,7 +16,7 @@ import InformationPilette from "../images/information_crop.png";
 
 const IntroductionView = ({ onClick }) => {
   const [system, setSystem] = useState(null);
-  const [difficulty, setDifficulty] = useState(2);
+  const [difficulty, setDifficulty] = useState(0);
 
   const changeSystem = (event) => setSystem(event.target.value);
   const changeDifficulty = (event) => setDifficulty(event.target.value);

@@ -263,10 +263,10 @@ async function getInfos(req, res) {
  * @apiName   PatchUserInformations
  * @apiGroup  User
  * @apiDescription At least one field must be filled
- 
+
  * @apiPermission LoggedIn
  * @apiPermission (for the moment, users can only update themselves)
- * 
+ *
  * @apiParam {string}             [pseudo]            ENT login
  * @apiParam {Object}             [avatar]            Avatar object
  * @apiParam {string{7}=hexColor} avatar.colorBG      Hex background color
@@ -281,7 +281,7 @@ async function getInfos(req, res) {
  * @apiUse ErrorBadRequest
  * @apiError (404) NotFound   User not found
  * @apiUse ErrorServer
- * 
+ *
  * @param {express.Request} req The http request
  * @param {HttpResponseWrapper} res The http response
  */
@@ -346,8 +346,8 @@ async function isUserAdmin(login) {
  * @returns {Promise<boolean>} True if the user exists, false otherwise
  */
 async function doesUserExist(login) {
-  const sql = `SELECT COUNT(*) as found 
-                  FROM user                
+  const sql = `SELECT COUNT(*) as found
+                  FROM user
                   WHERE us_login = ?
                   AND us_deleted IS NULL;`;
 
@@ -372,8 +372,8 @@ function queryCAS(login, pass) {
  * @returns {Promise}
  */
 async function updateUserAvatar(user, avatar) {
-  const sql = `UPDATE user 
-                  SET us_avatar = ?      
+  const sql = `UPDATE user
+                  SET us_avatar = ?
                   WHERE us_login = ?;`;
 
   await queryPromise(sql, [JSON.stringify(avatar), user]);
@@ -385,12 +385,12 @@ async function updateUserAvatar(user, avatar) {
  * @return {Object|null} user informations or null if user not found
  */
 async function getUserInformations(pseudo) {
-  const sql = `SELECT 
-                  us_login AS pseudo, 
-                  us_victories AS victories,    
-                  us_defeats AS defeats, 
-                  us_avatar AS avatar 
-                FROM user             
+  const sql = `SELECT
+                  us_login AS pseudo,
+                  us_victories AS victories,
+                  us_defeats AS defeats,
+                  us_avatar AS avatar
+                FROM user
                 WHERE us_login = ?
                 AND us_deleted IS NULL;`;
 

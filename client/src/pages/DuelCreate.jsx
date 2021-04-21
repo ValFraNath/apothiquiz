@@ -19,7 +19,7 @@ const DuelCreate = ({ history }) => {
   const { data: listOfUsers, isSuccess, isError } = useQuery(["users", "challengeable"]);
 
   const [system, setSystem] = useState(null);
-  const [difficulty, setDifficulty] = useState(2);
+  const [difficulty, setDifficulty] = useState(0);
 
   const changeSystem = (event) => setSystem(event.target.value);
   const changeDifficulty = (event) => setDifficulty(event.target.value);
