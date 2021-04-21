@@ -37,9 +37,7 @@ import { createGeneratorOfType, NotEnoughDataError, getAllQuestionTypes } from "
 async function create(req, res) {
   try {
     const username = req.body._auth.user;
-    const { opponent } = req.body;
-    const { system } = req.body;
-    let { difficulty } = req.body;
+    const { opponent, system, difficulty } = req.body;
 
     const filters = { system: system, difficulty: difficulty };
 
@@ -107,7 +105,7 @@ async function create(req, res) {
  * @apiSuccess {number}   rounds.round.goodAnswer     Index of the good answer - *if the round is played by the user*
  * @apiSuccess {number}   rounds.round.userAnswer     Index of the user answer - *if the round is played by the user*
  * @apiSuccess {number}   rounds.round.opponentAnswer Index of the opponent's answer - *if the round is played by the user & the opponent*
- * 
+ *
  *
  * @apiSuccessExample {object} Success-Response:
  * {
@@ -148,9 +146,9 @@ async function create(req, res) {
                         "subject": "ZANAMIVIR",
                         "wording": "À quelle classe appartient la molécule 'ZANAMIVIR' ?"
                         "answers": [
-                          "INHIBITEURS DE NEURAMINISASE", 
-                          "INHIBITEUR POLYMERASE NS5B", 
-                          "PHENICOLES", 
+                          "INHIBITEURS DE NEURAMINISASE",
+                          "INHIBITEUR POLYMERASE NS5B",
+                          "PHENICOLES",
                           "OXAZOLIDINONES"
                         ],
                         "goodAnswer": 0,

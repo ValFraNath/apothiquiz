@@ -114,8 +114,7 @@ const IMAGES_ROUTE = "files/images"; // For non-breaking spaces around French qu
  */
 async function generateQuestion(req, res) {
   const type = Number(req.params.type);
-  const { system } = req.query;
-  let { difficulty } = req.query;
+  const { system, difficulty } = req.query;
 
   const generateQuestion = createGeneratorOfType(type, system, difficulty);
 

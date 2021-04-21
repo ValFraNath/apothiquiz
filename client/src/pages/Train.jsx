@@ -241,18 +241,18 @@ class Train extends Component {
   /**
    * Get a new question (random type) from the server
    * @param {number} nthRetry The number of attempts
-   * @param {Array} prevType Previous types of attempts
+   * @param {Array} unavailableTypes Previous unavaible Types tested on attempts
    */
-  getNewQuestion = (nthRetry = 0, prevType = []) => {
+  getNewQuestion = (nthRetry = 0, unavailableTypes = []) => {
     const minQuestionType = 1,
       maxQuestionType = 12;
     let questionType =
       Math.floor(Math.random() * (maxQuestionType + 1 - minQuestionType)) + minQuestionType;
-    while (prevType.toString().indexOf(questionType) !== -1) {
+    while (unavailableTypes.toString().indexOf(questionType) !== -1) {
       questionType =
         Math.floor(Math.random() * (maxQuestionType + 1 - minQuestionType)) + minQuestionType;
     }
-    prevType.push(questionType.toString());
+    unavailableTypes.push(questionType.toString());
     axios
       .get(`/api/v1/question/${questionType}`, {
         params: {
@@ -272,7 +272,7 @@ class Train extends Component {
       })
       .catch((error) => {
         if (error.response?.status === 422 && nthRetry < 10) {
-          this.getNewQuestion(nthRetry + 1, prevType);
+          this.getNewQuestion(nthRetry + 1, unavailableTypes);
           return;
         }
         console.error(error);
