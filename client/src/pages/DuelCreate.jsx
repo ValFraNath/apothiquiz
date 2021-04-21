@@ -13,7 +13,6 @@ import PageError from "../components/status/PageError";
 const DuelCreate = ({ history }) => {
   const [searchRegex, setSearchRegex] = useState(null);
   const [selected, setSelected] = useState(null);
-  const [search, setSearch] = useState(null);
   const [error, setError] = useState(null);
   const queryClient = useQueryClient();
 
@@ -66,15 +65,16 @@ const DuelCreate = ({ history }) => {
           type="text"
           placeholder="Rechercher un utilisateur"
           onChange={(event) => {
-            event.target.value === "" ? setSearch(null) : setSearch(true);
             setSelected(null);
-            setSearchRegex(new RegExp(event.target.value, "yi"));
+            event.target.value === ""
+              ? setSearchRegex(null)
+              : setSearchRegex(new RegExp(event.target.value, "yi"));
           }}
         ></input>
       </section>
 
       <section>
-        {search ? (
+        {searchRegex !== null ? (
           <ul>
             {Object.keys(listOfUsers)
               .filter((pseudo) => !searchRegex || searchRegex.test(pseudo))
