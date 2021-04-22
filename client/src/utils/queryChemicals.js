@@ -6,7 +6,6 @@ import axios from "axios";
  */
 export async function getChemicalSystems() {
   const { data: result } = await axios.get("/api/v1/chemicals/systems");
-  console.log(result);
 
   const systems = result.reduce(
     (acc, value) => {

@@ -2,9 +2,12 @@ import PropTypes from "prop-types";
 import React from "react";
 import { useQuery } from "react-query";
 
+import Loading from "../status/Loading";
+
 const Filters = ({ changeDifficulty, changeSystem }) => {
-  const { data: systems } = useQuery(["chemicals", "systems"]);
-  console.log(systems);
+  const { data: systems, isSuccess } = useQuery(["chemicals", "systems"]);
+
+  if (!isSuccess) return <Loading />;
 
   return (
     <div id="filters">
