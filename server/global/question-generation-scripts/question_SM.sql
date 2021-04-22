@@ -1,6 +1,6 @@
--- **************************************************************** 
+-- ****************************************************************
 --                  TYPE 3  : 1 system - 4 molécule
--- **************************************************************** 
+-- ****************************************************************
 SET @idparent = ?;
 SET @difficulty = ?;
 CREATE TEMPORARY TABLE systems_by_molecule(
@@ -20,22 +20,22 @@ INSERT INTO systems_by_molecule(
             sy_level,
             molecule.mo_id,
             molecule.mo_dci
-        FROM system JOIN molecule 
+        FROM system JOIN molecule
         	ON molecule.mo_system = sy_id
-        WHERE (@idparent = sy_higher OR sy_id = @idparent OR @idparent is null) AND (molecule.mo_difficulty = @difficulty OR @difficulty = 2)
-        
-        
+        WHERE (@idparent = sy_higher OR sy_id = @idparent OR @idparent = 'null') AND (molecule.mo_difficulty = @difficulty OR @difficulty = 2)
+
+
         UNION ALL
-        
+
         SELECT parent.sy_id,
             parent.sy_name,
             parent.sy_higher,
             parent.sy_level,
             c.mo_id,
             c.mo_dci
-        FROM system parent INNER JOIN systemification c 
+        FROM system parent INNER JOIN systemification c
         	ON parent.sy_id = c.sy_higher
-        
+
     )
     SELECT  mo_id,
         mo_dci,
@@ -58,20 +58,20 @@ SET @system = ( SELECT C1.sy_id
                             AND C1.sy_id <> C2.sy_id  )
               	ORDER BY RAND()
               	LIMIT 1 );
-       
+
 
 -- Get a random molecule belonging to @system
 SET @good = ( SELECT mo_id
               FROM systems_by_molecule AS C
               WHERE C.sy_id = @system
               ORDER BY RAND()
-              LIMIT 1 ); 
+              LIMIT 1 );
 
--- Get the level of @system             
+-- Get the level of @system
 SET @level = (SELECT sy_level
               FROM system
-              WHERE sy_id = @system);                           
-             
+              WHERE sy_id = @system);
+
 
 -- Get 3 random molecules, belonging to @system siblings
 SELECT 	DISTINCT (SELECT mo_dci
@@ -86,7 +86,7 @@ WHERE C.sy_id <> @system
 AND ((@level > 1 AND C.sy_higher = ( SELECT sy_higher
               		FROM system
               		WHERE sy_id = @system ))
-OR (@level = 1 AND C.sy_level = 1)) 
+OR (@level = 1 AND C.sy_level = 1))
 ORDER BY RAND()
 LIMIT 3;
 

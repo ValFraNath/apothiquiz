@@ -9,6 +9,8 @@ const Filters = ({ changeDifficulty, changeSystem }) => {
 
   if (!isSuccess) return <Loading />;
 
+  console.log(systems);
+
   return (
     <div id="filters">
       <h2> Niveau des questions : </h2>

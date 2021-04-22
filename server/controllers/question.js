@@ -168,7 +168,7 @@ const scriptsFolderPath = path.resolve("global", "question-generation-scripts");
  * @param {String} difficulty Question difficulty
  * @return {Promise<object>} The question
  */
-async function queryQuestion(filename, type, system = null, difficulty = 2, before = "") {
+async function queryQuestion(filename, type, system = "null", difficulty = 2, before = "") {
   const script = await fs.readFile(path.resolve(scriptsFolderPath, filename), {
     encoding: "utf-8",
   });
