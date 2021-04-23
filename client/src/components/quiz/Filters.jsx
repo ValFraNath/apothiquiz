@@ -5,11 +5,9 @@ import { useQuery } from "react-query";
 import Loading from "../status/Loading";
 
 const Filters = ({ changeDifficulty, changeSystem }) => {
-  const { data: systems, isSuccess } = useQuery(["chemicals", "systems"]);
+  const { data: systems, isLoading } = useQuery(["chemicals", "systems"]);
 
-  if (!isSuccess) return <Loading />;
-
-  console.log(systems);
+  if (isLoading) return <Loading />;
 
   return (
     <div id="filters">
