@@ -9,7 +9,6 @@ import { queryPromise } from "../db/database.js";
 import { HttpResponseWrapper } from "../global/HttpControllerWrapper.js";
 import Tokens from "../global/Tokens.js";
 
-
 dotenv.config();
 
 /**
@@ -46,8 +45,11 @@ async function login(req, res) {
     return;
   }
 
-  const ldapauth = await queryLdap(userPseudo, userPassword);
-  if(ldapauth){
+  let auth;
+  process.env.NODE_ENV === "test"
+    ? (auth = queryMockedLdap(userPseudo, userPassword))
+    : (auth = await queryLdap(userPseudo, userPassword));
+  if (auth) {
     const isAdmin = await isUserAdmin(userPseudo);
     const refreshToken = await Tokens.createRefreshToken(userPseudo, isAdmin);
     const accessToken = Tokens.createAccessToken(refreshToken);
@@ -56,11 +58,10 @@ async function login(req, res) {
       accessToken,
       refreshToken,
       isAdmin,
-     });
+    });
+  } else {
+    res.sendUsageError(401, "Échec de l'authentification");
   }
- else {
-   res.sendUsageError(401, "Échec de l'authentification");
- }
 }
 
 /**
@@ -360,32 +361,44 @@ async function doesUserExist(login) {
 }
 
 /**
- * This funtion simulate the CAS authentication
+ * This funtion implements the LDAP authentication
  * @param {string} login The user login
  * @param {string} pass The user password
  * @returns {boolean} Boolean telling if the user is well authenticated
  */
 async function queryLdap(login, pass) {
-    // auth with regular user
-    const options = {
-      ldapOpts: {
-        url: 'ldap://ldap.univ-fcomte.fr',
-        // tlsOptions: { rejectUnauthorized: false }
-      },
-      userDn: `uid=${login},ou=people,dc=univ-fcomte,dc=fr`,
-      userPassword: `${pass}` ,
-      userSearchBase: 'ou=people,dc=univ-fcomte,dc=fr',
-      usernameAttribute: 'uid',
-      username: `${login}`,
-      // starttls: false
-    }
-    try {
-      let user = await authenticate(options);
-    }
-    catch(e) {
-      return false;
-    }
-    return true;
+  // auth with regular user
+  const options = {
+    ldapOpts: {
+      url: "ldap://ldap.univ-fcomte.fr",
+      // tlsOptions: { rejectUnauthorized: false }
+    },
+    userDn: `uid=${login},ou=people,dc=univ-fcomte,dc=fr`,
+    userPassword: `${pass}`,
+    userSearchBase: "ou=people,dc=univ-fcomte,dc=fr",
+    usernameAttribute: "uid",
+    username: `${login}`,
+    // starttls: false
+  };
+  try {
+    await authenticate(options);
+  } catch (e) {
+    return false;
+  }
+  return true;
+}
+
+/**
+ * Simulate user authentication
+ * @param {string} login The user login
+ * @param {string} pass The user password
+ * @returns {boolean} Boolean telling if the user is well authenticated
+ */
+function queryMockedLdap(login, pass) {
+  if (process.env.NODE_ENV !== "test") {
+    throw Error("Function not available outside of tests");
+  }
+  return pass === "1234";
 }
 
 /**
