@@ -4,7 +4,7 @@ import { useQuery } from "react-query";
 
 import Loading from "../status/Loading";
 
-const Filters = ({ changeDifficulty, changeSystem }) => {
+const Filters = ({ difficulty, changeDifficulty, changeSystem }) => {
   const { data: systems, isLoading } = useQuery(["chemicals", "systems"]);
 
   if (isLoading) return <Loading />;
@@ -26,21 +26,27 @@ const Filters = ({ changeDifficulty, changeSystem }) => {
         <input onChange={changeDifficulty} type="radio" name="difficulty" value={2} />
         Expert
       </label>
-
-      <h2>Sélection des systèmes : </h2>
-      <select onChange={changeSystem}>
-        {Object.keys(systems).map((id) => (
-          <option key={id} value={id}>
-            {systems[id]}
-          </option>
-        ))}
-        ;
-      </select>
+      {difficulty === 2 ? (
+        <>
+          <h2>Sélection des systèmes : </h2>
+          <select onChange={changeSystem} defaultValue={"null"}>
+            {Object.keys(systems).map((id) => (
+              <option key={id} value={id}>
+                {systems[id]}
+              </option>
+            ))}
+            ;
+          </select>
+        </>
+      ) : (
+        <></>
+      )}
     </div>
   );
 };
 
 Filters.propTypes = {
+  difficulty: PropTypes.number.isRequired,
   changeDifficulty: PropTypes.func.isRequired,
   changeSystem: PropTypes.func.isRequired,
 };

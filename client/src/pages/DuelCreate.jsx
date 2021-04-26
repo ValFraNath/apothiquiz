@@ -18,11 +18,14 @@ const DuelCreate = ({ history }) => {
 
   const { data: listOfUsers, isSuccess, isError } = useQuery(["users", "challengeable"]);
 
-  const [system, setSystem] = useState(null);
+  const [system, setSystem] = useState("null");
   const [difficulty, setDifficulty] = useState(0);
 
   const changeSystem = (event) => setSystem(event.target.value);
-  const changeDifficulty = (event) => setDifficulty(event.target.value);
+  const changeDifficulty = (event) => {
+    setDifficulty(parseInt(event.target.value));
+    setSystem("null");
+  };
 
   if (isError) {
     return <PageError message="Erreur lors du chargement de la page" />;
@@ -96,7 +99,13 @@ const DuelCreate = ({ history }) => {
         ) : (
           <></>
         )}
-        {<Filters changeDifficulty={changeDifficulty} changeSystem={changeSystem} />}
+        {
+          <Filters
+            difficulty={difficulty}
+            changeDifficulty={changeDifficulty}
+            changeSystem={changeSystem}
+          />
+        }
       </section>
 
       <section>

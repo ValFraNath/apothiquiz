@@ -15,11 +15,14 @@ import InformationPilette from "../images/information_crop.png";
 /* ---------- Introduction view ---------- */
 
 const IntroductionView = ({ onClick }) => {
-  const [system, setSystem] = useState(null);
+  const [system, setSystem] = useState("null");
   const [difficulty, setDifficulty] = useState(0);
 
   const changeSystem = (event) => setSystem(event.target.value);
-  const changeDifficulty = (event) => setDifficulty(event.target.value);
+  const changeDifficulty = (event) => {
+    setDifficulty(parseInt(event.target.value));
+    setSystem("null");
+  };
 
   return (
     <>
@@ -28,7 +31,13 @@ const IntroductionView = ({ onClick }) => {
         <h1>Mode entraînement</h1>
         <p id="about">Répondez à une série de questions aléatoire.</p>
         <br />
-        {<Filters changeDifficulty={changeDifficulty} changeSystem={changeSystem} />}
+        {
+          <Filters
+            difficulty={difficulty}
+            changeDifficulty={changeDifficulty}
+            changeSystem={changeSystem}
+          />
+        }
       </div>
       <ButtonDefault onClick={() => onClick(system, difficulty)}>
         Lancer l'entraînement
