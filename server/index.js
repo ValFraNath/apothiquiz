@@ -73,6 +73,8 @@ function checkEnv() {
     "DB_HOST",
     "DB_USER",
     "DB_PASSWORD",
+    "LDAP_URL",
+    "LDAP_DOMAIN",
     process.env.NODE_ENV === "test" ? "DB_DATABASE_TEST" : "DB_DATABASE",
   ];
   for (const key of keys) {

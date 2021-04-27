@@ -45,10 +45,10 @@ async function login(req, res) {
     return;
   }
 
-  let auth;
-  process.env.NODE_ENV === "test"
-    ? (auth = queryMockedLdap(userPseudo, userPassword))
-    : (auth = await queryLdap(userPseudo, userPassword));
+  const auth =
+    process.env.NODE_ENV === "test"
+      ? queryMockedLdap(userPseudo, userPassword)
+      : await queryLdap(userPseudo, userPassword);
   if (auth) {
     const isAdmin = await isUserAdmin(userPseudo);
     const refreshToken = await Tokens.createRefreshToken(userPseudo, isAdmin);
@@ -370,16 +370,17 @@ async function queryLdap(login, pass) {
   // auth with regular user
   const options = {
     ldapOpts: {
-      url: "ldap://ldap.univ-fcomte.fr",
+      url: process.ENV.LDAP_URL,
       // tlsOptions: { rejectUnauthorized: false }
     },
-    userDn: `uid=${login},ou=people,dc=univ-fcomte,dc=fr`,
+    userDn: `uid=${login},${process.env.LDAP_DOMAIN}`,
     userPassword: `${pass}`,
-    userSearchBase: "ou=people,dc=univ-fcomte,dc=fr",
+    userSearchBase: `${process.env.LDAP_DOMAIN}`,
     usernameAttribute: "uid",
     username: `${login}`,
     // starttls: false
   };
+
   try {
     await authenticate(options);
   } catch (e) {
