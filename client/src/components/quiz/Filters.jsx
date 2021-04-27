@@ -26,7 +26,7 @@ const Filters = ({ difficulty, changeDifficulty, changeSystem }) => {
         <input onChange={changeDifficulty} type="radio" name="difficulty" value={2} />
         Expert
       </label>
-      {difficulty === 2 ? (
+      {difficulty === 2 && (
         <>
           <h2>Sélection des systèmes : </h2>
           <select onChange={changeSystem} defaultValue={"null"}>
@@ -35,11 +35,8 @@ const Filters = ({ difficulty, changeDifficulty, changeSystem }) => {
                 {systems[id]}
               </option>
             ))}
-            ;
           </select>
         </>
-      ) : (
-        <></>
       )}
     </div>
   );

@@ -30,14 +30,7 @@ const IntroductionView = ({ onClick }) => {
       <div>
         <h1>Mode entraînement</h1>
         <p id="about">Répondez à une série de questions aléatoire.</p>
-        <br />
-        {
-          <Filters
-            difficulty={difficulty}
-            changeDifficulty={changeDifficulty}
-            changeSystem={changeSystem}
-          />
-        }
+        {<Filters difficulty={difficulty} changeDifficulty={changeDifficulty} changeSystem={changeSystem}/>}
       </div>
       <ButtonDefault onClick={() => onClick(system, difficulty)}>
         Lancer l'entraînement

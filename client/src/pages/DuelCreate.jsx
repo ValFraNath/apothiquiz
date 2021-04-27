@@ -99,13 +99,7 @@ const DuelCreate = ({ history }) => {
         ) : (
           <></>
         )}
-        {
-          <Filters
-            difficulty={difficulty}
-            changeDifficulty={changeDifficulty}
-            changeSystem={changeSystem}
-          />
-        }
+        {<Filters difficulty={difficulty} changeDifficulty={changeDifficulty} changeSystem={changeSystem}/>}
       </section>
 
       <section>
