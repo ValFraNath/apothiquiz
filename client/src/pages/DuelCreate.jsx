@@ -77,7 +77,7 @@ const DuelCreate = ({ history }) => {
       </section>
 
       <section>
-        {searchRegex !== null ? (
+        {searchRegex !== null && (
           <ul>
             {Object.keys(listOfUsers)
               .filter((pseudo) => !searchRegex || searchRegex.test(pseudo))
@@ -96,8 +96,6 @@ const DuelCreate = ({ history }) => {
                 );
               })}
           </ul>
-        ) : (
-          <></>
         )}
         <Filters
           difficulty={difficulty}
