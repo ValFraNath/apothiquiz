@@ -2,6 +2,8 @@ import dotenv from "dotenv";
 // eslint-disable-next-line no-unused-vars
 import express from "express";
 
+import { authenticate } from "ldap-authentication";
+
 import { queryPromise } from "../db/database.js";
 // eslint-disable-next-line no-unused-vars
 import { HttpResponseWrapper } from "../global/HttpControllerWrapper.js";
@@ -43,11 +45,14 @@ async function login(req, res) {
     return;
   }
 
-  if (queryCAS(userPseudo, userPassword)) {
+  const auth =
+    process.env.NODE_ENV === "test"
+      ? queryMockedLdap(userPseudo, userPassword)
+      : await queryLdap(userPseudo, userPassword);
+  if (auth) {
     const isAdmin = await isUserAdmin(userPseudo);
     const refreshToken = await Tokens.createRefreshToken(userPseudo, isAdmin);
     const accessToken = Tokens.createAccessToken(refreshToken);
-
     res.sendResponse(200, {
       user: userPseudo,
       accessToken,
@@ -263,10 +268,10 @@ async function getInfos(req, res) {
  * @apiName   PatchUserInformations
  * @apiGroup  User
  * @apiDescription At least one field must be filled
- 
+
  * @apiPermission LoggedIn
  * @apiPermission (for the moment, users can only update themselves)
- * 
+ *
  * @apiParam {string}             [pseudo]            ENT login
  * @apiParam {Object}             [avatar]            Avatar object
  * @apiParam {string{7}=hexColor} avatar.colorBG      Hex background color
@@ -281,7 +286,7 @@ async function getInfos(req, res) {
  * @apiUse ErrorBadRequest
  * @apiError (404) NotFound   User not found
  * @apiUse ErrorServer
- * 
+ *
  * @param {express.Request} req The http request
  * @param {HttpResponseWrapper} res The http response
  */
@@ -346,8 +351,8 @@ async function isUserAdmin(login) {
  * @returns {Promise<boolean>} True if the user exists, false otherwise
  */
 async function doesUserExist(login) {
-  const sql = `SELECT COUNT(*) as found 
-                  FROM user                
+  const sql = `SELECT COUNT(*) as found
+                  FROM user
                   WHERE us_login = ?
                   AND us_deleted IS NULL;`;
 
@@ -356,12 +361,44 @@ async function doesUserExist(login) {
 }
 
 /**
- * This funtion simulate the CAS authentication
+ * This funtion implements the LDAP authentication
  * @param {string} login The user login
  * @param {string} pass The user password
  * @returns {boolean} Boolean telling if the user is well authenticated
  */
-function queryCAS(login, pass) {
+async function queryLdap(login, pass) {
+  // auth with regular user
+  const options = {
+    ldapOpts: {
+      url: process.ENV.LDAP_URL,
+      // tlsOptions: { rejectUnauthorized: false }
+    },
+    userDn: `uid=${login},${process.env.LDAP_DOMAIN}`,
+    userPassword: `${pass}`,
+    userSearchBase: `${process.env.LDAP_DOMAIN}`,
+    usernameAttribute: "uid",
+    username: `${login}`,
+    // starttls: false
+  };
+
+  try {
+    await authenticate(options);
+  } catch (e) {
+    return false;
+  }
+  return true;
+}
+
+/**
+ * Simulate user authentication
+ * @param {string} login The user login
+ * @param {string} pass The user password
+ * @returns {boolean} Boolean telling if the user is well authenticated
+ */
+function queryMockedLdap(login, pass) {
+  if (process.env.NODE_ENV !== "test") {
+    throw Error("Function not available outside of tests");
+  }
   return pass === "1234";
 }
 
@@ -372,8 +409,8 @@ function queryCAS(login, pass) {
  * @returns {Promise}
  */
 async function updateUserAvatar(user, avatar) {
-  const sql = `UPDATE user 
-                  SET us_avatar = ?      
+  const sql = `UPDATE user
+                  SET us_avatar = ?
                   WHERE us_login = ?;`;
 
   await queryPromise(sql, [JSON.stringify(avatar), user]);
@@ -385,12 +422,12 @@ async function updateUserAvatar(user, avatar) {
  * @return {Object|null} user informations or null if user not found
  */
 async function getUserInformations(pseudo) {
-  const sql = `SELECT 
-                  us_login AS pseudo, 
-                  us_victories AS victories,    
-                  us_defeats AS defeats, 
-                  us_avatar AS avatar 
-                FROM user             
+  const sql = `SELECT
+                  us_login AS pseudo,
+                  us_victories AS victories,
+                  us_defeats AS defeats,
+                  us_avatar AS avatar
+                FROM user
                 WHERE us_login = ?
                 AND us_deleted IS NULL;`;
 
