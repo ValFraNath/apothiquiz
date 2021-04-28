@@ -2,6 +2,8 @@ import dotenv from "dotenv";
 // eslint-disable-next-line no-unused-vars
 import express from "express";
 
+import { authenticate } from "ldap-authentication";
+
 import { queryPromise } from "../db/database.js";
 // eslint-disable-next-line no-unused-vars
 import { HttpResponseWrapper } from "../global/HttpControllerWrapper.js";
@@ -43,11 +45,14 @@ async function login(req, res) {
     return;
   }
 
-  if (queryCAS(userPseudo, userPassword)) {
+  const auth =
+    process.env.NODE_ENV === "test"
+      ? queryMockedLdap(userPseudo, userPassword)
+      : await queryLdap(userPseudo, userPassword);
+  if (auth) {
     const isAdmin = await isUserAdmin(userPseudo);
     const refreshToken = await Tokens.createRefreshToken(userPseudo, isAdmin);
     const accessToken = Tokens.createAccessToken(refreshToken);
-
     res.sendResponse(200, {
       user: userPseudo,
       accessToken,
@@ -356,12 +361,44 @@ async function doesUserExist(login) {
 }
 
 /**
- * This funtion simulate the CAS authentication
+ * This funtion implements the LDAP authentication
  * @param {string} login The user login
  * @param {string} pass The user password
  * @returns {boolean} Boolean telling if the user is well authenticated
  */
-function queryCAS(login, pass) {
+async function queryLdap(login, pass) {
+  // auth with regular user
+  const options = {
+    ldapOpts: {
+      url: process.ENV.LDAP_URL,
+      // tlsOptions: { rejectUnauthorized: false }
+    },
+    userDn: `uid=${login},${process.env.LDAP_DOMAIN}`,
+    userPassword: `${pass}`,
+    userSearchBase: `${process.env.LDAP_DOMAIN}`,
+    usernameAttribute: "uid",
+    username: `${login}`,
+    // starttls: false
+  };
+
+  try {
+    await authenticate(options);
+  } catch (e) {
+    return false;
+  }
+  return true;
+}
+
+/**
+ * Simulate user authentication
+ * @param {string} login The user login
+ * @param {string} pass The user password
+ * @returns {boolean} Boolean telling if the user is well authenticated
+ */
+function queryMockedLdap(login, pass) {
+  if (process.env.NODE_ENV !== "test") {
+    throw Error("Function not available outside of tests");
+  }
   return pass === "1234";
 }
 

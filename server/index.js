@@ -75,6 +75,11 @@ function checkEnv() {
     "DB_PASSWORD",
     process.env.NODE_ENV === "test" ? "DB_DATABASE_TEST" : "DB_DATABASE",
   ];
+
+  if (process.env.NODE_ENV === "production") {
+    keys.push("LDAP_URL");
+    keys.push("LDAP_DOMAIN");
+  }
   for (const key of keys) {
     if (!process.env[key]) {
       Logger.error(
