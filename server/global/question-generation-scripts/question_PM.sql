@@ -1,7 +1,8 @@
 -- ****************************************************************
 --            TYPE 5-6-7 : 1 property value - 4 molecules
 -- ****************************************************************
-
+SET @idparent = ?;
+SET @difficulty = ?;
 CREATE TEMPORARY TABLE properties_by_molecule(
        mo_id int(11),
        mo_dci varchar(256),
@@ -10,10 +11,10 @@ CREATE TEMPORARY TABLE properties_by_molecule(
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8 COLLATE = utf8_bin;
 
 INSERT INTO properties_by_molecule
-SELECT mo_id, mo_dci, pv_id, pv_name 
-FROM molecule_property NATURAL JOIN property_value 
-JOIN property ON pr_id = pv_property NATURAL JOIN molecule
-WHERE pr_name = @property
+SELECT mo_id, mo_dci, pv_id, pv_name
+FROM molecule_property NATURAL JOIN property_value
+JOIN property ON pr_id = pv_property NATURAL JOIN molecule m JOIN system ON sy_id = m.mo_system
+WHERE pr_name = @property AND (@idparent = sy_higher OR sy_id = @idparent OR @idparent = 'null') AND (m.mo_difficulty = @difficulty OR @difficulty = 2)
 ORDER BY RAND();
 
 
@@ -28,17 +29,17 @@ SET @value = (SELECT pv_id
                                             AND P3.pv_id = P1.pv_id
                                            )
                          )
-              
+
               LIMIT 1);
 
--- Get a random molecule that have @value .                 
+-- Get a random molecule that have @value .
 SET @good = (SELECT mo_id
              FROM properties_by_molecule
              WHERE pv_id = @value
              ORDER BY RAND()
-             LIMIT 1);                 
-                 
--- Get 3 random molecules that don't have @value as property                 
+             LIMIT 1);
+
+-- Get 3 random molecules that don't have @value as property
 SELECT DISTINCT	(SELECT pv_name
                  FROM property_value
                  WHERE pv_id = @value) AS subject,
@@ -50,8 +51,8 @@ FROM properties_by_molecule AS P1
 WHERE NOT EXISTS (SELECT *
                 FROM properties_by_molecule AS P2
                 WHERE P1.mo_id = P2.mo_id
-                AND P2.pv_id = @value) 
+                AND P2.pv_id = @value)
 ORDER BY RAND()
-LIMIT 3;                
+LIMIT 3;
 
 DROP TABLE properties_by_molecule;

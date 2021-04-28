@@ -2,7 +2,9 @@
 --                  TYPE 4 : 1 molecule - 4 systems
 -- ************************************************************************
 
--- // create a temp table to store the level 2 system of each molecule 
+-- // create a temp table to store the level 2 system of each molecule
+SET @idparent = ?;
+SET @difficulty = ?;
 CREATE TEMPORARY TABLE systems_by_molecule(
        mo_id int(11),
        mo_dci varchar(256),
@@ -20,21 +22,22 @@ INSERT INTO systems_by_molecule(
             sy_level,
             molecule.mo_id,
             molecule.mo_dci
-        FROM system JOIN molecule 
+        FROM system JOIN molecule
         	ON mo_system = sy_id
-        
-        
+        WHERE (@idparent = sy_higher OR sy_id = @idparent OR @idparent = 'null') AND (mo_difficulty = @difficulty OR @difficulty = 2)
+
+
         UNION ALL
-        
+
         SELECT parent.sy_id,
             parent.sy_name,
             parent.sy_higher,
             parent.sy_level,
             c.mo_id,
             c.mo_dci
-        FROM system parent INNER JOIN systemification c 
+        FROM system parent INNER JOIN systemification c
         	ON parent.sy_id = c.sy_higher
-        
+
     )
     SELECT  mo_id,
         mo_dci,
@@ -51,7 +54,7 @@ SET @system = ( SELECT sy_id
                 FROM systems_by_molecule AS C1
                 WHERE 3 < (	SELECT COUNT(DISTINCT sy_id)
                             FROM systems_by_molecule AS C2
-                            WHERE (C1.sy_higher = C2.sy_higher 
+                            WHERE (C1.sy_higher = C2.sy_higher
                                    OR (C1.sy_higher IS NULL AND C2.sy_higher IS NULL))
                            	AND C1.sy_id <> C2.sy_id
                            	)
@@ -65,16 +68,16 @@ SET @molecule = (SELECT mo_id
                  ORDER BY RAND()
                  LIMIT 1);
 
--- Get the level of @system                 
+-- Get the level of @system
 SET @level = (SELECT sy_level
               FROM system
               WHERE sy_id = @system);
 
--- Get 3 random systems among @system siblings 
+-- Get 3 random systems among @system siblings
 SELECT DISTINCT (SELECT mo_dci
-        FROM molecule 
+        FROM molecule
         WHERE mo_id = @molecule) as subject,
-        (SELECT sy_name 
+        (SELECT sy_name
          FROM system
          WHERE sy_id = @system) AS good_answer,
          sy_name AS bad_answer

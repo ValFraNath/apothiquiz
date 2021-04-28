@@ -127,7 +127,7 @@ export const expectations = {
         sideEffects: [],
         ntr: null,
         skeletalFormula: null,
-        difficulty: "HARD",
+        difficulty: 1,
       },
       {
         dci: "TINIDAZOLE",
@@ -137,7 +137,7 @@ export const expectations = {
         interactions: [],
         sideEffects: [],
         ntr: null,
-        difficulty: "HARD",
+        difficulty: 1,
         skeletalFormula: null,
       },
       {
@@ -148,7 +148,7 @@ export const expectations = {
         interactions: [],
         sideEffects: ["hypotension orthostatique"],
         ntr: null,
-        difficulty: "HARD",
+        difficulty: 1,
         skeletalFormula: null,
       },
     ],
@@ -546,7 +546,7 @@ export const expectations = {
         sideEffects: [],
         ntr: null,
         skeletalFormula: null,
-        difficulty: "HARD",
+        difficulty: 1,
       },
       {
         dci: "TINIDAZOLE",
@@ -556,7 +556,7 @@ export const expectations = {
         interactions: [],
         sideEffects: [],
         ntr: null,
-        difficulty: "HARD",
+        difficulty: 1,
         skeletalFormula: null,
       },
       {
@@ -567,7 +567,7 @@ export const expectations = {
         interactions: [],
         sideEffects: ["hypotension orthostatique"],
         ntr: null,
-        difficulty: "HARD",
+        difficulty: 1,
         skeletalFormula: null,
       },
       {
@@ -578,7 +578,7 @@ export const expectations = {
         interactions: [],
         sideEffects: [],
         ntr: null,
-        difficulty: "HARD",
+        difficulty: 1,
         skeletalFormula: null,
       },
     ],
@@ -621,7 +621,7 @@ export const expectations = {
     molecules: [
       {
         dci: "LYMECYCLINE",
-        difficulty: "HARD",
+        difficulty: 1,
         ntr: 0,
         skeletalFormula: null,
         system: "ANTIBIOTIQUE",
@@ -649,7 +649,7 @@ export const expectations = {
       {
         dci: "AMANTADINE",
         ntr: null,
-        difficulty: "HARD",
+        difficulty: 1,
         skeletalFormula: null,
         system: null,
         class: null,
@@ -660,7 +660,7 @@ export const expectations = {
       {
         dci: "THIAMPHENICOL",
         ntr: null,
-        difficulty: "HARD",
+        difficulty: 1,
         skeletalFormula: null,
         system: null,
         class: null,

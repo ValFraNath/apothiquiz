@@ -1,11 +1,12 @@
 import { ArrowRightIcon, CheckCircledIcon, CrossCircledIcon, ExitIcon } from "@modulz/radix-icons";
 import axios from "axios";
 import PropTypes from "prop-types";
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 
 import ButtonCircle from "../components/buttons/ButtonCircle";
 import ButtonDefault from "../components/buttons/ButtonDefault";
 import Answers from "../components/quiz/Answers";
+import Filters from "../components/quiz/Filters";
 import Question from "../components/quiz/Question";
 import Timer from "../components/quiz/Timer";
 import PageError from "../components/status/PageError.jsx";
@@ -14,14 +15,30 @@ import InformationPilette from "../images/information_crop.png";
 /* ---------- Introduction view ---------- */
 
 const IntroductionView = ({ onClick }) => {
+  const [system, setSystem] = useState("null");
+  const [difficulty, setDifficulty] = useState(0);
+
+  const changeSystem = (event) => setSystem(event.target.value);
+  const changeDifficulty = (event) => {
+    setDifficulty(parseInt(event.target.value));
+    setSystem("null");
+  };
+
   return (
     <>
       <img src={InformationPilette} alt="Pilette se concentre avant l'entraînement" />
       <div>
         <h1>Mode entraînement</h1>
         <p id="about">Répondez à une série de questions aléatoire.</p>
+        <Filters
+          difficulty={difficulty}
+          changeDifficulty={changeDifficulty}
+          changeSystem={changeSystem}
+        />
       </div>
-      <ButtonDefault onClick={onClick}>Lancer l'entraînement</ButtonDefault>
+      <ButtonDefault onClick={() => onClick(system, difficulty)}>
+        Lancer l'entraînement
+      </ButtonDefault>
     </>
   );
 };
@@ -222,21 +239,33 @@ class Train extends Component {
       result: { good: [], bad: [] },
       error: null,
       questionNum: 0,
+      system: null,
+      difficulty: null,
     };
   }
 
   /**
    * Get a new question (random type) from the server
    * @param {number} nthRetry The number of attempts
+   * @param {Array} unavailableTypes Previous unavaible Types tested on attempts
    */
-  getNewQuestion = (nthRetry = 0) => {
+  getNewQuestion = (nthRetry = 0, unavailableTypes = []) => {
     const minQuestionType = 1,
       maxQuestionType = 12;
-
-    const questionType =
+    let questionType =
       Math.floor(Math.random() * (maxQuestionType + 1 - minQuestionType)) + minQuestionType;
+    while (unavailableTypes.toString().indexOf(questionType) !== -1) {
+      questionType =
+        Math.floor(Math.random() * (maxQuestionType + 1 - minQuestionType)) + minQuestionType;
+    }
+    unavailableTypes.push(questionType.toString());
     axios
-      .get(`/api/v1/question/${questionType}`)
+      .get(`/api/v1/question/${questionType}`, {
+        params: {
+          system: this.state.system,
+          difficulty: this.state.difficulty,
+        },
+      })
       .then(({ data: question }) => {
         this.setState({
           gameState: Train.STATE_PLAY,
@@ -249,7 +278,7 @@ class Train extends Component {
       })
       .catch((error) => {
         if (error.response?.status === 422 && nthRetry < 10) {
-          this.getNewQuestion(nthRetry + 1);
+          this.getNewQuestion(nthRetry + 1, unavailableTypes);
           return;
         }
         console.error(error);
@@ -294,7 +323,15 @@ class Train extends Component {
   switchComponent() {
     switch (this.state.gameState) {
       case Train.STATE_INTRO:
-        return <IntroductionView onClick={() => this.getNewQuestion()} />;
+        return (
+          <IntroductionView
+            onClick={(systemF, difficultyF) => {
+              this.setState({ system: systemF, difficulty: difficultyF }, () =>
+                this.getNewQuestion()
+              );
+            }}
+          />
+        );
       case Train.STATE_PLAY:
         return (
           <PlayView

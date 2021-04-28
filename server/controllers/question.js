@@ -114,7 +114,9 @@ const IMAGES_ROUTE = "files/images"; // For non-breaking spaces around French qu
  */
 async function generateQuestion(req, res) {
   const type = Number(req.params.type);
-  const generateQuestion = createGeneratorOfType(type);
+  const { system, difficulty } = req.query;
+
+  const generateQuestion = createGeneratorOfType(type, system, difficulty);
 
   if (!generateQuestion) {
     res.sendUsageError(404, "Type de question incorrect");
@@ -162,14 +164,15 @@ const scriptsFolderPath = path.resolve("global", "question-generation-scripts");
  * @param {string} filename The script filename
  * @param {number} type The question type
  * @param {string} before An SQL script to add at the start of the script
+ * @param {String} system Molecular system
+ * @param {String} difficulty Question difficulty
  * @return {Promise<object>} The question
  */
-async function queryQuestion(filename, type, before = "") {
+async function queryQuestion(filename, type, system = "null", difficulty = 2, before = "") {
   const script = await fs.readFile(path.resolve(scriptsFolderPath, filename), {
     encoding: "utf-8",
   });
-  const res = await queryPromise(before + script);
-
+  const res = await queryPromise(before + script, [system, difficulty]);
   const data = res.find((e) => e instanceof Array);
 
   if (data.length < 3) {
@@ -186,9 +189,11 @@ async function queryQuestion(filename, type, before = "") {
 /**
  * Create a function generator to a given type
  * @param {number} type The question type
+ * @param {String} system Molecular system
+ * @param {String} difficulty Question difficulty
  * @returns {function():Promise}
  */
-export function createGeneratorOfType(type) {
+export function createGeneratorOfType(type, system, difficulty) {
   const typeInfos = generatorInfosByType[type];
   if (!typeInfos) {
     return null;
@@ -196,7 +201,7 @@ export function createGeneratorOfType(type) {
 
   return async () => {
     const { before, filename } = typeInfos;
-    const question = await queryQuestion(filename, type, before);
+    const question = await queryQuestion(filename, type, system, difficulty, before);
 
     // Questions with images
     if (type === 11 || type === 12) {

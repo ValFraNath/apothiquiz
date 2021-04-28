@@ -18,7 +18,6 @@ class Login extends Component {
   handleFormSubmit(e) {
     e.preventDefault();
     const { pseudoInput, passwordInput } = e.target.elements;
-
     Auth.login(pseudoInput.value.trim(), passwordInput.value)
       .then((user) => {
         console.info(`User ${user} successfully logged in`);

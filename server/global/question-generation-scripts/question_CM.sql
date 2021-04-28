@@ -1,7 +1,9 @@
--- **************************************************************** 
---                  TYPE 1  : 1 class - 4 molecules 
--- **************************************************************** 
+-- ****************************************************************
+--                  TYPE 1  : 1 class - 4 molecules
+-- ****************************************************************
 
+SET @idparent = ?;
+SET @difficulty = ?;
 CREATE TEMPORARY TABLE classes_by_molecule(
        mo_id int(11),
        mo_dci varchar(256),
@@ -19,21 +21,22 @@ INSERT INTO classes_by_molecule(
             cl_level,
             molecule.mo_id,
             molecule.mo_dci
-        FROM class JOIN molecule 
-        	ON mo_class = cl_id
-        
-        
+        FROM class JOIN molecule
+        	ON mo_class = cl_id JOIN system ON mo_system = sy_id
+        WHERE (@idparent = sy_higher OR sy_id = @idparent OR @idparent = 'null')  AND (mo_difficulty = @difficulty OR @difficulty = 2)
+
+
         UNION ALL
-        
+
         SELECT parent.cl_id,
             parent.cl_name,
             parent.cl_higher,
             parent.cl_level,
             c.mo_id,
             c.mo_dci
-        FROM class parent INNER JOIN classification c 
+        FROM class parent INNER JOIN classification c
         	ON parent.cl_id = c.cl_higher
-        
+
     )
     SELECT  mo_id,
         mo_dci,
@@ -53,22 +56,22 @@ SET @class = ( SELECT C1.cl_id
                             FROM classes_by_molecule AS C2
                             WHERE (C1.cl_higher = C2.cl_higher
                                    OR (C1.cl_higher IS NULL AND C2.cl_higher IS NULL))
-                            AND C1.cl_id <> C2.cl_id ) 
+                            AND C1.cl_id <> C2.cl_id )
               	ORDER BY RAND()
               	LIMIT 1 );
-       
+
 
 --  Get a random molecule belonging to @class
 SET @good = ( SELECT mo_id
               FROM classes_by_molecule AS C
               WHERE C.cl_id = @class
               ORDER BY RAND()
-              LIMIT 1 );             
+              LIMIT 1 );
 
--- Get the level of @class             
+-- Get the level of @class
 SET @level = (SELECT cl_level
               FROM class
-              WHERE cl_id = @class);     
+              WHERE cl_id = @class);
 
 --  Get 3 random molecules, belonging to @class siblings
 SELECT 	DISTINCT (SELECT mo_dci
@@ -83,7 +86,7 @@ WHERE C.cl_id <> @class
 AND ((@level > 1 AND C.cl_higher = ( SELECT cl_higher
               		FROM class
               		WHERE cl_id = @class ))
-OR (@level = 1 AND C.cl_level = 1)) 
+OR (@level = 1 AND C.cl_level = 1))
 ORDER BY RAND()
 LIMIT 3;
 

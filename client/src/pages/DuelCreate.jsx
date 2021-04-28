@@ -5,6 +5,7 @@ import { useQuery, useQueryClient } from "react-query";
 
 import Avatar from "../components/Avatar";
 import ButtonFullWidth from "../components/buttons/ButtonFullWidth";
+import Filters from "../components/quiz/Filters";
 import FloatingError from "../components/status/FloatingError";
 import Loading from "../components/status/Loading";
 import PageError from "../components/status/PageError";
@@ -16,6 +17,15 @@ const DuelCreate = ({ history }) => {
   const queryClient = useQueryClient();
 
   const { data: listOfUsers, isSuccess, isError } = useQuery(["users", "challengeable"]);
+
+  const [system, setSystem] = useState("null");
+  const [difficulty, setDifficulty] = useState(0);
+
+  const changeSystem = (event) => setSystem(event.target.value);
+  const changeDifficulty = (event) => {
+    setDifficulty(parseInt(event.target.value));
+    setSystem("null");
+  };
 
   if (isError) {
     return <PageError message="Erreur lors du chargement de la page" />;
@@ -29,6 +39,8 @@ const DuelCreate = ({ history }) => {
     axios
       .post("/api/v1/duels/new", {
         opponent,
+        system,
+        difficulty,
       })
       .then(({ data: { id } }) => {
         queryClient.invalidateQueries(["users", "challengeable"]);
@@ -57,37 +69,46 @@ const DuelCreate = ({ history }) => {
           placeholder="Rechercher un utilisateur"
           onChange={(event) => {
             setSelected(null);
-            setSearchRegex(new RegExp(event.target.value, "i"));
+            event.target.value === ""
+              ? setSearchRegex(null)
+              : setSearchRegex(new RegExp(event.target.value, "yi"));
           }}
         ></input>
       </section>
 
       <section>
-        <ul>
-          {Object.keys(listOfUsers)
-            .filter((pseudo) => !searchRegex || searchRegex.test(pseudo))
-            .map((pseudo) => {
-              const user = listOfUsers[pseudo];
-              return (
-                <li
-                  key={user.pseudo}
-                  onClick={() => setSelected(user.pseudo)}
-                  onDoubleClick={() => createDuel(user.pseudo)}
-                  className={selected === user.pseudo ? "selected" : ""}
-                >
-                  <Avatar size="50px" infos={user.avatar} />
-                  <p>{user.pseudo}</p>
-                </li>
-              );
-            })}
-        </ul>
+        {searchRegex !== null && (
+          <ul>
+            {Object.keys(listOfUsers)
+              .filter((pseudo) => !searchRegex || searchRegex.test(pseudo))
+              .map((pseudo) => {
+                const user = listOfUsers[pseudo];
+                return (
+                  <li
+                    key={user.pseudo}
+                    onClick={() => setSelected(user.pseudo)}
+                    onDoubleClick={() => createDuel(user.pseudo)}
+                    className={selected === user.pseudo ? "selected" : ""}
+                  >
+                    <Avatar size="50px" infos={user.avatar} />
+                    <p>{user.pseudo}</p>
+                  </li>
+                );
+              })}
+          </ul>
+        )}
+        <Filters
+          difficulty={difficulty}
+          changeDifficulty={changeDifficulty}
+          changeSystem={changeSystem}
+        />
       </section>
 
       <section>
         {selected ? (
           <ButtonFullWidth onClick={() => createDuel(selected)}>Lancer le duel</ButtonFullWidth>
         ) : (
-          <p>Veuillez choisir un adversaire</p>
+          <p>Veuillez saisir le pseudo de votre adversaire</p>
         )}
       </section>
     </main>

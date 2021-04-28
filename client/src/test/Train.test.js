@@ -1,17 +1,25 @@
 import { expect } from "chai";
 import { mount } from "enzyme";
 import React from "react";
+import { QueryClient, QueryClientProvider } from "react-query";
 
 import Train from "../pages/Train";
+const queryClient = new QueryClient();
 
 describe("Train component", () => {
   let wrapper;
+  let train;
   beforeEach(() => {
-    wrapper = mount(<Train />);
+    wrapper = mount(
+      <QueryClientProvider client={queryClient}>
+        <Train />
+      </QueryClientProvider>
+    );
+    train = wrapper.find(Train);
   });
 
   it("should display the introduction correctly", () => {
-    expect(wrapper.state("gameState")).to.be.equal(Train.STATE_INTRO);
+    expect(train.state("gameState")).to.be.equal(Train.STATE_INTRO);
 
     expect(wrapper.find("img")).to.have.lengthOf(1);
     expect(wrapper.find("h1")).to.have.lengthOf(1);
@@ -19,7 +27,7 @@ describe("Train component", () => {
   });
 
   it("should display the game correctly", () => {
-    wrapper.setState({
+    train.setState({
       gameState: Train.STATE_PLAY,
       question: {
         answers: ["IMIPENEME", "PRAZIQUANTEL", "OXYTETRACYCLINE", "MARAVIROC"],
@@ -38,7 +46,7 @@ describe("Train component", () => {
   });
 
   it("should display the summary correctly", () => {
-    wrapper.setState({ gameState: Train.STATE_SUMMARY });
+    train.setState({ gameState: Train.STATE_SUMMARY });
 
     expect(wrapper.find("h1")).to.have.lengthOf(1);
     expect(wrapper.find("p")).to.have.lengthOf(1);

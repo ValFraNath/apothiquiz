@@ -37,7 +37,9 @@ import { createGeneratorOfType, NotEnoughDataError, getAllQuestionTypes } from "
 async function create(req, res) {
   try {
     const username = req.body._auth.user;
-    const { opponent } = req.body;
+    const { opponent, system, difficulty } = req.body;
+
+    const filters = { system: system, difficulty: difficulty };
 
     if (!opponent) {
       return res.sendUsageError(400, "Vous devez renseigner un adversaire");
@@ -62,7 +64,7 @@ async function create(req, res) {
 
     const config = await fetchConfigFromDB();
 
-    const rounds = await createRounds(config);
+    const rounds = await createRounds(config, filters);
 
     const id = await createDuelInDatabase(username, opponent, rounds);
 
@@ -103,7 +105,7 @@ async function create(req, res) {
  * @apiSuccess {number}   rounds.round.goodAnswer     Index of the good answer - *if the round is played by the user*
  * @apiSuccess {number}   rounds.round.userAnswer     Index of the user answer - *if the round is played by the user*
  * @apiSuccess {number}   rounds.round.opponentAnswer Index of the opponent's answer - *if the round is played by the user & the opponent*
- * 
+ *
  *
  * @apiSuccessExample {object} Success-Response:
  * {
@@ -144,9 +146,9 @@ async function create(req, res) {
                         "subject": "ZANAMIVIR",
                         "wording": "À quelle classe appartient la molécule 'ZANAMIVIR' ?"
                         "answers": [
-                          "INHIBITEURS DE NEURAMINISASE", 
-                          "INHIBITEUR POLYMERASE NS5B", 
-                          "PHENICOLES", 
+                          "INHIBITEURS DE NEURAMINISASE",
+                          "INHIBITEUR POLYMERASE NS5B",
+                          "PHENICOLES",
                           "OXAZOLIDINONES"
                         ],
                         "goodAnswer": 0,
@@ -325,11 +327,12 @@ async function createDuelInDatabase(player1, player2, rounds) {
 /**
  * Create all rounds of a duel
  * @param {object} config The configuration object
+ * @param {object} filters contains the filter's question (system/difficulty)
  * This function can be mocked : @see _initMockedDuelRounds
  * @throws NotEnoughDataError
  * @return {Promise<object[][]>}
  */
-async function createRounds(config) {
+async function createRounds(config, filters) {
   if (mockedDuelsRounds) {
     return mockedDuelsRounds;
   }
@@ -342,7 +345,7 @@ async function createRounds(config) {
     }
 
     try {
-      rounds.push(await createRound(types.pop(), config));
+      rounds.push(await createRound(types.pop(), filters, config));
     } catch (error) {
       if (!NotEnoughDataError.isInstance(error)) {
         throw error;
@@ -357,10 +360,11 @@ async function createRounds(config) {
  * Create a round of a given question type
  * @param {number} type The question type
  * @param {object} config The configuration object
+ * @param {object} filters contains the filter's question (system/difficulty)
  * @returns {Promise<object[]>} The list of questions
  */
-async function createRound(type, config) {
-  const generateQuestion = createGeneratorOfType(type);
+async function createRound(type, filters, config) {
+  const generateQuestion = createGeneratorOfType(type, filters.system, filters.difficulty);
   const questions = [...Array(config.questionsPerRound)].map(generateQuestion);
 
   return await Promise.all(questions);
