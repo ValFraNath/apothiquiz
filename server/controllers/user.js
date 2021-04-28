@@ -361,7 +361,7 @@ async function doesUserExist(login) {
 }
 
 /**
- * This funtion implements the LDAP authentication
+ * This function implements the LDAP authentication
  * @param {string} login The user login
  * @param {string} pass The user password
  * @returns {boolean} Boolean telling if the user is well authenticated
@@ -370,7 +370,7 @@ async function queryLdap(login, pass) {
   // auth with regular user
   const options = {
     ldapOpts: {
-      url: process.ENV.LDAP_URL,
+      url: process.env.LDAP_URL,
       // tlsOptions: { rejectUnauthorized: false }
     },
     userDn: `uid=${login},${process.env.LDAP_DOMAIN}`,
