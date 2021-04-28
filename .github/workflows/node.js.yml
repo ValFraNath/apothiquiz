@@ -79,8 +79,6 @@ jobs:
           echo "DB_USER=apothiquizUser" >> .env; \
           echo "DB_PASSWORD=p@ssword" >> .env; \
           echo "DB_DATABASE_TEST=apothiquizTestDb" >> .env; \
-          echo "LDAP_URL=''" >> .env; \
-          echo "LDAP_DOMAIN=''" >> .env; \
 
         working-directory: ./server
 
