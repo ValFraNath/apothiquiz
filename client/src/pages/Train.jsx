@@ -68,7 +68,7 @@ class PlayView extends Component {
 
     if (!inProgress) return false;
     if (value === 0) {
-      this.props.addUserAnswer(this.state.currentQuestion, null);
+      this.props.addUserAnswer(this.props.question.type, this.props.question.wording, null);
       inProgress = false;
     }
 
@@ -84,7 +84,7 @@ class PlayView extends Component {
    */
   handleAnswerClick = (value) => {
     if (!this.state.inProgress) return;
-    this.props.addUserAnswer(this.props.question.wording, value);
+    this.props.addUserAnswer(this.props.question.type, this.props.question.wording, value);
     this.setState({
       inProgress: false,
       lastClicked: value,
@@ -290,13 +290,20 @@ class Train extends Component {
 
   /**
    * Add the question and the answer to the list of results
+   * @param {number} type The question's type
    * @param {string} question The question text
    * @param {string} userChoice The user's answer
    */
-  addUserAnswer = (question, userChoice) => {
+  addUserAnswer = (type, question, userChoice) => {
     const { good, bad } = this.state.result;
     const { answers, goodAnswer } = this.state.question;
-    const rightAnswer = answers[goodAnswer];
+    let rightAnswer = answers[goodAnswer];
+
+    if(type === 12 ){
+      if(userChoice != null)
+        userChoice = userChoice.split('/')[5].split('.')[0];
+      rightAnswer = rightAnswer.split('/')[5].split('.')[0];
+    }
 
     if (userChoice === rightAnswer) {
       good.push({ question: question, userChoice: userChoice });
