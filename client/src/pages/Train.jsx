@@ -299,10 +299,9 @@ class Train extends Component {
     const { answers, goodAnswer } = this.state.question;
     let rightAnswer = answers[goodAnswer];
 
-    if(type === 12 ){
-      if(userChoice != null)
-        userChoice = userChoice.split('/')[5].split('.')[0];
-      rightAnswer = rightAnswer.split('/')[5].split('.')[0];
+    if (type === 12) {
+      if (userChoice != null) userChoice = userChoice.split("/")[5].split(".")[0];
+      rightAnswer = rightAnswer.split("/")[5].split(".")[0];
     }
 
     if (userChoice === rightAnswer) {
