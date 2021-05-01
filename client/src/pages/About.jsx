@@ -1,12 +1,12 @@
 import React from "react";
-import GitInfo from "react-git-info/macro";
+// import GitInfo from "react-git-info/macro";
 
 import variables from "../styles/base/_variables.module.scss";
 
 const About = () => {
-  const gitInfo = GitInfo();
-  const date = new Date();
-  date.setTime(Date.parse(gitInfo.commit.date));
+  // const gitInfo = GitInfo();
+  // const date = new Date();
+  // date.setTime(Date.parse(gitInfo.commit.date));
 
   return (
     <main
@@ -54,7 +54,7 @@ const About = () => {
       </details>
 
       <table id="app-version">
-        <tbody>
+        {/* <tbody>
           <tr>
             <td>Date de version : </td>
             <td>
@@ -67,7 +67,7 @@ const About = () => {
             <td>Hash de version : </td>
             <td>{gitInfo.commit.shortHash}</td>
           </tr>
-        </tbody>
+        </tbody> */}
       </table>
     </main>
   );
