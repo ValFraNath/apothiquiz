@@ -1,0 +1,73 @@
+version: "3"
+
+services:
+  mariadb_db:
+    image: mariadb:10.6
+    volumes:
+      - apothiquiz_dev_data:/var/lib/mysql/
+    networks:
+      - apothiquiz_dev_network
+    expose:
+      - "3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: "aaaaa"
+      MYSQL_DATABASE: apothiquizDb
+      MYSQL_USER: apothiquizUser
+      MYSQL_PASSWORD: apothiquizPassword
+
+  server:
+    build: 
+      context: server/
+      dockerfile: dev.Dockerfile
+    container_name: apothiquiz_dev_server
+    depends_on:
+      - mariadb_db
+    # volumes:
+    #   - "./server:/app"
+    networks:
+      - apothiquiz_dev_network
+    environment:
+      NODE_ENV: test
+      PORT: 80
+      ACCESS_TOKEN_KEY: __ACCESS_TMP__
+      REFRESH_TOKEN_KEY: __REFRESH_TMP__
+      DB_HOST: mariadb_db
+      DB_USER: apothiquizUser
+      DB_PASSWORD: apothiquizPassword
+      DB_DATABASE: apothiquizDb
+      DB_DATABASE_TEST: apothiquizDb
+
+  client:
+    build: 
+      context: client/
+      dockerfile: dev.Dockerfile
+    container_name: apothiquiz_dev_client
+    environment:
+      PORT: 80
+      HOST: client
+    # volumes:
+    #   - "./client/:/app/"
+    networks:
+      - apothiquiz_dev_network
+
+  proxy:
+    image: nginx:1.16.0-alpine
+    depends_on:
+      - server
+      - client
+    container_name: apothiquiz_proxy
+    restart: unless-stopped
+    volumes:
+      - $PWD/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - 3000:80
+
+    networks:
+      - apothiquiz_dev_network
+
+volumes:
+  apothiquiz_dev_data:
+
+networks:
+  apothiquiz_dev_network:
+    driver: bridge
