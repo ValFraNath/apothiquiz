@@ -1,4 +1,4 @@
-FROM node:14
+FROM node:14-alpine
 
 WORKDIR /app
 
@@ -9,6 +9,7 @@ RUN npm install --only=production
 COPY . .
 
 ENV PORT 5035
+
 EXPOSE 5035
 
-CMD ["npm", "start"]
+CMD ["node", "index.js"]
