@@ -12,7 +12,11 @@
       width: 90%;
       float: right;
 
-      @media screen and (max-width: $screen-desktop) and (max-height: 860px) {
+      @media screen and (min-width: $screen-desktop) and (max-height: 860px) {
+        width: 70%;
+      }
+
+      @media screen and (max-width: $screen-desktop) {
         width: 70%;
       }
     }
