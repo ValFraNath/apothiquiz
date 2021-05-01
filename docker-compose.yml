@@ -4,6 +4,7 @@ services:
   mariadb_db:
     image: mariadb:10.6
     container_name: apothiquiz_db
+    restart: unless-stopped
     volumes:
       - apothiquiz_data:/var/lib/mysql/
     networks:
@@ -18,10 +19,11 @@ services:
 
   server:
     image: valfranath/apothiquiz-server
+    build: server/
     depends_on:
       - mariadb_db
     container_name: apothiquiz_server
-    command: npm start
+    restart: unless-stopped
     networks:
       - apothiquiz_network
     environment:
@@ -37,7 +39,9 @@ services:
 
   client:
     image: valfranath/apothiquiz-client
+    build: client/
     container_name: apothiquiz_client
+    restart: unless-stopped
     networks:
       - apothiquiz_network
 
@@ -46,9 +50,10 @@ services:
     depends_on:
       - server
       - client
-      container_name: apothiquiz_proxy
+    container_name: apothiquiz_proxy
+    restart: unless-stopped
     volumes:
-      - $PWD/nginx.conf:/etc/nginx/conf.d/default.conf
+      - $PWD/nginx.conf:/etc/nginx/conf.d/default.conf:ro
     ports:
       - 61100:80
 
