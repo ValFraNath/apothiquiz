@@ -3,7 +3,6 @@ import React from "react";
 import { Link, Redirect } from "react-router-dom";
 
 import InstallApp from "../components/system/InstallApp";
-import variables from "../styles/base/_variables.module.scss";
 import Auth from "../utils/authentication";
 
 const Menu = ({ installPromptEvent, user }) => {

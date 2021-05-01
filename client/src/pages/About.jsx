@@ -1,8 +1,6 @@
 import React from "react";
 import GitInfo from "react-git-info/macro";
 
-import variables from "../styles/base/_variables.module.scss";
-
 const About = () => {
   const gitInfo = GitInfo();
   const date = new Date();

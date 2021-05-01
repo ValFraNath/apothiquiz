@@ -9,7 +9,6 @@ import Filters from "../components/quiz/Filters";
 import FloatingError from "../components/status/FloatingError";
 import Loading from "../components/status/Loading";
 import PageError from "../components/status/PageError";
-import variables from "../styles/base/_variables.module.scss";
 
 const DuelCreate = ({ history }) => {
   const [searchRegex, setSearchRegex] = useState(null);
