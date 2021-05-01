@@ -4,24 +4,16 @@ body,
   font-family: sans-serif;
   width: 100%;
   position: relative;
-}
-
-html,
-body {
   height: 100%;
-}
-
-#root {
-  height: auto;
 }
 
 body.dark {
   background-color: $color-bg-dark;
-}
 
-body.dark #root {
-  background-color: $color-bg-dark;
-  color: $text-color-black;
+  #root {
+    background-color: $color-bg-dark;
+    color: $text-color-black;
+  }
 }
 
 /**
@@ -33,10 +25,11 @@ main {
   min-height: calc(100% - 50px);
   background-color: $color-bg;
   box-sizing: border-box;
-}
-body.dark main {
-  background-color: $color-bg-dark;
-  color: white;
+
+  body.dark & {
+    background-color: $color-bg-dark;
+    color: white;
+  }
 }
 
 @media only screen and (min-device-width: $screen-desktop) {

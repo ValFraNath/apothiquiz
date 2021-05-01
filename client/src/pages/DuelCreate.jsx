@@ -61,10 +61,7 @@ const DuelCreate = ({ history }) => {
   }
 
   return (
-    <main
-      id="create-duel"
-      style={{ height: window.innerHeight - Number.parseInt(variables.topBarHeight) }}
-    >
+    <main id="create-duel">
       {error && <FloatingError message={error} />}
       <section>
         <h1>Créer un nouveau duel</h1>
