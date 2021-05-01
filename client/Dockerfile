@@ -10,6 +10,8 @@ RUN npm install --only=production
 COPY public/ ./public/
 COPY src/ ./src/
 
+ARG REACT_APP_VERSION="development"
+
 RUN npm run build
 
 # ------------------------------------------------------
