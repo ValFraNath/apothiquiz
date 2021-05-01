@@ -14,6 +14,11 @@ main#create-duel {
     border-radius: 5px;
     box-sizing: border-box;
     width: 100%;
+
+    body.dark & {
+      background-color: $color-gray-dark;
+      color: white;
+    }
   }
 
   section {
@@ -38,6 +43,10 @@ main#create-duel {
       padding: 0.9rem 1rem;
       border-top: 1px solid $button-bg;
       z-index: 100;
+
+      body.dark & {
+        background-color: $color-gray-dark;
+      }
 
       p {
         padding: 0.9rem 1.6rem;
@@ -77,6 +86,11 @@ main#create-duel {
 
     &.selected {
       background-color: $button-bg;
+
+      body.dark & {
+        background-color: $button-bg-dark;
+      }
+
       p {
         color: white;
       }
@@ -86,20 +100,5 @@ main#create-duel {
       font-size: 1.1rem;
       margin-left: 0.8rem;
     }
-  }
-}
-
-body.dark #create-duel {
-  input {
-    background-color: $color-gray-dark;
-    color: white;
-  }
-
-  li.selected {
-    background-color: $button-bg-dark;
-  }
-
-  section:nth-child(3) {
-    background-color: $color-gray-dark;
   }
 }
