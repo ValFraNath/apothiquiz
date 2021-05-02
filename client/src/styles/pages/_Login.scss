@@ -16,6 +16,9 @@ main#login {
 
   h2 {
     font-style: italic;
+    span {
+      white-space: nowrap;
+    }
   }
 
   input {

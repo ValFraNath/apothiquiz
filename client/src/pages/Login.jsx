@@ -49,7 +49,9 @@ class Login extends Component {
       this.state.isLogged || (
         <main id="login">
           <h1>Connexion</h1>
-          <h2>Veuillez renseigner votre pseudo et&nbsp;mot&nbsp;de&nbsp;passe&nbsp;ENT</h2>
+          <h2>
+            Veuillez renseigner votre pseudo <span>et mot de passe ENT</span>
+          </h2>
           <form onSubmit={this.handleFormSubmit}>
             <input type="text" id="pseudoInput" placeholder="Nom d'utilisateur" required />
             <input type="password" id="passwordInput" placeholder="Mot de passe" required />
