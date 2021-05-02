@@ -54,7 +54,7 @@ const About = () => {
       <table id="app-version">
         <tr>
           <td> Version : </td>
-          <td>{process.env.REACT_APP_VERSION ?? "developement"}</td>
+          <td>{process.env.REACT_APP_VERSION ?? "développement"}</td>
         </tr>
         {process.env.NODE_ENV !== "development" && (
           <tr>

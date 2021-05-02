@@ -1,7 +1,7 @@
 {
   "name": "client",
   "version": "0.1.0",
-  "proxy": "http://localhost:5035",
+  "proxy": "http://server:5035",
   "private": true,
   "dependencies": {
     "@modulz/radix-icons": "^3.2.0",
