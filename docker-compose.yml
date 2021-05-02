@@ -10,16 +10,19 @@ services:
     expose:
       - "3306"
     environment:
-      MYSQL_ROOT_PASSWORD: "aaaaa"
+      MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: apothiquizDb
       MYSQL_USER: apothiquizUser
       MYSQL_PASSWORD: apothiquizPassword
+    healthcheck:
+      test: "exit 0"
 
   server:
     image: node:14
     container_name: apothiquiz_dev_server
     depends_on:
-      - mariadb_db
+      mariadb_db:
+        condition: service_healthy
     volumes:
       - "./server:/app"
     networks:
