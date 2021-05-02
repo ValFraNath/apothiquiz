@@ -3,66 +3,59 @@ version: "3"
 services:
   mariadb_db:
     image: mariadb:10.6
-    container_name: apothiquiz_db
-    restart: unless-stopped
     volumes:
-      - apothiquiz_data:/var/lib/mysql/
+      - apothiquiz_dev_data:/var/lib/mysql/
     networks:
-      - apothiquiz_network
+      - apothiquiz_dev_network
     expose:
       - "3306"
     environment:
       MYSQL_ROOT_PASSWORD: "aaaaa"
       MYSQL_DATABASE: apothiquizDb
       MYSQL_USER: apothiquizUser
-      MYSQL_PASSWORD: __YOUR_PASSWORD_HERE__
+      MYSQL_PASSWORD: apothiquizPassword
 
   server:
-    image: valfranath/apothiquiz-server
-    build: server/
+    image: node:14
+    container_name: apothiquiz_dev_server
     depends_on:
       - mariadb_db
-    container_name: apothiquiz_server
-    restart: unless-stopped
+    volumes:
+      - "./server:/app"
     networks:
-      - apothiquiz_network
+      - apothiquiz_dev_network
+    working_dir: /app
+    command: ["npm", "run", "start:watch"]
+    ports:
+      - 5035:5035
     environment:
-      NODE_ENV: test
-      PORT: 80
+      NODE_ENV: development
+      PORT: 5035
       ACCESS_TOKEN_KEY: __ACCESS_TMP__
       REFRESH_TOKEN_KEY: __REFRESH_TMP__
-      DB_HOST: apothiquiz_db
+      DB_HOST: mariadb_db
       DB_USER: apothiquizUser
-      DB_PASSWORD: __YOUR_PASSWORD_HERE__
       DB_DATABASE: apothiquizDb
-      DB_DATABASE_TEST: apothiquizDb
+      DB_PASSWORD: apothiquizPassword
 
   client:
-    image: valfranath/apothiquiz-client
-    build: client/
-    container_name: apothiquiz_client
-    restart: unless-stopped
-    networks:
-      - apothiquiz_network
-
-  proxy:
-    image: nginx:1.16.0-alpine
-    depends_on:
-      - server
-      - client
-    container_name: apothiquiz_proxy
-    restart: unless-stopped
-    volumes:
-      - $PWD/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    image: node:14
+    container_name: apothiquiz_dev_client
+    environment:
+      PORT: 3000
+      HOST: client
     ports:
-      - 61100:80
-
+      - 3000:3000
+    volumes:
+      - "./client/:/app/"
+    working_dir: /app
+    command: ["npm", "start"]
     networks:
-      - apothiquiz_network
+      - apothiquiz_dev_network
 
 volumes:
-  apothiquiz_data:
+  apothiquiz_dev_data:
 
 networks:
-  apothiquiz_network:
+  apothiquiz_dev_network:
     driver: bridge
