@@ -1,4 +1,4 @@
-version: "3"
+version: "2.4"
 
 services:
   mariadb_db:
@@ -12,22 +12,25 @@ services:
     expose:
       - "3306"
     environment:
-      MYSQL_ROOT_PASSWORD: "aaaaa"
+      MYSQL_ROOT_PASSWORD: __YOUR_PASSWORD_HERE__
       MYSQL_DATABASE: apothiquizDb
       MYSQL_USER: apothiquizUser
       MYSQL_PASSWORD: __YOUR_PASSWORD_HERE__
+    healthcheck:
+      test: "exit 0"
 
   server:
     image: valfranath/apothiquiz-server
     build: server/
     depends_on:
-      - mariadb_db
+      mariadb_db:
+        condition: service_healthy
+
     container_name: apothiquiz_server
     restart: unless-stopped
     networks:
       - apothiquiz_network
     environment:
-      NODE_ENV: test
       PORT: 80
       ACCESS_TOKEN_KEY: __ACCESS_TMP__
       REFRESH_TOKEN_KEY: __REFRESH_TMP__
@@ -35,7 +38,6 @@ services:
       DB_USER: apothiquizUser
       DB_PASSWORD: __YOUR_PASSWORD_HERE__
       DB_DATABASE: apothiquizDb
-      DB_DATABASE_TEST: apothiquizDb
 
   client:
     image: valfranath/apothiquiz-client
