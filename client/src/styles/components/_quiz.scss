@@ -164,6 +164,14 @@ $timer-size: 100px;
       &:not(.bad-answer):before {
         background-color: #43444a;
       }
+
+      &.good-answer {
+        border: 3px solid $color-green-success;
+      }
+
+      &.bad-answer {
+        border: 3px solid $color-red-error;
+      }
     }
 
     &:last-child {

@@ -105,10 +105,6 @@ main#duel-overview {
           background-color: $color-gray-wait;
           height: 0.8rem;
 
-          body.dark & {
-            background-color: $color-gray-wait-dark;
-          }
-
           &.true {
             background-color: $color-green-success;
           }
@@ -123,6 +119,9 @@ main#duel-overview {
 }
 
 body.dark #duel-overview {
+  section .bricks .brick {
+    background-color: $color-gray-wait-dark;
+  }
   .duel-results {
     background-color: $color-gray-dark;
   }
