@@ -22,11 +22,11 @@
           }
 
           &.bad {
-            background-color: $color-red-error;
+            background-color: $color-red-error !important;
           }
 
           &.good {
-            background-color: $color-green-success;
+            background-color: $color-green-success !important;
           }
         }
       }
