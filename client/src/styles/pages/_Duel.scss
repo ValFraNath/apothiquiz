@@ -17,12 +17,16 @@
           background-color: $color-gray-wait;
           margin-right: 0.3rem;
 
+          body.dark & {
+            background-color: $color-gray-wait-dark;
+          }
+
           &.bad {
-            background-color: $color-red-error;
+            background-color: $color-red-error !important;
           }
 
           &.good {
-            background-color: $color-green-success;
+            background-color: $color-green-success !important;
           }
         }
       }
@@ -34,8 +38,4 @@
       }
     }
   }
-}
-
-body.dark #duel #duel-topbar > div > div {
-  background-color: $color-gray-wait-dark;
 }

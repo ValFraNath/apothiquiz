@@ -19,6 +19,10 @@ $timer-size: 100px;
   border-radius: 10px;
   overflow: hidden;
 
+  body.dark & {
+    background-color: $color-gray-dark;
+  }
+
   h1 {
     font-size: 1.2em;
     line-height: 1.2;
@@ -43,6 +47,10 @@ $timer-size: 100px;
     display: block;
     margin: auto;
     width: 75%;
+
+    body.dark & {
+      filter: invert(1);
+    }
   }
 
   @media screen and (max-width: $screen-smartphone-small) {
@@ -63,14 +71,6 @@ $timer-size: 100px;
     min-height: 2.9rem;
     padding: 2.9rem 1.5rem 2.1rem 1.5rem;
     margin-bottom: 1.8rem;
-  }
-}
-
-body.dark #quiz-question {
-  background-color: $color-gray-dark;
-
-  img {
-    filter: invert(1);
   }
 }
 
@@ -99,12 +99,10 @@ body.dark #quiz-question {
 
   #timer-stroke {
     background-image: url("../../images/timer_stroke.png");
-  }
-}
 
-body.dark #timer {
-  #timer-stroke {
-    filter: invert(1);
+    body.dark & {
+      filter: invert(1);
+    }
   }
 }
 
@@ -157,6 +155,24 @@ body.dark #timer {
     color: white;
     border-radius: 8px;
     margin-bottom: 0.7rem;
+
+    body.dark & {
+      background-color: $color-gray-dark;
+      border: 3px solid $color-gray-dark;
+
+      &:not(.good-answer):before,
+      &:not(.bad-answer):before {
+        background-color: #43444a;
+      }
+
+      &.good-answer {
+        border: 3px solid $color-green-success;
+      }
+
+      &.bad-answer {
+        border: 3px solid $color-red-error;
+      }
+    }
 
     &:last-child {
       margin-bottom: 0;
@@ -211,26 +227,6 @@ body.dark #timer {
     button {
       padding: 1.1rem;
       margin-bottom: 0.8rem;
-    }
-  }
-}
-
-body.dark #quiz-answers {
-  button {
-    background-color: $color-gray-dark;
-    border: 3px solid $color-gray-dark;
-
-    &:not(.good-answer):before,
-    &:not(.bad-answer):before {
-      background-color: #43444a;
-    }
-
-    &.good-answer {
-      border: 3px solid $color-green-success;
-    }
-
-    &.bad-answer {
-      border: 3px solid $color-red-error;
     }
   }
 }

@@ -37,6 +37,10 @@
     .disabled {
       pointer-events: none;
       color: lightgray;
+
+      body.dark & {
+        color: #5d5d5d;
+      }
     }
 
     svg {
@@ -74,11 +78,5 @@
   span.error {
     grid-area: span-middle;
     text-align: center;
-  }
-}
-
-body.dark #change-avatar {
-  div.choice .disabled {
-    color: #5d5d5d;
   }
 }
