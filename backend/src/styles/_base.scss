@@ -1,0 +1,34 @@
+#flex{
+  display: flex;
+  flex-direction:column;
+  align-items:center;
+
+  h1{
+    font-size:40px;
+    padding-top:30px;
+  }
+
+  h2{
+    font-size:30px;
+  }
+
+  #grid{
+    width:40%;
+    height:400px;
+  }
+
+  input{
+    width:25%;
+  }
+  #valider{
+    margin: 15px;
+    font-size: 18px;
+    height: 30px;
+    width: 150px;
+    border-radius: 10px;
+    box-shadow: 1px 1px 0px 2px rgba (0,0,0,0.3);
+    color:white;
+    background: #6495ED;
+    cursor: pointer;
+  }
+}

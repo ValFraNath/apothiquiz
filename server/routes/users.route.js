@@ -20,4 +20,6 @@ usersApiRouter.get("/:pseudo", AuthMiddleware(), HttpControllerWrapper(UserContr
 
 usersApiRouter.patch("/:pseudo", AuthMiddleware(), HttpControllerWrapper(UserController.saveInfos));
 
+usersApiRouter.get("/all", HttpControllerWrapper(UserController.getAllUsers));
+
 export default usersApiRouter;

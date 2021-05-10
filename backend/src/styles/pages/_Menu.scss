@@ -1,0 +1,19 @@
+#menu{
+  width:20%;
+  margin:0 auto;
+  margin-top:10%;
+  margin-left:50%;
+  position:relative;
+
+  button{
+    margin: 15px;
+    font-size: 18px;
+    height: 50px;
+    width: 400px;
+    border-radius: 10px;
+    box-shadow: 1px 1px 0px 2px rgba (0,0,0,0.3);
+    color:white;
+    background: #6495ED;
+    cursor: pointer;
+   }
+}

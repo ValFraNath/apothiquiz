@@ -1,0 +1,42 @@
+/* ---------- Colors ---------- */
+
+$mascot-blue-light: #34a6c2;
+$mascot-blue-dark: #2d779b;
+
+$color-bg: #ffffff;
+$color-bg-dark: #121212;
+
+$color-gray: #eaeaea;
+$color-gray-dark: #272627;
+
+$text-color: #4a4a4a;
+$text-color-black: #e0e0e0;
+
+/* ---------- Buttons ---------- */
+
+$button-bg: #1e2034;
+$button-bg-dark: #326a86;
+$button-bg-light: #4c4f6b;
+$button-fg: #ffffff;
+$button-border-radius: 6px;
+
+/* ---------- Top Bar ---------- */
+
+$top-bar-bg: rgba(245, 245, 245, 0.95);
+$top-bar-bg-dark: rgba(15, 15, 15, 0.95);
+$top-bar-fg: #000000;
+$top-bar-fg-dark: #ffffff;
+$top-bar-height: 50px;
+
+/* ---------- Success and errors ---------- */
+
+$color-gray-wait: #d0d0d0;
+$color-green-success: #488c54;
+$color-red-error: #e23737;
+$color-gray-wait-dark: #484848;
+
+/* ---------- Make variables accessible from JS files ---------- */
+
+:export {
+  topBarHeight: $top-bar-height;
+}

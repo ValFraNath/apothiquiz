@@ -1,0 +1,42 @@
+{
+  "short_name": "Apothiquiz",
+  "name": "Apothiquiz",
+  "description": "Un jeu sérieux pour les étudiants en pharmacie",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "128x128 64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "logo192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "logo512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "maskable_icon.png",
+      "type": "image/png",
+      "sizes": "350x350",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Lancer le mode entraînement",
+      "short_name": "Entraînement",
+      "description": "Lancer une série de questions en mode entraînement",
+      "url": "/train",
+      "icons": [{ "src": "logo192.png", "sizes": "192x192" }]
+    }
+  ],
+  "start_url": ".",
+  "scope":"/",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}

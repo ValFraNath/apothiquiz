@@ -329,7 +329,14 @@ async function saveInfos(req, res) {
   res.sendResponse(200, infos);
 }
 
-export default { login, logout, generateAccessToken, saveInfos, getInfos, getAll, severalGetInfos };
+/** BACKEND */
+async function getAllUsers(req,res){
+  const sql = "SELECT us_login, us_admin FROM user WHERE us_deleted IS NULL;";
+  const data = await queryPromise(sql);
+  res.sendResponse(200, data);
+}
+
+export default { login, logout, generateAccessToken, saveInfos, getInfos, getAll, severalGetInfos, getAllUsers };
 
 // ***** INTERNAL FUNCTIONS *****
 
