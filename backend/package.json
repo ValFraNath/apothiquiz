@@ -6,6 +6,7 @@
   "dependencies": {
     "@material-ui/core": "^4.11.4",
     "@material-ui/data-grid": "^4.0.0-alpha.27",
+    "@material-ui/x-grid": "^4.0.0-alpha.28",
     "@modulz/radix-icons": "^3.2.0",
     "@radix-ui/react-collapsible": "0.0.1",
     "@testing-library/jest-dom": "^4.2.4",

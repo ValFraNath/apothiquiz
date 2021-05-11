@@ -20,6 +20,6 @@ export async function getChallengeableUsers() {
 }
 
 export async function getUsers(){
-  const { data } = await axios.get("/api/v1/users/all");
+  const { data } = await axios.get("/api/v1/usersBE/all");
   return data;
 }

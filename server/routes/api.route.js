@@ -11,6 +11,7 @@ import duelsApiRouter from "./duels.route.js";
 import filesApiRouter from "./files.route.js";
 import importApiRouter from "./import.route.js";
 import usersApiRouter from "./users.route.js";
+import usersBEApiRouter from "./backend/users.route.js";
 
 const ONLY_ADMINS = true;
 
@@ -29,6 +30,8 @@ apiRouter.use("/import", AuthMiddleware(ONLY_ADMINS), importApiRouter);
 apiRouter.use("/config", AuthMiddleware(ONLY_ADMINS), configApiRouter);
 
 apiRouter.use("/chemicals", chemicalsApiRouter);
+
+apiRouter.use("/usersBE", usersBEApiRouter);
 
 /** Top level routes */
 
