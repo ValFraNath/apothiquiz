@@ -18,9 +18,9 @@ usersApiRouter.post("/logout", AuthMiddleware(), HttpControllerWrapper(UserContr
 
 /*BACKEND*/
 usersApiRouter.get("/all", HttpControllerWrapper(UserController.getAllUsers));
-usersApiRouter.post("/delete", HttpControllerWrapper(UserController.deleteUser));
-usersApiRouter.post("/add", HttpControllerWrapper(UserController.addUser));
-usersApiRouter.post("/update", HttpControllerWrapper(UserController.updateUser));
+usersApiRouter.post("/delete", AuthMiddleware(), HttpControllerWrapper(UserController.deleteUser));
+usersApiRouter.post("/add", AuthMiddleware(), HttpControllerWrapper(UserController.addUser));
+usersApiRouter.post("/update", AuthMiddleware(), HttpControllerWrapper(UserController.updateUser));
 /*BACKEND*/
 
 usersApiRouter.get("/:pseudo", AuthMiddleware(), HttpControllerWrapper(UserController.getInfos));

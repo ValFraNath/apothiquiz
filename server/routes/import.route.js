@@ -27,12 +27,6 @@ importApiRouter.post(
   HttpControllerWrapper(ImagesImporterController.importImages)
 );
 
-importApiRouter.post(
-  "/uniqueImage",
-  createMulter(),
-  HttpControllerWrapper(ImagesImporterController.importUniqueImage)
-);
-
 importApiRouter.get("/images", HttpControllerWrapper(ImagesImporterController.getLastImportedFile));
 
 importApiRouter.post(
