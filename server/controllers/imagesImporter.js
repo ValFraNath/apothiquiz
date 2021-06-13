@@ -183,4 +183,20 @@ async function deletePreviousImages() {
   await deleteFiles(...files.map((f) => path.resolve(IMAGES_DIR_PATH, f)));
 }
 
-export default { importImages, getLastImportedFile };
+/**BACKEND*/
+async function importUniqueImage(req, res) {
+  const ogName = req.file.originalname;
+  const imagesList = new ImagesList(ogName);
+  const imported = await imagesList.bindImagesToMolecules();
+      
+  const filepath = (req.file.originalname === file).path;
+  return moveFile(filepath, path.resolve(IMAGES_DIR_PATH, Molecule.normalizeDCI(file)));
+
+  res.sendResponse(201, {
+     message: "Image importée",
+     warnings: [],
+     imported: true,
+  });
+}
+
+export default { importImages, importUniqueImage, getLastImportedFile };
