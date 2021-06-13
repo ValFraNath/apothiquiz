@@ -127,8 +127,8 @@ async function updateMolecule(req){
   const { id, name, diff, sy, cl, pr } = req.body;
   let sql = '';
   if(pr.length!==0){
-	  sql += `DELETE FROM molecule_property WHERE mo_id=${id};`
-	  pr.forEach((propertyID) => sql+=`INSERT INTO molecule_property (mo_id, pv_id) VALUES (${id}, ${propertyID});`);
+    sql += `DELETE FROM molecule_property WHERE mo_id=${id};`
+    pr.forEach((propertyID) => sql+=`INSERT INTO molecule_property (mo_id, pv_id) VALUES (${id}, ${propertyID});`);
   }
   sql+=`UPDATE molecule SET mo_dci='${name}', mo_difficulty=${diff}, mo_system=${sy}, mo_class=${cl} WHERE mo_id=${id};`;
   await queryPromise(sql);
