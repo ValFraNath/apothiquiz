@@ -28,7 +28,7 @@ services:
     networks:
       - apothiquiz_dev_network
     working_dir: /app
-    command: ["npm", "run", "start:watch"]
+    command: ["npm", "install", ";", npm", "run", "start:watch"]
     ports:
       - 5035:5035
     environment:
@@ -52,7 +52,7 @@ services:
     volumes:
       - "./client/:/app/"
     working_dir: /app
-    command: ["npm", "start"]
+    command: ["npm", "install", ";", "npm", "start"]
     networks:
       - apothiquiz_dev_network
 
