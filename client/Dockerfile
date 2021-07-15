@@ -1,16 +1,15 @@
 FROM node:14-alpine as builder
 
+ARG REACT_APP_VERSION="development"
+
 WORKDIR /app
 
 COPY package*.json ./
-
 RUN npm install --only=production
 
-# Manually copying public and src to not copy nginx.conf
+# Manually copying public and src to not copy rootfs/
 COPY public/ ./public/
 COPY src/ ./src/
-
-ARG REACT_APP_VERSION="development"
 
 RUN npm run build
 
@@ -21,7 +20,7 @@ FROM nginx:1.16.0-alpine
 
 RUN rm /etc/nginx/conf.d/default.conf
 
-COPY nginx-react.conf /etc/nginx/conf.d
+COPY rootfs/ /
 
 COPY --from=builder /app/build /usr/share/nginx/html/
 

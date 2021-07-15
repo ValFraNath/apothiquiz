@@ -55,7 +55,7 @@ services:
     container_name: apothiquiz_proxy
     restart: unless-stopped
     volumes:
-      - $PWD/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - $PWD/rootfs/nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
     ports:
       - 61100:80
 
