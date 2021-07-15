@@ -38,6 +38,8 @@ services:
       DB_USER: apothiquizUser
       DB_PASSWORD: __YOUR_PASSWORD_HERE__
       DB_DATABASE: apothiquizDb
+      LDAP_URL: 'ldap://ldap.univ-fcomte.fr'
+      LDAP_DOMAIN: 'ou=people,dc=univ-fcomte,dc=fr'
 
   client:
     image: valfranath/apothiquiz-client
