@@ -1,16 +1,11 @@
 import preval from "preval.macro";
 import React from "react";
 
-import variables from "../styles/base/_variables.module.scss";
-
 const About = () => {
   const dateTimeStamp = preval`module.exports = new Date().toLocaleString();`;
 
   return (
-    <main
-      id="informations"
-      style={{ height: window.innerHeight - Number.parseInt(variables.topBarHeight) }}
-    >
+    <main id="informations">
       <p>
         Apothiquiz est une application d'apprentissage réflexe à destination des étudiants en
         pharmacie de l'Université de Franche-Comté.
@@ -25,10 +20,8 @@ const About = () => {
       </p>
       <p>
         En cas de remarque ou de conseil sur cette application, vous pouvez{" "}
-        <a href="mailto:nathanael.houn@edu.univ-fcomte.fr,francois.poguet@edu.univ-fcomte.fr,valentin.perignon@edu.univ-fcomte.fr">
-          nous écrire par mail
-        </a>{" "}
-        ou <a href="https://github.com/ValFraNath/apothiquiz/issues/new/">ouvrir un ticket</a>.
+        <a href="mailto:eros.alberola@edu.univ-fcomte.fr">nous écrire par mail</a> ou{" "}
+        <a href="https://github.com/ValFraNath/apothiquiz/issues/new/">ouvrir un ticket</a>.
       </p>
 
       <details id="credits">

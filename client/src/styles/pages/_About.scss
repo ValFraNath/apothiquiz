@@ -10,6 +10,10 @@ main#informations {
 
   p {
     margin: 1rem auto;
+
+    a {
+      white-space: nowrap;
+    }
   }
 
   #credits {

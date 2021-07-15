@@ -2,6 +2,7 @@ main#login {
   display: flex;
   flex-direction: column;
   align-items: center;
+  text-align: center;
 
   h2,
   input {
@@ -15,6 +16,9 @@ main#login {
 
   h2 {
     font-style: italic;
+    span {
+      white-space: nowrap;
+    }
   }
 
   input {

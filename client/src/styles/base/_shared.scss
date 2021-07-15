@@ -16,9 +16,10 @@ i {
 
 p {
   color: $text-color;
-}
-body.dark p {
-  color: $text-color-black;
+
+  body.dark & {
+    color: $text-color-black;
+  }
 }
 
 summary {

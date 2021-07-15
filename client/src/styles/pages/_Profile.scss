@@ -23,10 +23,10 @@ main#profile {
     border-radius: 4px;
     margin-top: 0.3rem;
     background-color: $color-gray;
-  }
-}
 
-body.dark #profile select {
-  background-color: $color-gray-dark;
-  color: white;
+    body.dark & {
+      background-color: $color-gray-dark;
+      color: white;
+    }
+  }
 }

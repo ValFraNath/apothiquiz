@@ -3,7 +3,6 @@ import React from "react";
 import { Link, Redirect } from "react-router-dom";
 
 import InstallApp from "../components/system/InstallApp";
-import variables from "../styles/base/_variables.module.scss";
 import Auth from "../utils/authentication";
 
 const Menu = ({ installPromptEvent, user }) => {
@@ -12,10 +11,7 @@ const Menu = ({ installPromptEvent, user }) => {
   }
 
   return (
-    <main
-      id="menu"
-      style={{ height: window.innerHeight - Number.parseInt(variables.topBarHeight) }}
-    >
+    <main id="menu">
       <section>
         <Link to="/train" className="btn btn-fw">
           Entraînement libre

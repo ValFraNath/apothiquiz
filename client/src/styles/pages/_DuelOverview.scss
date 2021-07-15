@@ -56,6 +56,10 @@ main#duel-overview {
     display: flex;
     justify-content: space-evenly;
 
+    body.dark & {
+      background-color: $color-gray-dark;
+    }
+
     h3 {
       position: absolute;
       top: -$title-height + 10px;
@@ -69,6 +73,10 @@ main#duel-overview {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+
+      body.dark & {
+        background-color: $color-gray-dark;
+      }
 
       span {
         font-weight: lighter;
@@ -97,12 +105,16 @@ main#duel-overview {
           background-color: $color-gray-wait;
           height: 0.8rem;
 
+          body.dark & {
+            background-color: $color-gray-wait-dark;
+          }
+
           &.true {
-            background-color: $color-green-success;
+            background-color: $color-green-success !important;
           }
 
           &.false {
-            background-color: $color-red-error;
+            background-color: $color-red-error !important;
           }
         }
       }
@@ -111,18 +123,6 @@ main#duel-overview {
 }
 
 body.dark #duel-overview {
-  section {
-    background-color: $color-gray-dark;
-
-    h3 {
-      background-color: $color-gray-dark;
-    }
-
-    .bricks .brick {
-      background-color: $color-gray-wait-dark;
-    }
-  }
-
   .duel-results {
     background-color: $color-gray-dark;
   }

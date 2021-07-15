@@ -9,10 +9,14 @@
     padding: 1rem 0;
 
     img {
-      width: 100%;
+      width: 90%;
       float: right;
 
       @media screen and (min-width: $screen-desktop) and (max-height: 860px) {
+        width: 70%;
+      }
+
+      @media screen and (max-width: $screen-desktop) {
         width: 70%;
       }
     }
@@ -159,6 +163,10 @@
         color: black;
         box-shadow: none;
 
+        body.dark & {
+          color: white;
+        }
+
         svg {
           color: #5a5a5a;
         }
@@ -172,11 +180,5 @@
     @media screen and (min-width: $screen-desktop) {
       margin-bottom: 1.2rem;
     }
-  }
-}
-
-body.dark #quiz {
-  #quiz-topbar div:last-of-type button {
-    color: white;
   }
 }
