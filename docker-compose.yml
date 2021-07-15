@@ -3,10 +3,11 @@ version: "2.4"
 services:
   mariadb_db:
     image: mariadb:10.6
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
-      - apothiquiz_dev_data:/var/lib/mysql/
+      - dev_data:/var/lib/mysql/
     networks:
-      - apothiquiz_dev_network
+      - dev_network
     expose:
       - "3306"
     environment:
@@ -16,21 +17,22 @@ services:
       MYSQL_PASSWORD: apothiquizPassword
     healthcheck:
       test: "exit 0"
-
+      
   server:
-    image: node:14
-    container_name: apothiquiz_dev_server
+    build:
+      context: ./server/
+      dockerfile: dev.Dockerfile
+    command: npm run start:watch
+    volumes:
+      - ./server:/usr/app/
+      - /usr/app/node_modules
+    ports:
+      - 5035:5035
+    networks:
+      - dev_network
     depends_on:
       mariadb_db:
         condition: service_healthy
-    volumes:
-      - "./server:/app"
-    networks:
-      - apothiquiz_dev_network
-    working_dir: /app
-    command: ["npm", "install", ";", npm", "run", "start:watch"]
-    ports:
-      - 5035:5035
     environment:
       NODE_ENV: development
       PORT: 5035
@@ -39,26 +41,30 @@ services:
       DB_HOST: mariadb_db
       DB_USER: apothiquizUser
       DB_DATABASE: apothiquizDb
+      DB_DATABASE_TEST: apothiquizDb
       DB_PASSWORD: apothiquizPassword
+      LDAP_URL: __LDAP_URL__
+      LDAP_DOMAIN: __LDAP_DOMAIN__
 
   client:
-    image: node:14
-    container_name: apothiquiz_dev_client
-    environment:
-      PORT: 3000
-      HOST: client
+    build:
+      context: ./client/
+      dockerfile: dev.Dockerfile
+    command: npm start
     ports:
       - 3000:3000
     volumes:
-      - "./client/:/app/"
-    working_dir: /app
-    command: ["npm", "install", ";", "npm", "start"]
+      - ./client/:/usr/app/
+      - /usr/app/node_modules
     networks:
-      - apothiquiz_dev_network
+      - dev_network
+    environment:
+      PORT: 3000
+      HOST: client
 
 volumes:
-  apothiquiz_dev_data:
+  dev_data:
 
 networks:
-  apothiquiz_dev_network:
+  dev_network:
     driver: bridge
