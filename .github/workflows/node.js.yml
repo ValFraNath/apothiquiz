@@ -57,7 +57,7 @@ jobs:
           mariadb version: "10.4.10"
           mysql database: "apothiquizTestDb"
           mysql user: "apothiquizUser"
-          mysql password: ${{ secrets.CI_DATABASE_PASS }}
+          mysql password: "p@ssword"
 
       - run: npm ci
         working-directory: ./server
@@ -73,12 +73,12 @@ jobs:
 
       - name: Setting private key
         run: |
-          echo "ACCESS_TOKEN_KEY=TMP_ACCESS_KEY" >> .env; \
-          echo "REFRESH_TOKEN_KEY=TMP_REFRESH_KEY" >> .env; \
-          echo "DB_HOST=localhost" >> .env; \
-          echo "DB_USER=apothiquizUser" >> .env; \
-          echo "DB_PASSWORD=p@ssword" >> .env; \
-          echo "DB_DATABASE_TEST=apothiquizTestDb" >> .env; \
+          echo "APOTHIQUIZ_ACCESS_TOKEN_KEY=TMP_ACCESS_KEY" >> .env; \
+          echo "APOTHIQUIZ_REFRESH_TOKEN_KEY=TMP_REFRESH_KEY" >> .env; \
+          echo "APOTHIQUIZ_DB_HOST=localhost" >> .env; \
+          echo "APOTHIQUIZ_DB_USER=apothiquizUser" >> .env; \
+          echo "APOTHIQUIZ_DB_PASSWORD=p@ssword" >> .env; \
+          echo "APOTHIQUIZ_DB_DATABASE_TEST=apothiquizTestDb" >> .env; \
 
         working-directory: ./server
 
