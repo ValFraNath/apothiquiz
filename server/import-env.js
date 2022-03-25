@@ -1,8 +1,9 @@
 import dotenv from "dotenv";
+
 import Logger from "./global/Logger.js";
 
 let configFile = ".env";
-process.argv.forEach(arg => {
+process.argv.forEach((arg) => {
   if (arg.startsWith("--config")) {
     configFile = arg.split("=")[1];
   }
