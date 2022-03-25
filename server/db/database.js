@@ -1,7 +1,6 @@
 import fs from "fs/promises";
 import path from "path";
 
-import dotenv from "dotenv";
 import mysql from "mysql";
 
 import Logger from "../global/Logger.js";
@@ -9,8 +8,6 @@ import Logger from "../global/Logger.js";
 const __dirname = path.resolve();
 
 const UPDATES_FILES_DIR = path.resolve(__dirname, "db", "updates");
-
-dotenv.config();
 
 // Be sure to add a new version at the end of this array (it must be sorted)
 const versions = [
@@ -36,13 +33,15 @@ const versions = [
  */
 export const currentAPIVersion = () => versions[versions.length - 1];
 
-const { NODE_ENV, DB_DATABASE, DB_DATABASE_TEST, DB_HOST, DB_PASSWORD, DB_USER } = process.env;
-
 export const connection = mysql.createConnection({
-  host: DB_HOST,
-  user: DB_USER,
-  password: DB_PASSWORD,
-  database: NODE_ENV === "test" ? DB_DATABASE_TEST : DB_DATABASE,
+  host: process.env.APOTHIQUIZ_DB_HOST,
+  port: process.env.APOTHIQUIZ_DB_PORT ?? 3306,
+  user: process.env.APOTHIQUIZ_DB_USER,
+  password: process.env.APOTHIQUIZ_DB_PASSWORD,
+  database:
+    process.env.NODE_ENV === "test"
+      ? process.env.APOTHIQUIZ_DB_DATABASE_TEST
+      : process.env.APOTHIQUIZ_DB_DATABASE,
   multipleStatements: true,
 });
 

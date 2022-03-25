@@ -1,8 +1,18 @@
 {
   "name": "client",
   "version": "0.1.0",
-  "proxy": "http://server:5035",
+  "proxy": "http://localhost:5035",
   "private": true,
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "lint": "eslint src",
+    "lint:fix": "eslint --fix src",
+    "format": "prettier --check .",
+    "format:write": "prettier --write ."
+  },
   "dependencies": {
     "@modulz/radix-icons": "^3.2.0",
     "@radix-ui/react-collapsible": "0.0.1",
@@ -29,16 +39,6 @@
     "workbox-precaching": "^5.1.4",
     "workbox-routing": "^5.1.4",
     "workbox-strategies": "^5.1.4"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "lint": "eslint src",
-    "lint:fix": "eslint --fix src",
-    "format": "prettier --check .",
-    "format:write": "prettier --write ."
   },
   "eslintConfig": {
     "env": {

@@ -370,12 +370,12 @@ async function queryLdap(login, pass) {
   // auth with regular user
   const options = {
     ldapOpts: {
-      url: process.env.LDAP_URL,
+      url: process.env.APOTHIQUIZ_LDAP_URL,
       // tlsOptions: { rejectUnauthorized: false }
     },
-    userDn: `uid=${login},${process.env.LDAP_DOMAIN}`,
+    userDn: `uid=${login},${process.env.APOTHIQUIZ_LDAP_DOMAIN}`,
     userPassword: `${pass}`,
-    userSearchBase: `${process.env.LDAP_DOMAIN}`,
+    userSearchBase: `${process.env.APOTHIQUIZ_LDAP_DOMAIN}`,
     usernameAttribute: "uid",
     username: `${login}`,
     // starttls: false

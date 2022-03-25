@@ -1,0 +1,16 @@
+version: "2.4"
+
+services:
+  mariadb:
+    image: mariadb:10.6
+    volumes:
+      - dev_database:/var/lib/mysql/
+    ports:
+      - 3306:3306
+    env_file:
+      - .env
+    healthcheck:
+      test: "exit 0"
+
+volumes:
+  dev_database:

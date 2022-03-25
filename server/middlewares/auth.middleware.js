@@ -14,7 +14,7 @@ function AuthMiddleware(onlyAdmin = false) {
     const res = new HttpResponseWrapper(_res);
     try {
       const token = req.headers.authorization.split(" ")[1];
-      const { user, isAdmin } = jwt.verify(token, process.env.ACCESS_TOKEN_KEY);
+      const { user, isAdmin } = jwt.verify(token, process.env.APOTHIQUIZ_ACCESS_TOKEN_KEY);
       if (onlyAdmin && !isAdmin) {
         return res.sendUsageError(403, "Access denied");
       }
