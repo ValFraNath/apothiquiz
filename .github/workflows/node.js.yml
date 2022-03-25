@@ -41,11 +41,11 @@ jobs:
         node-version: [14.x]
 
     env:
-      APOTHIQUIZ_ACCESS_TOKEN_KEY: TMP_ACCESS_KEY"
-      APOTHIQUIZ_REFRESH_TOKEN_KEY: TMP_REFRESH_KEY"
-      APOTHIQUIZ_DB_HOST: localhost"
-      APOTHIQUIZ_DB_DATABASE_TEST: apothiquizTestDb"
-      APOTHIQUIZ_DB_USER: apothiquizUser"
+      APOTHIQUIZ_ACCESS_TOKEN_KEY: TMP_ACCESS_KEY
+      APOTHIQUIZ_REFRESH_TOKEN_KEY: TMP_REFRESH_KEY
+      APOTHIQUIZ_DB_HOST: localhost
+      APOTHIQUIZ_DB_DATABASE_TEST: apothiquizTestDb
+      APOTHIQUIZ_DB_USER: apothiquizUser
       APOTHIQUIZ_DB_PASSWORD: p@ssword
 
     steps:
