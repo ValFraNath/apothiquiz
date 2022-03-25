@@ -72,12 +72,13 @@ stop_docker() {
 
 run_server() {
 	cd "./server/" || fail
-	npm run start:watch
+	npm run start:watch -- --config="../dev.env"
 }
 
 run_client() {
 	cd "./client/" || fail
-	npm run start | tee
+	# Use tee to make react-scripts thinks it's not an interactive console
+	npm run start | tee 
 }
 
 # -----------------------------------------------------------------------------

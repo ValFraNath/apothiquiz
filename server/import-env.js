@@ -1,7 +1,14 @@
 import dotenv from "dotenv";
-
 import Logger from "./global/Logger.js";
-dotenv.config({ path: "../dev.env" }); // TODO do not hardcode this
+
+let configFile = ".env";
+process.argv.forEach(arg => {
+  if (arg.startsWith("--config")) {
+    configFile = arg.split("=")[1];
+  }
+});
+
+dotenv.config({ path: configFile });
 
 /**
  * Verify that all required environment variables are defined
