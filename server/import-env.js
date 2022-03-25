@@ -11,7 +11,7 @@ process.argv.forEach(arg => {
 dotenv.config({ path: configFile });
 
 /**
- * Verify that all required environment variables are defined
+ * Check that all required environment variables are defined
  * Otherwise, the process is stopped
  */
 let needToExit = false;
