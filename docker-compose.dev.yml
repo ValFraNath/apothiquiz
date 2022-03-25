@@ -9,8 +9,25 @@ services:
       - 3306:3306
     env_file:
       - dev.env
+    environment:
+      MYSQL_ROOT_PASSWORD: root
     healthcheck:
-      test: "exit 0"
+      test: "mysql --user=root --password=root --execute 'SHOW DATABASES;'"
+      interval: 5s
+      start_period: 1m
+
+  mariadb-test:
+    image: mariadb:10.6
+    ports:
+      - 3307:3306
+    env_file:
+      - dev.env
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    healthcheck:
+      test: "mysql --user=root --password=root --execute 'SHOW DATABASES;'"
+      interval: 5s
+      start_period: 1m
 
 volumes:
   dev_database:

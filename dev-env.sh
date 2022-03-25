@@ -4,6 +4,7 @@ HELP="Setup script for Apothiquiz dev environment
 Available commands:
 	- start: Start docker containers and run server and client in watch mode
 	- stop-docker: Stop docker containers
+	- test: Launch unit tests
 	- nuke: Remove all developement data
 "
 DC="docker compose --file docker-compose.dev.yml"
@@ -58,7 +59,7 @@ check_npm_dependencies() {
 }
 
 start_docker() {
-	$DC up --detach
+	$DC up mariadb --detach
 
 	until [ "$(docker inspect -f '{{.State.Health.Status}}' "$($DC ps -q mariadb)")" == "healthy" ]; do
 		echo "Waiting for mariadb to be ready..."
@@ -67,7 +68,7 @@ start_docker() {
 }
 
 stop_docker() {
-	$DC down
+	$DC stop mariadb
 }
 
 run_server() {
@@ -75,10 +76,28 @@ run_server() {
 	npm run start:watch -- --config="../dev.env"
 }
 
+test_server() {
+	echo "Running tests with a temporary database"
+	$DC up mariadb-test --detach
+
+	until [ "$(docker inspect -f '{{.State.Health.Status}}' "$($DC ps -q mariadb-test)")" == "healthy" ]; do
+		echo "Waiting for mariadb-test to be ready..."
+		sleep 2
+	done
+
+	export $(grep --only-matching "APOTHIQUIZ_.*=[^ ]*" dev.env | xargs)
+	export APOTHIQUIZ_DB_PORT=3307 # 3307 is the port for the test database
+	cd "./server/" || fail
+	npm run test
+
+	cd "../" || fail
+	$DC down mariadb-test
+}
+
 run_client() {
 	cd "./client/" || fail
 	# Use tee to make react-scripts thinks it's not an interactive console
-	npm run start | tee 
+	npm run start | tee
 }
 
 # -----------------------------------------------------------------------------
@@ -98,14 +117,23 @@ case "$1" in
 	run_server &
 	run_client &
 
-	# Stop when using ctrl+c
-	wait
-	wait
+	trap stop_docker SIGINT # Stop docker on ctrl+c
+
+	wait # Do not stop the script until the commands are finished
 	exit 0
 	;;
 
 "stop-docker")
 	stop_docker
+	exit 0
+	;;
+
+"test")
+	check_system_dependencies
+	check_npm_dependencies
+	test_server &
+
+	wait
 	exit 0
 	;;
 
