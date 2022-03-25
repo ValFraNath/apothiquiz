@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 
 import Logger from "./global/Logger.js";
-dotenv.config({ path: "../.env" });
+dotenv.config({ path: "../dev.env" }); // TODO do not hardcode this
 
 /**
  * Verify that all required environment variables are defined

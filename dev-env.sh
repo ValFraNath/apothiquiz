@@ -1,11 +1,10 @@
 #!/bin/bash
 
 HELP="Setup script for Apothiquiz dev environment
-	Available commands:
-		- start: Start docker containers and run server and client in watch mode
-		- stop-docker: Stop docker containers
-		- nuke: Remove all developement data
-
+Available commands:
+	- start: Start docker containers and run server and client in watch mode
+	- stop-docker: Stop docker containers
+	- nuke: Remove all developement data
 "
 DC="docker compose --file docker-compose.dev.yml"
 
@@ -37,10 +36,10 @@ check_system_dependencies() {
 	# 	exit 1;
 	# fi
 
-	if ! [ -f ".env" ]; then
-		echo "Missing .env file, creating with default values from .env.example"
+	if ! [ -f "dev.env" ]; then
+		echo "Missing dev.env file, creating with default values from .env.example"
 		echo "Feel free to edit these to match your dev environment"
-		cp ".env.example" ".env" || fail
+		cp ".env.example" "dev.env" || fail
 		echo
 	fi
 }
@@ -85,6 +84,11 @@ run_client() {
 #                               ACTUAL SCRIPT
 # -----------------------------------------------------------------------------
 
+if [ -z "$1" ]; then
+	echo "$HELP"
+	exit 0
+fi
+
 case "$1" in
 "start")
 	check_system_dependencies
@@ -111,7 +115,7 @@ case "$1" in
 		$DC down --volumes
 		echo "Removing client/node_modules" && rm -rf client/node_modules
 		echo "Removing server/node_modules" && rm -rf server/node_modules
-		echo "Removing .env" && rm -r .env
+		echo "Removing dev.env" && rm -r dev.env
 	fi
 	exit 0
 	;;
