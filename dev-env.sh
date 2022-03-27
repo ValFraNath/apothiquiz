@@ -85,6 +85,7 @@ test_server() {
 		sleep 2
 	done
 
+  # shellcheck disable=SC2046 # We want the attributes to be treated separately
 	export $(grep --only-matching "APOTHIQUIZ_.*=[^ ]*" dev.env | xargs)
 	export APOTHIQUIZ_DB_PORT=3307 # 3307 is the port for the test database
 	cd "./server/" || fail
@@ -149,7 +150,7 @@ case "$1" in
 	exit 0
 	;;
 
-"help|*")
+"help"|*)
 	echo "$HELP"
 	exit 0
 	;;
