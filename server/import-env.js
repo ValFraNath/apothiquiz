@@ -31,7 +31,6 @@ if (process.env.NODE_ENV === "production") {
 
 for (const key of keys) {
   if (!process.env[key]) {
-    console.debug(key, "=", process.env[key]);
     Logger.error(
       new Error(
         `The ${key} environment variable is required but not defined in .env.\

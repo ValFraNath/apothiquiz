@@ -13,14 +13,14 @@ chai.use(chaiHttp);
 const { expect } = chai;
 describe("User test", function () {
   function decodeRefreshToken(refreshToken) {
-    const { REFRESH_TOKEN_KEY } = process.env;
-    const { user, isAdmin } = jwt.verify(refreshToken, REFRESH_TOKEN_KEY);
+    const { APOTHIQUIZ_REFRESH_TOKEN_KEY } = process.env;
+    const { user, isAdmin } = jwt.verify(refreshToken, APOTHIQUIZ_REFRESH_TOKEN_KEY);
     return { user, isAdmin };
   }
 
   function decodeAccessToken(accessToken) {
-    const { ACCESS_TOKEN_KEY } = process.env;
-    const { user, isAdmin } = jwt.verify(accessToken, ACCESS_TOKEN_KEY);
+    const { APOTHIQUIZ_ACCESS_TOKEN_KEY } = process.env;
+    const { user, isAdmin } = jwt.verify(accessToken, APOTHIQUIZ_ACCESS_TOKEN_KEY);
     return { user, isAdmin };
   }
 
