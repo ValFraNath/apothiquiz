@@ -50,8 +50,8 @@ check_system_dependencies() {
 	# fi
 
 	if ! [ -f "dev.env" ]; then
-		colored_echo "  Missing dev.env file, creating with default values from .env.example"
-		colored_echo "  Feel free to edit your local .env to match your dev environment"
+		colored_echo "    Missing dev.env file, creating with default values from .env.example"
+		colored_echo "    Feel free to edit your local .env to match your dev environment"
 		cp ".env.example" "dev.env" || fail
 	fi
 
@@ -63,7 +63,7 @@ check_npm_dependencies() {
 	for DIR in "client" "server"; do
 		cd "$DIR" || fail
 		if ! [ -d "node_modules" ] || ! npm list --all >/dev/null 2>&1; then
-			colored_echo "Installing npm dependencies in $DIR"
+			colored_echo "    Installing npm dependencies in $DIR"
 			npm install
 		fi
 
@@ -122,7 +122,7 @@ create_user() {
 
 	colored_echo "Create new user: '$USERID'"
 
-	colored_echo "  [1/2] Adding to LDAP database"
+	colored_echo "    [1/2] Adding to LDAP database"
 	cat <<-EOF | $DC exec --no-TTY openldap ldapadd -x -D "cn=admin,dc=apothiquiz,dc=io" -w password -H ldap://localhost -ZZ
 		dn: uid=$USERID,ou=users,dc=apothiquiz,dc=io
 		uid: $USERID
@@ -140,7 +140,7 @@ create_user() {
 		gecos: $USERID UserEOF
 	EOF
 
-	colored_echo "  [2/2] Adding to mariadb database"
+	colored_echo "    [2/2] Adding to mariadb database"
 	echo "INSERT IGNORE INTO \`user\` (\`us_login\`,\`us_admin\`) VALUES ('$USERID',0)" |
 		docker compose --file docker-compose.dev.yml exec --no-TTY mariadb mariadb --user=root --password=root apothiquizDb
 
