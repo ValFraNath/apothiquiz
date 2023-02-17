@@ -4,7 +4,7 @@ HELP="Setup script for Apothiquiz dev environment
 Available commands:
 	- start: Start docker containers and run server and client in watch mode
 	- test: Launch unit tests
-	- create-user <login>: Create a new user in the database and LDAP
+	- create-user <login> [password]: Create a new user in the database and LDAP
 
 	- start-docker: Start docker containers
 	- stop-docker: Stop docker containers
@@ -115,6 +115,7 @@ test_server() {
 create_user() {
 	# default password is "password"
 	USERID="$1"
+	PASSWORD="${2:-"password"}"
 
 	# Create users group if it doesn't exist
 	cat <<-EOF | $DC exec --no-TTY openldap ldapadd -x -D "cn=admin,dc=apothiquiz,dc=io" -w password -H ldap://localhost -ZZ >/dev/null 2>/dev/null || true
@@ -139,7 +140,7 @@ create_user() {
 		homeDirectory: /home/$USERID
 		uidNumber: 14583102
 		gidNumber: 14564100
-		userPassword: {SSHA}qgUzqcueyWA927ttHMnXP89MSL/rP8CR
+		userPassword: $PASSWORD
 		mail: $USERID@example.org
 		gecos: $USERID UserEOF
 	EOF
@@ -148,7 +149,7 @@ create_user() {
 	echo "INSERT IGNORE INTO \`user\` (\`us_login\`,\`us_admin\`) VALUES ('$USERID',0)" |
 		$DC exec --no-TTY mariadb mariadb --user=root --password=root apothiquizDb
 
-	colored_echo "User $USERID created successfully, the default password is 'password'"
+	colored_echo "User $USERID created successfully, the default password is '$PASSWORD'"
 }
 
 # -----------------------------------------------------------------------------
@@ -217,7 +218,7 @@ case "$1" in
 		colored_echo "Il manque le nom d'utilisateur"
 		exit 1
 	fi
-	create_user "$2"
+	create_user "$2" "$3"
 	exit 0
 	;;
 
