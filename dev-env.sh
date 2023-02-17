@@ -1,10 +1,13 @@
 #!/bin/bash
+GREEN="\e[42m"
+RED="\e[41m"
+DEFAULT="\e[0m"
 
-HELP="Setup script for Apothiquiz dev environment
+HELP="${GREEN}Setup script for Apothiquiz dev environment${DEFAULT}
 Available commands:
 	- start: Start docker containers and run server and client in watch mode
 	- test: Launch unit tests
-	- create-user <login> [password] [is-admin]: Create a new user in the database and LDAP
+	- create-user <login> [password] [isadmin]: Create a new user in the database and LDAP
 
 	- seed: Import default molecules and create default users
 	- start-docker: Start docker containers
@@ -20,28 +23,27 @@ set -o pipefail
 #                                  FUNCTIONS
 # -----------------------------------------------------------------------------
 fail() {
-	echo "Error. Exiting."
-	# stop_docker_services
-	echo "Exited because of an error."
+	colored_echo "Error. Exiting." "$RED"
+	stop_docker_services
 	exit 1
 }
 
 colored_echo() {
-	GREEN="\e[42m"
-	DEFAULT="\e[0m"
-	echo -e "${GREEN}[dev-env.sh] ${1}${DEFAULT}"
+	COLOR=${2:-$GREEN}
+	echo -e "${COLOR}[dev-env.sh] ${1}${DEFAULT}"
 }
 
 check_system_dependencies() {
 	HELP_MESSAGE="Please refer to the developer documentation to find how to install the required dependencies: https://github.com/ValFraNath/apothiquiz/wiki/Developer-setup."
 
-	colored_echo "Checking system dependencies..."
+	echo -e -n "${GREEN}[dev-env.sh] Checking system dependencies...${DEFAULT}"
 	DEPS=("docker")
 
 	for DEP in "${DEPS[@]}"; do
 		if ! command -v "$DEP" >/dev/null 2>&1; then
-			colored_echo "$DEP dependency is missing."
-			colored_echo "$HELP_MESSAGE"
+			echo
+			colored_echo "$DEP dependency is missing." "$RED"
+			colored_echo "$HELP_MESSAGE" "$RED"
 			exit 1
 		fi
 	done
@@ -53,21 +55,19 @@ check_system_dependencies() {
 	# fi
 
 	if ! [ -f "dev.env" ]; then
+		echo
 		colored_echo "    Missing dev.env file, creating with default values from .env.example"
 		colored_echo "    Feel free to edit your local .env to match your dev environment"
 		cp ".env.example" "dev.env" || fail
 	fi
 
-	colored_echo "    Pulling missing docker containers."
-	$DC pull || fail
-
-	colored_echo "...OK!"
+	echo -e "${GREEN}OK!${DEFAULT}"
 }
 
 check_npm_dependencies() {
 	colored_echo "Checking npm dependencies..."
 	for DIR in "client" "server"; do
-		if ! [ -d "node_modules" ] || ! $DC exec --workdir "/app/$DIR" node npm list --all >/dev/null 2>&1; then
+		if ! [ -d "$DIR/node_modules" ] || ! $DC exec --workdir "/app/$DIR" node npm list --all >/dev/null 2>&1; then
 			colored_echo "    Installing npm dependencies in $DIR"
 			$DC exec --workdir "/app/$DIR" node npm install || fail
 		fi
@@ -108,9 +108,10 @@ test_server() {
 		sleep 2
 	done
 
-	$DC exec --workdir "/app/server" --env APOTHIQUIZ_DB_PORT=3307 node npm run test
+	$DC exec --workdir "/app/server" --env APOTHIQUIZ_DB_PORT=3307 --no-TTY node npm run test
 	$DC stop mariadb-test
 	$DC rm mariadb-test
+	echo
 }
 
 create_user() {
@@ -150,7 +151,8 @@ create_user() {
 	echo "INSERT IGNORE INTO \`user\` (\`us_login\`,\`us_admin\`) VALUES ('$USERID',$IS_ADMIN)" |
 		$DC exec --no-TTY mariadb mariadb --user=root --password=root apothiquizDb
 
-	colored_echo "User $USERID created successfully, the default password is '$PASSWORD'"
+[[ "$IS_ADMIN" = "1" ]] && IS_ADMIN="Admin" || IS_ADMIN="User"
+	colored_echo "${IS_ADMIN} ${USERID} created successfully, the default password is '$PASSWORD'"
 }
 
 # -----------------------------------------------------------------------------
@@ -158,7 +160,7 @@ create_user() {
 # -----------------------------------------------------------------------------
 
 if [ -z "$1" ]; then
-	colored_echo "$HELP"
+	echo -e "$HELP"
 	exit 0
 fi
 
@@ -193,9 +195,10 @@ case "$1" in
 	wait
 	exit 0
 	;;
+
 "create-user")
 	if [ -z "$2" ]; then
-		colored_echo "Il manque le nom d'utilisateur"
+		colored_echo "Username is missing" "$RED"
 		exit 1
 	fi
 	create_user "$2" "$3" "$4"
@@ -237,7 +240,7 @@ case "$1" in
 	;;
 
 "help" | *)
-	echo "$HELP"
+	echo -e "$HELP"
 	exit 0
 	;;
 
