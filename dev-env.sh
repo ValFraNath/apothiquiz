@@ -6,6 +6,7 @@ Available commands:
 	- test: Launch unit tests
 	- create-user <login> [password] [is-admin]: Create a new user in the database and LDAP
 
+	- seed: Import default molecules and create default users
 	- start-docker: Start docker containers
 	- stop-docker: Stop docker containers
 	- nuke: Remove all developement data
@@ -113,7 +114,6 @@ test_server() {
 }
 
 create_user() {
-	# default password is "password"
 	USERID="$1"
 	PASSWORD="${2:-"password"}"
 	[[ -z "$3" ]] && IS_ADMIN="0" || IS_ADMIN="1"
@@ -162,9 +162,10 @@ if [ -z "$1" ]; then
 	exit 0
 fi
 
+check_system_dependencies
+
 case "$1" in
 "start")
-	check_system_dependencies
 	trap stop_docker_services SIGINT # Stop docker on ctrl+c
 	start_docker_services
 
@@ -183,6 +184,36 @@ case "$1" in
 	exit 0
 	;;
 
+
+"test")
+	start_docker_services
+	check_npm_dependencies
+	test_server &
+
+	wait
+	exit 0
+	;;
+"create-user")
+	if [ -z "$2" ]; then
+		colored_echo "Il manque le nom d'utilisateur"
+		exit 1
+	fi
+	create_user "$2" "$3" "$4"
+	exit 0
+	;;
+
+"seed")
+	start_docker_services
+
+	colored_echo "Importing default data for molecules"
+	$DC exec --no-TTY mariadb mariadb --user=root --password=root apothiquizDb < ./server/test/required-data/config.sql || true
+	$DC exec --no-TTY mariadb mariadb --user=root --password=root apothiquizDb < ./server/test/required-data/molecules.sql || true
+
+	create_user "user" "password" "1"
+	create_user "admin" "password" "1"
+	exit 0
+	;;
+
 "start-docker")
 	start_docker_services
 	exit 0
@@ -190,15 +221,6 @@ case "$1" in
 
 "stop-docker")
 	stop_docker_services
-	exit 0
-	;;
-
-"test")
-	check_system_dependencies
-	check_npm_dependencies
-	test_server &
-
-	wait
 	exit 0
 	;;
 
@@ -211,15 +233,6 @@ case "$1" in
 		colored_echo "Removing server/node_modules" && rm -rf server/node_modules
 		colored_echo "Removing dev.env" && rm -r dev.env
 	fi
-	exit 0
-	;;
-
-"create-user")
-	if [ -z "$2" ]; then
-		colored_echo "Il manque le nom d'utilisateur"
-		exit 1
-	fi
-	create_user "$2" "$3" "$4"
 	exit 0
 	;;
 
