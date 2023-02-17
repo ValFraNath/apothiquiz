@@ -167,7 +167,7 @@ case "$1" in
 	trap stop_docker_services SIGINT # Stop docker on ctrl+c
 	start_docker_services
 
-	# check_npm_dependencies
+	check_npm_dependencies
 
 	echo ""
 	colored_echo "----------------------------------------------------"
