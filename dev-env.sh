@@ -160,6 +160,7 @@ case "$1" in
 "start")
 	check_system_dependencies
 	check_npm_dependencies
+	trap stop_docker SIGINT # Stop docker on ctrl+c
 	start_docker
 	run_server &
 	run_client &
@@ -169,8 +170,6 @@ case "$1" in
 	colored_echo "      Press ctrc+c to stop everything"
 	colored_echo "----------------------------------------------------"
 	echo ""
-
-	trap stop_docker SIGINT # Stop docker on ctrl+c
 
 	wait # Do not stop the script until the commands are finished
 	exit 0
