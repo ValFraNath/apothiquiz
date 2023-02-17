@@ -4,7 +4,7 @@ HELP="Setup script for Apothiquiz dev environment
 Available commands:
 	- start: Start docker containers and run server and client in watch mode
 	- test: Launch unit tests
-	- create-user <login> [password]: Create a new user in the database and LDAP
+	- create-user <login> [password] [is-admin]: Create a new user in the database and LDAP
 
 	- start-docker: Start docker containers
 	- stop-docker: Stop docker containers
@@ -116,6 +116,7 @@ create_user() {
 	# default password is "password"
 	USERID="$1"
 	PASSWORD="${2:-"password"}"
+	[[ -z "$3" ]] && IS_ADMIN="0" || IS_ADMIN="1"
 
 	# Create users group if it doesn't exist
 	cat <<-EOF | $DC exec --no-TTY openldap ldapadd -x -D "cn=admin,dc=apothiquiz,dc=io" -w password -H ldap://localhost -ZZ >/dev/null 2>/dev/null || true
@@ -146,7 +147,7 @@ create_user() {
 	EOF
 
 	colored_echo "    [2/2] Adding to mariadb database"
-	echo "INSERT IGNORE INTO \`user\` (\`us_login\`,\`us_admin\`) VALUES ('$USERID',0)" |
+	echo "INSERT IGNORE INTO \`user\` (\`us_login\`,\`us_admin\`) VALUES ('$USERID',$IS_ADMIN)" |
 		$DC exec --no-TTY mariadb mariadb --user=root --password=root apothiquizDb
 
 	colored_echo "User $USERID created successfully, the default password is '$PASSWORD'"
@@ -218,7 +219,7 @@ case "$1" in
 		colored_echo "Il manque le nom d'utilisateur"
 		exit 1
 	fi
-	create_user "$2" "$3"
+	create_user "$2" "$3" "$4"
 	exit 0
 	;;
 
