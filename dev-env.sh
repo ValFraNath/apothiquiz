@@ -9,24 +9,35 @@ Available commands:
 "
 DC="docker compose --file docker-compose.dev.yml"
 
+set -e
+set -o pipefail
+
 # -----------------------------------------------------------------------------
 #                                  FUNCTIONS
 # -----------------------------------------------------------------------------
 fail() {
 	echo "Error. Exiting."
+	stop_docker
+	echo "Exited because of an error."
 	exit 1
+}
+
+colored_echo() {
+	GREEN="\e[42m"
+	DEFAULT="\e[0m"
+	echo -e "${GREEN}${1}${DEFAULT}"
 }
 
 check_system_dependencies() {
 	HELP_MESSAGE="Please refer to the developer documentation to find how to install the required dependencies: https://github.com/ValFraNath/apothiquiz/wiki/Developer-setup."
 
-	echo "Checking system dependencies..."
+	colored_echo "Checking system dependencies..."
 	DEPS=("node" "npm" "docker")
 
 	for DEP in "${DEPS[@]}"; do
 		if ! command -v "$DEP" >/dev/null 2>&1; then
-			echo "$DEP dependency is missing."
-			echo "$HELP_MESSAGE"
+			colored_echo "$DEP dependency is missing."
+			colored_echo "$HELP_MESSAGE"
 			exit 1
 		fi
 	done
@@ -38,50 +49,54 @@ check_system_dependencies() {
 	# fi
 
 	if ! [ -f "dev.env" ]; then
-		echo "Missing dev.env file, creating with default values from .env.example"
-		echo "Feel free to edit these to match your dev environment"
+		colored_echo "Missing dev.env file, creating with default values from .env.example"
+		colored_echo "Feel free to edit your local .env to match your dev environment"
 		cp ".env.example" "dev.env" || fail
-		echo
+		colored_echo
 	fi
+
+	colored_echo "...OK!"
 }
 
 check_npm_dependencies() {
-	echo "Checking npm dependencies..."
+	colored_echo "Checking npm dependencies..."
 	for DIR in "client" "server"; do
 		cd "$DIR" || fail
-		if ! [ -d "node_modules" ]; then
-			echo "Installing npm dependencies in $DIR"
+		if ! [ -d "node_modules" ] || ! npm list --all >/dev/null 2>&1; then
+			colored_echo "Installing npm dependencies in $DIR"
 			npm install
 		fi
 
-		cd - || fail
+		cd - >/dev/null || fail
 	done
+	colored_echo "...OK!"
 }
 
+SERVICES=("mariadb" "openldap" "phpldapadmin")
 start_docker() {
-	$DC up mariadb --detach
+	$DC up "${SERVICES[@]}" --detach || fail
 
 	until [ "$(docker inspect -f '{{.State.Health.Status}}' "$($DC ps -q mariadb)")" == "healthy" ]; do
-		echo "Waiting for mariadb to be ready..."
+		colored_echo "Waiting for mariadb to be ready..."
 		sleep 2
 	done
 }
 
 stop_docker() {
-	$DC stop mariadb
+	$DC stop "${SERVICES[@]}"
 }
 
 run_server() {
 	cd "./server/" || fail
-	npm run start:watch -- --config="../dev.env"
+	npm run start:watch -- --config="../dev.env" || fail
 }
 
 test_server() {
-	echo "Running tests with a temporary database"
+	colored_echo "Running tests with a temporary database"
 	$DC up mariadb-test --detach
 
 	until [ "$(docker inspect -f '{{.State.Health.Status}}' "$($DC ps -q mariadb-test)")" == "healthy" ]; do
-		echo "Waiting for mariadb-test to be ready..."
+		colored_echo "Waiting for mariadb-test to be ready..."
 		sleep 2
 	done
 
@@ -98,7 +113,7 @@ test_server() {
 run_client() {
 	cd "./client/" || fail
 	# Use tee to make react-scripts thinks it's not an interactive console
-	npm run start | tee
+	npm run start | tee || fail
 }
 
 # -----------------------------------------------------------------------------
@@ -106,7 +121,7 @@ run_client() {
 # -----------------------------------------------------------------------------
 
 if [ -z "$1" ]; then
-	echo "$HELP"
+	colored_echo "$HELP"
 	exit 0
 fi
 
@@ -117,6 +132,11 @@ case "$1" in
 	start_docker
 	run_server &
 	run_client &
+
+	colored_echo ""
+	colored_echo "----------------------------------------------------"
+	colored_echo "      Press ctrc+c to stop everything"
+	colored_echo "----------------------------------------------------"
 
 	trap stop_docker SIGINT # Stop docker on ctrl+c
 
@@ -139,13 +159,13 @@ case "$1" in
 	;;
 
 "nuke")
-	read -p "Do you want to remove all your development data (including database)? [yN] " -n 1 -r
-	echo # newline
+	read -p "Do you want to remove all your development data (including databases)? [yN] " -n 1 -r
+	colored_echo # newline
 	if [[ "$REPLY" =~ ^[YyOo]$ ]]; then
 		$DC down --volumes
-		echo "Removing client/node_modules" && rm -rf client/node_modules
-		echo "Removing server/node_modules" && rm -rf server/node_modules
-		echo "Removing dev.env" && rm -r dev.env
+		colored_echo "Removing client/node_modules" && rm -rf client/node_modules
+		colored_echo "Removing server/node_modules" && rm -rf server/node_modules
+		colored_echo "Removing dev.env" && rm -r dev.env
 	fi
 	exit 0
 	;;
