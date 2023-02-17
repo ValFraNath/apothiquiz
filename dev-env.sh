@@ -3,12 +3,14 @@
 HELP="Setup script for Apothiquiz dev environment
 Available commands:
 	- start: Start docker containers and run server and client in watch mode
-	- stop-docker: Stop docker containers
 	- test: Launch unit tests
-	- nuke: Remove all developement data
 	- create-user <login>: Create a new user in the database and LDAP
+
+	- start-docker: Start docker containers
+	- stop-docker: Stop docker containers
+	- nuke: Remove all developement data
 "
-DC="docker compose --file docker-compose.dev.yml"
+DC="docker compose"
 
 set -e
 set -o pipefail
@@ -18,7 +20,7 @@ set -o pipefail
 # -----------------------------------------------------------------------------
 fail() {
 	echo "Error. Exiting."
-	stop_docker
+	# stop_docker_services
 	echo "Exited because of an error."
 	exit 1
 }
@@ -33,7 +35,7 @@ check_system_dependencies() {
 	HELP_MESSAGE="Please refer to the developer documentation to find how to install the required dependencies: https://github.com/ValFraNath/apothiquiz/wiki/Developer-setup."
 
 	colored_echo "Checking system dependencies..."
-	DEPS=("node" "npm" "docker")
+	DEPS=("docker")
 
 	for DEP in "${DEPS[@]}"; do
 		if ! command -v "$DEP" >/dev/null 2>&1; then
@@ -55,25 +57,25 @@ check_system_dependencies() {
 		cp ".env.example" "dev.env" || fail
 	fi
 
+	colored_echo "    Pulling missing docker containers."
+	$DC pull || fail
+
 	colored_echo "...OK!"
 }
 
 check_npm_dependencies() {
 	colored_echo "Checking npm dependencies..."
 	for DIR in "client" "server"; do
-		cd "$DIR" || fail
-		if ! [ -d "node_modules" ] || ! npm list --all >/dev/null 2>&1; then
+		if ! [ -d "node_modules" ] || ! $DC exec --workdir "/app/$DIR" node npm list --all >/dev/null 2>&1; then
 			colored_echo "    Installing npm dependencies in $DIR"
-			npm install
+			$DC exec --workdir "/app/$DIR" node npm install || fail
 		fi
-
-		cd - >/dev/null || fail
 	done
 	colored_echo "...OK!"
 }
 
-SERVICES=("mariadb" "openldap" "phpldapadmin")
-start_docker() {
+SERVICES=("mariadb" "openldap" "phpldapadmin" "node")
+start_docker_services() {
 	$DC up "${SERVICES[@]}" --detach || fail
 
 	until [ "$(docker inspect -f '{{.State.Health.Status}}' "$($DC ps -q mariadb)")" == "healthy" ]; do
@@ -82,13 +84,18 @@ start_docker() {
 	done
 }
 
-stop_docker() {
+stop_docker_services() {
 	$DC stop "${SERVICES[@]}"
 }
 
 run_server() {
-	cd "./server/" || fail
-	npm run start:watch -- --config="../dev.env" || fail
+	colored_echo "Starting server in watch mode"
+	$DC exec --workdir "/app/server" --no-TTY node npm run start:watch -- --config="../dev.env" || fail
+}
+
+run_client() {
+	colored_echo "Starting client in watch mode"
+	$DC exec --workdir "/app/client" --no-TTY node npm run start | tee || fail
 }
 
 test_server() {
@@ -100,30 +107,27 @@ test_server() {
 		sleep 2
 	done
 
-	# shellcheck disable=SC2046 # We want the attributes to be treated separately
-	export $(grep --only-matching "APOTHIQUIZ_.*=[^ ]*" dev.env | xargs)
-	export APOTHIQUIZ_DB_PORT=3307 # 3307 is the port for the test database
-	cd "./server/" || fail
-	npm run test
-
-	cd "../" || fail
-	$DC down mariadb-test
-}
-
-run_client() {
-	cd "./client/" || fail
-	# Use tee to make react-scripts thinks it's not an interactive console
-	npm run start | tee || fail
+	$DC exec --workdir "/app/server" --env APOTHIQUIZ_DB_PORT=3307 node npm run test
+	$DC stop mariadb-test
+	$DC rm mariadb-test
 }
 
 create_user() {
 	# default password is "password"
 	USERID="$1"
 
+	# Create users group if it doesn't exist
+	cat <<-EOF | $DC exec --no-TTY openldap ldapadd -x -D "cn=admin,dc=apothiquiz,dc=io" -w password -H ldap://localhost -ZZ >/dev/null 2>/dev/null || true
+		dn: ou=users,dc=apothiquiz,dc=io
+		objectclass: organizationalUnit
+		objectclass: top
+		ou: users
+	EOF
+
 	colored_echo "Create new user: '$USERID'"
 
 	colored_echo "    [1/2] Adding to LDAP database"
-	cat <<-EOF | $DC exec --no-TTY openldap ldapadd -x -D "cn=admin,dc=apothiquiz,dc=io" -w password -H ldap://localhost -ZZ
+	cat <<-EOF | $DC exec --no-TTY openldap ldapadd -x -D "cn=admin,dc=apothiquiz,dc=io" -w password -H ldap://localhost -ZZ || true
 		dn: uid=$USERID,ou=users,dc=apothiquiz,dc=io
 		uid: $USERID
 		cn: $USERID
@@ -142,7 +146,7 @@ create_user() {
 
 	colored_echo "    [2/2] Adding to mariadb database"
 	echo "INSERT IGNORE INTO \`user\` (\`us_login\`,\`us_admin\`) VALUES ('$USERID',0)" |
-		docker compose --file docker-compose.dev.yml exec --no-TTY mariadb mariadb --user=root --password=root apothiquizDb
+		$DC exec --no-TTY mariadb mariadb --user=root --password=root apothiquizDb
 
 	colored_echo "User $USERID created successfully, the default password is 'password'"
 }
@@ -159,11 +163,10 @@ fi
 case "$1" in
 "start")
 	check_system_dependencies
-	check_npm_dependencies
-	trap stop_docker SIGINT # Stop docker on ctrl+c
-	start_docker
-	run_server &
-	run_client &
+	trap stop_docker_services SIGINT # Stop docker on ctrl+c
+	start_docker_services
+
+	# check_npm_dependencies
 
 	echo ""
 	colored_echo "----------------------------------------------------"
@@ -171,12 +174,20 @@ case "$1" in
 	colored_echo "----------------------------------------------------"
 	echo ""
 
+	run_server &
+	run_client &
+
 	wait # Do not stop the script until the commands are finished
 	exit 0
 	;;
 
+"start-docker")
+	start_docker_services
+	exit 0
+	;;
+
 "stop-docker")
-	stop_docker
+	stop_docker_services
 	exit 0
 	;;
 

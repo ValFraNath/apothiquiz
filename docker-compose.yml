@@ -1,6 +1,16 @@
 version: "2.4"
 
 services:
+  node:
+    image: node:16
+    env_file:
+      - dev.env
+    network_mode: host
+    volumes:
+      - .:/app
+    user: "1000:1000"
+    command: "sleep infinity"
+
   mariadb:
     image: mariadb:10.6
     volumes:
