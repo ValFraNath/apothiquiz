@@ -6,6 +6,7 @@ Available commands:
 	- stop-docker: Stop docker containers
 	- test: Launch unit tests
 	- nuke: Remove all developement data
+	- create-user <login>: Create a new user in the database and LDAP
 "
 DC="docker compose --file docker-compose.dev.yml"
 
@@ -25,7 +26,7 @@ fail() {
 colored_echo() {
 	GREEN="\e[42m"
 	DEFAULT="\e[0m"
-	echo -e "${GREEN}${1}${DEFAULT}"
+	echo -e "${GREEN}[dev-env.sh] ${1}${DEFAULT}"
 }
 
 check_system_dependencies() {
@@ -49,10 +50,9 @@ check_system_dependencies() {
 	# fi
 
 	if ! [ -f "dev.env" ]; then
-		colored_echo "Missing dev.env file, creating with default values from .env.example"
-		colored_echo "Feel free to edit your local .env to match your dev environment"
+		colored_echo "  Missing dev.env file, creating with default values from .env.example"
+		colored_echo "  Feel free to edit your local .env to match your dev environment"
 		cp ".env.example" "dev.env" || fail
-		colored_echo
 	fi
 
 	colored_echo "...OK!"
@@ -100,7 +100,7 @@ test_server() {
 		sleep 2
 	done
 
-  # shellcheck disable=SC2046 # We want the attributes to be treated separately
+	# shellcheck disable=SC2046 # We want the attributes to be treated separately
 	export $(grep --only-matching "APOTHIQUIZ_.*=[^ ]*" dev.env | xargs)
 	export APOTHIQUIZ_DB_PORT=3307 # 3307 is the port for the test database
 	cd "./server/" || fail
@@ -114,6 +114,37 @@ run_client() {
 	cd "./client/" || fail
 	# Use tee to make react-scripts thinks it's not an interactive console
 	npm run start | tee || fail
+}
+
+create_user() {
+	# default password is "password"
+	USERID="$1"
+
+	colored_echo "Create new user: '$USERID'"
+
+	colored_echo "  [1/2] Adding to LDAP database"
+	cat <<-EOF | $DC exec --no-TTY openldap ldapadd -x -D "cn=admin,dc=apothiquiz,dc=io" -w password -H ldap://localhost -ZZ
+		dn: uid=$USERID,ou=users,dc=apothiquiz,dc=io
+		uid: $USERID
+		cn: $USERID
+		sn: 3
+		objectClass: top
+		objectClass: posixAccount
+		objectClass: inetOrgPerson
+		loginShell: /bin/bash
+		homeDirectory: /home/$USERID
+		uidNumber: 14583102
+		gidNumber: 14564100
+		userPassword: {SSHA}qgUzqcueyWA927ttHMnXP89MSL/rP8CR
+		mail: $USERID@example.org
+		gecos: $USERID UserEOF
+	EOF
+
+	colored_echo "  [2/2] Adding to mariadb database"
+	echo "INSERT IGNORE INTO \`user\` (\`us_login\`,\`us_admin\`) VALUES ('$USERID',0)" |
+		docker compose --file docker-compose.dev.yml exec --no-TTY mariadb mariadb --user=root --password=root apothiquizDb
+
+	colored_echo "User $USERID created successfully, the default password is 'password'"
 }
 
 # -----------------------------------------------------------------------------
@@ -133,10 +164,11 @@ case "$1" in
 	run_server &
 	run_client &
 
-	colored_echo ""
+	echo ""
 	colored_echo "----------------------------------------------------"
 	colored_echo "      Press ctrc+c to stop everything"
 	colored_echo "----------------------------------------------------"
+	echo ""
 
 	trap stop_docker SIGINT # Stop docker on ctrl+c
 
@@ -160,7 +192,7 @@ case "$1" in
 
 "nuke")
 	read -p "Do you want to remove all your development data (including databases)? [yN] " -n 1 -r
-	colored_echo # newline
+	echo # newline
 	if [[ "$REPLY" =~ ^[YyOo]$ ]]; then
 		$DC down --volumes
 		colored_echo "Removing client/node_modules" && rm -rf client/node_modules
@@ -170,7 +202,16 @@ case "$1" in
 	exit 0
 	;;
 
-"help"|*)
+"create-user")
+	if [ -z "$2" ]; then
+		colored_echo "Il manque le nom d'utilisateur"
+		exit 1
+	fi
+	create_user "$2"
+	exit 0
+	;;
+
+"help" | *)
 	echo "$HELP"
 	exit 0
 	;;
