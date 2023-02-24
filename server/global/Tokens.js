@@ -8,9 +8,9 @@ import { queryPromise } from "../db/database.js";
  * @returns {string} The token
  */
 function createAccessToken(refreshToken) {
-  const { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY } = process.env;
-  const { user, isAdmin } = jwt.verify(refreshToken, REFRESH_TOKEN_KEY);
-  return jwt.sign({ user, isAdmin }, ACCESS_TOKEN_KEY, { expiresIn: "10m" });
+  const { APOTHIQUIZ_ACCESS_TOKEN_KEY, APOTHIQUIZ_REFRESH_TOKEN_KEY } = process.env;
+  const { user, isAdmin } = jwt.verify(refreshToken, APOTHIQUIZ_REFRESH_TOKEN_KEY);
+  return jwt.sign({ user, isAdmin }, APOTHIQUIZ_ACCESS_TOKEN_KEY, { expiresIn: "10m" });
 }
 
 /**
@@ -20,8 +20,8 @@ function createAccessToken(refreshToken) {
  * @returns {Promise<string>} The token
  */
 async function createRefreshToken(login, isAdmin) {
-  const { REFRESH_TOKEN_KEY } = process.env;
-  const token = jwt.sign({ user: login, isAdmin }, REFRESH_TOKEN_KEY);
+  const { APOTHIQUIZ_REFRESH_TOKEN_KEY } = process.env;
+  const token = jwt.sign({ user: login, isAdmin }, APOTHIQUIZ_REFRESH_TOKEN_KEY);
   await storeRefreshToken(token, login);
   return token;
 }

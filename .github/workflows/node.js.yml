@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        node-version: [14.x]
+        node-version: [16.x]
 
     steps:
       - uses: actions/checkout@v2
@@ -38,7 +38,15 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        node-version: [14.x]
+        node-version: [16.x]
+
+    env:
+      APOTHIQUIZ_ACCESS_TOKEN_KEY: TMP_ACCESS_KEY
+      APOTHIQUIZ_REFRESH_TOKEN_KEY: TMP_REFRESH_KEY
+      APOTHIQUIZ_DB_HOST: localhost
+      APOTHIQUIZ_DB_DATABASE_TEST: apothiquizTestDb
+      APOTHIQUIZ_DB_USER: apothiquizUser
+      APOTHIQUIZ_DB_PASSWORD: p@ssword
 
     steps:
       - uses: actions/checkout@v2
@@ -55,9 +63,9 @@ jobs:
         uses: getong/mariadb-action@v1.1
         with:
           mariadb version: "10.4.10"
-          mysql database: "apothiquizTestDb"
-          mysql user: "apothiquizUser"
-          mysql password: ${{ secrets.CI_DATABASE_PASS }}
+          mysql database: ${APOTHIQUIZ_DB_DATABASE_TEST}
+          mysql user: ${APOTHIQUIZ_DB_USER}
+          mysql password: ${APOTHIQUIZ_DB_PASSWORD}
 
       - run: npm ci
         working-directory: ./server
@@ -69,17 +77,6 @@ jobs:
         working-directory: ./server
 
       - run: npm run build --if-present
-        working-directory: ./server
-
-      - name: Setting private key
-        run: |
-          echo "ACCESS_TOKEN_KEY=TMP_ACCESS_KEY" >> .env; \
-          echo "REFRESH_TOKEN_KEY=TMP_REFRESH_KEY" >> .env; \
-          echo "DB_HOST=localhost" >> .env; \
-          echo "DB_USER=apothiquizUser" >> .env; \
-          echo "DB_PASSWORD=p@ssword" >> .env; \
-          echo "DB_DATABASE_TEST=apothiquizTestDb" >> .env; \
-
         working-directory: ./server
 
       - name: Wait for mariadb server to be ready

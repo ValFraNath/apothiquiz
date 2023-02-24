@@ -1,0 +1,67 @@
+version: "2.4"
+
+services:
+  node:
+    image: node:16
+    env_file:
+      - dev.env
+    network_mode: host
+    volumes:
+      - .:/app
+    user: "1000:1000"
+    command: "sleep infinity"
+
+  mariadb:
+    image: mariadb:10.6
+    volumes:
+      - dev_database:/var/lib/mysql/
+    ports:
+      - 3306:3306
+    env_file:
+      - dev.env
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    healthcheck:
+      test: "mysql --user=root --password=root --execute 'SHOW DATABASES;'"
+      interval: 5s
+      start_period: 1m
+
+  mariadb-test:
+    image: mariadb:10.6
+    ports:
+      - 3307:3306
+    env_file:
+      - dev.env
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    healthcheck:
+      test: "mysql --user=root --password=root --execute 'SHOW DATABASES;'"
+      interval: 5s
+      start_period: 1m
+
+  openldap:
+    image: osixia/openldap:1.5.0
+    volumes:
+      - dev_ldap:/var/lib/ldap
+      - dev_ldap:/etc/ldap/slapd.d
+    ports:
+      - 389:389
+      - 636:636
+    environment:
+      LDAP_ORGANISATION: "apothiquiz"
+      LDAP_DOMAIN: "apothiquiz.io"
+      LDAP_ADMIN_PASSWORD: "password" # user login is cn=admin,dc=apothiquiz,dc=io
+
+  phpldapadmin:
+    image: osixia/phpldapadmin:0.9.0
+    environment:
+      PHPLDAPADMIN_LDAP_HOSTS: "ldap"
+      PHPLDAPADMIN_HTTPS: "false"
+    ports:
+      - 8888:80
+    links:
+      - "openldap:ldap"
+
+volumes:
+  dev_database:
+  dev_ldap:

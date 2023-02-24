@@ -3,6 +3,16 @@
   "version": "0.1.0",
   "proxy": "http://localhost:5035",
   "private": true,
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "REACT_APP_VERSION=\"Production (hash $(git rev-parse --short HEAD))\" react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "lint": "eslint src",
+    "lint:fix": "eslint --fix src",
+    "format": "prettier --check .",
+    "format:write": "prettier --write ."
+  },
   "dependencies": {
     "@modulz/radix-icons": "^3.2.0",
     "@radix-ui/react-collapsible": "0.0.1",
@@ -17,10 +27,10 @@
     "find-config": "^1.0.0",
     "node-sass": "^7.0.0",
     "path": "^0.12.7",
+    "preval.macro": "^5.0.0",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-git-info": "^2.0.0",
     "react-query": "^3.8.2",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^4.0.1",
@@ -29,16 +39,6 @@
     "workbox-precaching": "^5.1.4",
     "workbox-routing": "^5.1.4",
     "workbox-strategies": "^5.1.4"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "lint": "eslint src",
-    "lint:fix": "eslint --fix src",
-    "format": "prettier --check .",
-    "format:write": "prettier --write ."
   },
   "eslintConfig": {
     "env": {

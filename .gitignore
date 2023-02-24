@@ -1,10 +1,4 @@
-.idea/
-node_modules/
-wiki
-server/.env
-.eslintcache
-server/logs/
-server/files/
-server/files-test/
-uploads/
-tmp/
+*.env
+!.env.example
+
+docker-compose.override.yml
