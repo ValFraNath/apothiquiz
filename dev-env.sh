@@ -212,7 +212,7 @@ case "$1" in
 	$DC exec --no-TTY mariadb mariadb --user=root --password=root apothiquizDb < ./server/test/required-data/config.sql || true
 	$DC exec --no-TTY mariadb mariadb --user=root --password=root apothiquizDb < ./server/test/required-data/molecules.sql || true
 
-	create_user "user" "password" "1"
+	create_user "user" "password"
 	create_user "admin" "password" "1"
 	exit 0
 	;;
